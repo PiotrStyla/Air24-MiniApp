@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "445502709010",
+    "project_id": "flightcompensation-d059a",
+    "storage_bucket": "flightcompensation-d059a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445502709010:android:5d4ddd41072a6f6b2667cb",
+        "android_client_info": {
+          "package_name": "com.example.f35_flight_compensation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445502709010-eshqvs40cvvp166tqkjhs5pkvqno0rsq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7KBknrq-wODQGwLRM6TIvVzT3GfQb2Kg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445502709010-eshqvs40cvvp166tqkjhs5pkvqno0rsq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445502709010:android:c3b38f58a5a3dcff2667cb",
+        "android_client_info": {
+          "package_name": "eu.droneinsight.f35_flight_compensation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445502709010-eshqvs40cvvp166tqkjhs5pkvqno0rsq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7KBknrq-wODQGwLRM6TIvVzT3GfQb2Kg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445502709010-eshqvs40cvvp166tqkjhs5pkvqno0rsq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
