@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_profile.dart';
 import '../services/firestore_service.dart';
 
+
 class ProfileEditScreen extends StatefulWidget {
   const ProfileEditScreen({super.key});
 
@@ -25,7 +26,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   bool _consentNotifications = false;
 
   bool _loading = true;
-  UserProfile? _profile;
+
 
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     if (user == null) return;
     final profile = await FirestoreService().getUserProfile(user.uid);
     setState(() {
-      _profile = profile;
+
       _nameController = TextEditingController(text: profile?.fullName ?? '');
       _phoneController = TextEditingController(text: profile?.phoneNumber ?? '');
       _passportController = TextEditingController(text: profile?.passportNumber ?? '');
@@ -86,66 +87,116 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       appBar: AppBar(title: const Text('Edit Profile')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Full Name'),
-                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
               ),
-              TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(labelText: 'Phone Number'),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.info_outline, color: Colors.blue),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Please ensure your profile information is accurate. This is needed for claim processing and to contact you about your compensation.',
+                      style: TextStyle(color: Colors.blue[900]),
+                    ),
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: _passportController,
-                decoration: const InputDecoration(labelText: 'Passport/ID Number'),
+            ),
+            Container(
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.only(top: 8, left: 0, right: 0, bottom: 0),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.orange.shade200),
               ),
-              TextFormField(
-                controller: _nationalityController,
-                decoration: const InputDecoration(labelText: 'Nationality'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Tips & Reminders',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text('• Keep your profile up to date for smooth claim processing.'),
+                  const Text('• Your information is private and only used for compensation claims.'),
+                  const Text('• Make sure your contact details are correct so we can reach you about your claim.'),
+                ],
               ),
-              TextFormField(
-                controller: _dobController,
-                decoration: const InputDecoration(labelText: 'Date of Birth (YYYY-MM-DD)'),
+            ),
+            const SizedBox(height: 24),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Full Name'),
+                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  ),
+                  TextFormField(
+                    controller: _phoneController,
+                    decoration: const InputDecoration(labelText: 'Phone Number'),
+                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  ),
+                  TextFormField(
+                    controller: _passportController,
+                    decoration: const InputDecoration(labelText: 'Passport Number'),
+                  ),
+                  TextFormField(
+                    controller: _nationalityController,
+                    decoration: const InputDecoration(labelText: 'Nationality'),
+                  ),
+                  TextFormField(
+                    controller: _dobController,
+                    decoration: const InputDecoration(labelText: 'Date of Birth (YYYY-MM-DD)'),
+                  ),
+                  TextFormField(
+                    controller: _addressController,
+                    decoration: const InputDecoration(labelText: 'Address'),
+                  ),
+                  TextFormField(
+                    controller: _cityController,
+                    decoration: const InputDecoration(labelText: 'City'),
+                  ),
+                  TextFormField(
+                    controller: _postalController,
+                    decoration: const InputDecoration(labelText: 'Postal Code'),
+                  ),
+                  TextFormField(
+                    controller: _countryController,
+                    decoration: const InputDecoration(labelText: 'Country'),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Consent to Share Data'),
+                    value: _consentData,
+                    onChanged: (v) => setState(() => _consentData = v),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Consent to Receive Notifications'),
+                    value: _consentNotifications,
+                    onChanged: (v) => setState(() => _consentNotifications = v),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: _saveProfile,
+                    child: const Text('Save Profile'),
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: _addressController,
-                decoration: const InputDecoration(labelText: 'Address'),
-              ),
-              TextFormField(
-                controller: _cityController,
-                decoration: const InputDecoration(labelText: 'City'),
-              ),
-              TextFormField(
-                controller: _postalController,
-                decoration: const InputDecoration(labelText: 'Postal Code'),
-              ),
-              TextFormField(
-                controller: _countryController,
-                decoration: const InputDecoration(labelText: 'Country'),
-              ),
-              SwitchListTile(
-                title: const Text('Consent to Share Data'),
-                value: _consentData,
-                onChanged: (v) => setState(() => _consentData = v),
-              ),
-              SwitchListTile(
-                title: const Text('Consent to Receive Notifications'),
-                value: _consentNotifications,
-                onChanged: (v) => setState(() => _consentNotifications = v),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _saveProfile,
-                child: const Text('Save Profile'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          ], // end children of Column
+        ), // end child of SingleChildScrollView
+      ), // end body of Scaffold
+    ); // end Scaffold
+
   }
 }

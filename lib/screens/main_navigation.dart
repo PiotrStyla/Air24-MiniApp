@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'claims_screen.dart';
 import 'profile_screen.dart';
+import 'faq_screen.dart';
+import 'confirmed_flights_screen.dart';
+import 'quick_claim_screen.dart';
+import 'claim_submission_screen.dart';
+import '../services/airport_utils.dart';
+import '../models/confirmed_flight.dart';
+import '../services/confirmed_flight_storage.dart';
 import '../services/opensky_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
@@ -31,22 +38,41 @@ class _MainNavigationState extends State<MainNavigation> {
           Positioned(
             right: 16,
             top: 16,
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.flight_takeoff),
-              label: const Text('My Flights'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey,
-                foregroundColor: Colors.white,
-                elevation: 2,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ConfirmedFlightsScreen(),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.flight_takeoff),
+                  label: const Text('My Flights'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey,
+                    foregroundColor: Colors.white,
+                    elevation: 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
-                );
-              },
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ConfirmedFlightsScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(width: 8),
+                Tooltip(
+                  message: 'FAQ & Help',
+                  child: IconButton(
+                    icon: const Icon(Icons.help_outline, color: Colors.blue),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => FAQScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -105,15 +131,17 @@ class _MainNavigationState extends State<MainNavigation> {
           // Filter: altitude > 1000m, velocity > 100m/s, proximity to airports (origin/dest within 30km)
           final originAirport = AirportUtils.nearestAirport(prev.latitude, prev.longitude);
           final destAirport = AirportUtils.nearestAirport(sample.latitude, sample.longitude);
+          // TODO: Replace with real matches logic
+          final List<dynamic> matches = [];
           final filteredMatches = matches.where((f) {
             final altitude = (f[7] is num) ? f[7] as num : null;
             final velocity = (f[9] is num) ? f[9] as num : null;
             final isHighAltitude = altitude != null && altitude > 1000;
             final isFast = velocity != null && velocity > 100;
             final nearOrigin = originAirport != null &&
-              AirportUtils._distanceKm(prev.latitude, prev.longitude, originAirport.latitude, originAirport.longitude) < 30;
+              AirportUtils.distanceKm(prev.latitude, prev.longitude, originAirport.latitude, originAirport.longitude) < 30;
             final nearDest = destAirport != null &&
-              AirportUtils._distanceKm(sample.latitude, sample.longitude, destAirport.latitude, destAirport.longitude) < 30;
+              AirportUtils.distanceKm(sample.latitude, sample.longitude, destAirport.latitude, destAirport.longitude) < 30;
             return isHighAltitude && isFast && nearOrigin && nearDest;
           }).toList();
 

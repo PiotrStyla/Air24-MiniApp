@@ -24,7 +24,7 @@ class AirportUtils {
     Airport? nearest;
     double minDist = double.infinity;
     for (final airport in airports) {
-      final dist = _distanceKm(lat, lon, airport.latitude, airport.longitude);
+      final dist = distanceKm(lat, lon, airport.latitude, airport.longitude);
       if (dist < minDist && dist <= maxDistanceKm) {
         minDist = dist;
         nearest = airport;
@@ -33,7 +33,7 @@ class AirportUtils {
     return nearest;
   }
 
-  static double _distanceKm(double lat1, double lon1, double lat2, double lon2) {
+  static double distanceKm(double lat1, double lon1, double lat2, double lon2) {
     const R = 6371.0;
     final dLat = _deg2rad(lat2 - lat1);
     final dLon = _deg2rad(lon2 - lon1);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'faq_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -118,6 +119,21 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Submit Claim'),
+        actions: [
+          Tooltip(
+            message: 'FAQ & Help',
+            child: IconButton(
+              icon: const Icon(Icons.help_outline, color: Colors.blue),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => FAQScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -125,44 +141,165 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                controller: _flightNumberController,
-                decoration: const InputDecoration(labelText: 'Flight Number *'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: _pickFlightDate,
-                child: InputDecorator(
-                  decoration: const InputDecoration(labelText: 'Flight Date *'),
-                  child: Text(_flightDate != null
-                      ? DateFormat.yMMMd().format(_flightDate!)
-                      : 'Select date'),
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.info_outline, color: Colors.blue),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Please fill in your claim details below. All required fields must be completed. Tap the info icons for help.',
+                        style: TextStyle(color: Colors.blue[900]),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _departureAirportController,
-                decoration: const InputDecoration(labelText: 'Departure Airport *'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _flightNumberController,
+                      decoration: const InputDecoration(
+                        labelText: 'Flight Number *',
+                        helperText: 'Usually a 2-letter airline code and digits, e.g. LH1234',
+                      ),
+                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'Enter your flight number as shown on your ticket or boarding pass.',
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 4.0),
+                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
-              TextFormField(
-                controller: _arrivalAirportController,
-                decoration: const InputDecoration(labelText: 'Arrival Airport *'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: _pickFlightDate,
+                      child: InputDecorator(
+                        decoration: const InputDecoration(labelText: 'Flight Date *'),
+                        child: Text(_flightDate != null
+                            ? DateFormat.yMMMd().format(_flightDate!)
+                            : 'Select date'),
+                      ),
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'The date your flight departed or was scheduled to depart.',
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 4.0),
+                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
-              TextFormField(
-                controller: _reasonController,
-                decoration: const InputDecoration(labelText: 'Reason (delay, cancellation, etc.) *'),
-                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _departureAirportController,
+                      decoration: const InputDecoration(
+                        labelText: 'Departure Airport *',
+                        helperText: 'e.g. FRA for Frankfurt, LHR for London Heathrow',
+                      ),
+                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'Enter the IATA code of the airport where your flight started.',
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 4.0),
+                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
-              TextFormField(
-                controller: _compensationAmountController,
-                decoration: const InputDecoration(labelText: 'Compensation Amount (optional)'),
-                keyboardType: TextInputType.number,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _arrivalAirportController,
+                      decoration: const InputDecoration(
+                        labelText: 'Arrival Airport *',
+                        helperText: 'e.g. JFK for New York, CDG for Paris',
+                      ),
+                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'Enter the IATA code of the airport where your flight landed.',
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 4.0),
+                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _reasonController,
+                      decoration: const InputDecoration(
+                        labelText: 'Reason *',
+                        hintText: 'Reason (delay, cancellation, etc.)',
+                        helperText: 'State why you are claiming: delay, cancellation, denied boarding, etc.',
+                      ),
+                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'Describe the issue: e.g. delayed more than 3 hours, cancelled, overbooked.',
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 4.0),
+                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _compensationAmountController,
+                      decoration: const InputDecoration(
+                        labelText: 'Compensation Amount (optional)',
+                        helperText: 'If you know the amount you are eligible for, enter it here.',
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'Leave blank if unsure. Typical EU compensation: €250-€600 depending on distance.',
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 4.0),
+                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
               if (_errorMessage != null)
@@ -179,6 +316,29 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
                     : const Text('Submit'),
+              ),
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(top: 8),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orange.shade200),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Tips & Reminders',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
+                    ),
+                    SizedBox(height: 6),
+                    Text('• Your data is securely processed and only used for compensation claims.'),
+                    Text('• Make sure your flight is eligible for compensation (e.g., delay >3h, cancellation, denied boarding).'),
+                    Text('• Double-check all details before submitting to avoid delays.'),
+                  ],
+                ),
               ),
             ],
           ),

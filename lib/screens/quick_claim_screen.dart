@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'faq_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 import '../models/claim.dart';
@@ -130,7 +131,24 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Quick Claim')),
+      appBar: AppBar(
+        title: const Text('Quick Claim'),
+        actions: [
+          Tooltip(
+            message: 'FAQ & Help',
+            child: IconButton(
+              icon: const Icon(Icons.help_outline, color: Colors.blue),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => FAQScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
