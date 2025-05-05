@@ -13,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-API_KEY = os.getenv("AERODATABOX_API_KEY", "YOUR_RAPIDAPI_KEY_HERE")
+API_KEY = os.getenv("AERODATABOX_API_KEY", "7cd24ea427msh7ec30eb49e4bafcp1fcbe0jsn43298646c50d")
 API_HOST = "aerodatabox.p.rapidapi.com"
 
 @app.get("/recent-arrivals")
