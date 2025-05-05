@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'faq_screen.dart';
-import 'api_key_section.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -49,16 +48,12 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-            child: ApiKeySection(),
-          ),
+          
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ApiKeySection(),
-                const SizedBox(height: 24),
+                
                 const Text('Profile settings will appear here.'),
                 const SizedBox(height: 24),
                 ElevatedButton(

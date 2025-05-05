@@ -97,7 +97,7 @@ class FlightDetectionService {
           return;
         }
       }
-      final aeroService = AeroDataBoxService(apiKey: apiKey.trim());
+      final aeroService = AeroDataBoxService();
       List<Map<String, dynamic>> arrivals = [];
       try {
         arrivals = await aeroService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
@@ -158,7 +158,7 @@ class FlightDetectionService {
         if (depAirport != null && arrAirport != null) {
           // Fetch arrivals at arrival airport
           final apiKey = await File('rapidapi_key.txt').readAsString();
-          final aeroService = AeroDataBoxService(apiKey: apiKey.trim());
+          final aeroService = AeroDataBoxService();
           final arrivals = await aeroService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
           // Find best match: closest departure airport and arrival time
           final nowUtc = DateTime.now().toUtc();

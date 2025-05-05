@@ -13,7 +13,7 @@ Future<String> loadRapidApiKey() async {
 
 Future<void> main() async {
   final apiKey = await loadRapidApiKey();
-  final aeroService = AeroDataBoxService(apiKey: apiKey);
+  final aeroService = AeroDataBoxService();
 
   try {
     final arrivals = await aeroService.getRecentArrivals(
