@@ -4,6 +4,7 @@ import 'firebase_options.dart';
 import 'screens/main_navigation.dart';
 import 'screens/profile_edit_screen.dart';
 import 'screens/email_auth_screen.dart';
+import 'screens/claim_submission_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,15 @@ class F35FlightCompensationApp extends StatelessWidget {
         '/': (context) => const MainNavigation(),
         '/email-auth': (context) => const EmailAuthScreen(),
         '/edit-profile': (context) => const ProfileEditScreen(),
+        '/claim-submission': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          return ClaimSubmissionScreen(
+            prefillFlightNumber: args?['prefillFlightNumber'],
+            prefillDepartureAirport: args?['prefillDepartureAirport'],
+            prefillArrivalAirport: args?['prefillArrivalAirport'],
+            prefillFlightDate: args?['prefillFlightDate'],
+          );
+        },
       },
     );
   }

@@ -1,0 +1,221 @@
+[
+  {
+    "iata": "LH",
+    "name": "Lufthansa",
+    "claim_email": "customer.relations@lufthansa.com",
+    "claim_form_url": "https://www.lufthansa.com/xx/en/feedback-and-complaints",
+    "instructions": "Use the online form or email with your booking details and delay/cancellation info. Attach boarding pass and proof of delay if possible."
+  },
+  {
+    "iata": "BA",
+    "name": "British Airways",
+    "claim_email": "customer.relations@ba.com",
+    "claim_form_url": "https://www.britishairways.com/en-gb/information/legal/rights/flight-delays-compensation",
+    "instructions": "Submit via the online form for fastest response. Include booking reference, flight details, and reason for claim."
+  },
+  {
+    "iata": "AF",
+    "name": "Air France",
+    "claim_email": "service.client@airfrance.fr",
+    "claim_form_url": "https://www.airfrance.com/claims/",
+    "instructions": "Use the web form or email with your flight and delay/cancellation details. Attach supporting documents."
+  },
+  {
+    "iata": "DL",
+    "name": "Delta Air Lines",
+    "claim_email": "customer-care@delta.com",
+    "claim_form_url": "https://www.delta.com/us/en/need-help/overview",
+    "instructions": "Use the online form or email. Provide ticket number, flight info, and reason for claim."
+  },
+  {
+    "iata": "UA",
+    "name": "United Airlines",
+    "claim_email": "customer.relations@united.com",
+    "claim_form_url": "https://www.united.com/ual/en/us/fly/contact/customer-care.html",
+    "instructions": "Submit via web form or email. Include all relevant flight and booking details."
+  },
+  {
+    "iata": "FR",
+    "name": "Ryanair",
+    "claim_email": "customerqueries@ryanair.com",
+    "claim_form_url": "https://eu261compensationclaims.ryanair.com/",
+    "instructions": "Use the online EU261 compensation form. Attach boarding pass and proof of delay/cancellation."
+  },
+  {
+    "iata": "W6",
+    "name": "Wizz Air",
+    "claim_email": "claim@wizzair.com",
+    "claim_form_url": "https://wizzair.com/en-gb/information-and-services/compliments-and-complaints/claims",
+    "instructions": "Submit claim via the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "EK",
+    "name": "Emirates",
+    "claim_email": "customer.affairs@emirates.com",
+    "claim_form_url": "https://www.emirates.com/english/help/complaints/",
+    "instructions": "Use the online complaint form or email. Attach all relevant documents."
+  },
+  {
+    "iata": "TK",
+    "name": "Turkish Airlines",
+    "claim_email": "customer@thy.com",
+    "claim_form_url": "https://www.turkishairlines.com/en-int/any-questions/customer-contact-form/",
+    "instructions": "Submit claim using the customer contact form. Provide booking and flight details."
+  },
+  {
+    "iata": "KL",
+    "name": "KLM Royal Dutch Airlines",
+    "claim_email": "mail@klm-info.com",
+    "claim_form_url": "https://www.klm.com/travel/gb_en/prepare_for_travel/customer_support/complaint/complaint_form.htm",
+    "instructions": "Use the online complaint form. Attach boarding pass and proof of disruption."
+  },
+  {
+    "iata": "AA",
+    "name": "American Airlines",
+    "claim_email": "customer.relations@aa.com",
+    "claim_form_url": "https://www.aa.com/contact/forms?topic=CR",
+    "instructions": "Submit claim via the online form. Include ticket number and details of disruption."
+  },
+  {
+    "iata": "LO",
+    "name": "LOT Polish Airlines",
+    "claim_email": "kontakt@lot.pl",
+    "claim_form_url": "https://www.lot.com/pl/en/complaints",
+    "instructions": "Use the complaint form or email. Attach all relevant documentation."
+  },
+  {
+    "iata": "QR",
+    "name": "Qatar Airways",
+    "claim_email": "tell-us@qatarairways.com.qa",
+    "claim_form_url": "https://www.qatarairways.com/en/help.html",
+    "instructions": "Use the online form or email. Provide booking reference, flight details, and reason for claim.",
+    "phone": "+974 4023 0000",
+    "postal_address": "Qatar Airways, Customer Care, PO Box 22550, Doha, State of Qatar"
+  },
+  {
+    "iata": "LX",
+    "name": "Swiss International Air Lines",
+    "claim_email": "contact@swiss.com",
+    "claim_form_url": "https://www.swiss.com/ch/en/customer-support/feedback",
+    "instructions": "Use the online feedback form or email. Attach ticket and boarding pass.",
+    "phone": "+41 848 700 700",
+    "postal_address": "Swiss International Air Lines Ltd, Customer Service, PO Box, CH-4002 Basel, Switzerland"
+  },
+  {
+    "iata": "IB",
+    "name": "Iberia",
+    "claim_email": "clasica@iberia.es",
+    "claim_form_url": "https://www.iberia.com/es/ayuda/reclamaciones/",
+    "instructions": "Use the online claim form or email. Attach all relevant documents.",
+    "phone": "+34 901 111 500",
+    "postal_address": "Iberia, Centro de Atención al Cliente, Apartado de Correos 36220, 28080 Madrid, Spain"
+  },
+  {
+    "iata": "AZ",
+    "name": "ITA Airways (formerly Alitalia)",
+    "claim_email": "assistenza.clienti@ita-airways.com",
+    "claim_form_url": "https://www.ita-airways.com/en_en/fly-ita/assistance/complaints.html",
+    "instructions": "Use the online complaint form or email. Attach boarding pass and proof of disruption.",
+    "phone": "+39 06 85960020",
+    "postal_address": "ITA Airways, Customer Relations, Via Venti Settembre 97, 00187 Rome, Italy"
+  },
+  {
+    "iata": "SU",
+    "name": "Aeroflot",
+    "claim_email": "contact@aeroflot.ru",
+    "claim_form_url": "https://www.aeroflot.ru/ru-en/information/feedback",
+    "instructions": "Use the online feedback form or email. Attach ticket and all supporting documents.",
+    "phone": "+7 495 223 5555",
+    "postal_address": "Aeroflot Russian Airlines, Customer Service, 1st Tverskoy-Yamskoy Lane, 3, Moscow, 125047, Russia"
+  },
+  {
+    "iata": "DY",
+    "name": "Norwegian Air Shuttle",
+    "claim_email": "contact@norwegian.com",
+    "claim_form_url": "https://www.norwegian.com/uk/help/contact-us/complaints/",
+    "instructions": "Use the online complaint form or email. Provide booking reference and details.",
+    "phone": "+47 2149 00 15",
+    "postal_address": "Norwegian Air Shuttle ASA, Oksenøyveien 3, 1366 Lysaker, Norway"
+  },
+  {
+    "iata": "U2",
+    "name": "EasyJet",
+    "claim_email": "customer.support@easyjet.com",
+    "claim_form_url": "https://www.easyjet.com/en/help/boarding-and-flying/delays-and-cancellations",
+    "instructions": "Use the online form for delay/cancellation claims. Attach boarding pass and proof.",
+    "phone": "+44 330 365 5000",
+    "postal_address": "easyJet Customer Services, Hangar 89, London Luton Airport, Luton, Bedfordshire, LU2 9PF, UK"
+  },
+  {
+    "iata": "AC",
+    "name": "Air Canada",
+    "claim_email": "customerrelations@aircanada.ca",
+    "claim_form_url": "https://www.aircanada.com/ca/en/aco/home/fly/customer-support/delayed-cancelled-flight.html",
+    "instructions": "Use the online form for claims. Attach ticket and details of disruption.",
+    "phone": "+1 888 247 2262",
+    "postal_address": "Air Canada, Customer Relations, P.O. Box 64239, RPO Thorncliffe, Calgary, AB T2K 6J7, Canada"
+  },
+  {
+    "iata": "SQ",
+    "name": "Singapore Airlines",
+    "claim_email": "sia_feedback@singaporeair.com.sg",
+    "claim_form_url": "https://www.singaporeair.com/en_UK/feedback-enquiry/",
+    "instructions": "Use the feedback form or email. Attach ticket and supporting documents.",
+    "phone": "+65 6223 8888",
+    "postal_address": "Singapore Airlines, Customer Affairs, 25 Airline Road, Airline House, Singapore 819829"
+  },
+  {
+    "iata": "NH",
+    "name": "All Nippon Airways (ANA)",
+    "claim_email": "customer_service@ana.co.jp",
+    "claim_form_url": "https://www.ana.co.jp/en/jp/serviceinfo/share/feedback/",
+    "instructions": "Use the online feedback form or email. Attach flight and disruption details.",
+    "phone": "+81 3 6735 5012",
+    "postal_address": "ANA Customer Relations, 1-5-2 Higashi-Shimbashi, Minato-ku, Tokyo 105-7133, Japan"
+  },
+  {
+    "iata": "JL",
+    "name": "Japan Airlines (JAL)",
+    "claim_email": "webinfo@jal.com",
+    "claim_form_url": "https://www.jal.co.jp/en/inquiry/",
+    "instructions": "Use the online inquiry form or email. Provide booking details and supporting docs.",
+    "phone": "+81 3 5460 0511",
+    "postal_address": "Japan Airlines Customer Relations, 2-4-11 Higashi-Shinagawa, Shinagawa-ku, Tokyo 140-0002, Japan"
+  },
+  {
+    "iata": "AY",
+    "name": "Finnair",
+    "claim_email": "feedback@finnair.com",
+    "claim_form_url": "https://www.finnair.com/fi-en/customer-care/contact-information/feedback",
+    "instructions": "Use the feedback form or email. Attach all relevant documents.",
+    "phone": "+358 9 818 0800",
+    "postal_address": "Finnair Customer Relations, Tietotie 9, 01530 Vantaa, Finland"
+  },
+  {
+    "iata": "OS",
+    "name": "Austrian Airlines",
+    "claim_email": "feedback@austrian.com",
+    "claim_form_url": "https://www.austrian.com/at/en/feedback",
+    "instructions": "Use the online feedback form or email. Attach ticket and disruption details.",
+    "phone": "+43 5 1766 1000",
+    "postal_address": "Austrian Airlines Customer Relations, P.O. Box 33, 1300 Vienna Airport, Austria"
+  },
+  {
+    "iata": "SK",
+    "name": "Scandinavian Airlines (SAS)",
+    "claim_email": "contacttoflysas@sas.se",
+    "claim_form_url": "https://www.flysas.com/en/contact/contact-forms/feedback/",
+    "instructions": "Use the online feedback form or email. Attach ticket and details.",
+    "phone": "+46 8 797 4000",
+    "postal_address": "SAS Customer Contact Center, Frösundaviks allé 1, SE-169 70 Solna, Sweden"
+  },
+  {
+    "iata": "SN",
+    "name": "Brussels Airlines",
+    "claim_email": "customercare@brusselsairlines.com",
+    "claim_form_url": "https://www.brusselsairlines.com/en-be/contact-us/complaints",
+    "instructions": "Use the online complaint form or email. Attach all supporting documents.",
+    "phone": "+32 2 723 23 62",
+    "postal_address": "Brussels Airlines Customer Relations, b.house, Brussels Airport Building 26, 1831 Diegem, Belgium"
+  }
+]

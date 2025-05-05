@@ -1,0 +1,18 @@
+[
+  {
+    "iata": "LH",
+    "airline": "Lufthansa",
+    "email": "customer.relations@lufthansa.com",
+    "web_form": "https://www.lufthansa.com/claim-form",
+    "phone": "+49 69 86 799 799",
+    "address": "Lufthansa Customer Relations, 60546 Frankfurt/Main, Germany"
+  },
+  {
+    "iata": "BA",
+    "airline": "British Airways",
+    "email": "customer.relations@ba.com",
+    "web_form": "https://www.britishairways.com/claim-form",
+    "phone": "+44 20 8738 5050",
+    "address": "British Airways Customer Relations, PO Box 286118, London, W5 6GH, UK"
+  }
+]

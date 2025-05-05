@@ -20,11 +20,11 @@ dependencies:
   pdf: ^3.10.8
   printing: ^5.12.0
   image_picker: ^1.0.7
-  file_picker: ^6.1.1
-  flutter_local_notifications: ^16.3.0
+  flutter_local_notifications: ^19.1.0
   url_launcher: ^6.2.5
   intl: ^0.19.0
   flutter_secure_storage: ^9.0.0
+  flutter_dotenv: ^5.0.2
   uuid: ^4.2.2
   shared_preferences: ^2.2.2
   google_sign_in: ^6.1.5
@@ -34,3 +34,7 @@ dev_dependencies:
   flutter_lints: ^3.0.1
 flutter:
   uses-material-design: true
+  assets:
+    - assets/lib/data/airline_claim_procedures.json
+    - assets/lib/data/iata_codes.json
+    - assets/rapidapi_key.txt

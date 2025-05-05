@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/claim.dart';
 import '../services/firestore_service.dart';
+import 'package:flutter/services.dart';
 
 class ClaimDetailScreen extends StatefulWidget {
   final Claim claim;
@@ -78,6 +79,24 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final claim = widget.claim;
+    String claimLetter = '''
+To whom it may concern,
+
+I am writing to submit a claim for compensation under EC261/2004 for the following flight disruption:
+
+- Flight: ${claim.flightNumber}
+- Date: ${claim.flightDate.toLocal().toString().split(' ')[0]}
+- From: ${claim.departureAirport}
+- To: ${claim.arrivalAirport}
+- Reason: ${claim.reason}
+${claim.compensationAmount != null ? '- Claimed amount: €${claim.compensationAmount!.toStringAsFixed(2)}\n' : ''}
+
+Please process my claim in accordance with EU regulations. I look forward to your prompt response.
+
+Sincerely,
+[Your Name]
+''';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Claim Details'),
@@ -205,20 +224,61 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             ),
             if (_errorMessage != null)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.only(top: 8.0),
                 child: Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
               ),
-            if (_isEditing)
-              ElevatedButton(
-                onPressed: _isSaving ? null : _saveEdits,
-                child: _isSaving
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Text('Save Changes'),
+            const SizedBox(height: 24),
+            Card(
+              color: Colors.green.shade50,
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              child: Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.email, color: Colors.green),
+                        const SizedBox(width: 8),
+                        const Text('Claim Request Letter Preview', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green)),
+                        const Spacer(),
+                        Tooltip(
+                          message: 'Copy letter to clipboard',
+                          child: IconButton(
+                            icon: const Icon(Icons.copy),
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: claimLetter));
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Claim letter copied!')));
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                    SelectableText(claimLetter, style: const TextStyle(fontFamily: 'monospace', fontSize: 14)),
+                  ],
+                ),
               ),
+            ),
+            if (_isEditing)
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _isSaving ? null : _saveEdits,
+                      child: _isSaving
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Text('Save Changes'),
+                    ),
+                  ),
+                ],
+              ),
+            if (!_isEditing)
+              const SizedBox(height: 16),
           ],
         ),
       ),

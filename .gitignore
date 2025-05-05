@@ -39,6 +39,9 @@ firebase_options.dart
 # Symbolication related
 app.*.symbols
 
+# Local API keys
+rapidapi_key.txt
+
 # Obfuscation related
 app.*.map.json
 

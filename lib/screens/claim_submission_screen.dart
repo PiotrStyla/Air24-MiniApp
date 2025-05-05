@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'faq_screen.dart';
+import '../services/airline_procedure_service.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:math';
 import '../models/claim.dart';
 import '../services/firestore_service.dart';
+import '../services/claim_validation_service.dart';
+import '../services/opensky_api_service.dart';
 
 class ClaimSubmissionScreen extends StatefulWidget {
   final String? prefillFlightNumber;
@@ -25,6 +31,10 @@ class ClaimSubmissionScreen extends StatefulWidget {
 }
 
 class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
+  // TODO: Replace with secure storage or environment variables in production!
+  static const String _openSkyUsername = 'Piotr Styła';
+  static const String _openSkyPassword = 'HippiH-01HippiH-01';
+
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _flightNumberController;
   late final TextEditingController _departureAirportController;
@@ -33,6 +43,60 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
   final _compensationAmountController = TextEditingController();
   DateTime? _flightDate;
 
+  AirlineClaimProcedure? _airlineProcedure;
+  String? _airlineProcedureError;
+
+  double? _suggestedCompensation;
+
+  static double? _estimateDistanceKm(String dep, String arr) {
+    // Simple hardcoded sample for demo; in production, use a real airport DB
+    final airportCoords = {
+      'FRA': [50.0379, 8.5622], // Frankfurt
+      'LHR': [51.4700, -0.4543], // London Heathrow
+      'CDG': [49.0097, 2.5479], // Paris CDG
+      'JFK': [40.6413, -73.7781], // New York JFK
+      'WAW': [52.1657, 20.9671], // Warsaw
+      'AMS': [52.3105, 4.7683], // Amsterdam
+      'IST': [41.2753, 28.7519], // Istanbul
+      // Add more as needed
+    };
+    final depC = airportCoords[dep.toUpperCase()];
+    final arrC = airportCoords[arr.toUpperCase()];
+    if (depC == null || arrC == null) return null;
+    double toRad(double deg) => deg * 3.1415926535 / 180.0;
+    final lat1 = toRad(depC[0]), lon1 = toRad(depC[1]);
+    final lat2 = toRad(arrC[0]), lon2 = toRad(arrC[1]);
+    const R = 6371.0;
+    final dLat = lat2 - lat1;
+    final dLon = lon2 - lon1;
+    final a = (sin(dLat/2) * sin(dLat/2)) + cos(lat1) * cos(lat2) * (sin(dLon/2) * sin(dLon/2));
+    final c = 2 * atan2(sqrt(a), sqrt(1-a));
+    return R * c;
+  }
+
+  void _suggestCompensation() {
+    final reason = _reasonController.text.toLowerCase();
+    final dep = _departureAirportController.text.trim();
+    final arr = _arrivalAirportController.text.trim();
+    if (reason.contains('delay') || reason.contains('cancel')) {
+      final dist = _estimateDistanceKm(dep, arr);
+      if (dist != null) {
+        if (dist < 1500) {
+          _suggestedCompensation = 250;
+        } else if (dist < 3500) {
+          _suggestedCompensation = 400;
+        } else {
+          _suggestedCompensation = 600;
+        }
+      } else {
+        _suggestedCompensation = null;
+      }
+    } else {
+      _suggestedCompensation = null;
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -40,12 +104,133 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
     _departureAirportController = TextEditingController(text: widget.prefillDepartureAirport ?? '');
     _arrivalAirportController = TextEditingController(text: widget.prefillArrivalAirport ?? '');
     _flightDate = widget.prefillFlightDate;
+    _flightNumberController.addListener(_onFlightNumberChanged);
+    _reasonController.addListener(_onClaimFieldsChanged);
+    _departureAirportController.addListener(_onClaimFieldsChanged);
+    _arrivalAirportController.addListener(_onClaimFieldsChanged);
+    if (_flightNumberController.text.isNotEmpty) {
+      _onFlightNumberChanged();
+    }
+    _suggestCompensation();
+  }
+
+  Future<void> _suggestCorrectFlightDataIfNeeded() async {
+    // Only trigger if flight number is entered but validation fails for date/airport
+    if (_flightNumberController.text.trim().isEmpty || _flightDate == null) return;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final claim = Claim(
+      id: '',
+      userId: user.uid,
+      flightNumber: _flightNumberController.text.trim(),
+      flightDate: _flightDate!,
+      departureAirport: _departureAirportController.text.trim(),
+      arrivalAirport: _arrivalAirportController.text.trim(),
+      reason: _reasonController.text.trim(),
+      compensationAmount: _compensationAmountController.text.isNotEmpty
+          ? double.tryParse(_compensationAmountController.text)
+          : null,
+      status: 'pending',
+    );
+    final userClaims = await FirestoreService().getClaimsForUser(user.uid);
+    final validation = await ClaimValidationService.validateClaim(
+      claim,
+      userClaims,
+      verifyWithOpenSky: false,
+    );
+    // If only the flight number is valid, try to help the user
+    if (validation.errors.any((e) => e.contains('Invalid departure airport') || e.contains('Invalid arrival airport'))) {
+      // Try to find correct data by flight number
+      final matches = await OpenSkyApiService.findFlightsByFlightNumber(
+        flightNumber: _flightNumberController.text.trim(),
+        flightDate: _flightDate!,
+        username: _openSkyUsername,
+        password: _openSkyPassword,
+      );
+      if (matches.isNotEmpty) {
+        final f = matches.first;
+        final suggestedDep = f['estDepartureAirport'] ?? '';
+        final suggestedArr = f['estArrivalAirport'] ?? '';
+        // Show dialog to user
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Did you mean this flight?'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Flight: ${f['callsign'] ?? ''}'),
+                  if (suggestedDep.isNotEmpty) Text('Departure: $suggestedDep'),
+                  if (suggestedArr.isNotEmpty) Text('Arrival: $suggestedArr'),
+                  if (f['firstSeen'] != null)
+                    Text('Date: '
+                        '${DateTime.fromMillisecondsSinceEpoch((f['firstSeen'] as int) * 1000).toLocal().toString().split(' ')[0]}'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  child: const Text('Autofill'),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    setState(() {
+                      if (suggestedDep.isNotEmpty) _departureAirportController.text = suggestedDep;
+                      if (suggestedArr.isNotEmpty) _arrivalAirportController.text = suggestedArr;
+                    });
+                  },
+                ),
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  void _onClaimFieldsChanged() {
+    setState(() {
+      _suggestCompensation();
+    });
+    _suggestCorrectFlightDataIfNeeded();
+  }
+
+  void _onFlightNumberChanged() async {
+    final text = _flightNumberController.text.trim();
+    if (text.length >= 2) {
+      final iata = text.substring(0, 2).toUpperCase();
+      try {
+        final procedure = await AirlineProcedureService.getProcedureByIata(iata);
+        setState(() {
+          _airlineProcedure = procedure;
+          _airlineProcedureError = null;
+        });
+      } catch (e) {
+        setState(() {
+          _airlineProcedure = null;
+          _airlineProcedureError = 'Could not find airline procedure.';
+        });
+      }
+    } else {
+      setState(() {
+        _airlineProcedure = null;
+        _airlineProcedureError = null;
+      });
+    }
   }
   bool _isSubmitting = false;
   String? _errorMessage;
 
   @override
   void dispose() {
+    _flightNumberController.removeListener(_onFlightNumberChanged);
+    _reasonController.removeListener(_onClaimFieldsChanged);
+    _departureAirportController.removeListener(_onClaimFieldsChanged);
+    _arrivalAirportController.removeListener(_onClaimFieldsChanged);
     _flightNumberController.dispose();
     _departureAirportController.dispose();
     _arrivalAirportController.dispose();
@@ -87,6 +272,30 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
             : null,
         status: 'pending',
       );
+      // --- Automated validation ---
+      final userClaims = await FirestoreService().getClaimsForUser(user.uid);
+      if (_openSkyUsername.isEmpty || _openSkyPassword.isEmpty) {
+        setState(() {
+          _errorMessage = 'OpenSky credentials are required. Please set them in the code.';
+          _isSubmitting = false;
+        });
+        return;
+      }
+      final validation = await ClaimValidationService.validateClaim(
+        claim,
+        userClaims,
+        verifyWithOpenSky: true,
+        openSkyUsername: _openSkyUsername,
+        openSkyPassword: _openSkyPassword,
+      );
+      if (!validation.isValid) {
+        setState(() {
+          _errorMessage = validation.errors.join('\n');
+          _isSubmitting = false;
+        });
+        return;
+      }
+      // --- End validation ---
       await FirestoreService().setClaim(claim);
       if (mounted) {
         Navigator.of(context).pop(true);
@@ -184,6 +393,165 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                   ),
                 ],
               ),
+              if (_airlineProcedure != null)
+                Card(
+                  color: Colors.green.shade50,
+                  elevation: 2,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.flight, color: Colors.green, size: 28),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                '${_airlineProcedure!.name} (${_airlineProcedure!.iata})',
+                                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 18, thickness: 1),
+                        if (_airlineProcedure!.claimEmail.isNotEmpty)
+                          Row(
+                            children: [
+                              const Icon(Icons.email, color: Colors.teal),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: SelectableText(_airlineProcedure!.claimEmail, style: const TextStyle(fontSize: 15)),
+                              ),
+                              Tooltip(
+                                message: 'Copy email address',
+                                child: IconButton(
+                                  icon: const Icon(Icons.copy, size: 20),
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: _airlineProcedure!.claimEmail));
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Email copied')));
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (_airlineProcedure!.claimFormUrl.isNotEmpty)
+                          Row(
+                            children: [
+                              const Icon(Icons.link, color: Colors.blue),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: SelectableText(_airlineProcedure!.claimFormUrl, style: const TextStyle(fontSize: 15)),
+                              ),
+                              Tooltip(
+                                message: 'Open web form',
+                                child: IconButton(
+                                  icon: const Icon(Icons.open_in_new, size: 20),
+                                  onPressed: () async {
+                                    final url = _airlineProcedure!.claimFormUrl;
+                                    if (await canLaunchUrlString(url)) {
+                                      await launchUrlString(url);
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not open link')));
+                                    }
+                                  },
+                                ),
+                              ),
+                              Tooltip(
+                                message: 'Copy web form URL',
+                                child: IconButton(
+                                  icon: const Icon(Icons.copy, size: 20),
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: _airlineProcedure!.claimFormUrl));
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Link copied')));
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (_airlineProcedure!.phone != null && _airlineProcedure!.phone!.isNotEmpty)
+                          Row(
+                            children: [
+                              const Icon(Icons.phone, color: Colors.deepPurple),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: SelectableText(_airlineProcedure!.phone!, style: const TextStyle(fontSize: 15)),
+                              ),
+                              Tooltip(
+                                message: 'Call phone number',
+                                child: IconButton(
+                                  icon: const Icon(Icons.call, size: 20),
+                                  onPressed: () async {
+                                    final tel = 'tel:${_airlineProcedure!.phone}';
+                                    if (await canLaunchUrlString(tel)) {
+                                      await launchUrlString(tel);
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not call number')));
+                                    }
+                                  },
+                                ),
+                              ),
+                              Tooltip(
+                                message: 'Copy phone number',
+                                child: IconButton(
+                                  icon: const Icon(Icons.copy, size: 20),
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: _airlineProcedure!.phone ?? ''));
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Phone copied')));
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (_airlineProcedure!.postalAddress != null && _airlineProcedure!.postalAddress!.isNotEmpty)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.location_on, color: Colors.orange),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: SelectableText(_airlineProcedure!.postalAddress!, style: const TextStyle(fontSize: 15)),
+                              ),
+                              Tooltip(
+                                message: 'Copy postal address',
+                                child: IconButton(
+                                  icon: const Icon(Icons.copy, size: 20),
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: _airlineProcedure!.postalAddress ?? ''));
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Address copied')));
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (_airlineProcedure!.instructions.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10.0, left: 2.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(Icons.info_outline, color: Colors.green),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _airlineProcedure!.instructions,
+                                    style: const TextStyle(color: Colors.green, fontStyle: FontStyle.italic),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              if (_airlineProcedure == null && _flightNumberController.text.length >= 2 && _airlineProcedureError == null)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Text('No procedure info found for this airline code.', style: TextStyle(color: Colors.orange)),
+                ),
               const SizedBox(height: 12),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -301,6 +669,22 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                   ),
                 ],
               ),
+              if (_suggestedCompensation != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.euro, color: Colors.deepOrange),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Suggested compensation (EC261): €${_suggestedCompensation!.toStringAsFixed(0)}',
+                          style: const TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               const SizedBox(height: 24),
               if (_errorMessage != null)
                 Padding(
