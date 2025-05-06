@@ -36,13 +36,13 @@ migrate_working_dir/
 # Firebase auto-generated config (do NOT commit secrets)
 firebase_options.dart
 
+# Sensitive assets and secrets
+assets/rapidapi_key.txt
+*.env
+
 # Symbolication related
 app.*.symbols
 
-# Local API keys
-rapidapi_key.txt
-
-# Obfuscation related
 app.*.map.json
 
 # Android Studio will place build artifacts here

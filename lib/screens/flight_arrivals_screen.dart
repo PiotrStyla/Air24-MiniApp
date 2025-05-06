@@ -22,7 +22,7 @@ class _FlightArrivalsScreenState extends State<FlightArrivalsScreen> {
 
   Future<List<Map<String, dynamic>>> _loadArrivals() async {
     final apiKey = await File('rapidapi_key.txt').readAsString();
-    _service = AeroDataBoxService();
+    _service = AeroDataBoxService(apiKey: apiKey.trim());
     return _service.getRecentArrivals(airportIcao: widget.airportIcao, minutesBeforeNow: 720);
   }
 

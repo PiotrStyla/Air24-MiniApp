@@ -48,12 +48,10 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
           ),
-          
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                
                 const Text('Profile settings will appear here.'),
                 const SizedBox(height: 24),
                 ElevatedButton(

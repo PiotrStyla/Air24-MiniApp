@@ -17,6 +17,7 @@ class ClaimSubmissionScreen extends StatefulWidget {
   final String? prefillDepartureAirport;
   final String? prefillArrivalAirport;
   final DateTime? prefillFlightDate;
+  final String? prefillReason;
 
   const ClaimSubmissionScreen({
     Key? key,
@@ -24,6 +25,7 @@ class ClaimSubmissionScreen extends StatefulWidget {
     this.prefillDepartureAirport,
     this.prefillArrivalAirport,
     this.prefillFlightDate,
+    this.prefillReason,
   }) : super(key: key);
 
   @override
@@ -104,6 +106,9 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
     _departureAirportController = TextEditingController(text: widget.prefillDepartureAirport ?? '');
     _arrivalAirportController = TextEditingController(text: widget.prefillArrivalAirport ?? '');
     _flightDate = widget.prefillFlightDate;
+    if (widget.prefillReason != null && widget.prefillReason!.isNotEmpty) {
+      _reasonController.text = widget.prefillReason!;
+    }
     _flightNumberController.addListener(_onFlightNumberChanged);
     _reasonController.addListener(_onClaimFieldsChanged);
     _departureAirportController.addListener(_onClaimFieldsChanged);

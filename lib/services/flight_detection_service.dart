@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/foundation.dart';
 import '../services/aerodatabox_service.dart';
@@ -71,33 +69,14 @@ class FlightDetectionService {
         if (onError != null) onError('Arrival airport not found for simulated location.');
         return;
       }
-      String? apiKey;
-      // 1. Try flutter_secure_storage
+      String apiKey = '';
       try {
-        final storage = FlutterSecureStorage();
-        apiKey = await storage.read(key: 'rapidapi_key');
+        apiKey = await rootBundle.loadString('assets/rapidapi_key.txt');
       } catch (e) {
-        // ignore, fallback below
+        if (onError != null) onError('rapidapi_key.txt not found or unreadable: $e');
+        return;
       }
-      // 2. Try dotenv
-      if (apiKey == null || apiKey.isEmpty) {
-        try {
-          if (!dotenv.isInitialized) await dotenv.load();
-          apiKey = dotenv.env['RAPIDAPI_KEY'];
-        } catch (e) {
-          // ignore, fallback below
-        }
-      }
-      // 3. Try asset fallback
-      if (apiKey == null || apiKey.isEmpty) {
-        try {
-          apiKey = await rootBundle.loadString('assets/rapidapi_key.txt');
-        } catch (e) {
-          if (onError != null) onError('RapidAPI key not found in secure storage, .env, or asset: $e');
-          return;
-        }
-      }
-      final aeroService = AeroDataBoxService();
+      final aeroService = AeroDataBoxService(apiKey: apiKey.trim());
       List<Map<String, dynamic>> arrivals = [];
       try {
         arrivals = await aeroService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
@@ -158,7 +137,7 @@ class FlightDetectionService {
         if (depAirport != null && arrAirport != null) {
           // Fetch arrivals at arrival airport
           final apiKey = await File('rapidapi_key.txt').readAsString();
-          final aeroService = AeroDataBoxService();
+          final aeroService = AeroDataBoxService(apiKey: apiKey.trim());
           final arrivals = await aeroService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
           // Find best match: closest departure airport and arrival time
           final nowUtc = DateTime.now().toUtc();
