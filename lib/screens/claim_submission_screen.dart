@@ -100,11 +100,46 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
 
 
   @override
+  void didUpdateWidget(covariant ClaimSubmissionScreen oldWidget) {
+    print('didUpdateWidget prefill: flightNumber=${widget.prefillFlightNumber}, depIcao=${widget.prefillDepartureAirport}, arrIcao=${widget.prefillArrivalAirport}, schedDate=${widget.prefillFlightDate}, reason=${widget.prefillReason}');
+    super.didUpdateWidget(oldWidget);
+    // Update controllers if the prefill values change
+    if (widget.prefillFlightNumber != null && widget.prefillFlightNumber != oldWidget.prefillFlightNumber) {
+      _flightNumberController.text = widget.prefillFlightNumber!;
+    }
+    if (widget.prefillDepartureAirport != null && widget.prefillDepartureAirport != oldWidget.prefillDepartureAirport) {
+      _departureAirportController.text = widget.prefillDepartureAirport!;
+    }
+    if (widget.prefillArrivalAirport != null && widget.prefillArrivalAirport != oldWidget.prefillArrivalAirport) {
+      _arrivalAirportController.text = widget.prefillArrivalAirport!;
+    }
+    if (widget.prefillFlightDate != null && widget.prefillFlightDate != oldWidget.prefillFlightDate) {
+      setState(() {
+        _flightDate = widget.prefillFlightDate;
+      });
+    }
+    if (widget.prefillReason != null && widget.prefillReason != oldWidget.prefillReason) {
+      _reasonController.text = widget.prefillReason!;
+    }
+  }
+
+  @override
   void initState() {
+    print('initState prefill: flightNumber=${widget.prefillFlightNumber}, depIcao=${widget.prefillDepartureAirport}, arrIcao=${widget.prefillArrivalAirport}, schedDate=${widget.prefillFlightDate}, reason=${widget.prefillReason}');
     super.initState();
-    _flightNumberController = TextEditingController(text: widget.prefillFlightNumber ?? '');
-    _departureAirportController = TextEditingController(text: widget.prefillDepartureAirport ?? '');
-    _arrivalAirportController = TextEditingController(text: widget.prefillArrivalAirport ?? '');
+    _flightNumberController = TextEditingController();
+    _departureAirportController = TextEditingController();
+    _arrivalAirportController = TextEditingController();
+    // Set prefill values after controllers are created
+    if (widget.prefillFlightNumber != null && widget.prefillFlightNumber!.isNotEmpty) {
+      _flightNumberController.text = widget.prefillFlightNumber!;
+    }
+    if (widget.prefillDepartureAirport != null && widget.prefillDepartureAirport!.isNotEmpty) {
+      _departureAirportController.text = widget.prefillDepartureAirport!;
+    }
+    if (widget.prefillArrivalAirport != null && widget.prefillArrivalAirport!.isNotEmpty) {
+      _arrivalAirportController.text = widget.prefillArrivalAirport!;
+    }
     _flightDate = widget.prefillFlightDate;
     if (widget.prefillReason != null && widget.prefillReason!.isNotEmpty) {
       _reasonController.text = widget.prefillReason!;

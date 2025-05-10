@@ -21,10 +21,13 @@ class _FlightArrivalsScreenState extends State<FlightArrivalsScreen> {
   }
 
   Future<List<Map<String, dynamic>>> _loadArrivals() async {
-    final apiKey = await File('rapidapi_key.txt').readAsString();
-    _service = AeroDataBoxService(apiKey: apiKey.trim());
+    _service = AeroDataBoxService();
     return _service.getRecentArrivals(airportIcao: widget.airportIcao, minutesBeforeNow: 720);
   }
+
+  // Filtering state
+  String _carrierFilter = '';
+  DateTime? _selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -36,26 +39,45 @@ class _FlightArrivalsScreenState extends State<FlightArrivalsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: \\${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
           final arrivals = snapshot.data ?? [];
-          if (arrivals.isEmpty) {
-            return const Center(child: Text('No arrivals found.'));
-          }
-          return ListView.separated(
-            itemCount: arrivals.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
-            itemBuilder: (context, idx) {
-              final a = arrivals[idx];
-              final movement = a['movement'] ?? {};
-              final airport = movement['airport'] ?? {};
-              final scheduled = movement['scheduledTime'] ?? {};
-              final revised = movement['revisedTime'] ?? {};
-              final airline = a['airline'] ?? {};
+
+          // Filtering logic
+          List<Map<String, dynamic>> filteredArrivals = arrivals.where((a) {
+            if (a['compensationEligible'] != true) return false;
+            final airline = (a['airline'] ?? '').toString().toLowerCase();
+            final carrierOk = _carrierFilter.isEmpty || airline.contains(_carrierFilter.toLowerCase());
+            if (!carrierOk) return false;
+            if (_selectedDate != null) {
+              final sched = a['scheduledArrivalUtc'] ?? '';
+              if (sched.length < 10) return false;
+              final dateString = sched.substring(0, 10);
+              final selectedString = _selectedDate!.toIso8601String().substring(0, 10);
+              if (dateString != selectedString) return false;
+            }
+            return true;
+          }).toList();
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
               final aircraft = a['aircraft'] ?? {};
               return ListTile(
                 leading: Icon(Icons.flight_land),
-                title: Text('${a['number'] ?? ''} - ${airline['name'] ?? ''}'),
+                title: Row(
+                  children: [
+                    Text('${a['number'] ?? ''} - ${airline['name'] ?? ''}'),
+                    if (a['compensationEligible'] == true) ...[
+                      SizedBox(width: 8),
+                      Icon(Icons.verified, color: Colors.green, size: 20),
+                      SizedBox(width: 4),
+                      Text('EU Compensation Eligible', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+                    ]
+                  ],
+                ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

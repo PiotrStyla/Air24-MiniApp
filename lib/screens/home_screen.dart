@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
-import 'delayed_arrivals_screen.dart';
+import 'compensation_eligible_flights_screen.dart';
 import '../services/airport_selection_helper.dart';
 
 import '../services/flight_detection_service.dart';
@@ -138,22 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          OutlinedButton(
-            child: const Text('Show Delayed Arrivals at This Airport'),
-            onPressed: () async {
-              Navigator.of(ctx).pop();
-              final airport = await getAirportDynamically(context);
-              if (airport == null) return;
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (ctx) => DelayedArrivalsScreen(
-                    airportIcao: airport.code,
-                    airportName: airport.name,
-                  ),
-                ),
-              );
-            },
-          ),
+          // Delayed Arrivals button removed as it wasn't working properly
         ],
       ),
     );
@@ -169,24 +154,37 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: ElevatedButton.icon(
-              icon: const Icon(Icons.warning, color: Colors.orange),
-              label: const Text('Show Delayed Arrivals at This Airport'),
-              onPressed: () async {
-                final airport = await getAirportDynamically(context);
-                if (airport == null) return;
-                Navigator.of(context).push(
+              icon: Icon(Icons.verified, color: Colors.green),
+              label: Text('View Compensation Eligible Flights'),
+              onPressed: () {
+                Navigator.push(
+                  context,
                   MaterialPageRoute(
-                    builder: (ctx) => DelayedArrivalsScreen(
-                      airportIcao: airport.code,
-                      airportName: airport.name,
-                    ),
+                    builder: (_) => CompensationEligibleFlightsScreen(airportIcao: 'EGLL'),
                   ),
                 );
               },
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.calculate, color: Colors.blue),
+              label: const Text('Check Flight Compensation Eligibility'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.blue,
+                elevation: 2,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/compensation-checker');
+              },
+            ),
+          ),
+          // Second delayed arrivals button removed as requested
+
           Expanded(
             child: StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
@@ -195,8 +193,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (user == null) {
                   return Center(child: Text('Not signed in'));
                 }
-                // ... your existing signed-in user content ...
-                return Center(child: Text('Welcome, ${user.email ?? "User"}'));
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (user.photoURL != null)
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundImage: NetworkImage(user.photoURL!),
+                        ),
+                      const SizedBox(height: 16),
+                      Text('Welcome, ${user.email ?? "User"}'),
+                    ],
+                  ),
+                );
               },
             ),
           ),

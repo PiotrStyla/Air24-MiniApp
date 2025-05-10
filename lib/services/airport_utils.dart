@@ -1,22 +1,31 @@
 import 'dart:math';
 
 class Airport {
-  final String code;
+  final String code; // IATA or ICAO for compatibility
+  final String iata;
+  final String icao;
   final String name;
   final double latitude;
   final double longitude;
 
-  Airport({required this.code, required this.name, required this.latitude, required this.longitude});
+  Airport({
+    required this.code,
+    required this.iata,
+    required this.icao,
+    required this.name,
+    required this.latitude,
+    required this.longitude,
+  });
 }
 
 class AirportUtils {
   static final List<Airport> airports = [
     // Sample: Add more as needed or import from a data source
-    Airport(code: 'JFK', name: 'John F. Kennedy International Airport', latitude: 40.6413, longitude: -73.7781),
-    Airport(code: 'LHR', name: 'London Heathrow Airport', latitude: 51.4700, longitude: -0.4543),
-    Airport(code: 'CDG', name: 'Charles de Gaulle Airport', latitude: 49.0097, longitude: 2.5479),
-    Airport(code: 'FRA', name: 'Frankfurt Airport', latitude: 50.0379, longitude: 8.5622),
-    Airport(code: 'WAW', name: 'Warsaw Chopin Airport', latitude: 52.1657, longitude: 20.9671),
+    Airport(code: 'JFK', iata: 'JFK', icao: 'KJFK', name: 'John F. Kennedy International Airport', latitude: 40.6413, longitude: -73.7781),
+    Airport(code: 'LHR', iata: 'LHR', icao: 'EGLL', name: 'London Heathrow Airport', latitude: 51.4700, longitude: -0.4543),
+    Airport(code: 'CDG', iata: 'CDG', icao: 'LFPG', name: 'Charles de Gaulle Airport', latitude: 49.0097, longitude: 2.5479),
+    Airport(code: 'FRA', iata: 'FRA', icao: 'EDDF', name: 'Frankfurt Airport', latitude: 50.0379, longitude: 8.5622),
+    Airport(code: 'WAW', iata: 'WAW', icao: 'EPWA', name: 'Warsaw Chopin Airport', latitude: 52.1657, longitude: 20.9671),
     // ... add more airports for better accuracy
   ];
 
