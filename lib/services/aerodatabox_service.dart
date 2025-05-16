@@ -150,6 +150,56 @@ class AeroDataBoxService {
   
   // No mock data methods - using real API data only
   
+  /// Get EU-wide compensation eligible flights from the last X hours
+  Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
+    int hours = 72, // Default to 72 hours for wider coverage
+  }) async {
+    final queryParams = {
+      'hours': hours.toString(),
+    };
+
+    final uri = Uri.parse('$apiBaseUrl/eu-compensation-eligible').replace(queryParameters: queryParams);
+    
+    try {
+      debugPrint('Fetching EU-wide compensation eligible flights: $uri');
+      // Using the existing API request function
+      debugPrint('This is a complex operation checking multiple airports - it may take longer');
+      final response = await _makeApiRequest(uri);
+      
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResp = json.decode(response.body);
+        debugPrint('Received ${jsonResp['count']} EU-wide compensation eligible flights');
+        debugPrint('Checked ${jsonResp['flightsChecked']} total flights across ${jsonResp['airports'].length} airports');
+        
+        // Check if we got any results from the API
+        if (jsonResp.containsKey('flights') && jsonResp['flights'].isNotEmpty) {
+          return List<Map<String, dynamic>>.from(jsonResp['flights']);
+        } 
+        
+        // Check if we had any processing errors
+        if (jsonResp.containsKey('errorCount') && jsonResp['errorCount'] > 0) {
+          // If most/all airports failed, something is wrong with the API
+          if (jsonResp['errorCount'] > (jsonResp['airports'].length / 2)) {
+            throw Exception('AeroDataBox API connection issues. Please try again later.');
+          }
+        }
+        
+        // No flights found but API worked correctly
+        debugPrint('No compensation eligible flights found in EU-wide response');
+        return [];
+      } else {
+        debugPrint('Error response: ${response.body}');
+        throw Exception('Backend API failed: ${response.statusCode} ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      debugPrint('Exception in getEUCompensationEligibleFlights: $e');
+      if (e.toString().contains('TimeoutException')) {
+        throw Exception('Connection timed out. The EU-wide search may take longer due to checking multiple airports.');
+      }
+      rethrow;
+    }
+  }
+  
   /// Check if a flight is eligible for EU261 compensation
   /// Returns compensation details including eligibility and potential amount
   Future<Map<String, dynamic>> checkCompensationEligibility({
@@ -163,7 +213,7 @@ class AeroDataBoxService {
     if (date != null && date.isNotEmpty) {
       queryParams['date'] = date;
     }
-    
+
     final uri = Uri.parse('$apiBaseUrl/compensation-check').replace(queryParameters: queryParams);
     
     try {
@@ -171,17 +221,7 @@ class AeroDataBoxService {
       
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResp = json.decode(response.body);
-        if (jsonResp.containsKey('results') && jsonResp['results'].isNotEmpty) {
-          final results = List<Map<String, dynamic>>.from(jsonResp['results']);
-          return results.first;
-        } else {
-          debugPrint('No compensation results found in response');
-          return {
-            'flightNumber': flightNumber,
-            'isEligibleForCompensation': false,
-            'message': 'No compensation data available for this flight',
-          };
-        }
+        return jsonResp;
       } else {
         debugPrint('Error response: ${response.body}');
         throw Exception('Backend API failed: ${response.statusCode} ${response.reasonPhrase}');

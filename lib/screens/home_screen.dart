@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
-import 'compensation_eligible_flights_screen.dart';
+import 'eu_eligible_flights_screen.dart';
 import '../services/airport_selection_helper.dart';
 
 import '../services/flight_detection_service.dart';
@@ -153,21 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(title: const Text('Home')),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton.icon(
-              icon: Icon(Icons.verified, color: Colors.green),
-              label: Text('View Compensation Eligible Flights'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CompensationEligibleFlightsScreen(airportIcao: 'EGLL'),
-                  ),
-                );
-              },
-            ),
-          ),
+          // View Compensation Eligible Flights button removed
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton.icon(
@@ -183,7 +169,26 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-          // Second delayed arrivals button removed as requested
+          // Adding EU-wide compensation eligible flights button
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.public, color: Colors.green),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.green[800],
+                side: BorderSide(color: Colors.green[800]!),
+              ),
+              label: const Text('EU-Wide Compensation Eligible Flights'),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => const EUEligibleFlightsScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
 
           Expanded(
             child: StreamBuilder<User?>(
