@@ -54,8 +54,32 @@ def main():
         logger.error(f"Error initializing flight data storage: {e}")
         return 1
     
-    # Major EU airports to check
-    eu_airports = ['FRA', 'CDG', 'AMS', 'MAD', 'FCO', 'LHR', 'MUC', 'BCN', 'LIS', 'VIE', 'WAW']
+    # Use our comprehensive EU airports database
+    try:
+        # Try to import our EU airports module
+        try:
+            from eu_airports import get_major_eu_airports, is_airport_in_eu
+            logger.info("Successfully imported EU airports module")
+            # Get major EU airports from our database
+            eu_airports = get_major_eu_airports(limit=30)  # Limit to 30 major airports to respect API limits
+            logger.info(f"Using {len(eu_airports)} major EU airports from our comprehensive database")
+        except ImportError:
+            # Fallback to a slightly expanded list if module not available
+            logger.warning("EU airports module not found, using expanded default list")
+            eu_airports = [
+                # Major hubs
+                'FRA', 'CDG', 'AMS', 'MAD', 'FCO', 'LHR', 'MUC', 'BCN', 'LIS', 'VIE', 'WAW',
+                # Additional major EU airports
+                'BRU', 'CPH', 'DUB', 'HEL', 'ATH', 'PRG', 'BUD', 'ARN', 'MXP', 'ORY',
+                # Secondary airports
+                'BGY', 'CIA', 'BVA', 'CRL', 'TXL'
+            ]
+            logger.info(f"Using expanded default list of {len(eu_airports)} EU airports")
+    except Exception as e:
+        logger.error(f"Error initializing EU airports: {e}")
+        # Fallback to original list
+        eu_airports = ['FRA', 'CDG', 'AMS', 'MAD', 'FCO', 'LHR', 'MUC', 'BCN', 'LIS', 'VIE', 'WAW']
+        logger.info(f"Using fallback list of {len(eu_airports)} EU airports")
     
     flights_added = 0
     errors = 0
