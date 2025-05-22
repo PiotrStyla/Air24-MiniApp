@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'faq_screen.dart';
+import 'profile_edit_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -56,7 +57,12 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/edit-profile');
+                    // Direct navigation to ProfileEditScreen instead of using named route
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ProfileEditScreen(),
+                      ),
+                    );
                   },
                   child: const Text('Edit Profile'),
                 ),

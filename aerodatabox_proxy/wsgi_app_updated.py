@@ -43,9 +43,15 @@ def process_and_return_flights(raw_flights, start_response):
         if not flight.get('flight') or not flight.get('departure') or not flight.get('arrival'):
             continue
             
-        # Calculate if this flight is eligible for compensation (3+ hour delay)
+        # Calculate if this flight is eligible for compensation (3+ hour delay or cancellation)
         delay_minutes = flight.get('delay', 0)
-        is_eligible = delay_minutes >= 180 or flight.get('eligible_for_compensation', False)
+        
+        # Check flight status for cancellations
+        status = flight.get('status', '').lower()
+        is_cancelled = 'cancel' in status  # Check if status contains 'cancelled' or similar
+        
+        # Flight is eligible if it has 3+ hour delay, is cancelled, or was already marked eligible
+        is_eligible = delay_minutes >= 180 or is_cancelled or flight.get('eligible_for_compensation', False)
         
         # Calculate compensation amount based on distance
         compensation_amount = 0
@@ -270,8 +276,12 @@ def application(environ, start_response):
                         
                     # Check delay to see if eligible
                     delay = flight.get('delay', 0)
-                    # Mark as eligible if 3+ hour delay or already marked
-                    if delay >= 180 or flight.get('eligible_for_compensation', False):
+                    # Check flight status for cancellations
+                    status = flight.get('status', '').lower()
+                    is_cancelled = 'cancel' in status  # Check if status contains 'cancelled' or similar
+                    
+                    # Mark as eligible if 3+ hour delay, cancellation, or already marked
+                    if delay >= 180 or is_cancelled or flight.get('eligible_for_compensation', False):
                         eligible_flights.append(flight)
                 
                 logger.info(f"Found {len(eligible_flights)} eligible flights in database")
