@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../core/services/service_initializer.dart';
+import '../viewmodels/auth_viewmodel.dart';
+import 'compensation_eligible_flights_screen.dart';
 import 'eu_eligible_flights_screen.dart';
 import '../services/airport_selection_helper.dart';
-
 import '../services/flight_detection_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -153,7 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(title: const Text('Home')),
       body: Column(
         children: [
-          // View Compensation Eligible Flights button removed
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton.icon(
@@ -191,26 +193,117 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           Expanded(
-            child: StreamBuilder<User?>(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (context, snapshot) {
-                final user = snapshot.data;
-                if (user == null) {
-                  return Center(child: Text('Not signed in'));
-                }
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (user.photoURL != null)
-                        CircleAvatar(
-                          radius: 40,
-                          backgroundImage: NetworkImage(user.photoURL!),
+            child: Consumer<AuthService>(
+              builder: (context, authService, _) {
+                return StreamBuilder<User?>(
+                  stream: authService.userChanges,
+                  builder: (context, snapshot) {
+                    final user = snapshot.data;
+                    if (user == null) {
+                      // User is not signed in
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.account_circle_outlined,
+                              size: 80,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Sign in to track your claims',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Create an account to save your flight data\nand manage your compensation claims',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            const SizedBox(height: 24),
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.login),
+                              label: const Text('Sign In / Sign Up'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 12,
+                                ),
+                              ),
+                              onPressed: () {
+                                // Navigate to the improved auth screen
+                                Navigator.of(context).pushNamed('/auth');
+                              },
+                            ),
+                          ],
                         ),
-                      const SizedBox(height: 16),
-                      Text('Welcome, ${user.email ?? "User"}'),
-                    ],
-                  ),
+                      );
+                    }
+                    
+                    // User is signed in
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (user.photoURL != null)
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundImage: NetworkImage(user.photoURL!),
+                            )
+                          else
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              child: Text(
+                                (user.displayName?.isNotEmpty == true)
+                                    ? user.displayName![0].toUpperCase()
+                                    : (user.email?.isNotEmpty == true)
+                                        ? user.email![0].toUpperCase()
+                                        : 'U',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Welcome, ${user.displayName ?? user.email ?? "User"}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          OutlinedButton.icon(
+                            icon: const Icon(Icons.logout),
+                            label: const Text('Sign Out'),
+                            onPressed: () async {
+                              try {
+                                await authService.signOut();
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Error signing out: $e'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
             ),

@@ -18,7 +18,8 @@ dependencies:
   sensors_plus: ^4.0.2
   http: ^1.2.1
   pdf: ^3.10.8
-  printing: ^5.12.0
+  # Temporarily disabled due to Android resource linking issues
+  # printing: ^5.11.0
   image_picker: ^1.0.7
   flutter_local_notifications: ^19.1.0
   url_launcher: ^6.2.5
@@ -27,6 +28,8 @@ dependencies:
   uuid: ^4.2.2
   shared_preferences: ^2.2.2
   google_sign_in: ^6.1.5
+  # Added for dependency injection - MVVM architecture
+  get_it: ^7.6.7
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -37,3 +40,6 @@ flutter:
     - assets/lib/data/airline_claim_procedures.json
     - assets/lib/data/iata_codes.json
     - assets/rapidapi_key.txt
+    - assets/data/eu_airports.json
+    - assets/data/flight_compensation_data.json
+    - assets/images/
