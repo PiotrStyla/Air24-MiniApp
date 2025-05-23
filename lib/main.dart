@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'core/services/service_initializer.dart';
 import 'services/auth_service.dart';
+import 'services/document_storage_service.dart';
+import 'services/firestore_service.dart';
 import 'screens/main_navigation.dart';
 import 'screens/profile_edit_screen.dart';
 import 'screens/auth_screen.dart'; // Using new auth screen
@@ -35,6 +37,12 @@ class F35FlightCompensationApp extends StatelessWidget {
         // Provide global services
         Provider<AuthService>(
           create: (_) => ServiceInitializer.get<AuthService>(),
+        ),
+        Provider<DocumentStorageService>(
+          create: (_) => ServiceInitializer.get<DocumentStorageService>(),
+        ),
+        Provider<FirestoreService>(
+          create: (_) => ServiceInitializer.get<FirestoreService>(),
         ),
       ],
       child: MaterialApp(
