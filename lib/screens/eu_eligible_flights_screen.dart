@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/aerodatabox_service.dart';
-import 'claim_submission_screen.dart';
+import 'compensation_claim_form_screen.dart';
 
 class EUEligibleFlightsScreen extends StatefulWidget {
   const EUEligibleFlightsScreen({super.key});
@@ -22,8 +22,21 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   }
 
   Future<List<Map<String, dynamic>>> _loadFlights() async {
-    final service = AeroDataBoxService();
-    return service.getEUCompensationEligibleFlights(hours: _hoursFilter);
+    try {
+      debugPrint('Attempting to load EU compensation eligible flights...');
+      final service = AeroDataBoxService();
+      return await service.getEUCompensationEligibleFlights(hours: _hoursFilter);
+    } catch (e) {
+      debugPrint('Error loading flights: $e');
+      // Rethrow to be handled by the FutureBuilder error handler
+      rethrow;
+    }
+  }
+  
+  Future<void> _retryConnection() async {
+    setState(() {
+      _flightsFuture = _loadFlights();
+    });
   }
 
   int _calculateDelayMinutes(Map<String, dynamic> scheduled, Map<String, dynamic> actual) {
@@ -50,6 +63,92 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
       final remainingMinutes = minutes % 60;
       return '$hours h ${remainingMinutes > 0 ? '$remainingMinutes min' : ''}'.trim();
     }
+  }
+  
+  void _openCompensationForm(BuildContext context, Map<String, dynamic> flight) {
+    // Extract data for the form in a structured way
+    // Following AviationStack format exclusively
+    Map<String, dynamic> formattedFlight = {};
+    
+    // Log all available keys for debugging
+    debugPrint('Available flight data keys: ${flight.keys.join(', ')}');
+    
+    // Extract airline from AviationStack format
+    if (flight['airline'] is Map) {
+      formattedFlight['airline'] = flight['airline']['name'] ?? 'Unknown Airline';
+    } else if (flight['airline'] is String) {
+      formattedFlight['airline'] = flight['airline'];
+    }
+    
+    // Extract flight number - AviationStack uses 'flight' object with 'iata' property
+    if (flight['flight'] is Map) {
+      formattedFlight['flight_number'] = flight['flight']['iata'] ?? '';
+    } else {
+      formattedFlight['flight_number'] = flight['number'] ?? flight['flightNumber'] ?? '';
+    }
+    
+    // Extract departure info from AviationStack format
+    if (flight['departure'] is Map) {
+      // Airport info
+      formattedFlight['departure_airport'] = '${flight['departure']['airport'] ?? 'Unknown'} ' +
+          '(${flight['departure']['iata'] ?? flight['departure']['icao'] ?? ''})';
+      
+      // Date/time info - AviationStack uses 'scheduled' property
+      formattedFlight['departure_date'] = flight['departure']['scheduled'] ?? '';
+    } else if (flight['departureAirport'] != null || flight['departure_airport'] != null) {
+      // Fallback for already formatted data
+      formattedFlight['departure_airport'] = flight['departureAirport'] ?? flight['departure_airport'] ?? 'Unknown Airport';
+      formattedFlight['departure_date'] = flight['departureTime'] ?? flight['departure_date'] ?? 'Unknown Date';
+    }
+    
+    // Extract arrival info from AviationStack format
+    if (flight['arrival'] is Map) {
+      // Airport info
+      formattedFlight['arrival_airport'] = '${flight['arrival']['airport'] ?? 'Unknown'} ' +
+          '(${flight['arrival']['iata'] ?? flight['arrival']['icao'] ?? ''})';
+    } else if (flight['arrivalAirport'] != null || flight['arrival_airport'] != null) {
+      // Fallback for already formatted data
+      formattedFlight['arrival_airport'] = flight['arrivalAirport'] ?? flight['arrival_airport'] ?? 'Unknown Airport';
+    }
+    
+    // Extract delay information - AviationStack has 'arrival.delay' property
+    if (flight['arrival'] is Map && flight['arrival']['delay'] != null) {
+      formattedFlight['delay_minutes'] = flight['arrival']['delay'];
+    } else if (flight['delay_minutes'] != null) {
+      formattedFlight['delay_minutes'] = flight['delay_minutes'];
+    } else if (flight['delayMinutes'] != null) {
+      formattedFlight['delay_minutes'] = flight['delayMinutes'];
+    }
+    
+    // Add status information - AviationStack uses 'flight_status'
+    if (flight['flight_status'] != null) {
+      formattedFlight['status'] = flight['flight_status'];
+    } else if (flight['status'] != null) {
+      formattedFlight['status'] = flight['status'];
+    }
+    
+    // Extract compensation amount
+    int amount = 0;
+    if (flight['potentialCompensationAmount'] != null) {
+      amount = flight['potentialCompensationAmount'] is int 
+          ? flight['potentialCompensationAmount'] 
+          : int.tryParse(flight['potentialCompensationAmount'].toString()) ?? 0;
+    } else {
+      amount = _calculateCompensationAmount(flight);
+    }
+    
+    if (amount > 0) {
+      formattedFlight['compensation_amount_eur'] = amount;
+    }
+    
+    debugPrint('Formatted flight data for form (AviationStack format): $formattedFlight');
+    
+    // Navigate to the compensation form with structured data
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CompensationClaimFormScreen(flightData: formattedFlight),
+      ),
+    );
   }
 
   String _getCompensationAmount(Map<String, dynamic> flight) {
@@ -449,9 +548,9 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  'Potential Compensation: €${flight['potentialCompensationAmount'] ?? '0'}',
-                                  style: TextStyle(
-                                    color: Colors.green[700],
+                                  'Potential Compensation: ${_getCompensationAmount(flight)}',
+                                  style: const TextStyle(
+                                    color: Colors.green,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -468,69 +567,17 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 10),
                           ElevatedButton.icon(
-                            icon: const Icon(Icons.edit_document),
-                            label: const Text('File Claim'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
                               foregroundColor: Colors.white,
-                              minimumSize: const Size(double.infinity, 36),
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
                             ),
-                            onPressed: () {
-                              // Extract departure and arrival airport info
-                              String depAirportCode = '';
-                              String arrAirportCode = '';
-                              DateTime? flightDate;
-                              
-                              // Get departure airport
-                              if (flight['departure'] != null && flight['departure'] is Map) {
-                                final depAirport = flight['departure']['airport'];
-                                if (depAirport != null && depAirport is Map) {
-                                  depAirportCode = depAirport['icao'] ?? depAirport['iata'] ?? '';
-                                }
-                                
-                                // Try to get flight date from scheduled time
-                                if (flight['departure']['scheduledTime'] != null) {
-                                  try {
-                                    flightDate = DateTime.parse(flight['departure']['scheduledTime']);
-                                  } catch (e) {
-                                    debugPrint('Error parsing flight date: $e');
-                                  }
-                                }
-                              }
-                              
-                              // Get arrival airport
-                              if (flight['arrival'] != null && flight['arrival'] is Map) {
-                                final arrAirport = flight['arrival']['airport'];
-                                if (arrAirport != null && arrAirport is Map) {
-                                  arrAirportCode = arrAirport['icao'] ?? arrAirport['iata'] ?? '';
-                                }
-                              }
-                              
-                              // Get reason from status or generate one
-                              String reason = '';
-                              if (flight['status'] != null && flight['status'].toString().contains('Delayed')) {
-                                reason = 'Flight delayed ${flight['delayMinutes'] ?? ''} minutes';
-                              } else if (flight['status'] != null && flight['status'].toString().contains('Cancel')) {
-                                reason = 'Flight cancelled';
-                              } else {
-                                reason = flight['eligibilityReason'] ?? 'Flight delay or cancellation';
-                              }
-                              
-                              // Navigate to claim form with prefilled data
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => ClaimSubmissionScreen(
-                                    prefillFlightNumber: flightNumber,
-                                    prefillDepartureAirport: depAirportCode,
-                                    prefillArrivalAirport: arrAirportCode,
-                                    prefillFlightDate: flightDate,
-                                    prefillReason: reason,
-                                  ),
-                                ),
-                              );
-                            },
+                            onPressed: () => _openCompensationForm(context, flight),
+                            icon: const Icon(Icons.description, size: 16),
+                            label: const Text('Pre-fill Compensation Form'),
                           ),
                         ],
                       ),
