@@ -12,7 +12,8 @@ class EUEligibleFlightsScreen extends StatefulWidget {
 class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   late Future<List<Map<String, dynamic>>> _flightsFuture;
   String _carrierFilter = '';
-  int _hoursFilter = 72; // Changed from 24 to 72 hours for a wider time window
+  // Fixed at 72 hours - no time filter selection needed
+  static const int _hoursFilter = 72;
   DateTime? _selectedDate;
 
   @override
@@ -232,31 +233,20 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Select Hours'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [12, 24, 48, 72].map((hours) => 
-                            ListTile(
-                              title: Text('Last $hours hours'),
-                              onTap: () {
-                                setState(() {
-                                  _hoursFilter = hours;
-                                  _flightsFuture = _loadFlights();
-                                });
-                                Navigator.pop(context);
-                              },
-                            )
-                          ).toList(),
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text('Last $_hoursFilter hours'),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: const [
+                      Icon(Icons.schedule, size: 16, color: Colors.blue),
+                      SizedBox(width: 6),
+                      Text('Last 72 hours', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
                 ),
               ],
             ),

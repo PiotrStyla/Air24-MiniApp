@@ -411,38 +411,9 @@ class AeroDataBoxService {
   Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
     int hours = 72, // Default to 72 hours for wider coverage
   }) async {
-    // TEMPORARY FOR TESTING: Use local test data to test claim submission
-    if (kDebugMode) {
-      debugPrint('DEBUG MODE: Using local test flight data instead of API');
-      try {
-        // Load from assets bundle
-        final jsonString = await rootBundle.loadString('assets/data/flight_compensation_data.json');
-        final List<dynamic> jsonData = json.decode(jsonString);
-        debugPrint('Found ${jsonData.length} flights in local test data');
-        
-        // Transform to the format expected by the UI
-        final processedFlights = jsonData.map((flight) => {
-            'flightNumber': flight['flight_number'],
-            'airline': flight['airline'] ?? 'Unknown',
-            'departureAirport': flight['departure_airport'] ?? 'Unknown',
-            'arrivalAirport': flight['arrival_airport'] ?? 'Unknown',
-            'departureTime': flight['departure_date'],
-            'arrivalTime': flight['arrival_date'],
-            'status': flight['status'] ?? 'Delayed',
-            'delayMinutes': flight['delay_minutes'] ?? 0,
-            'isEligibleForCompensation': true,
-            'potentialCompensationAmount': flight['compensation_amount_eur'] ?? 0,
-            'distance': flight['distance_km'] ?? 2000,
-            'currency': 'EUR',
-            'isDelayedOver3Hours': true,
-          }).toList();
-        
-        return List<Map<String, dynamic>>.from(processedFlights);
-      } catch (e) {
-        debugPrint('Error loading local test data: $e');
-        // Continue to normal API logic if local data fails
-      }
-    }
+    // Always use real data from the API - no mocked data for dev or prod environments
+    debugPrint('Attempting to load EU compensation eligible flights...');
+    debugPrint('Fetching eligible flights with time filter: $hours hours');
     
     // Use the dedicated endpoint for EU compensation eligible flights
     final uri = Uri.parse('$apiBaseUrl/eu-compensation-eligible?hours=$hours');
