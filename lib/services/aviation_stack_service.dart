@@ -31,7 +31,20 @@ class AviationStackService {
     debugPrint('Cache-busting parameter: ${uri.queryParameters['_nocache']}');
     
     try {
-      final response = await http.get(uri).timeout(
+      // Add explicit no-cache headers
+      final headers = {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'X-Requested-With': 'XMLHttpRequest',
+      };
+      
+      debugPrint('Using cache-control headers: ${headers.toString()}');
+      
+      final response = await http.get(
+        uri,
+        headers: headers,
+      ).timeout(
         Duration(seconds: timeoutSeconds),
         onTimeout: () {
           throw TimeoutException('API request timed out after $timeoutSeconds seconds');
@@ -97,6 +110,9 @@ class AviationStackService {
     // Add a timestamp parameter to prevent caching
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     
+    // Force debug print to show this is a fresh request
+    debugPrint('=== FRESH REQUEST @ ${DateTime.now().toIso8601String()} ===');
+    
     // Use the dedicated endpoint for EU compensation eligible flights
     final uri = Uri.parse('$apiBaseUrl/eu-compensation-eligible?hours=$hours&_nocache=$timestamp');
     
@@ -105,11 +121,19 @@ class AviationStackService {
       final response = await _makeRequest(uri);
       
       if (response.statusCode == 200) {
+        // Log full response body for debugging
+        debugPrint('FULL RESPONSE: ${response.body}');
+        
         final Map<String, dynamic> jsonResp = json.decode(response.body);
         
         if (jsonResp.containsKey('flights')) {
           final flights = List<Map<String, dynamic>>.from(jsonResp['flights']);
           debugPrint('Received ${flights.length} flights from AviationStack');
+          
+          // Log flight data to help diagnose freshness issues
+          for (final flight in flights) {
+            debugPrint('FLIGHT DATA: ${flight['flight_number']} - ${flight['airline']} - ${flight['departure_date']}');
+          }
           
           // Transform to standardized format expected by the UI
           return flights.map((flight) => {
