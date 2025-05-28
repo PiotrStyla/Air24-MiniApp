@@ -28,6 +28,7 @@ class AviationStackService {
   Future<http.Response> _makeRequest(Uri uri) async {
     debugPrint('Making API request to: $uri');
     debugPrint('Using extended timeout (${timeoutSeconds}s) for AviationStack endpoint');
+    debugPrint('Cache-busting parameter: ${uri.queryParameters['_nocache']}');
     
     try {
       final response = await http.get(uri).timeout(
@@ -56,10 +57,14 @@ class AviationStackService {
     required String airportIcao,
     int minutesBeforeNow = 360,
   }) async {
+    // Add timestamp parameter to prevent caching
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    
     final uri = Uri.parse('$apiBaseUrl/arrivals')
         .replace(queryParameters: {
           'airport': airportIcao,
           'minutes': minutesBeforeNow.toString(),
+          '_nocache': timestamp.toString(),
         });
     
     try {
@@ -89,8 +94,11 @@ class AviationStackService {
     debugPrint('Attempting to load EU compensation eligible flights...');
     debugPrint('Fetching eligible flights with time filter: $hours hours');
     
+    // Add a timestamp parameter to prevent caching
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    
     // Use the dedicated endpoint for EU compensation eligible flights
-    final uri = Uri.parse('$apiBaseUrl/eu-compensation-eligible?hours=$hours');
+    final uri = Uri.parse('$apiBaseUrl/eu-compensation-eligible?hours=$hours&_nocache=$timestamp');
     
     try {
       debugPrint('Fetching eligible flights from AviationStack: $uri');
@@ -137,6 +145,8 @@ class AviationStackService {
     // Build query parameters
     final queryParams = <String, String>{
       'flight_number': flightNumber,
+      // Add timestamp parameter to prevent caching
+      '_nocache': DateTime.now().millisecondsSinceEpoch.toString(),
     };
     
     if (date != null) {
