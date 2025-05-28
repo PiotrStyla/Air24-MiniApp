@@ -34,6 +34,35 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
     }
   }
   
+  // Special debug version with extra logging
+  Future<List<Map<String, dynamic>>> _loadFlightsWithDebug() async {
+    try {
+      debugPrint('========== FORCED DATA REFRESH ==========');
+      debugPrint('Current time: ${DateTime.now().toIso8601String()}');
+      
+      // Create service with direct HTTP client
+      final service = AviationStackService();
+      final flights = await service.getEUCompensationEligibleFlights(hours: _hoursFilter);
+      
+      // Check if we got results
+      if (flights.isEmpty) {
+        debugPrint('WARNING: Received empty flight list from API');
+      } else {
+        debugPrint('Received ${flights.length} flights:');
+        for (var i = 0; i < flights.length; i++) {
+          final flight = flights[i];
+          debugPrint('Flight $i: ${flight['flightNumber']} - ${flight['airline']} - ${flight['departureTime']}');
+        }
+      }
+      
+      debugPrint('======================================');
+      return flights;
+    } catch (e) {
+      debugPrint('ERROR in debug load flights: $e');
+      rethrow;
+    }
+  }
+  
   Future<void> _retryConnection() async {
     setState(() {
       _flightsFuture = _loadFlights();
@@ -204,9 +233,15 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: 'Force refresh data',
             onPressed: () {
+              // Show a snackbar to indicate refresh is happening
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Forcing fresh data load...')),
+              );
+              // Force reload with debug flag
               setState(() {
-                _flightsFuture = _loadFlights();
+                _flightsFuture = _loadFlightsWithDebug();
               });
             },
           ),
