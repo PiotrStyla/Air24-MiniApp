@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import '../../services/auth_service.dart';
 import '../../services/document_storage_service.dart';
 import '../../services/firestore_service.dart';
+import '../../services/aviation_stack_service.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 import '../../viewmodels/document_viewmodel.dart';
 
@@ -16,6 +17,7 @@ class ServiceInitializer {
     _locator.registerLazySingleton<AuthService>(() => AuthService());
     _locator.registerLazySingleton<DocumentStorageService>(() => DocumentStorageService());
     _locator.registerLazySingleton<FirestoreService>(() => FirestoreService());
+    _locator.registerLazySingleton<AviationStackService>(() => AviationStackService());
     
     // Register viewmodels as factories
     _locator.registerFactory<AuthViewModel>(() => AuthViewModel(_locator<AuthService>()));

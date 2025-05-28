@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/aerodatabox_service.dart';
+import '../services/aviation_stack_service.dart';
 import 'dart:io';
 
 class FlightArrivalsScreen extends StatefulWidget {
@@ -12,7 +12,7 @@ class FlightArrivalsScreen extends StatefulWidget {
 
 class _FlightArrivalsScreenState extends State<FlightArrivalsScreen> {
   late Future<List<Map<String, dynamic>>> _arrivalsFuture;
-  late AeroDataBoxService _service;
+  late AviationStackService _service;
 
   @override
   void initState() {
@@ -21,7 +21,7 @@ class _FlightArrivalsScreenState extends State<FlightArrivalsScreen> {
   }
 
   Future<List<Map<String, dynamic>>> _loadArrivals() async {
-    _service = AeroDataBoxService();
+    _service = AviationStackService();
     return _service.getRecentArrivals(airportIcao: widget.airportIcao, minutesBeforeNow: 720);
   }
 

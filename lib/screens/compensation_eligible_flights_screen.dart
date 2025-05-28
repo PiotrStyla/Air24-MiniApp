@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/aerodatabox_service.dart';
+import '../services/aviation_stack_service.dart';
 import 'claim_submission_screen.dart';
 import 'dart:io';
 
@@ -13,7 +13,7 @@ class CompensationEligibleFlightsScreen extends StatefulWidget {
 
 class _CompensationEligibleFlightsScreenState extends State<CompensationEligibleFlightsScreen> {
   late Future<List<Map<String, dynamic>>> _arrivalsFuture;
-  late AeroDataBoxService _service;
+  late AviationStackService _service;
 
   String _carrierFilter = '';
   DateTime? _selectedDate;
@@ -26,10 +26,9 @@ class _CompensationEligibleFlightsScreenState extends State<CompensationEligible
 
   Future<List<Map<String, dynamic>>> _loadArrivals() async {
     try {
-      // Initialize with default URL, but you can customize it for different environments
-      // For Android emulator: AeroDataBoxService(apiBaseUrl: 'http://10.0.2.2:8000')
-      // For iOS simulator: AeroDataBoxService(apiBaseUrl: 'http://localhost:8000')
-      _service = AeroDataBoxService();
+      // Initialize AviationStackService to get flight data
+      // Using only AviationStack as the source for all flight data
+      _service = AviationStackService();
       return await _service.getRecentArrivals(airportIcao: widget.airportIcao, minutesBeforeNow: 720);
     } catch (e) {
       print('Error loading arrivals: $e');

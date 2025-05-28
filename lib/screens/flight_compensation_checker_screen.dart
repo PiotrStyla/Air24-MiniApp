@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/aerodatabox_service.dart';
+import '../services/aviation_stack_service.dart';
 
 class FlightCompensationCheckerScreen extends StatefulWidget {
   const FlightCompensationCheckerScreen({Key? key}) : super(key: key);
@@ -13,7 +13,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
   final _flightNumberController = TextEditingController();
   final _dateController = TextEditingController();
   // Initialize service with real API data only
-  final _aerodataboxService = AeroDataBoxService();
+  final _aviationStackService = AviationStackService();
   
   bool _isLoading = false;
   Map<String, dynamic>? _compensationResult;
@@ -38,7 +38,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
     });
 
     try {
-      final result = await _aerodataboxService.checkCompensationEligibility(
+      final result = await _aviationStackService.checkCompensationEligibility(
         flightNumber: _flightNumberController.text.trim(),
         date: _dateController.text.isEmpty ? null : _dateController.text.trim(),
       );

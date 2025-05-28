@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/foundation.dart';
-import '../services/aerodatabox_service.dart';
+import '../services/aviation_stack_service.dart';
 
 class FlightDetectionService {
   static const double jumpThresholdKm = 150.0; // Minimum distance for a 'jump'
@@ -76,12 +76,12 @@ class FlightDetectionService {
         if (onError != null) onError('rapidapi_key.txt not found or unreadable: $e');
         return;
       }
-      final aeroService = AeroDataBoxService();
+      final aviationService = AviationStackService();
       List<Map<String, dynamic>> arrivals = [];
       try {
-        arrivals = await aeroService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
+        arrivals = await aviationService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
       } catch (e) {
-        if (onError != null) onError('AeroDataBox API error: $e');
+        if (onError != null) onError('AviationStack API error: $e');
         return;
       }
       if (onArrivalsFetched != null) onArrivalsFetched(arrivals.length);
@@ -137,8 +137,8 @@ class FlightDetectionService {
         if (depAirport != null && arrAirport != null) {
           // Fetch arrivals at arrival airport
           final apiKey = await File('rapidapi_key.txt').readAsString();
-          final aeroService = AeroDataBoxService();
-          final arrivals = await aeroService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
+          final aviationService = AviationStackService();
+          final arrivals = await aviationService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
           // Find best match: closest departure airport and arrival time
           final nowUtc = DateTime.now().toUtc();
           Map<String, dynamic>? bestMatch;

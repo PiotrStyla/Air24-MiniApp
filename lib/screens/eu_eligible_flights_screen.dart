@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/aerodatabox_service.dart';
+import '../services/aviation_stack_service.dart';
 import 'compensation_claim_form_screen.dart';
 
 class EUEligibleFlightsScreen extends StatefulWidget {
@@ -25,7 +25,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   Future<List<Map<String, dynamic>>> _loadFlights() async {
     try {
       debugPrint('Attempting to load EU compensation eligible flights...');
-      final service = AeroDataBoxService();
+      final service = AviationStackService();
       return await service.getEUCompensationEligibleFlights(hours: _hoursFilter);
     } catch (e) {
       debugPrint('Error loading flights: $e');
@@ -276,7 +276,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 24.0),
                           child: Text(
                             'We are having trouble connecting to the flight data service. '
-                            'This may be a temporary issue with the AeroDataBox API.',
+                            'This may be a temporary issue with the AviationStack API.',
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.grey[700],
