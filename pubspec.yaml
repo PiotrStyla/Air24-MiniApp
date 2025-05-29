@@ -30,6 +30,12 @@ dependencies:
   google_sign_in: ^6.1.5
   # Added for dependency injection - MVVM architecture
   get_it: ^7.6.7
+  # Document scanning and OCR
+  google_mlkit_text_recognition: ^0.11.0
+  path_provider: ^2.1.2
+  image: ^4.0.17
+  camera: ^0.10.5+9
+  crop_image: ^1.0.11
 dev_dependencies:
   flutter_test:
     sdk: flutter

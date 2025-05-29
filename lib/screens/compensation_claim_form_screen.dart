@@ -4,12 +4,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import '../services/firestore_service.dart';
 import '../services/document_storage_service.dart';
+import '../services/document_ocr_service.dart';
 import '../models/user_profile.dart';
 import '../models/compensation_claim_submission.dart';
 import '../models/flight_document.dart';
+import '../models/document_ocr_result.dart';
+import '../viewmodels/document_scanner_viewmodel.dart';
+import '../core/services/service_initializer.dart';
 import 'document_upload_screen.dart';
 import 'document_management_screen.dart';
 import 'document_detail_screen.dart';
+import 'document_scanner_screen.dart';
 
 class CompensationClaimFormScreen extends StatefulWidget {
   final Map<String, dynamic> flightData;
@@ -35,6 +40,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
   late TextEditingController _additionalInfoController;
 
   bool _isLoading = false;
+  bool _isFormValid = false;
   String _errorMessage = '';
   
   // Document management state
@@ -48,11 +54,15 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
   // Track completed checklist items
   final Map<String, bool> _checklistItems = {
     'documents': false,
+    'scanned_documents': false,
   };
 
   @override
   void initState() {
     super.initState();
+    
+    // Initialize form validation
+    _isFormValid = false;
     
     // Debug print flight data
     print('Flight Data: ${widget.flightData}');
@@ -157,6 +167,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
           _attachedDocuments = documents;
           _loadingDocuments = false;
           _checklistItems['documents'] = documents.isNotEmpty;
+          _validateForm();
         });
       }
     } catch (e) {
@@ -165,6 +176,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
           _documentError = 'Error loading documents: $e';
           _loadingDocuments = false;
           _checklistItems['documents'] = false;
+          _validateForm();
         });
       }
     }
@@ -221,6 +233,210 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
         ),
       ),
     );
+  }
+  
+  /// Show dialog with document upload/scan options
+  void _showDocumentOptionsDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Add Document'),
+        contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Scan document option
+            ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Colors.blue.shade50,
+                child: const Icon(Icons.document_scanner, color: Colors.blue),
+              ),
+              title: const Text('Scan Document'),
+              subtitle: const Text('Use camera to auto-fill form'),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                _navigateToDocumentScanner();
+              },
+            ),
+            const Divider(),
+            // Upload document options
+            ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Colors.green.shade50,
+                child: const Icon(Icons.upload_file, color: Colors.green),
+              ),
+              title: const Text('Upload Document'),
+              subtitle: const Text('Select from device storage'),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                _navigateToDocumentUpload();
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  /// Navigate to document scanner
+  void _navigateToDocumentScanner() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const DocumentScannerScreen(),
+      ),
+    );
+    
+    // Check if we have scanned documents after returning
+    final scannerViewModel = ServiceInitializer.get<DocumentScannerViewModel>();
+    await scannerViewModel.loadSavedDocuments();
+    
+    setState(() {
+      _checklistItems['scanned_documents'] = scannerViewModel.savedDocuments.isNotEmpty;
+    });
+    
+    // If we have a recently scanned document, offer to fill the form
+    if (scannerViewModel.savedDocuments.isNotEmpty) {
+      final latestDocument = scannerViewModel.savedDocuments.first;
+      _offerToFillFormFromDocument(latestDocument);
+    }
+  }
+  
+  /// Navigate to document upload
+  void _navigateToDocumentUpload() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DocumentUploadScreen(
+          flightNumber: _flightNumberController.text,
+        ),
+      ),
+    ).then((_) => _loadFlightDocuments());
+  }
+  
+  /// Offer to fill form from OCR document
+  void _offerToFillFormFromDocument(DocumentOcrResult document) {
+    final extractedFields = document.extractedFields;
+    if (extractedFields.isEmpty) return;
+    
+    // Only show dialog if we have useful fields
+    bool hasUsefulFields = false;
+    for (final field in ['passenger_name', 'flight_number', 'departure_airport', 
+                         'arrival_airport', 'booking_reference']) {
+      if (extractedFields.containsKey(field) && extractedFields[field]!.isNotEmpty) {
+        hasUsefulFields = true;
+        break;
+      }
+    }
+    
+    if (!hasUsefulFields) return;
+    
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Use Scanned Information?'),
+        content: const Text(
+          'We found useful information in your scanned document. Would you like to fill the form with this data?'
+        ),
+        actions: [
+          TextButton(
+            child: const Text('No'),
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+          ElevatedButton(
+            child: const Text('Yes, Fill Form'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _fillFormFromScannedDocument(extractedFields);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+  
+  /// Fill form fields from scanned document
+  void _fillFormFromScannedDocument(Map<String, String> extractedFields) {
+    setState(() {
+      // Fill passenger name
+      if (extractedFields.containsKey('passenger_name') && 
+          extractedFields['passenger_name']!.isNotEmpty) {
+        _passengerNameController.text = extractedFields['passenger_name']!;
+      } else if (extractedFields.containsKey('full_name') && 
+                extractedFields['full_name']!.isNotEmpty) {
+        _passengerNameController.text = extractedFields['full_name']!;
+      }
+      
+      // Fill flight number
+      if (extractedFields.containsKey('flight_number') && 
+          extractedFields['flight_number']!.isNotEmpty) {
+        _flightNumberController.text = extractedFields['flight_number']!;
+      }
+      
+      // Fill departure airport
+      if (extractedFields.containsKey('departure_airport') && 
+          extractedFields['departure_airport']!.isNotEmpty) {
+        _departureAirportController.text = extractedFields['departure_airport']!;
+      }
+      
+      // Fill arrival airport
+      if (extractedFields.containsKey('arrival_airport') && 
+          extractedFields['arrival_airport']!.isNotEmpty) {
+        _arrivalAirportController.text = extractedFields['arrival_airport']!;
+      }
+      
+      // Fill booking reference
+      if (extractedFields.containsKey('booking_reference') && 
+          extractedFields['booking_reference']!.isNotEmpty) {
+        _bookingReferenceController.text = extractedFields['booking_reference']!;
+      }
+      
+      // Fill departure date
+      if (extractedFields.containsKey('departure_date') && 
+          extractedFields['departure_date']!.isNotEmpty) {
+        try {
+          // Try to parse the date in various formats
+          final dateStr = extractedFields['departure_date']!;
+          DateTime? parsedDate;
+          
+          // Try common date formats
+          final formats = [
+            'yyyy-MM-dd', 'dd/MM/yyyy', 'MM/dd/yyyy', 'd MMM yyyy',
+            'dd-MM-yyyy', 'MM-dd-yyyy', 'yyyy/MM/dd'
+          ];
+          
+          for (final format in formats) {
+            try {
+              parsedDate = DateFormat(format).parse(dateStr);
+              break;
+            } catch (_) {
+              // Try next format
+            }
+          }
+          
+          if (parsedDate != null) {
+            _departureDateController.text = DateFormat('yyyy-MM-dd').format(parsedDate);
+          }
+        } catch (e) {
+          // If date parsing fails, keep existing date
+          debugPrint('Failed to parse date: $e');
+        }
+      }
+      
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Form filled with scanned document data'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    });
   }
   
   /// Build document section UI for displaying and managing documents
@@ -341,14 +557,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                     return;
                   }
                   
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DocumentUploadScreen(
-                        flightNumber: _flightNumberController.text,
-                      ),
-                    ),
-                  ).then((_) => _loadFlightDocuments());
+                  _showDocumentOptionsDialog();
                 },
               ),
               if (_attachedDocuments.isNotEmpty) ...[  
@@ -403,9 +612,25 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
     );
   }
   
+  /// Validate form fields and checklist items
+  void _validateForm() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+    final hasDocuments = _checklistItems['documents'] == true || _checklistItems['scanned_documents'] == true;
+    setState(() {
+      _isFormValid = isValid && hasDocuments;
+    });
+  }
+  
   /// Submit the compensation claim form
   Future<void> _submitForm() async {
-    if (!_formKey.currentState!.validate()) {
+    _validateForm();
+    if (!_isFormValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please complete all required fields and attach documents'),
+          backgroundColor: Colors.orange,
+        ),
+      );
       return;
     }
     
@@ -638,6 +863,82 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
               const SizedBox(height: 24),
               _buildSectionHeader('Supporting Documents'),
               _buildDocumentSection(),
+              
+              // Submission Checklist
+              const SizedBox(height: 24),
+              _buildSectionHeader('Submission Checklist'),
+              Card(
+                color: Colors.amber.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            _checklistItems['documents'] == true || _checklistItems['scanned_documents'] == true 
+                              ? Icons.check_circle 
+                              : Icons.radio_button_unchecked,
+                            color: _checklistItems['documents'] == true || _checklistItems['scanned_documents'] == true 
+                              ? Colors.green 
+                              : Colors.grey,
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              'Supporting Documents', 
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          if (_checklistItems['documents'] == true)
+                            Chip(
+                              label: const Text('Uploaded'),
+                              backgroundColor: Colors.green.shade100,
+                              labelStyle: TextStyle(color: Colors.green.shade800),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          if (_checklistItems['scanned_documents'] == true) ...[  
+                            if (_checklistItems['documents'] == true)
+                              const SizedBox(width: 4),
+                            Chip(
+                              label: const Text('Scanned'),
+                              backgroundColor: Colors.blue.shade100,
+                              labelStyle: TextStyle(color: Colors.blue.shade800),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Icon(
+                            _formKey.currentState?.validate() == true 
+                              ? Icons.check_circle 
+                              : Icons.radio_button_unchecked,
+                            color: _formKey.currentState?.validate() == true 
+                              ? Colors.green 
+                              : Colors.grey,
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              'Required Fields Completed', 
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Note: Scanning documents will automatically extract information to help fill your claim form.',
+                        style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               
               // Submit Button
               const SizedBox(height: 24),
