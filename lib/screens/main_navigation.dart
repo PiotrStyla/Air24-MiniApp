@@ -14,6 +14,7 @@ import 'claim_submission_screen.dart';
 import 'document_management_screen.dart';
 import 'claim_detail_screen.dart';
 import 'claim_dashboard_screen.dart';
+import 'accessibility_settings_screen.dart';
 
 // Services
 import '../services/airport_utils.dart';
@@ -52,7 +53,8 @@ class _MainNavigationState extends State<MainNavigation> {
     Builder(
       builder: (context) => Stack(
         children: [
-          ProfileScreen(),
+          // Use the updated ProfileScreen with accessibility support
+          const ProfileScreen(),
           Positioned(
             right: 16,
             top: 16,
@@ -74,7 +76,7 @@ class _MainNavigationState extends State<MainNavigation> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => ConfirmedFlightsScreen(),
+                            builder: (context) => const ConfirmedFlightsScreen(),
                           ),
                         );
                       },
@@ -87,7 +89,7 @@ class _MainNavigationState extends State<MainNavigation> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => FAQScreen(),
+                              builder: (context) => const FAQScreen(),
                             ),
                           );
                         },
@@ -109,6 +111,26 @@ class _MainNavigationState extends State<MainNavigation> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const DocumentManagementScreen(),
+                      ),
+                    );
+                  },
+                ),
+                
+                // Accessibility Settings Button - NEW
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.accessibility_new),
+                  label: const Text('Accessibility'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple,
+                    foregroundColor: Colors.white,
+                    elevation: 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AccessibilitySettingsScreen(),
                       ),
                     );
                   },

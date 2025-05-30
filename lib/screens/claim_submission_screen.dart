@@ -3,8 +3,12 @@ import 'dart:io';
 import 'faq_screen.dart';
 import '../services/airline_procedure_service.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:intl/intl.dart';
+import '../core/accessibility/accessibility_service.dart';
+import '../core/accessibility/accessible_widgets.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +21,9 @@ import '../services/opensky_api_service.dart';
 import '../core/services/service_initializer.dart';
 import '../viewmodels/document_scanner_viewmodel.dart';
 import 'document_scanner_screen.dart';
+
+/// Intent for keyboard deletion of documents
+class DeleteIntent extends Intent {}
 
 class ClaimSubmissionScreen extends StatefulWidget {
   final String? prefillFlightNumber;
@@ -502,18 +509,33 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get accessibility service
+    final accessibilityService = Provider.of<AccessibilityService>(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Submit Claim'),
+        title: Semantics(
+          header: true,
+          label: accessibilityService.semanticLabel(
+            'Submit Claim', 
+            'Submit Flight Compensation Claim Form'
+          ),
+          child: const Text('Submit Claim'),
+        ),
         actions: [
-          Tooltip(
-            message: 'FAQ & Help',
+          // Help button with enhanced semantics
+          Semantics(
+            button: true,
+            label: accessibilityService.semanticLabel(
+              'Help', 
+              'View frequently asked questions about claim submission'
+            ),
             child: IconButton(
               icon: const Icon(Icons.help_outline, color: Colors.blue),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => FAQScreen(),
+                    builder: (context) => const FAQScreen(),
                   ),
                 );
               },
@@ -548,27 +570,17 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                   ],
                 ),
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _flightNumberController,
-                      decoration: const InputDecoration(
-                        labelText: 'Flight Number *',
-                        helperText: 'Usually a 2-letter airline code and digits, e.g. LH1234',
-                      ),
-                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                    ),
-                  ),
-                  Tooltip(
-                    message: 'Enter your flight number as shown on your ticket or boarding pass.',
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 4.0),
-                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
-                    ),
-                  ),
-                ],
+              // Flight Number with enhanced accessibility
+              AccessibleTextField(
+                controller: _flightNumberController,
+                label: 'Flight Number',
+                semanticLabel: 'Flight number, usually a 2-letter airline code followed by digits',
+                hint: 'e.g. LH1234, BA965',
+                helperText: 'Usually a 2-letter airline code and digits',
+                required: true,
+                icon: Icons.flight,
+                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                textInputAction: TextInputAction.next,
               ),
               if (_airlineProcedure != null)
                 Card(
@@ -730,121 +742,123 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                   child: Text('No procedure info found for this airline code.', style: TextStyle(color: Colors.orange)),
                 ),
               const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: _pickFlightDate,
-                      child: InputDecorator(
-                        decoration: const InputDecoration(labelText: 'Flight Date *'),
-                        child: Text(_flightDate != null
-                            ? DateFormat.yMMMd().format(_flightDate!)
-                            : 'Select date'),
+              // Flight Date with enhanced accessibility
+              Semantics(
+                label: 'Flight date field, required',
+                hint: 'Tap to select your flight date',
+                button: true,
+                textField: true,
+                child: GestureDetector(
+                  onTap: _pickFlightDate,
+                  child: Focus(
+                    onKey: (FocusNode node, RawKeyEvent event) {
+                      // Handle keyboard navigation
+                      if (event is RawKeyDownEvent && 
+                          (event.logicalKey == LogicalKeyboardKey.enter || 
+                           event.logicalKey == LogicalKeyboardKey.space)) {
+                        _pickFlightDate();
+                        return KeyEventResult.handled;
+                      }
+                      return KeyEventResult.ignored;
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Flight Date *',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  _flightDate != null
+                                      ? DateFormat.yMMMd().format(_flightDate!)
+                                      : 'Select date',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: _flightDate == null 
+                                        ? Theme.of(context).hintColor 
+                                        : Theme.of(context).textTheme.bodyLarge?.color,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  Tooltip(
-                    message: 'The date your flight departed or was scheduled to depart.',
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 4.0),
-                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
-                    ),
-                  ),
-                ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              const SizedBox(height: 12),
+              // Departure Airport with enhanced accessibility
+              AccessibleTextField(
+                controller: _departureAirportController,
+                label: 'Departure Airport',
+                semanticLabel: 'Departure airport, enter the 3-letter IATA code',
+                hint: 'e.g. FRA, LHR, JFK',
+                helperText: 'Enter the airport code where your flight departed',
+                required: true,
+                icon: Icons.flight_takeoff,
+                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(height: 16),
+              
+              // Arrival Airport with enhanced accessibility
+              AccessibleTextField(
+                controller: _arrivalAirportController,
+                label: 'Arrival Airport',
+                semanticLabel: 'Arrival airport, enter the 3-letter IATA code',
+                hint: 'e.g. CDG, JFK, MAD',
+                helperText: 'Enter the airport code where your flight arrived',
+                required: true,
+                icon: Icons.flight_land,
+                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.text,
               ),
               const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _departureAirportController,
-                      decoration: const InputDecoration(
-                        labelText: 'Departure Airport *',
-                        helperText: 'e.g. FRA for Frankfurt, LHR for London Heathrow',
-                      ),
-                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                    ),
-                  ),
-                  Tooltip(
-                    message: 'Enter the IATA code of the airport where your flight started.',
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 4.0),
-                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
-                    ),
-                  ),
-                ],
+              // Reason with enhanced accessibility
+              AccessibleTextField(
+                controller: _reasonController,
+                label: 'Reason',
+                semanticLabel: 'Reason for compensation claim, such as delay or cancellation',
+                hint: 'e.g. 3-hour delay, cancellation, denied boarding',
+                helperText: 'Explain why you are eligible for compensation',
+                required: true,
+                icon: Icons.info_outline,
+                validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                textInputAction: TextInputAction.next,
+                maxLines: 2,
               ),
-              const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _arrivalAirportController,
-                      decoration: const InputDecoration(
-                        labelText: 'Arrival Airport *',
-                        helperText: 'e.g. JFK for New York, CDG for Paris',
-                      ),
-                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                    ),
-                  ),
-                  Tooltip(
-                    message: 'Enter the IATA code of the airport where your flight landed.',
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 4.0),
-                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _reasonController,
-                      decoration: const InputDecoration(
-                        labelText: 'Reason *',
-                        hintText: 'Reason (delay, cancellation, etc.)',
-                        helperText: 'State why you are claiming: delay, cancellation, denied boarding, etc.',
-                      ),
-                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                    ),
-                  ),
-                  Tooltip(
-                    message: 'Describe the issue: e.g. delayed more than 3 hours, cancelled, overbooked.',
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 4.0),
-                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _compensationAmountController,
-                      decoration: const InputDecoration(
-                        labelText: 'Compensation Amount (optional)',
-                        helperText: 'If you know the amount you are eligible for, enter it here.',
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  Tooltip(
-                    message: 'Leave blank if unsure. Typical EU compensation: €250-€600 depending on distance.',
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 4.0),
-                      child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 16),
+              
+              // Compensation Amount with enhanced accessibility
+              AccessibleTextField(
+                controller: _compensationAmountController,
+                label: 'Compensation Amount',
+                semanticLabel: 'Expected compensation amount in euros, optional field',
+                hint: 'Enter amount in Euros',
+                helperText: 'Typical EU compensation ranges from €250-€600',
+                required: false,
+                icon: Icons.euro,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
               ),
               if (_suggestedCompensation != null)
                 Padding(
@@ -924,85 +938,118 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                 ),
               ),
               
-              // Supporting Documents Section
-              Container(
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.amber.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.amber.shade200),
-                ),
+              // Supporting Documents Section with accessibility enhancements
+              AccessibleCard(
+                title: 'Supporting Documents',
+                semanticLabel: 'Supporting documents section. You can attach boarding passes, tickets and other documents here',
+                backgroundColor: Colors.amber.shade50,
+                borderColor: Colors.amber.shade200,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Supporting Documents',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.amber),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Attach boarding passes, tickets, and other documents to strengthen your claim.',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    const SizedBox(height: 12),
-                    if (_attachedDocuments.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(
-                          child: Text('No documents attached yet', style: TextStyle(fontStyle: FontStyle.italic)),
-                        ),
-                      )
-                    else
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _attachedDocuments.length,
-                        itemBuilder: (context, index) {
-                          final document = _attachedDocuments[index];
-                          return ListTile(
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: Image.file(
-                                document,
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Container(
-                                  width: 50,
-                                  height: 50,
-                                  color: Colors.grey.shade300,
-                                  child: const Icon(Icons.description, color: Colors.grey),
-                                ),
-                              ),
-                            ),
-                            title: Text('Document ${index + 1}'),
-                            subtitle: Text(document.path.split('/').last),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _removeDocument(index),
-                            ),
-                          );
-                        },
+                    // Descriptive text with proper semantics
+                    Semantics(
+                      label: 'Description of supporting documents purpose',
+                      child: const Text(
+                        'Attach boarding passes, tickets, and other documents to strengthen your claim.',
+                        style: TextStyle(fontSize: 14),
                       ),
-                    const SizedBox(height: 12),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Document list with accessibility
+                    Semantics(
+                      label: accessibilityService.semanticLabel(
+                        'Document list', 
+                        _attachedDocuments.isEmpty 
+                            ? 'No documents attached yet' 
+                            : '${_attachedDocuments.length} documents attached'
+                      ),
+                      child: _attachedDocuments.isEmpty
+                        ? const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(
+                              child: Text('No documents attached yet', 
+                                style: TextStyle(fontStyle: FontStyle.italic)),
+                            ),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _attachedDocuments.length,
+                            itemBuilder: (context, index) {
+                              final document = _attachedDocuments[index];
+                              final fileName = document.path.split('/').last;
+                              
+                              return Semantics(
+                                label: 'Document ${index + 1}, ${fileName}',
+                                button: true,
+                                child: FocusableActionDetector(
+                                  actions: {
+                                    DeleteIntent: CallbackAction<DeleteIntent>(
+                                      onInvoke: (intent) {
+                                        _removeDocument(index);
+                                        return null;
+                                      },
+                                    ),
+                                  },
+                                  child: ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: Image.file(
+                                        document,
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                        semanticLabel: 'Preview of document ${index + 1}',
+                                        errorBuilder: (context, error, stackTrace) => Container(
+                                          width: 50,
+                                          height: 50,
+                                          color: Colors.grey.shade300,
+                                          child: const Icon(Icons.description, color: Colors.grey),
+                                        ),
+                                      ),
+                                    ),
+                                    title: Text('Document ${index + 1}'),
+                                    subtitle: Text(fileName),
+                                    trailing: Semantics(
+                                      button: true,
+                                      label: 'Delete document ${index + 1}',
+                                      hint: 'Double tap to remove this document',
+                                      child: IconButton(
+                                        icon: const Icon(Icons.delete, color: Colors.red),
+                                        onPressed: () => _removeDocument(index),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Document action buttons with enhanced accessibility
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ElevatedButton.icon(
-                          icon: const Icon(Icons.add_a_photo),
-                          label: const Text('Scan Document'),
-                          onPressed: _isDocumentProcessing ? null : _scanDocument,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber.shade600,
-                            foregroundColor: Colors.white,
-                          ),
+                        AccessibleButton(
+                          label: 'Scan Document',
+                          semanticLabel: 'Scan a document using your camera',
+                          onPressed: _scanDocument,
+                          icon: Icons.document_scanner,
+                          enabled: !_isDocumentProcessing,
+                          isLoading: _isDocumentProcessing,
+                          color: Colors.amber.shade600,
                         ),
-                        const SizedBox(width: 12),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.upload_file),
-                          label: const Text('Upload'),
+                        const SizedBox(width: 16),
+                        AccessibleButton(
+                          label: 'Upload File',
+                          semanticLabel: 'Select a document from your device to upload',
                           onPressed: _addDocument,
+                          icon: Icons.upload_file,
+                          filled: false,
                         ),
                       ],
                     ),
@@ -1010,74 +1057,115 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                 ),
               ),
               
-              // Submission Checklist
-              Container(
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.blue.shade200),
-                ),
+              // Submission Checklist with enhanced accessibility
+              AccessibleCard(
+                title: 'Submission Checklist',
+                semanticLabel: 'Submission checklist to verify your claim is ready',
+                backgroundColor: Colors.blue.shade50,
+                borderColor: Colors.blue.shade200,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Submission Checklist',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue),
+                    // Document checklist item with enhanced semantics
+                    Semantics(
+                      toggled: _attachedDocuments.isNotEmpty,
+                      label: accessibilityService.semanticLabel(
+                        'Supporting Documents', 
+                        'Supporting documents checkbox, ${_attachedDocuments.isNotEmpty ? "completed" : "needs attention"}'
+                      ),
+                      hint: _attachedDocuments.isEmpty ? 'Tap to add documents' : null,
+                      child: FocusableActionDetector(
+                        actions: {
+                          ActivateIntent: CallbackAction<ActivateIntent>(
+                            onInvoke: (intent) {
+                              if (_attachedDocuments.isEmpty) {
+                                _scanDocument();
+                              }
+                              return null;
+                            },
+                          ),
+                        },
+                        child: CheckboxListTile(
+                          title: const Text('Supporting Documents'),
+                          subtitle: const Text('Boarding passes, tickets, correspondence'),
+                          value: _attachedDocuments.isNotEmpty,
+                          onChanged: (value) {
+                            if (value == true && _attachedDocuments.isEmpty) {
+                              _scanDocument();
+                            }
+                          },
+                          activeColor: Colors.blue,
+                          checkColor: Colors.white,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 12),
-                    CheckboxListTile(
-                      title: const Text('Supporting Documents'),
-                      subtitle: const Text('Boarding passes, tickets, correspondence'),
-                      value: _attachedDocuments.isNotEmpty,
-                      onChanged: (value) {
-                        if (value == true && _attachedDocuments.isEmpty) {
-                          _scanDocument();
-                        }
-                      },
-                      activeColor: Colors.blue,
-                      checkColor: Colors.white,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    CheckboxListTile(
-                      title: const Text('Required Fields Completed'),
-                      subtitle: const Text('Flight details, reason for claim'),
-                      value: _formKey.currentState?.validate() ?? false,
-                      onChanged: null,
-                      activeColor: Colors.blue,
-                      checkColor: Colors.white,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.zero,
+                    
+                    // Required fields checklist item with enhanced semantics
+                    Semantics(
+                      toggled: _formKey.currentState?.validate() ?? false,
+                      label: accessibilityService.semanticLabel(
+                        'Required Fields', 
+                        'Required form fields status, ${(_formKey.currentState?.validate() ?? false) ? "completed" : "needs attention"}'
+                      ),
+                      child: CheckboxListTile(
+                        title: const Text('Required Fields Completed'),
+                        subtitle: const Text('Flight details, reason for claim'),
+                        value: _formKey.currentState?.validate() ?? false,
+                        onChanged: null,
+                        activeColor: Colors.blue,
+                        checkColor: Colors.white,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: EdgeInsets.zero,
+                      ),
                     ),
                   ],
                 ),
               ),
               
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
+              
+              // Error message with screen reader announcement
               if (_errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
-                ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isSubmitting ? null : _submitClaim,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.white,
+                Semantics(
+                  liveRegion: true, // Announce to screen readers when content changes
+                  label: 'Error: $_errorMessage',
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red.shade300),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: Colors.red),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _errorMessage!,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: _isSubmitting
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                        )
-                      : const Text('Submit', style: TextStyle(fontSize: 16)),
                 ),
+              
+              // Submit button with enhanced accessibility
+              AccessibleButton(
+                label: 'Submit Claim',
+                semanticLabel: 'Submit your compensation claim',
+                onPressed: _submitClaim,
+                enabled: !_isSubmitting,
+                isLoading: _isSubmitting,
+                icon: Icons.send,
+                filled: true,
+                color: Theme.of(context).primaryColor,
               ),
               const SizedBox(height: 24),
               Container(

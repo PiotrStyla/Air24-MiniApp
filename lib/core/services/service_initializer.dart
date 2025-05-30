@@ -8,6 +8,7 @@ import '../../services/document_ocr_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/flight_prediction_service.dart';
 import '../../services/claim_tracking_service.dart';
+import '../accessibility/accessibility_service.dart';
 import '../error/error_handler.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 import '../../viewmodels/document_viewmodel.dart';
@@ -31,6 +32,7 @@ class ServiceInitializer {
     _locator.registerLazySingleton<FlightPredictionService>(() => FlightPredictionService());
     _locator.registerLazySingleton<ErrorHandler>(() => ErrorHandler());
     _locator.registerLazySingleton<ClaimTrackingService>(() => ClaimTrackingService());
+    _locator.registerLazySingleton<AccessibilityService>(() => AccessibilityService());
     
     // Register viewmodels as factories
     _locator.registerFactory<AuthViewModel>(() => AuthViewModel(_locator<AuthService>()));
