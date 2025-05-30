@@ -19,9 +19,13 @@ import '../../viewmodels/claim_dashboard_viewmodel.dart';
 /// Following MVVM pattern with GetIt
 class ServiceInitializer {
   static final GetIt _locator = GetIt.instance;
+  static bool _isTestMode = false;
 
   /// Register all services and viewmodels
   static void init() {
+    // Skip initialization if in test mode with overrides
+    if (_isTestMode) return;
+    
     // Register services as singletons
     _locator.registerLazySingleton<AuthService>(() => AuthService());
     _locator.registerLazySingleton<DocumentStorageService>(() => DocumentStorageService());
@@ -49,4 +53,35 @@ class ServiceInitializer {
   
   /// Get instance of registered service or viewmodel
   static T get<T extends Object>() => _locator<T>();
+  
+  /// Override services for testing
+  /// @param mocks Map of service types and their mock implementations
+  static void overrideForTesting(Map<Type, Object> mocks) {
+    _isTestMode = true;
+    
+    // Reset any existing registrations first
+    resetForTesting();
+    
+    // Register each mock service
+    mocks.forEach((type, implementation) {
+      if (_locator.isRegistered<Object>(instanceName: type.toString())) {
+        _locator.unregister(instanceName: type.toString());
+      }
+      _locator.registerSingleton(implementation, instanceName: type.toString());
+    });
+  }
+  
+  /// Reset all service registrations for testing
+  static void resetForTesting() {
+    _locator.reset();
+    _isTestMode = false;
+  }
+  
+  /// Get a mocked implementation in test mode
+  static T getMock<T extends Object>() {
+    if (!_isTestMode) {
+      throw Exception('Cannot get mock outside of test mode');
+    }
+    return _locator.get<Object>(instanceName: T.toString()) as T;
+  }
 }
