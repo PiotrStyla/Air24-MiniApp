@@ -1,0 +1,775 @@
+{
+  "@@locale": "pl",
+  
+  "appTitle": "Odszkodowanie za Lot",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  
+  "welcomeMessage": "Witamy w Odszkodowaniu za Lot",
+  "@welcomeMessage": {
+    "description": "Welcome message displayed on the splash screen"
+  },
+  
+  "searchFlights": "Szukaj Lotów",
+  "@searchFlights": {
+    "description": "Button to search for flights"
+  },
+  
+  "uploadDocuments": "Prześlij Dokumenty",
+  "@uploadDocuments": {
+    "description": "Button to upload flight documents"
+  },
+  
+  "checkCompensation": "Sprawdź Odszkodowanie",
+  "@checkCompensation": {
+    "description": "Button to check eligibility for compensation"
+  },
+  
+  "submitClaim": "Złóż Roszczenie",
+  "@submitClaim": {
+    "description": "Button to submit a compensation claim"
+  },
+  
+  "settings": "Ustawienia",
+  "@settings": {
+    "description": "Settings screen title"
+  },
+  
+  "home": "Strona główna",
+  "@home": {
+    "description": "Home screen title"
+  },
+  
+  "claims": "Roszczenia",
+  "@claims": {
+    "description": "Claims screen title"
+  },
+  
+  "languageSelection": "Język",
+  "@languageSelection": {
+    "description": "Language selection option in settings"
+  },
+  
+  "back": "Wróć",
+  "@back": {
+    "description": "Back button label"
+  },
+  
+  "save": "Zapisz",
+  "@save": {
+    "description": "Save button label"
+  },
+  
+  "cancel": "Anuluj",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  
+  "next": "Dalej",
+  "@next": {
+    "description": "Next button label"
+  },
+  
+  "previous": "Wstecz",
+  "@previous": {
+    "description": "Previous button label"
+  },
+  
+  "ok": "OK",
+  "@ok": {
+    "description": "OK button label"
+  },
+  
+  "yes": "Tak",
+  "@yes": {
+    "description": "Yes button label"
+  },
+  
+  "no": "Nie",
+  "@no": {
+    "description": "No button label"
+  },
+  
+  "arrivalsAt": "Przyloty na {airport}",
+  "@arrivalsAt": {
+    "description": "Title for airport arrivals screen",
+    "placeholders": {
+      "airport": {
+        "type": "String",
+        "example": "JFK Airport"
+      }
+    }
+  },
+  
+  "departuresFrom": "Odloty z {airport}",
+  "@departuresFrom": {
+    "description": "Title for airport departures screen",
+    "placeholders": {
+      "airport": {
+        "type": "String",
+        "example": "LAX Airport"
+      }
+    }
+  },
+  
+  "flightNumber": "Numer Lotu",
+  "@flightNumber": {
+    "description": "Flight number label"
+  },
+  
+  "departureTime": "Czas Odlotu",
+  "@departureTime": {
+    "description": "Departure time label"
+  },
+  
+  "arrivalTime": "Czas Przylotu",
+  "@arrivalTime": {
+    "description": "Arrival time label"
+  },
+  
+  "delay": "Opóźnienie",
+  "@delay": {
+    "description": "Delay label"
+  },
+  
+  "cancelled": "Odwołany",
+  "@cancelled": {
+    "description": "Cancelled flight status"
+  },
+  
+  "onTime": "Na Czas",
+  "@onTime": {
+    "description": "On-time flight status"
+  },
+  
+  "compensation": "Odszkodowanie",
+  "@compensation": {
+    "description": "Compensation label"
+  },
+  
+  "eligible": "Kwalifikuje się",
+  "@eligible": {
+    "description": "Eligible for compensation status"
+  },
+  
+  "notEligible": "Nie kwalifikuje się",
+  "@notEligible": {
+    "description": "Not eligible for compensation status"
+  },
+  
+  "profile": "Profil",
+  "@profile": {
+    "description": "Profile screen title"
+  },
+  
+  "claims": "Roszczenia",
+  "@claims": {
+    "description": "Claims screen title"
+  },
+  
+  "home": "Strona główna",
+  "@home": {
+    "description": "Home screen title"
+  },
+  
+  "faq": "Często Zadawane Pytania",
+  "@faq": {
+    "description": "FAQ screen title"
+  },
+  
+  "selectLanguage": "Wybierz Język",
+  "@selectLanguage": {
+    "description": "Title for language selection screen"
+  },
+  
+  "filterByAirline": "Filtruj według linii lotniczej",
+  "@filterByAirline": {
+    "description": "Label for airline filter field"
+  },
+  
+  "flightStatusDelayed": "Opóźniony",
+  "@flightStatusDelayed": {
+    "description": "Flight status: delayed"
+  },
+  
+  "flightStatusCancelled": "Odwołany",
+  "@flightStatusCancelled": {
+    "description": "Flight status: cancelled"
+  },
+  
+  "flightStatusDiverted": "Przekierowany",
+  "@flightStatusDiverted": {
+    "description": "Flight status: diverted"
+  },
+  
+  "flightStatusOnTime": "Na czas",
+  "@flightStatusOnTime": {
+    "description": "Flight status: on time"
+  },
+  
+  "flight": "Lot",
+  "@flight": {
+    "description": "Flight label"
+  },
+  
+  "flights": "Loty",
+  "@flights": {
+    "description": "Flights label (plural)"
+  },
+  
+  "myFlights": "Moje Loty",
+  "@myFlights": {
+    "description": "My flights section title"
+  },
+  
+  "findFlight": "Znajdź Lot",
+  "@findFlight": {
+    "description": "Find flight button label"
+  },
+  
+  "departureAirport": "Lotnisko Odlotu",
+  "@departureAirport": {
+    "description": "Departure airport label"
+  },
+  
+  "arrivalAirport": "Lotnisko Przylotu",
+  "@arrivalAirport": {
+    "description": "Arrival airport label"
+  },
+  
+  "flightDate": "Data Lotu",
+  "@flightDate": {
+    "description": "Flight date label"
+  },
+  
+  "checkCompensationEligibility": "Sprawdź Kwalifikowalność Odszkodowania",
+  "@checkCompensationEligibility": {
+    "description": "Check compensation eligibility button"
+  },
+  
+  "supportingDocuments": "Dokumenty Potwierdzające",
+  "@supportingDocuments": {
+    "description": "Title for supporting documents section"
+  },
+  
+  "supportingDocumentsHint": "Załącz karty pokładowe, bilety i inne dokumenty, aby wzmocnić swoje roszczenie.",
+  "@supportingDocumentsHint": {
+    "description": "Helper text for supporting documents section"
+  },
+  
+  "addDocument": "Dodaj Dokument",
+  "@addDocument": {
+    "description": "Button to add a document"
+  },
+  
+  "scanDocument": "Skanuj Dokument",
+  "@scanDocument": {
+    "description": "Button to scan a document"
+  },
+  
+  "uploadDocument": "Prześlij Dokument",
+  "@uploadDocument": {
+    "description": "Button to upload a document"
+  },
+  
+  "scanDocumentHint": "Użyj kamery do automatycznego wypełnienia formularza",
+  "@scanDocumentHint": {
+    "description": "Hint for scan document option"
+  },
+  
+  "uploadDocumentHint": "Wybierz z pamięci urządzenia",
+  "@uploadDocumentHint": {
+    "description": "Hint for upload document option"
+  },
+  
+  "noDocumentsYet": "Nie dołączono jeszcze żadnych dokumentów",
+  "@noDocumentsYet": {
+    "description": "Message when no documents are attached"
+  },
+  
+  "enterFlightNumberFirst": "Najpierw wprowadź numer lotu",
+  "@enterFlightNumberFirst": {
+    "description": "Error message when trying to add document without flight number"
+  },
+  
+  "viewAll": "Zobacz Wszystkie",
+  "@viewAll": {
+    "description": "Button to view all documents"
+  },
+  
+  "documentScanner": "Skaner Dokumentów",
+  "@documentScanner": {
+    "description": "Title for document scanner screen"
+  },
+  
+  "processingDocument": "Przetwarzanie dokumentu...",
+  "@processingDocument": {
+    "description": "Message when processing a document"
+  },
+  
+  "extractingText": "Wyciąganie tekstu i identyfikacja pól",
+  "@extractingText": {
+    "description": "Message when extracting text from a document"
+  },
+  
+  "scanInstructions": "Umieść dokument w ramce i zrób zdjęcie",
+  "@scanInstructions": {
+    "description": "Instructions for scanning a document"
+  },
+  
+  "formFilledWithScannedData": "Formularz wypełniony danymi ze skanowanego dokumentu",
+  "@formFilledWithScannedData": {
+    "description": "Success message after scanning a document"
+  },
+  
+  "flightDetails": "Szczegóły Lotu",
+  "@flightDetails": {
+    "description": "Section header for flight details"
+  },
+  
+  "passengerDetails": "Dane Pasażera",
+  "@passengerDetails": {
+    "description": "Section header for passenger details"
+  },
+  
+  "airline": "Linia Lotnicza",
+  "@airline": {
+    "description": "Airline field label"
+  },
+  
+  "bookingReference": "Numer Rezerwacji",
+  "@bookingReference": {
+    "description": "Booking reference field label"
+  },
+  
+  "passengerName": "Imię i Nazwisko Pasażera",
+  "@passengerName": {
+    "description": "Passenger name field label"
+  },
+  
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  
+  "phoneNumber": "Numer Telefonu",
+  "@phoneNumber": {
+    "description": "Phone number field label"
+  },
+  
+  "additionalInformation": "Dodatkowe Informacje",
+  "@additionalInformation": {
+    "description": "Additional information field label"
+  },
+  
+  "required": "Wymagane",
+  "@required": {
+    "description": "Required field indicator"
+  },
+  
+  "optional": "Opcjonalne",
+  "@optional": {
+    "description": "Optional field indicator"
+  },
+  
+  "submit": "Wyślij",
+  "@submit": {
+    "description": "Submit button label"
+  },
+  
+  "submissionChecklist": "Lista kontrolna zgłoszenia",
+  "@submissionChecklist": {
+    "description": "Section header for submission checklist"
+  },
+  
+  "documentAttached": "Załączono dokument",
+  "@documentAttached": {
+    "description": "Checklist item for document attachment"
+  },
+  
+  "completeAllFields": "Proszę wypełnić wszystkie wymagane pola i załączyć dokumenty",
+  "@completeAllFields": {
+    "description": "Validation message when form is incomplete"
+  },
+  
+  "thisFieldIsRequired": "To pole jest wymagane",
+  "@thisFieldIsRequired": {
+    "description": "Validation message for required fields"
+  },
+  
+  "claimSubmittedSuccessfully": "Roszczenie zostało pomyślnie złożone",
+  "@claimSubmittedSuccessfully": {
+    "description": "Success message after submitting a claim"
+  },
+  
+  "compensationClaimForm": "Formularz roszczenia odszkodowania",
+  "@compensationClaimForm": {
+    "description": "Title for compensation claim form"
+  },
+  
+  "prefilledFromProfile": "Wypełnione automatycznie z Twojego profilu",
+  "@prefilledFromProfile": {
+    "description": "Tooltip for prefilled form fields"
+  },
+  
+  "uploaded": "Przesłane",
+  "@uploaded": {
+    "description": "Status chip for uploaded documents"
+  },
+  
+  "scanned": "Zeskanowane",
+  "@scanned": {
+    "description": "Status chip for scanned documents"
+  },
+  
+  "cropDocument": "Przytnij Dokument",
+  "@cropDocument": {
+    "description": "Title for document crop screen"
+  },
+  
+  "crop": "Przytnij",
+  "@crop": {
+    "description": "Crop button label"
+  },
+  
+  "rotate": "Obróć",
+  "@rotate": {
+    "description": "Rotate button label"
+  },
+  
+  "aspectRatio": "Proporcje",
+  "@aspectRatio": {
+    "description": "Aspect ratio button label"
+  },
+  
+  "adjustDocument": "Dostosuj granice dokumentu",
+  "@adjustDocument": {
+    "description": "Instructions for document cropping"
+  },
+  
+  "cropping": "Przycinanie...",
+  "@cropping": {
+    "description": "Message shown when document is being cropped"
+  },
+  
+  "aspectRatioFree": "Dowolny format",
+  "@aspectRatioFree": {
+    "description": "Free form aspect ratio mode"
+  },
+  
+  "aspectRatioSquare": "Kwadrat (1:1)",
+  "@aspectRatioSquare": {
+    "description": "Square aspect ratio mode"
+  },
+  
+  "aspectRatioPortrait": "Portret (3:4)",
+  "@aspectRatioPortrait": {
+    "description": "Portrait aspect ratio mode"
+  },
+  
+  "aspectRatioLandscape": "Krajobraz (4:3)",
+  "@aspectRatioLandscape": {
+    "description": "Landscape aspect ratio mode"
+  },
+  
+  "aspectRatioMode": "Proporcje: {mode}",
+  "@aspectRatioMode": {
+    "description": "Snackbar message for aspect ratio mode",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "documentOcrResult": "Wynik analizy dokumentu",
+  "@documentOcrResult": {
+    "description": "Title for document OCR result screen"
+  },
+  
+  "extractedFields": "Wyodrębnione pola",
+  "@extractedFields": {
+    "description": "Tab title for extracted fields"
+  },
+  
+  "fullText": "Pełny tekst",
+  "@fullText": {
+    "description": "Tab title for full OCR text"
+  },
+  
+  "documentSaved": "Dokument zapisany",
+  "@documentSaved": {
+    "description": "Message when document is saved"
+  },
+  
+  "useExtractedData": "Użyj wyodrębnionych danych",
+  "@useExtractedData": {
+    "description": "Button to use extracted data"
+  },
+  
+  "copyToClipboard": "Skopiuj do schowka",
+  "@copyToClipboard": {
+    "description": "Button to copy text to clipboard"
+  },
+  
+  "textCopied": "Tekst skopiowany do schowka",
+  "@textCopied": {
+    "description": "Message when text is copied to clipboard"
+  },
+  
+  "documentType": "Typ dokumentu",
+  "@documentType": {
+    "description": "Label for document type field"
+  },
+  
+  "saveDocument": "Zapisz dokument",
+  "@saveDocument": {
+    "description": "Button to save document"
+  },
+  
+  "fieldName": "Nazwa pola",
+  "@fieldName": {
+    "description": "Column header for field name"
+  },
+  
+  "fieldValue": "Wartość",
+  "@fieldValue": {
+    "description": "Column header for field value"
+  },
+  
+  "noFieldsExtracted": "Z tego dokumentu nie wyodrębniono żadnych pól",
+  "@noFieldsExtracted": {
+    "description": "Message when no fields were extracted from document"
+  },
+  
+  "extractedInformation": "Wyodrębnione informacje",
+  "@extractedInformation": {
+    "description": "Heading for extracted information section"
+  },
+  
+  "rawOcrText": "Surowy tekst OCR",
+  "@rawOcrText": {
+    "description": "Heading for raw OCR text section"
+  },
+  
+  "copyAllText": "Kopiuj cały tekst",
+  "@copyAllText": {
+    "description": "Tooltip for copy all text button"
+  },
+  
+  "copiedToClipboard": "Skopiowano do schowka",
+  "@copiedToClipboard": {
+    "description": "Message shown when text is copied to clipboard"
+  },
+  
+  "fillForm": "Wypełnij formularz",
+  "@fillForm": {
+    "description": "Title for form selection dialog"
+  },
+  
+  "chooseUseInfo": "Wybierz, gdzie użyć tych informacji:",
+  "@chooseUseInfo": {
+    "description": "Instructions for form selection dialog"
+  },
+  
+  "compensationClaimForm": "Formularz roszczenia odszkodowania",
+  "@compensationClaimForm": {
+    "description": "Option in form selection dialog"
+  },
+  
+  "fillPassengerFlight": "Wypełnij dane pasażera i lotu",
+  "@fillPassengerFlight": {
+    "description": "Subtitle for compensation claim form option"
+  },
+  
+  "flightSearch": "Wyszukiwanie lotów",
+  "@flightSearch": {
+    "description": "Option in form selection dialog"
+  },
+  
+  "searchFlightNumber": "Wyszukaj za pomocą numeru lotu",
+  "@searchFlightNumber": {
+    "description": "Subtitle for flight search option"
+  },
+  
+  "done": "Gotowe",
+  "@done": {
+    "description": "Done button label"
+  },
+  
+  "delayedFlightDetected": "Wykryto opóźniony lot!",
+  "@delayedFlightDetected": {
+    "description": "Title of dialog when a delayed flight is detected"
+  },
+  
+  "flightDetected": "Wykryto lot!",
+  "@flightDetected": {
+    "description": "Title of dialog when a flight is detected"
+  },
+  
+  "flightLabel": "Lot: {number}",
+  "@flightLabel": {
+    "description": "Flight number label in detection dialog",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "fromAirport": "Z: {airport}",
+  "@fromAirport": {
+    "description": "Departure airport label in detection dialog",
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "toAirport": "Do: {airport}",
+  "@toAirport": {
+    "description": "Arrival airport label in detection dialog",
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "statusLabel": "Status: {status}",
+  "@statusLabel": {
+    "description": "Flight status label in detection dialog",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "delayedEligible": "Ten lot jest opóźniony. Możesz być uprawniony do odszkodowania.",
+  "@delayedEligible": {
+    "description": "Message about compensation eligibility for delayed flights"
+  },
+  
+  "dismiss": "Zamknij",
+  "@dismiss": {
+    "description": "Dismiss button label"
+  },
+  
+  "startClaim": "Rozpocznij roszczenie",
+  "@startClaim": {
+    "description": "Button to start a compensation claim"
+  },
+  
+  "home": "Strona główna",
+  "@home": {
+    "description": "Home screen title"
+  },
+  
+  "checkCompensationEligibility": "Sprawdź uprawnienie do odszkodowania za lot",
+  "@checkCompensationEligibility": {
+    "description": "Button to check compensation eligibility"
+  },
+  
+  "euWideEligibleFlights": "Loty kwalifikujące się do odszkodowania w UE",
+  "@euWideEligibleFlights": {
+    "description": "Button to view EU-wide eligible flights"
+  },
+  
+  "pleaseEnterDepartureAirport": "Proszę podać lotnisko wylotu",
+  "@pleaseEnterDepartureAirport": {
+    "description": "Validation message for departure airport field"
+  },
+  
+  "requiredFieldsCompleted": "Wymagane pola zostały wypełnione",
+  "@requiredFieldsCompleted": {
+    "description": "Checklist item indicating required fields are completed"
+  },
+  
+  "scanningDocumentsNote": "Uwaga: Skanowanie dokumentów automatycznie wyodrębni informacje, które pomogą wypełnić formularz roszczenia.",
+  "@scanningDocumentsNote": {
+    "description": "Note about document scanning benefits"
+  },
+  
+  "submitClaim": "Złóż roszczenie",
+  "@submitClaim": {
+    "description": "Button to submit the compensation claim"
+  },
+  
+  "formSubmissionError": "Błąd przy wysyłaniu formularza: {message}",
+  "@formSubmissionError": {
+    "description": "Error message shown when form submission fails",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "networkError": "Błąd sieci. Sprawdź połączenie i spróbuj ponownie.",
+  "@networkError": {
+    "description": "Error message shown when there's a network issue"
+  },
+  
+  "generalError": "Wystąpił błąd. Spróbuj ponownie później.",
+  "@generalError": {
+    "description": "Generic error message"
+  },
+  
+  "loginRequiredForClaim": "Musisz być zalogowany, aby złożyć roszczenie",
+  "@loginRequiredForClaim": {
+    "description": "Error message shown when user tries to submit a claim without being logged in"
+  },
+  
+  "errorConnectionFailed": "Połączenie nie powiodło się. Sprawdź swoje połączenie internetowe.",
+  "@errorConnectionFailed": {
+    "description": "Error message for connection failure"
+  },
+  
+  "errorApiLimitExceeded": "Przekroczono limit zapytań API. Spróbuj ponownie później.",
+  "@errorApiLimitExceeded": {
+    "description": "Error message for API rate limiting"
+  },
+  
+  "errorGeneric": "Wystąpił błąd. Spróbuj ponownie.",
+  "@errorGeneric": {
+    "description": "Generic error message"
+  },
+  
+  "documentTypePassport": "Paszport",
+  "@documentTypePassport": {
+    "description": "Document type: passport"
+  },
+  
+  "documentTypeBoardingPass": "Karta pokładowa",
+  "@documentTypeBoardingPass": {
+    "description": "Document type: boarding pass"
+  },
+  
+  "documentTypeFlightTicket": "Bilet lotniczy",
+  "@documentTypeFlightTicket": {
+    "description": "Document type: flight ticket"
+  },
+  
+  "documentTypeReceipt": "Paragon",
+  "@documentTypeReceipt": {
+    "description": "Document type: receipt"
+  },
+  
+  "saveButton": "Zapisz",
+  "@saveButton": {
+    "description": "Save button label"
+  },
+  
+  "cancelButton": "Anuluj",
+  "@cancelButton": {
+    "description": "Cancel button label"
+  },
+  
+  "euCompensationEligible": "Kwalifikuje się do odszkodowania UE",
+  "@euCompensationEligible": {
+    "description": "Label for EU compensation eligibility"
+  }
+}

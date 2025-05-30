@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/auth_service.dart';
 import '../core/services/service_initializer.dart';
 import '../viewmodels/auth_viewmodel.dart';
@@ -62,30 +63,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _showFlightDetectedDialog(DetectedFlight flight) {
     final status = (flight.flightData['status'] ?? '').toString().toLowerCase();
+    final localizations = AppLocalizations.of(context)!;
     if (status == 'delayed') {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Delayed Flight Detected!'),
+          title: Text(localizations.delayedFlightDetected),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Flight: \\${flight.flightData['number'] ?? ''}'),
-              Text('From: \\${flight.departureAirport.name}'),
-              Text('To: \\${flight.arrivalAirport.name}'),
-              Text('Status: \\${flight.flightData['status'] ?? ''}'),
+              Text(localizations.flightLabel(flight.flightData['number'] ?? '')),
+              Text(localizations.fromAirport(flight.departureAirport.name)),
+              Text(localizations.toAirport(flight.arrivalAirport.name)),
+              Text(localizations.statusLabel(flight.flightData['status'] ?? '')),
               const SizedBox(height: 12),
-              const Text('This flight is delayed. You may be eligible for compensation.'),
+              Text(localizations.delayedEligible),
             ],
           ),
           actions: [
             TextButton(
-              child: const Text('Dismiss'),
+              child: Text(localizations.dismiss),
               onPressed: () => Navigator.of(ctx).pop(),
             ),
             ElevatedButton(
-              child: const Text('Start Claim'),
+              child: Text(localizations.startClaim),
               onPressed: () {
                 Navigator.of(ctx).pop();
                 Navigator.of(context).pushNamed(
@@ -109,24 +111,24 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Flight Detected!'),
+        title: Text(localizations.flightDetected),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Flight: \\${flight.flightData['number'] ?? ''}'),
-            Text('From: \\${flight.departureAirport.name}'),
-            Text('To: \\${flight.arrivalAirport.name}'),
-            Text('Status: \\${flight.flightData['status'] ?? ''}'),
+            Text(localizations.flightLabel(flight.flightData['number'] ?? '')),
+            Text(localizations.fromAirport(flight.departureAirport.name)),
+            Text(localizations.toAirport(flight.arrivalAirport.name)),
+            Text(localizations.statusLabel(flight.flightData['status'] ?? '')),
           ],
         ),
         actions: [
           TextButton(
-            child: const Text('Dismiss'),
+            child: Text(localizations.dismiss),
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           ElevatedButton(
-            child: const Text('Start Claim'),
+            child: Text(localizations.startClaim),
             onPressed: () {
               Navigator.of(ctx).pop();
               // Navigate to claim submission with prefilled details
@@ -152,15 +154,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(title: Text(localizations.home)),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton.icon(
               icon: const Icon(Icons.calculate, color: Colors.blue),
-              label: const Text('Check Flight Compensation Eligibility'),
+              label: Text(localizations.checkCompensationEligibility),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.blue,
@@ -181,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 foregroundColor: Colors.green[800],
                 side: BorderSide(color: Colors.green[800]!),
               ),
-              label: const Text('EU-Wide Compensation Eligible Flights'),
+              label: Text(localizations.euWideEligibleFlights),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(

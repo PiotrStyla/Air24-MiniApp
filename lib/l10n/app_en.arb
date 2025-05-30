@@ -1,0 +1,699 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "Flight Compensation",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  
+  "welcomeMessage": "Welcome to Flight Compensation",
+  "@welcomeMessage": {
+    "description": "Welcome message displayed on the splash screen"
+  },
+  
+  "searchFlights": "Search Flights",
+  "@searchFlights": {
+    "description": "Button to search for flights"
+  },
+  
+  "uploadDocuments": "Upload Documents",
+  "@uploadDocuments": {
+    "description": "Button to upload flight documents"
+  },
+  
+  "checkCompensation": "Check Compensation",
+  "@checkCompensation": {
+    "description": "Button to check eligibility for compensation"
+  },
+  
+  "submitClaim": "Submit Claim",
+  "@submitClaim": {
+    "description": "Button to submit a compensation claim"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings screen title"
+  },
+  
+  "home": "Home",
+  "@home": {
+    "description": "Home screen title"
+  },
+  
+  "claims": "Claims",
+  "@claims": {
+    "description": "Claims screen title"
+  },
+  
+  "languageSelection": "Language",
+  "@languageSelection": {
+    "description": "Language selection option in settings"
+  },
+  
+  "back": "Back",
+  "@back": {
+    "description": "Back button label"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Save button label"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  
+  "next": "Next",
+  "@next": {
+    "description": "Next button label"
+  },
+  
+  "previous": "Previous",
+  "@previous": {
+    "description": "Previous button label"
+  },
+  
+  "ok": "OK",
+  "@ok": {
+    "description": "OK button label"
+  },
+  
+  "yes": "Yes",
+  "@yes": {
+    "description": "Yes button label"
+  },
+  
+  "no": "No",
+  "@no": {
+    "description": "No button label"
+  },
+  
+  "arrivalsAt": "Arrivals at {airport}",
+  "@arrivalsAt": {
+    "description": "Title for airport arrivals screen",
+    "placeholders": {
+      "airport": {
+        "type": "String",
+        "example": "LHR"
+      }
+    }
+  },
+  
+  "filterByAirline": "Filter by airline",
+  "@filterByAirline": {
+    "description": "Label for airline filter field"
+  },
+  
+  "flightStatusDelayed": "Delayed",
+  "@flightStatusDelayed": {
+    "description": "Flight status: delayed"
+  },
+  
+  "flightStatusCancelled": "Cancelled",
+  "@flightStatusCancelled": {
+    "description": "Flight status: cancelled"
+  },
+  
+  "flightStatusDiverted": "Diverted",
+  "@flightStatusDiverted": {
+    "description": "Flight status: diverted"
+  },
+  
+  "flightStatusOnTime": "On time",
+  "@flightStatusOnTime": {
+    "description": "Flight status: on time"
+  },
+  
+  "flight": "Flight",
+  "@flight": {
+    "description": "Flight label"
+  },
+  
+  "flights": "Flights",
+  "@flights": {
+    "description": "Flights label (plural)"
+  },
+  
+  "myFlights": "My Flights",
+  "@myFlights": {
+    "description": "My flights section title"
+  },
+  
+  "findFlight": "Find Flight",
+  "@findFlight": {
+    "description": "Find flight button label"
+  },
+  
+  "flightNumber": "Flight Number",
+  "@flightNumber": {
+    "description": "Flight number label"
+  },
+  
+  "departureAirport": "Departure Airport",
+  "@departureAirport": {
+    "description": "Departure airport label"
+  },
+  
+  "arrivalAirport": "Arrival Airport",
+  "@arrivalAirport": {
+    "description": "Arrival airport label"
+  },
+  
+  "flightDate": "Flight Date",
+  "@flightDate": {
+    "description": "Flight date label"
+  },
+  
+  "checkCompensationEligibility": "Check Compensation Eligibility",
+  "@checkCompensationEligibility": {
+    "description": "Check compensation eligibility button"
+  },
+  
+  "supportingDocuments": "Supporting Documents",
+  "@supportingDocuments": {
+    "description": "Title for supporting documents section"
+  },
+  
+  "supportingDocumentsHint": "Attach boarding passes, tickets, and other documents to strengthen your claim.",
+  "@supportingDocumentsHint": {
+    "description": "Helper text for supporting documents section"
+  },
+  
+  "addDocument": "Add Document",
+  "@addDocument": {
+    "description": "Button to add a document"
+  },
+  
+  "scanDocument": "Scan Document",
+  "@scanDocument": {
+    "description": "Button to scan a document"
+  },
+  
+  "uploadDocument": "Upload Document",
+  "@uploadDocument": {
+    "description": "Button to upload a document"
+  },
+  
+  "scanDocumentHint": "Use camera to auto-fill form",
+  "@scanDocumentHint": {
+    "description": "Hint for scan document option"
+  },
+  
+  "uploadDocumentHint": "Select from device storage",
+  "@uploadDocumentHint": {
+    "description": "Hint for upload document option"
+  },
+  
+  "noDocumentsYet": "No documents attached yet",
+  "@noDocumentsYet": {
+    "description": "Message when no documents are attached"
+  },
+  
+  "enterFlightNumberFirst": "Please enter a flight number first",
+  "@enterFlightNumberFirst": {
+    "description": "Error message when trying to add document without flight number"
+  },
+  
+  "viewAll": "View All",
+  "@viewAll": {
+    "description": "Button to view all documents"
+  },
+  
+  "documentScanner": "Document Scanner",
+  "@documentScanner": {
+    "description": "Title for document scanner screen"
+  },
+  
+  "processingDocument": "Processing document...",
+  "@processingDocument": {
+    "description": "Message when processing a document"
+  },
+  
+  "extractingText": "Extracting text and identifying fields",
+  "@extractingText": {
+    "description": "Message when extracting text from a document"
+  },
+  
+  "scanInstructions": "Position your document within the frame and take a photo",
+  "@scanInstructions": {
+    "description": "Instructions for scanning a document"
+  },
+  
+  "formFilledWithScannedData": "Form filled with scanned document data",
+  "@formFilledWithScannedData": {
+    "description": "Success message after scanning a document"
+  },
+  
+  "flightDetails": "Flight Details",
+  "@flightDetails": {
+    "description": "Section header for flight details"
+  },
+  
+  "passengerDetails": "Passenger Details",
+  "@passengerDetails": {
+    "description": "Section header for passenger details"
+  },
+  
+  "airline": "Airline",
+  "@airline": {
+    "description": "Airline field label"
+  },
+  
+  "bookingReference": "Booking Reference",
+  "@bookingReference": {
+    "description": "Booking reference field label"
+  },
+  
+  "passengerName": "Passenger Name",
+  "@passengerName": {
+    "description": "Passenger name field label"
+  },
+  
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  
+  "phoneNumber": "Phone Number",
+  "@phoneNumber": {
+    "description": "Phone number field label"
+  },
+  
+  "additionalInformation": "Additional Information",
+  "@additionalInformation": {
+    "description": "Additional information field label"
+  },
+  
+  "required": "Required",
+  "@required": {
+    "description": "Required field indicator"
+  },
+  
+  "optional": "Optional",
+  "@optional": {
+    "description": "Optional field indicator"
+  },
+  
+  "submit": "Submit",
+  "@submit": {
+    "description": "Submit button label"
+  },
+  
+  "submissionChecklist": "Submission Checklist",
+  "@submissionChecklist": {
+    "description": "Section header for submission checklist"
+  },
+  
+  "documentAttached": "Document attached",
+  "@documentAttached": {
+    "description": "Checklist item for document attachment"
+  },
+  
+  "completeAllFields": "Please complete all required fields and attach documents",
+  "@completeAllFields": {
+    "description": "Validation message when form is incomplete"
+  },
+  
+  "thisFieldIsRequired": "This field is required",
+  "@thisFieldIsRequired": {
+    "description": "Validation message for required fields"
+  },
+  
+  "claimSubmittedSuccessfully": "Claim submitted successfully",
+  "@claimSubmittedSuccessfully": {
+    "description": "Success message after submitting a claim"
+  },
+  
+  "compensationClaimForm": "Compensation Claim Form",
+  "@compensationClaimForm": {
+    "description": "Title for compensation claim form"
+  },
+  
+  "prefilledFromProfile": "Pre-filled from your profile",
+  "@prefilledFromProfile": {
+    "description": "Tooltip for prefilled form fields"
+  },
+  
+  "uploaded": "Uploaded",
+  "@uploaded": {
+    "description": "Status chip for uploaded documents"
+  },
+  
+  "scanned": "Scanned",
+  "@scanned": {
+    "description": "Status chip for scanned documents"
+  },
+  
+  "cropDocument": "Crop Document",
+  "@cropDocument": {
+    "description": "Title for document crop screen"
+  },
+  
+  "crop": "Crop",
+  "@crop": {
+    "description": "Crop button label"
+  },
+  
+  "rotate": "Rotate",
+  "@rotate": {
+    "description": "Rotate button label"
+  },
+  
+  "aspectRatio": "Aspect Ratio",
+  "@aspectRatio": {
+    "description": "Aspect ratio button label"
+  },
+  
+  "adjustDocument": "Adjust document boundaries",
+  "@adjustDocument": {
+    "description": "Instructions for document cropping"
+  },
+  
+  "cropping": "Cropping...",
+  "@cropping": {
+    "description": "Message shown when document is being cropped"
+  },
+  
+  "aspectRatioFree": "Free Form",
+  "@aspectRatioFree": {
+    "description": "Free form aspect ratio mode"
+  },
+  
+  "aspectRatioSquare": "Square (1:1)",
+  "@aspectRatioSquare": {
+    "description": "Square aspect ratio mode"
+  },
+  
+  "aspectRatioPortrait": "Portrait (3:4)",
+  "@aspectRatioPortrait": {
+    "description": "Portrait aspect ratio mode"
+  },
+  
+  "aspectRatioLandscape": "Landscape (4:3)",
+  "@aspectRatioLandscape": {
+    "description": "Landscape aspect ratio mode"
+  },
+  
+  "aspectRatioMode": "Aspect Ratio: {mode}",
+  "@aspectRatioMode": {
+    "description": "Snackbar message for aspect ratio mode",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "documentOcrResult": "Document Analysis Result",
+  "@documentOcrResult": {
+    "description": "Title for document OCR result screen"
+  },
+  
+  "extractedFields": "Extracted Fields",
+  "@extractedFields": {
+    "description": "Tab title for extracted fields"
+  },
+  
+  "fullText": "Full Text",
+  "@fullText": {
+    "description": "Tab title for full OCR text"
+  },
+  
+  "documentSaved": "Document saved",
+  "@documentSaved": {
+    "description": "Message when document is saved"
+  },
+  
+  "useExtractedData": "Use Extracted Data",
+  "@useExtractedData": {
+    "description": "Button to use extracted data"
+  },
+  
+  "copyToClipboard": "Copy to Clipboard",
+  "@copyToClipboard": {
+    "description": "Button to copy text to clipboard"
+  },
+  
+  "textCopied": "Text copied to clipboard",
+  "@textCopied": {
+    "description": "Message when text is copied to clipboard"
+  },
+  
+  "documentType": "Document Type",
+  "@documentType": {
+    "description": "Label for document type field"
+  },
+  
+  "saveDocument": "Save Document",
+  "@saveDocument": {
+    "description": "Button to save document"
+  },
+  
+  "fieldName": "Field Name",
+  "@fieldName": {
+    "description": "Column header for field name"
+  },
+  
+  "fieldValue": "Value",
+  "@fieldValue": {
+    "description": "Column header for field value"
+  },
+  
+  "noFieldsExtracted": "No fields were extracted from this document",
+  "@noFieldsExtracted": {
+    "description": "Message when no fields were extracted from document"
+  },
+  
+  "extractedInformation": "Extracted Information",
+  "@extractedInformation": {
+    "description": "Heading for extracted information section"
+  },
+  
+  "rawOcrText": "Raw OCR Text",
+  "@rawOcrText": {
+    "description": "Heading for raw OCR text section"
+  },
+  
+  "copyAllText": "Copy all text",
+  "@copyAllText": {
+    "description": "Tooltip for copy all text button"
+  },
+  
+  "copiedToClipboard": "Copied to clipboard",
+  "@copiedToClipboard": {
+    "description": "Message shown when text is copied to clipboard"
+  },
+  
+  "fillForm": "Fill Form",
+  "@fillForm": {
+    "description": "Title for form selection dialog"
+  },
+  
+  "chooseUseInfo": "Choose where to use this information:",
+  "@chooseUseInfo": {
+    "description": "Instructions for form selection dialog"
+  },
+  
+  "compensationClaimForm": "Compensation Claim Form",
+  "@compensationClaimForm": {
+    "description": "Option in form selection dialog"
+  },
+  
+  "fillPassengerFlight": "Fill passenger and flight details",
+  "@fillPassengerFlight": {
+    "description": "Subtitle for compensation claim form option"
+  },
+  
+  "flightSearch": "Flight Search",
+  "@flightSearch": {
+    "description": "Option in form selection dialog"
+  },
+  
+  "searchFlightNumber": "Search using flight number",
+  "@searchFlightNumber": {
+    "description": "Subtitle for flight search option"
+  },
+  
+  "done": "Done",
+  "@done": {
+    "description": "Done button label"
+  },
+  
+  "delayedFlightDetected": "Delayed Flight Detected!",
+  "@delayedFlightDetected": {
+    "description": "Title of dialog when a delayed flight is detected"
+  },
+  
+  "flightDetected": "Flight Detected!",
+  "@flightDetected": {
+    "description": "Title of dialog when a flight is detected"
+  },
+  
+  "flightLabel": "Flight: {number}",
+  "@flightLabel": {
+    "description": "Flight number label in detection dialog",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "fromAirport": "From: {airport}",
+  "@fromAirport": {
+    "description": "Departure airport label in detection dialog",
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "toAirport": "To: {airport}",
+  "@toAirport": {
+    "description": "Arrival airport label in detection dialog",
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "statusLabel": "Status: {status}",
+  "@statusLabel": {
+    "description": "Flight status label in detection dialog",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "delayedEligible": "This flight is delayed. You may be eligible for compensation.",
+  "@delayedEligible": {
+    "description": "Message about compensation eligibility for delayed flights"
+  },
+  
+  "dismiss": "Dismiss",
+  "@dismiss": {
+    "description": "Dismiss button label"
+  },
+  
+  "startClaim": "Start Claim",
+  "@startClaim": {
+    "description": "Button to start a compensation claim"
+  },
+  
+  "home": "Home",
+  "@home": {
+    "description": "Home screen title"
+  },
+  
+  "checkCompensationEligibility": "Check Flight Compensation Eligibility",
+  "@checkCompensationEligibility": {
+    "description": "Button to check compensation eligibility"
+  },
+  
+  "euWideEligibleFlights": "EU-Wide Compensation Eligible Flights",
+  "@euWideEligibleFlights": {
+    "description": "Button to view EU-wide eligible flights"
+  },
+  
+  "pleaseEnterDepartureAirport": "Please enter the departure airport",
+  "@pleaseEnterDepartureAirport": {
+    "description": "Validation message for departure airport field"
+  },
+  
+  "requiredFieldsCompleted": "Required Fields Completed",
+  "@requiredFieldsCompleted": {
+    "description": "Checklist item indicating required fields are completed"
+  },
+  
+  "scanningDocumentsNote": "Note: Scanning documents will automatically extract information to help fill your claim form.",
+  "@scanningDocumentsNote": {
+    "description": "Note about document scanning benefits"
+  },
+  
+  "submitClaim": "Submit Claim",
+  "@submitClaim": {
+    "description": "Button to submit the compensation claim"
+  },
+  
+  "formSubmissionError": "Error submitting form: {message}",
+  "@formSubmissionError": {
+    "description": "Error message shown when form submission fails",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "networkError": "Network error. Please check your connection and try again.",
+  "@networkError": {
+    "description": "Error message shown when there's a network issue"
+  },
+  
+  "generalError": "An error occurred. Please try again later.",
+  "@generalError": {
+    "description": "Generic error message"
+  },
+  
+  "loginRequiredForClaim": "You must be logged in to submit a claim",
+  "@loginRequiredForClaim": {
+    "description": "Error message shown when user tries to submit a claim without being logged in"
+  },
+  
+  "errorConnectionFailed": "Connection failed. Please check your internet connection.",
+  "@errorConnectionFailed": {
+    "description": "Error message for connection failure"
+  },
+  
+  "errorApiLimitExceeded": "API request limit exceeded. Please try again later.",
+  "@errorApiLimitExceeded": {
+    "description": "Error message for API rate limiting"
+  },
+  
+  "errorGeneric": "An error occurred. Please try again.",
+  "@errorGeneric": {
+    "description": "Generic error message"
+  },
+  
+  "documentTypePassport": "Passport",
+  "@documentTypePassport": {
+    "description": "Document type: passport"
+  },
+  
+  "documentTypeBoardingPass": "Boarding Pass",
+  "@documentTypeBoardingPass": {
+    "description": "Document type: boarding pass"
+  },
+  
+  "documentTypeFlightTicket": "Flight Ticket",
+  "@documentTypeFlightTicket": {
+    "description": "Document type: flight ticket"
+  },
+  
+  "documentTypeReceipt": "Receipt",
+  "@documentTypeReceipt": {
+    "description": "Document type: receipt"
+  },
+  
+  "saveButton": "Save",
+  "@saveButton": {
+    "description": "Save button label"
+  },
+  
+  "cancelButton": "Cancel",
+  "@cancelButton": {
+    "description": "Cancel button label"
+  },
+  
+  "euCompensationEligible": "EU Compensation Eligible",
+  "@euCompensationEligible": {
+    "description": "Text indicating flight is eligible for EU compensation"
+  }
+}

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../core/services/service_initializer.dart';
 import '../models/document_ocr_result.dart';
 import '../viewmodels/document_scanner_viewmodel.dart';
@@ -56,9 +57,10 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
             );
           }
           
+          final localizations = AppLocalizations.of(context)!;
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Document Scanner'),
+              title: Text(localizations.documentScanner),
               actions: [
                 IconButton(
                   icon: const Icon(Icons.help_outline),
@@ -77,20 +79,23 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
   
   /// Build loading indicator with progress message
   Widget _buildLoadingIndicator() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('Processing document...'),
-          SizedBox(height: 8),
-          Text(
-            'Extracting text and identifying fields',
-            style: TextStyle(color: Colors.grey),
-          ),
-        ],
-      ),
+    return Center(
+      child: Builder(builder: (context) {
+        final localizations = AppLocalizations.of(context)!;
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(localizations.processingDocument),
+            const SizedBox(height: 8),
+            Text(
+              localizations.extractingText,
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ],
+        );
+      }),
     );
   }
   

@@ -1,0 +1,555 @@
+{
+  "@@locale": "pt",
+  
+  "appTitle": "Compensação de Voo",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  
+  "myFlights": "Meus Voos",
+  "@myFlights": {
+    "description": "Label for My Flights button"
+  },
+  
+  "myDocuments": "Meus Documentos",
+  "@myDocuments": {
+    "description": "Label for My Documents button"
+  },
+  
+  "welcomeMessage": "Bem-vindo à Compensação de Voo",
+  "@welcomeMessage": {
+    "description": "Welcome message displayed on the splash screen"
+  },
+  
+  "searchFlights": "Buscar Voos",
+  "@searchFlights": {
+    "description": "Button to search for flights"
+  },
+  
+  "uploadDocuments": "Carregar Documentos",
+  "@uploadDocuments": {
+    "description": "Button to upload flight documents"
+  },
+  
+  "checkFlightCompensation": "Verificar Elegibilidade para Compensação de Voo",
+  "@checkFlightCompensation": {
+    "description": "Button to check compensation eligibility"
+  },
+  
+  "submitClaim": "Enviar Reclamação",
+  "@submitClaim": {
+    "description": "Button to submit a compensation claim"
+  },
+  
+  "settings": "Configurações",
+  "@settings": {
+    "description": "Settings screen title"
+  },
+  
+  "languageSelection": "Idioma",
+  "@languageSelection": {
+    "description": "Language selection option in settings"
+  },
+  
+  "back": "Voltar",
+  "@back": {
+    "description": "Back button label"
+  },
+  
+  "arrivalsAt": "Chegadas em {airport}",
+  "@arrivalsAt": {
+    "description": "Title for airport arrivals screen",
+    "placeholders": {
+      "airport": {
+        "type": "String",
+        "example": "JFK Airport"
+      }
+    }
+  },
+  
+  "departuresFrom": "Partidas de {airport}",
+  "@departuresFrom": {
+    "description": "Title for airport departures screen",
+    "placeholders": {
+      "airport": {
+        "type": "String",
+        "example": "LAX Airport"
+      }
+    }
+  },
+  
+  "flightNumber": "Número do Voo",
+  "@flightNumber": {
+    "description": "Flight number label"
+  },
+  
+  "departureTime": "Horário de Partida",
+  "@departureTime": {
+    "description": "Departure time label"
+  },
+  
+  "arrivalTime": "Horário de Chegada",
+  "@arrivalTime": {
+    "description": "Arrival time label"
+  },
+  
+  "aircraft": "Aeronave",
+  "@aircraft": {
+    "description": "Label for aircraft type"
+  },
+  
+  "delay": "Atraso",
+  "@delay": {
+    "description": "Delay label"
+  },
+  
+  "cancelled": "Cancelado",
+  "@cancelled": {
+    "description": "Cancelled flight status"
+  },
+  
+  "onTime": "No Horário",
+  "@onTime": {
+    "description": "On-time flight status"
+  },
+  
+  "compensation": "Compensação",
+  "@compensation": {
+    "description": "Compensation label"
+  },
+  
+  "eligible": "Elegível",
+  "@eligible": {
+    "description": "Eligible for compensation status"
+  },
+  
+  "notEligible": "Não Elegível",
+  "@notEligible": {
+    "description": "Not eligible for compensation status"
+  },
+  
+  "profile": "Perfil",
+  "@profile": {
+    "description": "Profile screen title"
+  },
+  
+  "claims": "Reclamações",
+  "@claims": {
+    "description": "Claims screen title"
+  },
+  
+  "home": "Início",
+  "@home": {
+    "description": "Home screen title"
+  },
+  
+  "faq": "Perguntas Frequentes",
+  "@faq": {
+    "description": "FAQ screen title"
+  },
+  
+  "selectLanguage": "Selecione o Idioma",
+  "@selectLanguage": {
+    "description": "Title for language selection screen"
+  },
+  
+  "filterByAirline": "Filtrar por companhia aérea",
+  "@filterByAirline": {
+    "description": "Label for airline filter field"
+  },
+  
+  "flightStatusDelayed": "Atrasado",
+  "@flightStatusDelayed": {
+    "description": "Flight status: delayed"
+  },
+  
+  "flightStatusCancelled": "Cancelado",
+  "@flightStatusCancelled": {
+    "description": "Flight status: cancelled"
+  },
+  
+  "flightStatusDiverted": "Desviado",
+  "@flightStatusDiverted": {
+    "description": "Flight status: diverted"
+  },
+  
+  "flightStatusOnTime": "No horário",
+  "@flightStatusOnTime": {
+    "description": "Flight status: on time"
+  },
+  
+  "errorConnectionFailed": "Falha na conexão. Verifique sua conexão com a internet.",
+  "@errorConnectionFailed": {
+    "description": "Error message for connection failure"
+  },
+  
+  "errorApiLimitExceeded": "Limite de requisições da API excedido. Tente novamente mais tarde.",
+  "@errorApiLimitExceeded": {
+    "description": "Error message for API rate limiting"
+  },
+  
+  "errorGeneric": "Ocorreu um erro. Tente novamente.",
+  "@errorGeneric": {
+    "description": "Generic error message"
+  },
+  
+  "documentTypePassport": "Passaporte",
+  "@documentTypePassport": {
+    "description": "Document type: passport"
+  },
+  
+  "documentTypeBoardingPass": "Cartão de embarque",
+  "@documentTypeBoardingPass": {
+    "description": "Document type: boarding pass"
+  },
+  
+  "documentTypeFlightTicket": "Bilhete aéreo",
+  "@documentTypeFlightTicket": {
+    "description": "Document type: flight ticket"
+  },
+  
+  "documentTypeReceipt": "Recibo",
+  "@documentTypeReceipt": {
+    "description": "Document type: receipt"
+  },
+  
+  "saveButton": "Salvar",
+  "@saveButton": {
+    "description": "Save button label"
+  },
+  
+  "cancelButton": "Cancelar",
+  "@cancelButton": {
+    "description": "Cancel button label"
+  },
+  
+  "euCompensationEligible": "Voos Elegíveis para Compensação na UE",
+  "@euCompensationEligible": {
+    "description": "Label for EU compensation eligible flights"
+  },
+  
+  "cropDocument": "Recortar Documento",
+  "@cropDocument": {
+    "description": "Title for document crop screen"
+  },
+  
+  "crop": "Recortar",
+  "@crop": {
+    "description": "Crop button label"
+  },
+  
+  "rotate": "Girar",
+  "@rotate": {
+    "description": "Rotate button label"
+  },
+  
+  "aspectRatio": "Proporção",
+  "@aspectRatio": {
+    "description": "Aspect ratio button label"
+  },
+  
+  "adjustDocument": "Ajustar bordas do documento",
+  "@adjustDocument": {
+    "description": "Instructions for document cropping"
+  },
+  
+  "cropping": "Recortando...",
+  "@cropping": {
+    "description": "Message shown when document is being cropped"
+  },
+  
+  "aspectRatioFree": "Formato Livre",
+  "@aspectRatioFree": {
+    "description": "Free form aspect ratio mode"
+  },
+  
+  "aspectRatioSquare": "Quadrado (1:1)",
+  "@aspectRatioSquare": {
+    "description": "Square aspect ratio mode"
+  },
+  
+  "aspectRatioPortrait": "Retrato (3:4)",
+  "@aspectRatioPortrait": {
+    "description": "Portrait aspect ratio mode"
+  },
+  
+  "aspectRatioLandscape": "Paisagem (4:3)",
+  "@aspectRatioLandscape": {
+    "description": "Landscape aspect ratio mode"
+  },
+  
+  "aspectRatioMode": "Proporção: {mode}",
+  "@aspectRatioMode": {
+    "description": "Snackbar message for aspect ratio mode",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "documentOcrResult": "Resultado da Análise do Documento",
+  "@documentOcrResult": {
+    "description": "Title for document OCR result screen"
+  },
+  
+  "extractedFields": "Campos Extraídos",
+  "@extractedFields": {
+    "description": "Tab title for extracted fields"
+  },
+  
+  "fullText": "Texto Completo",
+  "@fullText": {
+    "description": "Tab title for full OCR text"
+  },
+  
+  "documentSaved": "Documento salvo",
+  "@documentSaved": {
+    "description": "Message when document is saved"
+  },
+  
+  "useExtractedData": "Usar Dados Extraídos",
+  "@useExtractedData": {
+    "description": "Button to use extracted data"
+  },
+  
+  "copyToClipboard": "Copiar para Área de Transferência",
+  "@copyToClipboard": {
+    "description": "Button to copy text to clipboard"
+  },
+  
+  "textCopied": "Texto copiado para a área de transferência",
+  "@textCopied": {
+    "description": "Message when text is copied to clipboard"
+  },
+  
+  "documentType": "Tipo de Documento",
+  "@documentType": {
+    "description": "Label for document type field"
+  },
+  
+  "saveDocument": "Salvar Documento",
+  "@saveDocument": {
+    "description": "Button to save document"
+  },
+  
+  "fieldName": "Nome do Campo",
+  "@fieldName": {
+    "description": "Column header for field name"
+  },
+  
+  "fieldValue": "Valor",
+  "@fieldValue": {
+    "description": "Column header for field value"
+  },
+  
+  "noFieldsExtracted": "Nenhum campo foi extraído deste documento",
+  "@noFieldsExtracted": {
+    "description": "Message when no fields were extracted from document"
+  },
+  
+  "extractedInformation": "Informações Extraídas",
+  "@extractedInformation": {
+    "description": "Heading for extracted information section"
+  },
+  
+  "rawOcrText": "Texto OCR Bruto",
+  "@rawOcrText": {
+    "description": "Heading for raw OCR text section"
+  },
+  
+  "copyAllText": "Copiar todo o texto",
+  "@copyAllText": {
+    "description": "Tooltip for copy all text button"
+  },
+  
+  "copiedToClipboard": "Copiado para a área de transferência",
+  "@copiedToClipboard": {
+    "description": "Message shown when text is copied to clipboard"
+  },
+  
+  "fillForm": "Preencher Formulário",
+  "@fillForm": {
+    "description": "Title for form selection dialog"
+  },
+  
+  "chooseUseInfo": "Escolha onde usar esta informação:",
+  "@chooseUseInfo": {
+    "description": "Instructions for form selection dialog"
+  },
+  
+  "compensationClaimForm": "Formulário de Pedido de Compensação",
+  "@compensationClaimForm": {
+    "description": "Option in form selection dialog"
+  },
+  
+  "fillPassengerFlight": "Preencher detalhes do passageiro e do voo",
+  "@fillPassengerFlight": {
+    "description": "Subtitle for compensation claim form option"
+  },
+  
+  "flightSearch": "Busca de Voos",
+  "@flightSearch": {
+    "description": "Option in form selection dialog"
+  },
+  
+  "searchFlightNumber": "Buscar usando número do voo",
+  "@searchFlightNumber": {
+    "description": "Subtitle for flight search option"
+  },
+  
+  "done": "Concluído",
+  "@done": {
+    "description": "Done button label"
+  },
+  
+  "delayedFlightDetected": "Voo Atrasado Detectado!",
+  "@delayedFlightDetected": {
+    "description": "Title of dialog when a delayed flight is detected"
+  },
+  
+  "welcome": "Bem-vindo",
+  "@welcome": {
+    "description": "Welcome greeting"
+  },
+  
+  "signOut": "Sair",
+  "@signOut": {
+    "description": "Sign out button"
+  },
+  
+  "flightDetected": "Voo Detectado!",
+  "@flightDetected": {
+    "description": "Title of dialog when a flight is detected"
+  },
+  
+  "flightLabel": "Voo: {number}",
+  "@flightLabel": {
+    "description": "Flight number label in detection dialog",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "fromAirport": "De: {airport}",
+  "@fromAirport": {
+    "description": "Departure airport label in detection dialog",
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "toAirport": "Para: {airport}",
+  "@toAirport": {
+    "description": "Arrival airport label in detection dialog",
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "statusLabel": "Status: {status}",
+  "@statusLabel": {
+    "description": "Flight status label in detection dialog",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "delayed": "Atrasado",
+  "@delayed": {
+    "description": "Flight status: delayed"
+  },
+  
+  "potentialCompensation": "Compensação Potencial",
+  "@potentialCompensation": {
+    "description": "Label for potential compensation amount"
+  },
+  
+  "preFillCompensationForm": "Pré-preencher Formulário",
+  "@preFillCompensationForm": {
+    "description": "Button to pre-fill compensation form"
+  },
+  
+  "delayedEligible": "Este voo está atrasado. Você pode ter direito a uma compensação.",
+  "@delayedEligible": {
+    "description": "Message about compensation eligibility for delayed flights"
+  },
+  
+  "dismiss": "Fechar",
+  "@dismiss": {
+    "description": "Dismiss button label"
+  },
+  
+  "startClaim": "Iniciar Pedido",
+  "@startClaim": {
+    "description": "Button to start a compensation claim"
+  },
+  
+  "home": "Início",
+  "@home": {
+    "description": "Home screen title"
+  },
+  
+  "checkCompensationEligibility": "Verificar Elegibilidade para Compensação de Voo",
+  "@checkCompensationEligibility": {
+    "description": "Button to check compensation eligibility"
+  },
+  
+  "euWideEligibleFlights": "Voos Elegíveis para Compensação na UE",
+  "@euWideEligibleFlights": {
+    "description": "Button to view EU-wide eligible flights"
+  },
+  
+  "pleaseEnterDepartureAirport": "Por favor, insira o aeroporto de partida",
+  "@pleaseEnterDepartureAirport": {
+    "description": "Validation message for departure airport field"
+  },
+  
+  "requiredFieldsCompleted": "Campos obrigatórios preenchidos",
+  "@requiredFieldsCompleted": {
+    "description": "Checklist item indicating required fields are completed"
+  },
+  
+  "scanningDocumentsNote": "Nota: A digitalização de documentos extrairá automaticamente informações para ajudar a preencher seu formulário de solicitação.",
+  "@scanningDocumentsNote": {
+    "description": "Note about document scanning benefits"
+  },
+  
+  "submitClaim": "Enviar Solicitação",
+  "@submitClaim": {
+    "description": "Button to submit the compensation claim"
+  },
+  
+  "formSubmissionError": "Erro ao enviar formulário: {message}",
+  "@formSubmissionError": {
+    "description": "Error message shown when form submission fails",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "networkError": "Erro de rede. Verifique sua conexão e tente novamente.",
+  "@networkError": {
+    "description": "Error message shown when there's a network issue"
+  },
+  
+  "generalError": "Ocorreu um erro. Por favor, tente novamente mais tarde.",
+  "@generalError": {
+    "description": "Generic error message"
+  },
+  
+  "loginRequiredForClaim": "Você deve estar logado para enviar uma solicitação",
+  "@loginRequiredForClaim": {
+    "description": "Error message shown when user tries to submit a claim without being logged in"
+  }
+}

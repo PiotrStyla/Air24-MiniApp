@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'faq_screen.dart';
 import 'profile_edit_screen.dart';
 import 'accessibility_settings_screen.dart';
@@ -9,29 +8,23 @@ import '../core/accessibility/accessibility_service.dart';
 import '../core/accessibility/accessible_widgets.dart';
 import '../services/localization_service.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  @override
   Widget build(BuildContext context) {
-    // Get accessibility service and localizations
+    // Get accessibility service
     final accessibilityService = Provider.of<AccessibilityService>(context);
-    final localizations = AppLocalizations.of(context)!;
     
     return Scaffold(
       appBar: AppBar(
         title: Semantics(
           header: true,
           label: accessibilityService.semanticLabel(
-            localizations.settings, 
+            'Profile', 
             'Your Profile and Settings'
           ),
-          child: Text(localizations.settings),
+          child: const Text('Profile'),
         ),
         actions: [
           Semantics(
@@ -140,10 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         MaterialPageRoute(
                           builder: (context) => const AccessibilitySettingsScreen(),
                         ),
-                      ).then((_) {
-                        // Force rebuild when returning from accessibility settings
-                        setState(() {});
-                      });
+                      );
                     },
                     backgroundColor: Colors.purple.shade50,
                     borderColor: Colors.purple.shade200,
@@ -182,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Semantics(
                     header: true,
                     child: Text(
-                      localizations.settings,
+                      'Application Preferences',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -192,18 +182,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   AccessibleCard(
                     title: 'Notification Settings',
                     semanticLabel: 'Configure notification preferences',
-                    onTap: () {
-                      // Show a toast message that this will be implemented in a future update
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Notification settings coming soon'),
-                        duration: const Duration(seconds: 2),
-                      ));
-                    },
                     child: Row(
                       children: [
                         const Icon(Icons.notifications_active),
                         const SizedBox(width: 16),
-                        Expanded(
+                        const Expanded(
                           child: Text('Configure how you receive claim updates'),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
@@ -215,23 +198,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Language Settings Card
                   AccessibleCard(
-                    title: localizations.languageSelection,
+                    title: 'Language',
                     semanticLabel: 'Change application language',
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const LanguageSelectionScreen(),
                         ),
-                      ).then((_) {
-                        // Force rebuild when returning from language selection
-                        setState(() {});
-                      });
+                      );
                     },
                     child: Row(
                       children: [
                         const Icon(Icons.language),
                         const SizedBox(width: 16),
-                        Expanded(
+                        const Expanded(
                           child: Text('Select your preferred language'),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),

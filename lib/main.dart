@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'firebase_options.dart';
 import 'core/services/service_initializer.dart';
 import 'core/accessibility/accessibility_service.dart';
 import 'services/auth_service.dart';
 import 'services/document_storage_service.dart';
 import 'services/firestore_service.dart';
+import 'services/localization_service.dart';
 import 'screens/main_navigation.dart';
 import 'screens/profile_edit_screen.dart';
 import 'screens/auth_screen.dart'; // Using new auth screen
@@ -15,6 +18,7 @@ import 'screens/email_auth_screen.dart'; // Keep for backward compatibility
 import 'screens/claim_submission_screen.dart';
 import 'screens/flight_compensation_checker_screen.dart';
 import 'screens/accessibility_settings_screen.dart';
+import 'screens/language_selection_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +31,9 @@ void main() async {
   // Initialize services
   ServiceInitializer.init();
   
+  // Initialize async services like localization
+  await ServiceInitializer.initAsync();
+  
   runApp(const F35FlightCompensationApp());
 }
 
@@ -35,8 +42,9 @@ class F35FlightCompensationApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get accessibility service instance
+    // Get service instances
     final accessibilityService = ServiceInitializer.get<AccessibilityService>();
+    final localizationService = ServiceInitializer.get<LocalizationService>();
     
     return MultiProvider(
       providers: [
@@ -49,6 +57,10 @@ class F35FlightCompensationApp extends StatelessWidget {
         ),
         Provider<FirestoreService>(
           create: (_) => ServiceInitializer.get<FirestoreService>(),
+        ),
+        // Provide localization service with change notifier
+        ChangeNotifierProvider<LocalizationService>.value(
+          value: localizationService,
         ),
         // Provide accessibility service
         ChangeNotifierProvider<AccessibilityService>.value(
@@ -69,46 +81,62 @@ class F35FlightCompensationApp extends StatelessWidget {
           // Apply accessibility settings to theme
           final theme = accessibilityService.getThemeData(baseTheme);
           
-          return MaterialApp(
-            title: 'Flight Compensation Assistant',
-            theme: theme,
-            // Support system text scaling preferences
-            builder: (context, child) {
-              if (child == null) return Container();
-              
-              // Apply text scaling safely based on accessibility settings
-              final MediaQueryData mediaQueryData = MediaQuery.of(context);
-              final double textScaleFactor = accessibilityService.largeTextMode ? 1.3 : 1.0;
-              
-              // Use the fixed textScaler to avoid assertion errors
-              return MediaQuery(
-                data: mediaQueryData.copyWith(
-                  // Use LinearTextScaler instead of directly specifying textScaler
-                  // This avoids assertion errors with fontSize
-                  textScaler: TextScaler.linear(textScaleFactor),
-                ),
-                child: child,
+          return Consumer<LocalizationService>(
+            builder: (context, localizationService, _) {
+              // Key ensures full app rebuild when localization changes
+              return MaterialApp(
+                key: ValueKey(localizationService.currentLocale.toString()),
+                title: 'Flight Compensation Assistant',
+                theme: theme,
+                // Add localization support
+                locale: localizationService.currentLocale,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: LocalizationService.supportedLocales,
+                // Support system text scaling preferences
+                builder: (context, child) {
+                  if (child == null) return Container();
+                  
+                  // Apply text scaling safely based on accessibility settings
+                  final MediaQueryData mediaQueryData = MediaQuery.of(context);
+                  final double textScaleFactor = accessibilityService.largeTextMode ? 1.3 : 1.0;
+                  
+                  // Use the fixed textScaler to avoid assertion errors
+                  return MediaQuery(
+                    data: mediaQueryData.copyWith(
+                      // Use LinearTextScaler instead of directly specifying textScaler
+                      // This avoids assertion errors with fontSize
+                      textScaler: TextScaler.linear(textScaleFactor),
+                    ),
+                    child: child,
+                  );
+                },
+                initialRoute: '/',
+                routes: {
+                  '/': (context) => const MainNavigation(),
+                  // New improved auth screen
+                  '/auth': (context) => const AuthScreen(),
+                  // Keep old auth screen for backward compatibility
+                  '/email-auth': (context) => const EmailAuthScreen(),
+                  '/edit-profile': (context) => const ProfileEditScreen(),
+                  '/compensation-checker': (context) => const FlightCompensationCheckerScreen(),
+                  '/accessibility-settings': (context) => const AccessibilitySettingsScreen(),
+                  '/language-selection': (context) => const LanguageSelectionScreen(),
+                  '/claim-submission': (context) {
+                    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+                    return ClaimSubmissionScreen(
+                      prefillFlightNumber: args?['prefillFlightNumber'],
+                      prefillDepartureAirport: args?['prefillDepartureAirport'],
+                      prefillArrivalAirport: args?['prefillArrivalAirport'],
+                      prefillFlightDate: args?['prefillFlightDate'],
+                    );
+                  },
+                },
               );
-            },
-            initialRoute: '/',
-            routes: {
-              '/': (context) => const MainNavigation(),
-              // New improved auth screen
-              '/auth': (context) => const AuthScreen(),
-              // Keep old auth screen for backward compatibility
-              '/email-auth': (context) => const EmailAuthScreen(),
-              '/edit-profile': (context) => const ProfileEditScreen(),
-              '/compensation-checker': (context) => const FlightCompensationCheckerScreen(),
-              '/accessibility-settings': (context) => const AccessibilitySettingsScreen(),
-              '/claim-submission': (context) {
-                final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-                return ClaimSubmissionScreen(
-                  prefillFlightNumber: args?['prefillFlightNumber'],
-                  prefillDepartureAirport: args?['prefillDepartureAirport'],
-                  prefillArrivalAirport: args?['prefillArrivalAirport'],
-                  prefillFlightDate: args?['prefillFlightDate'],
-                );
-              },
             },
           );
         },

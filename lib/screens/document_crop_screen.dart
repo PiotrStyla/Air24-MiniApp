@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:crop_image/crop_image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -39,9 +40,10 @@ class _DocumentCropScreenState extends State<DocumentCropScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Crop Document'),
+        title: Text(localizations.cropDocument),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: widget.onCancel,
@@ -50,7 +52,7 @@ class _DocumentCropScreenState extends State<DocumentCropScreen> {
           IconButton(
             icon: const Icon(Icons.aspect_ratio),
             onPressed: _toggleAspectRatio,
-            tooltip: 'Toggle aspect ratio',
+            tooltip: localizations.aspectRatio,
           ),
         ],
       ),
@@ -71,7 +73,7 @@ class _DocumentCropScreenState extends State<DocumentCropScreen> {
                   Expanded(
                     child: OutlinedButton.icon(
                       icon: const Icon(Icons.cancel),
-                      label: const Text('Cancel'),
+                      label: Text(localizations.cancel),
                       onPressed: widget.onCancel,
                     ),
                   ),
@@ -87,7 +89,7 @@ class _DocumentCropScreenState extends State<DocumentCropScreen> {
                               ),
                             )
                           : const Icon(Icons.check),
-                      label: Text(_isCropping ? 'Cropping...' : 'Crop'),
+                      label: Text(_isCropping ? localizations.cropping : localizations.crop),
                       onPressed: _isCropping ? null : _cropImage,
                     ),
                   ),
@@ -113,18 +115,19 @@ class _DocumentCropScreenState extends State<DocumentCropScreen> {
     }
     
     // Show a snackbar with the current aspect ratio mode
+    final localizations = AppLocalizations.of(context)!;
     final String aspectRatioText = controller.aspectRatio == null
-        ? 'Free Form'
+        ? localizations.aspectRatioFree
         : controller.aspectRatio == 1.0
-            ? 'Square (1:1)'
+            ? localizations.aspectRatioSquare
             : controller.aspectRatio == 0.75
-                ? 'Portrait (3:4)'
-                : 'Landscape (4:3)';
+                ? localizations.aspectRatioPortrait
+                : localizations.aspectRatioLandscape;
     
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Aspect Ratio: $aspectRatioText'),
+        content: Text(localizations.aspectRatioMode(aspectRatioText)),
         duration: const Duration(seconds: 1),
       ),
     );

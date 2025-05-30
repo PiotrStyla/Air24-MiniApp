@@ -8,6 +8,7 @@ import '../../services/document_ocr_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/flight_prediction_service.dart';
 import '../../services/claim_tracking_service.dart';
+import '../../services/localization_service.dart';
 import '../accessibility/accessibility_service.dart';
 import '../error/error_handler.dart';
 import '../../viewmodels/auth_viewmodel.dart';
@@ -37,6 +38,15 @@ class ServiceInitializer {
     _locator.registerLazySingleton<ErrorHandler>(() => ErrorHandler());
     _locator.registerLazySingleton<ClaimTrackingService>(() => ClaimTrackingService());
     _locator.registerLazySingleton<AccessibilityService>(() => AccessibilityService());
+    
+    // Register localization service
+    if (!_locator.isRegistered<LocalizationService>()) {
+      LocalizationService.create().then((service) {
+        if (!_locator.isRegistered<LocalizationService>()) {
+          _locator.registerSingleton<LocalizationService>(service);
+        }
+      });
+    }
     
     // Register viewmodels as factories
     _locator.registerFactory<AuthViewModel>(() => AuthViewModel(_locator<AuthService>()));
@@ -75,6 +85,20 @@ class ServiceInitializer {
   static void resetForTesting() {
     _locator.reset();
     _isTestMode = false;
+  }
+  
+  /// Set test mode
+  static void setTestMode(bool isTest) {
+    _isTestMode = isTest;
+  }
+  
+  /// Asynchronously initialize services that require async initialization
+  static Future<void> initAsync() async {
+    // Initialize any services that require async initialization
+    if (!_locator.isRegistered<LocalizationService>()) {
+      final localizationService = await LocalizationService.create();
+      _locator.registerSingleton<LocalizationService>(localizationService);
+    }
   }
   
   /// Get a mocked implementation in test mode

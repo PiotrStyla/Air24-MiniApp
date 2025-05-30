@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/firestore_service.dart';
 import '../services/document_storage_service.dart';
 import '../services/document_ocr_service.dart';
@@ -237,10 +238,12 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
   
   /// Show dialog with document upload/scan options
   void _showDocumentOptionsDialog() {
+    final localizations = AppLocalizations.of(context)!;
+    
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Add Document'),
+        title: Text(localizations.addDocument),
         contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -251,8 +254,8 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                 backgroundColor: Colors.blue.shade50,
                 child: const Icon(Icons.document_scanner, color: Colors.blue),
               ),
-              title: const Text('Scan Document'),
-              subtitle: const Text('Use camera to auto-fill form'),
+              title: Text(localizations.scanDocument),
+              subtitle: Text(localizations.scanDocumentHint),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _navigateToDocumentScanner();
@@ -265,8 +268,8 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                 backgroundColor: Colors.green.shade50,
                 child: const Icon(Icons.upload_file, color: Colors.green),
               ),
-              title: const Text('Upload Document'),
-              subtitle: const Text('Select from device storage'),
+              title: Text(localizations.uploadDocument),
+              subtitle: Text(localizations.uploadDocumentHint),
               onTap: () {
                 Navigator.of(ctx).pop();
                 _navigateToDocumentUpload();
@@ -276,7 +279,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
         ),
         actions: [
           TextButton(
-            child: const Text('Cancel'),
+            child: Text(localizations.cancel),
             onPressed: () => Navigator.of(ctx).pop(),
           ),
         ],
@@ -452,19 +455,25 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Supporting Documents',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.amber,
-            ),
-          ),
+          Builder(builder: (context) {
+            final localizations = AppLocalizations.of(context)!;
+            return Text(
+              localizations.supportingDocuments,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.amber,
+              ),
+            );
+          }),
           const SizedBox(height: 12),
-          const Text(
-            'Attach boarding passes, tickets, and other documents to strengthen your claim.',
-            style: TextStyle(fontSize: 14),
-          ),
+          Builder(builder: (context) {
+            final localizations = AppLocalizations.of(context)!;
+            return Text(
+              localizations.supportingDocumentsHint,
+              style: const TextStyle(fontSize: 14),
+            );
+          }),
           const SizedBox(height: 16),
           
           if (_loadingDocuments)
@@ -480,10 +489,13 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
               child: Text(_documentError!, style: TextStyle(color: Colors.red.shade800)),
             )
           else if (_attachedDocuments.isEmpty)
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text('No documents attached yet'),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Builder(builder: (context) {
+                  final localizations = AppLocalizations.of(context)!;
+                  return Text(localizations.noDocumentsYet);
+                }),
               ),
             )
           else
@@ -546,26 +558,31 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton.icon(
-                icon: const Icon(Icons.add),
-                label: const Text('Add Document'),
-                onPressed: () {
-                  if (_flightNumberController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter a flight number first')),
-                    );
-                    return;
-                  }
-                  
-                  _showDocumentOptionsDialog();
-                },
-              ),
+              Builder(builder: (context) {
+                final localizations = AppLocalizations.of(context)!;
+                return ElevatedButton.icon(
+                  icon: const Icon(Icons.add),
+                  label: Text(localizations.addDocument),
+                  onPressed: () {
+                    if (_flightNumberController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(localizations.enterFlightNumberFirst)),
+                      );
+                      return;
+                    }
+                    
+                    _showDocumentOptionsDialog();
+                  },
+                );
+              }),
               if (_attachedDocuments.isNotEmpty) ...[  
                 const SizedBox(width: 16),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.folder_open),
-                  label: const Text('View All'),
-                  onPressed: () {
+                Builder(builder: (context) {
+                  final localizations = AppLocalizations.of(context)!;
+                  return OutlinedButton.icon(
+                    icon: const Icon(Icons.folder_open),
+                    label: Text(localizations.viewAll),
+                    onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -574,8 +591,9 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                         ),
                       ),
                     ).then((_) => _loadFlightDocuments());
-                  },
-                ),
+                    },
+                  );
+                }),
               ],
             ],
           ),
@@ -594,22 +612,27 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
   }) {
     final isPrefilled = _prefilledFields[controllerName] == true;
     
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        // Add a prefill indicator icon for prefilled fields
-        suffixIcon: isPrefilled ? Tooltip(
-          message: 'Pre-filled from your profile',
-          child: Icon(Icons.account_circle, color: Colors.green, size: 20),
-        ) : null,
-        // Add a subtle background color for prefilled fields
-        fillColor: isPrefilled ? Colors.green.shade50 : null,
-        filled: isPrefilled,
-      ),
-      validator: required ? (v) => v == null || v.isEmpty ? 'Required' : null : null,
-    );
+    // Use Builder to access localizations from the context
+    return Builder(builder: (context) {
+      final localizations = AppLocalizations.of(context)!;
+      
+      return TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+          // Add a prefill indicator icon for prefilled fields
+          suffixIcon: isPrefilled ? Tooltip(
+            message: localizations.prefilledFromProfile,
+            child: Icon(Icons.account_circle, color: Colors.green, size: 20),
+          ) : null,
+          // Add a subtle background color for prefilled fields
+          fillColor: isPrefilled ? Colors.green.shade50 : null,
+          filled: isPrefilled,
+        ),
+        validator: required ? (v) => v == null || v.isEmpty ? localizations.thisFieldIsRequired : null : null,
+      );
+    });
   }
   
   /// Validate form fields and checklist items
@@ -625,9 +648,10 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
   Future<void> _submitForm() async {
     _validateForm();
     if (!_isFormValid) {
+      final localizations = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please complete all required fields and attach documents'),
+        SnackBar(
+          content: Text(localizations.completeAllFields),
           backgroundColor: Colors.orange,
         ),
       );
@@ -642,8 +666,9 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
+        final localizations = AppLocalizations.of(context)!;
         setState(() {
-          _errorMessage = 'You must be logged in to submit a claim';
+          _errorMessage = localizations.loginRequiredForClaim;
           _isLoading = false;
         });
         return;
@@ -684,8 +709,9 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
       
       // Show success message
       if (mounted) {
+        final localizations = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Claim submitted successfully')),
+          SnackBar(content: Text(localizations.claimSubmittedSuccessfully)),
         );
         
         // Navigate back to previous screen
@@ -693,8 +719,14 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
       }
     } catch (e) {
       if (mounted) {
+        final localizations = AppLocalizations.of(context)!;
         setState(() {
-          _errorMessage = 'Error submitting claim: $e';
+          // Format error message based on error type
+          if (e.toString().contains('network') || e.toString().contains('connection')) {
+            _errorMessage = localizations.networkError;
+          } else {
+            _errorMessage = localizations.formSubmissionError(e.toString());
+          }
           _isLoading = false;
         });
       }
@@ -718,9 +750,10 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Compensation Claim Form'),
+        title: Text(localizations.compensationClaimForm),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -729,7 +762,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionHeader('Flight Information'),
+              _buildSectionHeader(localizations.flightDetails),
               
               // Flight Information
               Card(
@@ -740,13 +773,14 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                     children: [
                       TextFormField(
                         controller: _airlineController,
-                        decoration: const InputDecoration(
-                          labelText: 'Airline',
+                        decoration: InputDecoration(
+                          labelText: localizations.airline,
                         ),
                         readOnly: true,
                         validator: (value) {
+                          final localizations = AppLocalizations.of(context)!;
                           if (value == null || value.isEmpty) {
-                            return 'Please enter the airline';
+                            return localizations.thisFieldIsRequired;
                           }
                           return null;
                         },
@@ -754,13 +788,14 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _flightNumberController,
-                        decoration: const InputDecoration(
-                          labelText: 'Flight Number',
+                        decoration: InputDecoration(
+                          labelText: localizations.flightNumber,
                         ),
                         readOnly: true,
                         validator: (value) {
+                          final localizations = AppLocalizations.of(context)!;
                           if (value == null || value.isEmpty) {
-                            return 'Please enter the flight number';
+                            return localizations.thisFieldIsRequired;
                           }
                           return null;
                         },
@@ -768,13 +803,14 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _departureDateController,
-                        decoration: const InputDecoration(
-                          labelText: 'Departure Date',
+                        decoration: InputDecoration(
+                          labelText: localizations.flightDate,
                         ),
                         readOnly: true,
                         validator: (value) {
+                          final localizations = AppLocalizations.of(context)!;
                           if (value == null || value.isEmpty) {
-                            return 'Please enter the departure date';
+                            return localizations.thisFieldIsRequired;
                           }
                           return null;
                         },
@@ -782,13 +818,14 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _departureAirportController,
-                        decoration: const InputDecoration(
-                          labelText: 'Departure Airport',
+                        decoration: InputDecoration(
+                          labelText: localizations.departureAirport,
                         ),
                         readOnly: true,
                         validator: (value) {
+                          final localizations = AppLocalizations.of(context)!;
                           if (value == null || value.isEmpty) {
-                            return 'Please enter the departure airport';
+                            return localizations.pleaseEnterDepartureAirport;
                           }
                           return null;
                         },
@@ -796,13 +833,14 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _arrivalAirportController,
-                        decoration: const InputDecoration(
-                          labelText: 'Arrival Airport',
+                        decoration: InputDecoration(
+                          labelText: localizations.arrivalAirport,
                         ),
                         readOnly: true,
                         validator: (value) {
+                          final localizations = AppLocalizations.of(context)!;
                           if (value == null || value.isEmpty) {
-                            return 'Please enter the arrival airport';
+                            return localizations.thisFieldIsRequired;
                           }
                           return null;
                         },
@@ -813,7 +851,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
               ),
               
               const SizedBox(height: 24),
-              _buildSectionHeader('Passenger Information'),
+              _buildSectionHeader(localizations.passengerDetails),
               
               // Passenger Information
               Card(
@@ -825,32 +863,32 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                       _buildPrefilledFormField(
                         controller: _passengerNameController,
                         controllerName: 'passengerName',
-                        labelText: 'Full Name',
-                        hintText: 'Enter your full name',
+                        labelText: localizations.passengerName,
+                        hintText: localizations.passengerName,
                         required: true,
                       ),
                       const SizedBox(height: 8),
                       _buildPrefilledFormField(
                         controller: _passengerEmailController,
                         controllerName: 'passengerEmail',
-                        labelText: 'Email',
-                        hintText: 'Enter your email address',
+                        labelText: localizations.email,
+                        hintText: localizations.email,
                         required: true,
                       ),
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _bookingReferenceController,
-                        decoration: const InputDecoration(
-                          labelText: 'Booking Reference',
-                          hintText: 'Optional: Enter your booking reference',
+                        decoration: InputDecoration(
+                          labelText: localizations.bookingReference,
+                          helperText: localizations.optional,
                         ),
                       ),
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _additionalInfoController,
-                        decoration: const InputDecoration(
-                          labelText: 'Additional Information',
-                          hintText: 'Optional: Any other details about your claim',
+                        decoration: InputDecoration(
+                          labelText: localizations.additionalInformation,
+                          helperText: localizations.optional,
                         ),
                         maxLines: 3,
                       ),
@@ -861,12 +899,12 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
               
               // Document Section
               const SizedBox(height: 24),
-              _buildSectionHeader('Supporting Documents'),
+              _buildSectionHeader(localizations.supportingDocuments),
               _buildDocumentSection(),
               
               // Submission Checklist
               const SizedBox(height: 24),
-              _buildSectionHeader('Submission Checklist'),
+              _buildSectionHeader(localizations.submissionChecklist),
               Card(
                 color: Colors.amber.shade50,
                 child: Padding(
@@ -885,15 +923,15 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                               : Colors.grey,
                           ),
                           const SizedBox(width: 12),
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Supporting Documents', 
-                              style: TextStyle(fontSize: 16),
+                              localizations.supportingDocuments, 
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ),
                           if (_checklistItems['documents'] == true)
                             Chip(
-                              label: const Text('Uploaded'),
+                              label: Text(localizations.uploaded),
                               backgroundColor: Colors.green.shade100,
                               labelStyle: TextStyle(color: Colors.green.shade800),
                               visualDensity: VisualDensity.compact,
@@ -902,7 +940,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                             if (_checklistItems['documents'] == true)
                               const SizedBox(width: 4),
                             Chip(
-                              label: const Text('Scanned'),
+                              label: Text(localizations.scanned),
                               backgroundColor: Colors.blue.shade100,
                               labelStyle: TextStyle(color: Colors.blue.shade800),
                               visualDensity: VisualDensity.compact,
@@ -922,18 +960,18 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                               : Colors.grey,
                           ),
                           const SizedBox(width: 12),
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Required Fields Completed', 
-                              style: TextStyle(fontSize: 16),
+                              localizations.requiredFieldsCompleted, 
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Note: Scanning documents will automatically extract information to help fill your claim form.',
-                        style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                      Text(
+                        localizations.scanningDocumentsNote,
+                        style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -950,7 +988,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: _isLoading
                         ? const CircularProgressIndicator()
-                        : const Text('Submit Claim', style: TextStyle(fontSize: 16)),
+                        : Text(localizations.submitClaim, style: const TextStyle(fontSize: 16)),
                   ),
                 ),
               ),
@@ -958,9 +996,27 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
               if (_errorMessage.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 16.0),
-                  child: Text(
-                    _errorMessage,
-                    style: const TextStyle(color: Colors.red),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12.0),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50],
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(color: Colors.red[200]!),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.error_outline, color: Colors.red[700]),
+                        const SizedBox(width: 12.0),
+                        Expanded(
+                          child: Text(
+                            _errorMessage,
+                            style: TextStyle(color: Colors.red[700]),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
             ],

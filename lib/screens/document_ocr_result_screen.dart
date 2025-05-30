@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/document_ocr_result.dart';
 import '../viewmodels/document_scanner_viewmodel.dart';
 import '../core/services/service_initializer.dart';
@@ -50,21 +51,22 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.ocrResult.documentType.displayName} Result'),
+        title: Text('${widget.ocrResult.documentType.displayName} - ${localizations.documentOcrResult}'),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Extracted Fields'),
-            Tab(text: 'Raw Text'),
+          tabs: [
+            Tab(text: localizations.extractedFields),
+            Tab(text: localizations.fullText),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: widget.onDone,
-            tooltip: 'Done',
+            tooltip: localizations.done,
           ),
         ],
       ),
@@ -83,7 +85,7 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
               Expanded(
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.assignment),
-                  label: const Text('Fill Form Fields'),
+                  label: Text(localizations.useExtractedData),
                   onPressed: () => _showFormFieldSelection(context),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -101,11 +103,12 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
   Widget _buildExtractedFieldsTab() {
     final extractedFields = widget.ocrResult.extractedFields;
     
+    final localizations = AppLocalizations.of(context)!;
     if (extractedFields.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
-          'No fields were extracted from this document',
-          style: TextStyle(color: Colors.grey),
+          localizations.noFieldsExtracted,
+          style: const TextStyle(color: Colors.grey),
         ),
       );
     }
@@ -129,9 +132,9 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
         ],
         
         // Extracted fields
-        const Text(
-          'Extracted Information',
-          style: TextStyle(
+        Text(
+          localizations.extractedInformation,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -184,6 +187,7 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
   
   /// Build tab for displaying raw OCR text
   Widget _buildRawTextTab() {
+    final localizations = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -191,9 +195,9 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
         children: [
           Row(
             children: [
-              const Text(
-                'Raw OCR Text',
-                style: TextStyle(
+              Text(
+                localizations.rawOcrText,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -202,7 +206,7 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
               IconButton(
                 icon: const Icon(Icons.content_copy),
                 onPressed: () => _copyToClipboard('raw_text'),
-                tooltip: 'Copy all text',
+                tooltip: localizations.copyAllText,
               ),
             ],
           ),
@@ -248,10 +252,11 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
     
     Clipboard.setData(ClipboardData(text: textToCopy));
     
+    final localizations = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 1),
+      SnackBar(
+        content: Text(localizations.copiedToClipboard),
+        duration: const Duration(seconds: 1),
       ),
     );
   }
@@ -260,22 +265,23 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
   void _showFormFieldSelection(BuildContext context) {
     final viewModel = ServiceInitializer.get<DocumentScannerViewModel>();
     
+    final localizations = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Fill Form'),
+        title: Text(localizations.fillForm),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Choose where to use this information:'),
+              Text(localizations.chooseUseInfo),
               const SizedBox(height: 16),
               _buildFormOptionButton(
                 context,
                 icon: Icons.article,
-                title: 'Compensation Claim Form',
-                subtitle: 'Fill passenger and flight details',
+                title: localizations.compensationClaimForm,
+                subtitle: localizations.fillPassengerFlight,
                 onPressed: () {
                   Navigator.of(ctx).pop();
                   _navigateToClaimForm(context);
@@ -285,8 +291,8 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
               _buildFormOptionButton(
                 context,
                 icon: Icons.flight_takeoff,
-                title: 'Flight Search',
-                subtitle: 'Search using flight number',
+                title: localizations.flightSearch,
+                subtitle: localizations.searchFlightNumber,
                 onPressed: () {
                   Navigator.of(ctx).pop();
                   _navigateToFlightSearch(context);
