@@ -1,0 +1,498 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/firestore_service.dart';
+import '../models/user_profile.dart';
+
+class CompensationClaimFormScreen extends StatefulWidget {
+  final Map<String, dynamic> flightData;
+  
+  const CompensationClaimFormScreen({Key? key, required this.flightData}) : super(key: key);
+
+  @override
+  _CompensationClaimFormScreenState createState() => _CompensationClaimFormScreenState();
+}
+
+class _CompensationClaimFormScreenState extends State<CompensationClaimFormScreen> {
+  final _formKey = GlobalKey<FormState>();
+  
+  // Form controllers
+  late TextEditingController _airlineController;
+  late TextEditingController _flightNumberController;
+  late TextEditingController _departureDateController;
+  late TextEditingController _departureAirportController;
+  late TextEditingController _arrivalAirportController;
+  late TextEditingController _scheduledArrivalController;
+  late TextEditingController _actualArrivalController;
+  late TextEditingController _delayController;
+  late TextEditingController _compensationAmountController;
+  late TextEditingController _passengerNameController;
+  late TextEditingController _passengerEmailController;
+  late TextEditingController _bookingReferenceController;
+  late TextEditingController _additionalInfoController;
+
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Initialize all controllers first
+    _airlineController = TextEditingController();
+    _flightNumberController = TextEditingController();
+    _departureDateController = TextEditingController();
+    _departureAirportController = TextEditingController();
+    _arrivalAirportController = TextEditingController();
+    _scheduledArrivalController = TextEditingController();
+    _actualArrivalController = TextEditingController();
+    _delayController = TextEditingController();
+    _compensationAmountController = TextEditingController();
+    _passengerNameController = TextEditingController(text: 'Piotr Styla');
+    _passengerEmailController = TextEditingController(text: 'p.styla@gmail.com');
+    _bookingReferenceController = TextEditingController();
+    _additionalInfoController = TextEditingController();
+    
+    // Process flight data
+    _processFlightData();
+    
+    // Try to load user profile
+    _loadUserProfile();
+  }
+  
+  void _processFlightData() {
+    final flight = widget.flightData;
+    
+    // Extract airline
+    String airline = '';
+    if (flight['airline'] is Map && flight['airline'].containsKey('name')) {
+      airline = flight['airline']['name'] ?? '';
+    } else if (flight['airline'] is String) {
+      airline = flight['airline'];
+    } else if (flight['airline_name'] is String) {
+      airline = flight['airline_name'];
+    }
+    
+    // Extract flight number
+    String flightNumber = '';
+    if (flight['number'] != null) {
+      flightNumber = flight['number'].toString();
+    } else if (flight['flight_number'] != null) {
+      flightNumber = flight['flight_number'].toString();
+    } else if (flight['flight'] != null) {
+      flightNumber = flight['flight'].toString();
+    }
+    
+    // Extract departure info
+    String departureAirport = '';
+    String departureDate = '';
+    if (flight['departure'] is Map) {
+      if (flight['departure']['airport'] is Map) {
+        departureAirport = '${flight['departure']['airport']['name'] ?? ''} (${flight['departure']['airport']['iata'] ?? flight['departure']['airport']['icao'] ?? ''})';
+      } else if (flight['departure_airport'] is String) {
+        departureAirport = flight['departure_airport'];
+      }
+      
+      if (flight['departure']['scheduledTime'] is Map) {
+        String dateTimeStr = flight['departure']['scheduledTime']['local'] ?? '';
+        if (dateTimeStr.isNotEmpty) {
+          try {
+            DateTime dt = DateTime.parse(dateTimeStr.replaceAll(' ', 'T'));
+            departureDate = DateFormat('yyyy-MM-dd').format(dt);
+          } catch (e) {
+            departureDate = dateTimeStr.split(' ').first;
+          }
+        }
+      } else if (flight['departure_date'] is String) {
+        departureDate = flight['departure_date'];
+      }
+    }
+    
+    // Extract arrival info
+    String arrivalAirport = '';
+    String scheduledArrival = '';
+    String actualArrival = '';
+    
+    // Check for both movement and arrival structures
+    if (flight['arrival'] is Map) {
+      if (flight['arrival']['airport'] is Map) {
+        arrivalAirport = '${flight['arrival']['airport']['name'] ?? ''} (${flight['arrival']['airport']['iata'] ?? flight['arrival']['airport']['icao'] ?? ''})';
+      }
+      scheduledArrival = flight['arrival']['scheduledTime'] is Map ?
+                      flight['arrival']['scheduledTime']['local'] ?? '' :
+                      flight['arrival']['scheduledTime'] ?? '';
+      actualArrival = flight['arrival']['actualTime'] is Map ?
+                    flight['arrival']['actualTime']['local'] ?? '' :
+                    flight['arrival']['actualTime'] ?? '';
+    } else if (flight['arrival_airport'] is String) {
+      arrivalAirport = flight['arrival_airport'];
+      scheduledArrival = flight['scheduled_arrival'] ?? '';
+      actualArrival = flight['actual_arrival'] ?? '';
+    }
+    
+    // Get delay information
+    String delay = '';
+    if (flight['delay_minutes'] != null) {
+      delay = _formatDelay(flight['delay_minutes']);
+    } else if (flight['delay'] != null) {
+      delay = _formatDelay(flight['delay']);
+    } else if (scheduledArrival.isNotEmpty && actualArrival.isNotEmpty) {
+      try {
+        DateTime scheduled = DateTime.parse(scheduledArrival.replaceAll(' ', 'T'));
+        DateTime actual = DateTime.parse(actualArrival.replaceAll(' ', 'T'));
+        int delayMinutes = actual.difference(scheduled).inMinutes;
+        if (delayMinutes > 0) {
+          delay = _formatDelay(delayMinutes);
+        }
+      } catch (e) {
+        delay = flight['status'] ?? '';
+      }
+    }
+    
+    // Get compensation amount
+    String compensation = '';
+    if (flight['compensation_amount_eur'] != null) {
+      compensation = '€${flight['compensation_amount_eur']}';
+    } else if (flight['compensationAmount'] != null) {
+      compensation = '€${flight['compensationAmount']}';
+    } else if (flight['distance_km'] != null) {
+      // Use the distance to calculate based on EU261 rules
+      int distanceKm = flight['distance_km'];
+      if (distanceKm <= 1500) {
+        compensation = '€250';
+      } else if (distanceKm <= 3500) {
+        compensation = '€400';
+      } else {
+        compensation = '€600';
+      }
+    } else if (flight['distance'] != null) {
+      int amount = _calculateCompensationAmount(flight);
+      compensation = '€$amount';
+    } else {
+      compensation = flight['status'] == 'Cancelled' ? '€600' : '€250';
+    }
+    
+    // Update controller values
+    _airlineController.text = airline;
+    _flightNumberController.text = flightNumber;
+    _departureDateController.text = departureDate;
+    _departureAirportController.text = departureAirport;
+    _arrivalAirportController.text = arrivalAirport;
+    _scheduledArrivalController.text = scheduledArrival;
+    _actualArrivalController.text = actualArrival;
+    _delayController.text = delay;
+    _compensationAmountController.text = compensation;
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      // Get the current user from Firebase Auth
+      final user = FirebaseAuth.instance.currentUser;
+      debugPrint('Current Firebase user: ${user?.email ?? 'No user logged in'}');
+      
+      if (user != null) {
+        // Use the FirestoreService to get the user profile
+        final firestoreService = FirestoreService();
+        debugPrint('Attempting to load profile for user: ${user.uid}');
+        
+        final userProfile = await firestoreService.getUserProfile(user.uid);
+        debugPrint('Profile loaded: ${userProfile != null ? 'Yes' : 'No'}');
+        
+        if (userProfile != null && mounted) {
+          debugPrint('Setting profile data: ${userProfile.fullName}, ${userProfile.email}');
+          setState(() {
+            // Pre-fill the form with user data
+            _passengerNameController.text = userProfile.fullName;
+            _passengerEmailController.text = userProfile.email;
+          });
+        } else {
+          // If no profile exists, use basic user data from Firebase Auth
+          if (mounted) {
+            setState(() {
+              // Use what's available from the Firebase user object
+              if (user.displayName != null && user.displayName!.isNotEmpty) {
+                _passengerNameController.text = user.displayName!;
+              }
+              if (user.email != null && user.email!.isNotEmpty) {
+                _passengerEmailController.text = user.email!;
+              }
+            });
+            debugPrint('Using Firebase Auth data: ${user.displayName}, ${user.email}');
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading user profile: $e');
+      // We already have default values set, so no need for additional fallback
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+  
+  @override
+  void dispose() {
+    _airlineController.dispose();
+    _flightNumberController.dispose();
+    _departureDateController.dispose();
+    _departureAirportController.dispose();
+    _arrivalAirportController.dispose();
+    _scheduledArrivalController.dispose();
+    _actualArrivalController.dispose();
+    _delayController.dispose();
+    _compensationAmountController.dispose();
+    _passengerNameController.dispose();
+    _passengerEmailController.dispose();
+    _bookingReferenceController.dispose();
+    _additionalInfoController.dispose();
+    super.dispose();
+  }
+  
+  String _formatDelay(dynamic minutes) {
+    int delayMinutes;
+    if (minutes is int) {
+      delayMinutes = minutes;
+    } else if (minutes is String) {
+      delayMinutes = int.tryParse(minutes) ?? 0;
+    } else {
+      delayMinutes = 0;
+    }
+    
+    if (delayMinutes < 60) {
+      return '$delayMinutes minutes';
+    } else {
+      final hours = delayMinutes ~/ 60;
+      final remainingMinutes = delayMinutes % 60;
+      return '$hours ${hours == 1 ? 'hour' : 'hours'} ${remainingMinutes > 0 ? '$remainingMinutes minutes' : ''}'.trim();
+    }
+  }
+  
+  int _calculateCompensationAmount(Map<String, dynamic> flight) {
+    int? distance = flight['distance'] as int?;
+    if (distance == null) {
+      // Estimate distance based on airports if available
+      distance = 1500; // Default medium distance
+    }
+    
+    // Apply EU261 compensation rules
+    if (distance <= 1500) {
+      return 250; // Short distance: €250
+    } else if (distance <= 3500) {
+      return 400; // Medium distance: €400
+    } else {
+      return 600; // Long distance: €600
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    
+    return Scaffold(
+      appBar: AppBar(title: const Text('Compensation Claim Form')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Flight Information Section
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Flight Information',
+                      style: TextStyle(
+                        fontSize: 18, 
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _airlineController,
+                      decoration: const InputDecoration(labelText: 'Airline'),
+                      readOnly: true,
+                    ),
+                    TextFormField(
+                      controller: _flightNumberController,
+                      decoration: const InputDecoration(labelText: 'Flight Number'),
+                      readOnly: true,
+                    ),
+                    TextFormField(
+                      controller: _departureDateController,
+                      decoration: const InputDecoration(labelText: 'Date of Flight'),
+                      readOnly: true,
+                    ),
+                    TextFormField(
+                      controller: _departureAirportController,
+                      decoration: const InputDecoration(labelText: 'Departure Airport'),
+                      readOnly: true,
+                    ),
+                    TextFormField(
+                      controller: _arrivalAirportController,
+                      decoration: const InputDecoration(labelText: 'Arrival Airport'),
+                      readOnly: true,
+                    ),
+                    TextFormField(
+                      controller: _scheduledArrivalController,
+                      decoration: const InputDecoration(labelText: 'Scheduled Arrival'),
+                      readOnly: true,
+                    ),
+                    TextFormField(
+                      controller: _actualArrivalController,
+                      decoration: const InputDecoration(labelText: 'Actual Arrival'),
+                      readOnly: true,
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Delay and Compensation Section
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orange.shade200),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Delay Information',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _delayController,
+                      decoration: const InputDecoration(labelText: 'Delay'),
+                      readOnly: true,
+                    ),
+                    TextFormField(
+                      controller: _compensationAmountController,
+                      decoration: const InputDecoration(labelText: 'Compensation Amount'),
+                      readOnly: true,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Passenger Information Section
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Passenger Information',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _passengerNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Full Name',
+                        hintText: 'Enter your full name',
+                      ),
+                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    ),
+                    TextFormField(
+                      controller: _passengerEmailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email Address',
+                        hintText: 'Enter your email address',
+                      ),
+                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    ),
+                    TextFormField(
+                      controller: _bookingReferenceController,
+                      decoration: const InputDecoration(
+                        labelText: 'Booking Reference',
+                        hintText: 'Optional: Enter your booking reference',
+                      ),
+                    ),
+                    TextFormField(
+                      controller: _additionalInfoController,
+                      decoration: const InputDecoration(
+                        labelText: 'Additional Information',
+                        hintText: 'Optional: Any additional details',
+                      ),
+                      maxLines: 3,
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Submit Button
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: _submitForm,
+                  icon: const Icon(Icons.send),
+                  label: const Text('SUBMIT CLAIM', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Claim submitted successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      
+      // In a real app, you would save the claim to Firestore here
+      
+      // Navigate back after a short delay
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pop(context);
+      });
+    }
+  }
+}

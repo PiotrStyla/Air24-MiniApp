@@ -1,0 +1,74 @@
+{
+  "flights": [
+    {
+      "flight_number": "LO281",
+      "airline": "LO",
+      "airline_name": "LOT Polish Airlines",
+      "departure_airport": "WAW",
+      "departure_date": "2025-05-22",
+      "arrival_airport": "LHR",
+      "arrival_date": "2025-05-22",
+      "status": "Cancelled",
+      "delay_minutes": 0,
+      "distance_km": 1450,
+      "compensation_amount_eur": 250,
+      "eligible_for_compensation": true
+    },
+    {
+      "flight_number": "AF1734",
+      "airline": "AF",
+      "airline_name": "Air France",
+      "departure_airport": "CDG",
+      "departure_date": "2025-05-22",
+      "arrival_airport": "BER",
+      "arrival_date": "2025-05-22",
+      "status": "Cancelled",
+      "delay_minutes": 0,
+      "distance_km": 880,
+      "compensation_amount_eur": 250,
+      "eligible_for_compensation": true
+    },
+    {
+      "flight_number": "AZ74",
+      "airline": "AZ",
+      "airline_name": "Alitalia",
+      "departure_airport": "FCO",
+      "departure_date": "2025-05-22",
+      "arrival_airport": "MAD",
+      "arrival_date": "2025-05-22",
+      "status": "Cancelled",
+      "delay_minutes": 0,
+      "distance_km": 1360,
+      "compensation_amount_eur": 250,
+      "eligible_for_compensation": true
+    },
+    {
+      "flight_number": "KL1695",
+      "airline": "KL",
+      "airline_name": "KLM",
+      "departure_airport": "AMS",
+      "departure_date": "2025-05-22",
+      "arrival_airport": "LIS",
+      "arrival_date": "2025-05-22",
+      "status": "Delayed",
+      "delay_minutes": 195,
+      "distance_km": 1860,
+      "compensation_amount_eur": 400,
+      "eligible_for_compensation": true
+    },
+    {
+      "flight_number": "OS305",
+      "airline": "OS",
+      "airline_name": "Austrian Airlines",
+      "departure_airport": "VIE",
+      "departure_date": "2025-05-22",
+      "arrival_airport": "CPH",
+      "arrival_date": "2025-05-22",
+      "status": "Delayed",
+      "delay_minutes": 210,
+      "distance_km": 720,
+      "compensation_amount_eur": 250,
+      "eligible_for_compensation": true
+    }
+  ]
+}

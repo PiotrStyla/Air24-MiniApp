@@ -67,7 +67,7 @@ class _AnimatedClaimsListState extends State<_AnimatedClaimsList> {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => ClaimDetailScreen(claim: claim),
+              builder: (context) => ClaimDetailScreen(claimId: claim.id),
             ),
           );
         },

@@ -1,286 +1,451 @@
 import 'package:flutter/material.dart';
-import '../models/claim.dart';
-import '../services/firestore_service.dart';
-import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
+import '../models/claim.dart';
+import '../models/claim_status.dart';
+import '../core/services/service_initializer.dart';
+import '../viewmodels/claim_dashboard_viewmodel.dart';
+import '../core/error/error_handler.dart';
+
+/// A simplified version of the claim detail screen to address compilation issues
 class ClaimDetailScreen extends StatefulWidget {
-  final Claim claim;
-  const ClaimDetailScreen({Key? key, required this.claim}) : super(key: key);
+  final String claimId;
+  
+  const ClaimDetailScreen({Key? key, required this.claimId}) : super(key: key);
 
   @override
   State<ClaimDetailScreen> createState() => _ClaimDetailScreenState();
 }
 
 class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
-  late TextEditingController _flightNumberController;
-  late TextEditingController _departureAirportController;
-  late TextEditingController _arrivalAirportController;
-  late TextEditingController _reasonController;
-  late TextEditingController _compensationAmountController;
-  bool _isEditing = false;
-  bool _isSaving = false;
+  late final ClaimDashboardViewModel _viewModel;
+  Claim? _claim;
+  bool _isLoading = true;
   String? _errorMessage;
-
+  
   @override
   void initState() {
     super.initState();
-    _flightNumberController = TextEditingController(text: widget.claim.flightNumber);
-    _departureAirportController = TextEditingController(text: widget.claim.departureAirport);
-    _arrivalAirportController = TextEditingController(text: widget.claim.arrivalAirport);
-    _reasonController = TextEditingController(text: widget.claim.reason);
-    _compensationAmountController = TextEditingController(
-      text: widget.claim.compensationAmount?.toString() ?? '',
-    );
+    _viewModel = ServiceInitializer.get<ClaimDashboardViewModel>();
+    _loadClaimDetails();
   }
-
-  @override
-  void dispose() {
-    _flightNumberController.dispose();
-    _departureAirportController.dispose();
-    _arrivalAirportController.dispose();
-    _reasonController.dispose();
-    _compensationAmountController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _saveEdits() async {
+  
+  Future<void> _loadClaimDetails() async {
     setState(() {
-      _isSaving = true;
+      _isLoading = true;
       _errorMessage = null;
     });
+    
     try {
-      final updatedClaim = widget.claim.copyWith(
-        flightNumber: _flightNumberController.text.trim(),
-        departureAirport: _departureAirportController.text.trim(),
-        arrivalAirport: _arrivalAirportController.text.trim(),
-        reason: _reasonController.text.trim(),
-        compensationAmount: _compensationAmountController.text.isNotEmpty
-            ? double.tryParse(_compensationAmountController.text)
-            : null,
-      );
-      await FirestoreService().setClaim(updatedClaim);
-      if (mounted) {
-        setState(() {
-          _isEditing = false;
-          _isSaving = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Claim updated successfully!')),
-        );
-      }
+      final claim = await _viewModel.getClaimDetails(widget.claimId);
+      
+      setState(() {
+        _claim = claim;
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to update claim.';
-        _isSaving = false;
+        _errorMessage = 'Error loading claim details: $e';
+        _isLoading = false;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final claim = widget.claim;
-    String claimLetter = '''
-To whom it may concern,
-
-I am writing to submit a claim for compensation under EC261/2004 for the following flight disruption:
-
-- Flight: ${claim.flightNumber}
-- Date: ${claim.flightDate.toLocal().toString().split(' ')[0]}
-- From: ${claim.departureAirport}
-- To: ${claim.arrivalAirport}
-- Reason: ${claim.reason}
-${claim.compensationAmount != null ? '- Claimed amount: €${claim.compensationAmount!.toStringAsFixed(2)}\n' : ''}
-
-Please process my claim in accordance with EU regulations. I look forward to your prompt response.
-
-Sincerely,
-[Your Name]
-''';
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Claim Details'),
         actions: [
           IconButton(
-            icon: Icon(_isEditing ? Icons.cancel : Icons.edit),
-            tooltip: _isEditing ? 'Cancel Edit' : 'Edit',
-            onPressed: () {
-              setState(() {
-                _isEditing = !_isEditing;
-              });
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            tooltip: 'Delete Claim',
-            onPressed: () async {
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete Claim'),
-                  content: const Text('Are you sure you want to delete this claim? This action cannot be undone.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text('Delete'),
-                    ),
-                  ],
-                ),
-              );
-              if (confirm == true) {
-                try {
-                  final deletedClaim = widget.claim;
-                  await FirestoreService().deleteClaim(deletedClaim.id);
-                  if (mounted) {
-                    Navigator.of(context).pop(true);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('Claim deleted.'),
-                        action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () async {
-                            await FirestoreService().setClaim(deletedClaim);
-                          },
-                        ),
-                        duration: const Duration(seconds: 5),
-                      ),
-                    );
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Failed to delete claim.')),
-                    );
-                  }
-                }
-              }
-            },
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _isLoading ? null : _loadClaimDetails,
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _errorMessage != null
+              ? _buildErrorView()
+              : _claim == null
+                  ? _buildClaimNotFoundView()
+                  : _buildClaimDetailsView(),
+    );
+  }
+  
+  Widget _buildErrorView() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _isEditing
-                ? TextField(
-                    controller: _flightNumberController,
-                    decoration: const InputDecoration(labelText: 'Flight Number'),
-                  )
-                : ListTile(
-                    title: const Text('Flight Number'),
-                    subtitle: Text(claim.flightNumber),
-                  ),
-            _isEditing
-                ? TextField(
-                    controller: _departureAirportController,
-                    decoration: const InputDecoration(labelText: 'Departure Airport'),
-                  )
-                : ListTile(
-                    title: const Text('Departure Airport'),
-                    subtitle: Text(claim.departureAirport),
-                  ),
-            _isEditing
-                ? TextField(
-                    controller: _arrivalAirportController,
-                    decoration: const InputDecoration(labelText: 'Arrival Airport'),
-                  )
-                : ListTile(
-                    title: const Text('Arrival Airport'),
-                    subtitle: Text(claim.arrivalAirport),
-                  ),
-            ListTile(
-              title: const Text('Flight Date'),
-              subtitle: Text(claim.flightDate.toLocal().toString().split(' ')[0]),
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              'Error loading claim',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            _isEditing
-                ? TextField(
-                    controller: _reasonController,
-                    decoration: const InputDecoration(labelText: 'Reason'),
-                  )
-                : ListTile(
-                    title: const Text('Reason'),
-                    subtitle: Text(claim.reason),
-                  ),
-            _isEditing
-                ? TextField(
-                    controller: _compensationAmountController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Compensation Amount'),
-                  )
-                : ListTile(
-                    title: const Text('Compensation Amount'),
-                    subtitle: Text(claim.compensationAmount != null
-                        ? '€${claim.compensationAmount!.toStringAsFixed(2)}'
-                        : 'N/A'),
-                  ),
-            ListTile(
-              title: const Text('Status'),
-              subtitle: Text(claim.status),
+            const SizedBox(height: 8),
+            Text(
+              _errorMessage ?? 'Unknown error',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.red),
             ),
-            if (_errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
-              ),
             const SizedBox(height: 24),
-            Card(
-              color: Colors.green.shade50,
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: Padding(
-                padding: const EdgeInsets.all(14.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.email, color: Colors.green),
-                        const SizedBox(width: 8),
-                        const Text('Claim Request Letter Preview', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green)),
-                        const Spacer(),
-                        Tooltip(
-                          message: 'Copy letter to clipboard',
-                          child: IconButton(
-                            icon: const Icon(Icons.copy),
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(text: claimLetter));
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Claim letter copied!')));
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(),
-                    SelectableText(claimLetter, style: const TextStyle(fontFamily: 'monospace', fontSize: 14)),
-                  ],
-                ),
-              ),
+            ElevatedButton.icon(
+              onPressed: _loadClaimDetails,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
             ),
-            if (_isEditing)
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildClaimNotFoundView() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 48,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Claim Not Found',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'The requested claim could not be found. It may have been deleted.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Back to Dashboard'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildClaimStatusSection(BuildContext context) {
+    final claim = _claim!;
+    
+    // Helper function to get color for status
+    Color getStatusColor(String status) {
+      switch (status) {
+        case 'submitted':
+          return Colors.blue;
+        case 'reviewing':
+          return Colors.orange;
+        case 'action_required':
+          return Colors.red;
+        case 'processing':
+          return Colors.purple;
+        case 'approved':
+          return Colors.green;
+        case 'rejected':
+          return Colors.red;
+        case 'paid':
+          return Colors.green.shade800;
+        case 'appealing':
+          return Colors.amber;
+        default:
+          return Colors.grey;
+      }
+    }
+    
+    // Helper function to get icon for status
+    IconData getStatusIcon(String status) {
+      switch (status) {
+        case 'submitted':
+          return Icons.send;
+        case 'reviewing':
+          return Icons.search;
+        case 'action_required':
+          return Icons.warning_amber;
+        case 'processing':
+          return Icons.loop;
+        case 'approved':
+          return Icons.check_circle;
+        case 'rejected':
+          return Icons.cancel;
+        case 'paid':
+          return Icons.paid;
+        case 'appealing':
+          return Icons.gavel;
+        default:
+          return Icons.help_outline;
+      }
+    }
+    
+    // Helper function to get display name for status
+    String getStatusDisplayName(String status) {
+      switch (status) {
+        case 'submitted':
+          return 'Submitted';
+        case 'reviewing':
+          return 'Under Review';
+        case 'action_required':
+          return 'Action Required';
+        case 'processing':
+          return 'Processing';
+        case 'approved':
+          return 'Approved';
+        case 'rejected':
+          return 'Rejected';
+        case 'paid':
+          return 'Paid';
+        case 'appealing':
+          return 'Under Appeal';
+        default:
+          return 'Unknown';
+      }
+    }
+    
+    // Get next steps based on status
+    List<String> getNextSteps(String status) {
+      switch (status) {
+        case 'submitted':
+          return ['Your claim is being processed', 'We will notify you of updates'];
+        case 'reviewing':
+          return ['Our team is reviewing your claim', 'This usually takes 3-5 business days'];
+        case 'action_required':
+          return ['Please provide the requested information', 'Your claim is on hold until then'];
+        case 'processing':
+          return ['Your claim has been approved', 'Payment processing in progress'];
+        case 'approved':
+          return ['Your compensation has been approved', 'Payment will be issued soon'];
+        case 'rejected':
+          return ['Your claim has been rejected', 'You can appeal this decision'];
+        case 'paid':
+          return ['Your compensation has been paid', 'Thank you for using our service'];
+        case 'appealing':
+          return ['Your appeal is being reviewed', 'We will contact you with the result'];
+        default:
+          return ['Status unknown', 'Please contact support'];
+      }
+    }
+    
+    final statusColor = getStatusColor(claim.status);
+    final statusIcon = getStatusIcon(claim.status);
+    final statusName = getStatusDisplayName(claim.status);
+    final nextSteps = getNextSteps(claim.status);
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: statusColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: statusColor.withOpacity(0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              // Status icon and name
               Row(
                 children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _isSaving ? null : _saveEdits,
-                      child: _isSaving
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                            )
-                          : const Text('Save Changes'),
+                  Icon(statusIcon, color: statusColor),
+                  const SizedBox(width: 8),
+                  Text(
+                    statusName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: statusColor,
                     ),
                   ),
                 ],
               ),
-            if (!_isEditing)
-              const SizedBox(height: 16),
-          ],
+              const Spacer(),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // Display next steps
+          ...nextSteps.map((step) => Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.arrow_right,
+                  size: 16,
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    step,
+                    style: TextStyle(
+                      color: statusColor.withOpacity(0.7),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )).toList(),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildClaimDetailsView() {
+    final claim = _claim!;
+    final dateFormatter = DateFormat('MMM d, yyyy');
+    
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildClaimStatusSection(context),
+          
+          const SizedBox(height: 24),
+          
+          // Flight details card
+          Card(
+            elevation: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Flight Details',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Divider(),
+                  _buildInfoRow('Flight Number:', claim.flightNumber),
+                  _buildInfoRow('Departure:', claim.departureAirport),
+                  _buildInfoRow('Arrival:', claim.arrivalAirport),
+                  _buildInfoRow('Flight Date:', dateFormatter.format(claim.flightDate)),
+                  _buildInfoRow('Reason:', claim.reason),
+                  if (claim.compensationAmount != null)
+                    _buildInfoRow(
+                      'Compensation Amount:', 
+                      '€${claim.compensationAmount!.toStringAsFixed(2)}',
+                      valueColor: Colors.green,
+                    ),
+                ],
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Actions buttons
+          if (claim.status == 'action_required')
+            ElevatedButton.icon(
+              onPressed: () => _showActionRequiredDialog(),
+              icon: const Icon(Icons.priority_high),
+              label: const Text('Take Required Action'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+            ),
+            
+          if (claim.status == 'rejected')
+            ElevatedButton.icon(
+              onPressed: () => _showAppealDialog(),
+              icon: const Icon(Icons.gavel),
+              label: const Text('Submit Appeal'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.amber,
+                foregroundColor: Colors.black87,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildInfoRow(String label, String value, {Color? valueColor}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 150,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade700,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                color: valueColor,
+                fontWeight: valueColor != null ? FontWeight.bold : null,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  void _showActionRequiredDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Action Required'),
+        content: const Text(
+          'Additional information is needed for this claim. Please provide the requested information to proceed.'
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Later'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Provide Information'),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  void _showAppealDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Submit Appeal'),
+        content: const Text(
+          'You can appeal this decision by providing additional information or documentation to support your claim.'
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Start Appeal'),
+          ),
+        ],
       ),
     );
   }

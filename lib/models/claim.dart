@@ -10,6 +10,9 @@ class Claim {
   final String reason; // delay, cancellation, etc.
   final double? compensationAmount;
   final String status; // pending, approved, rejected
+  final String bookingReference; // booking reference number
+  final String additionalInfo; // any additional information
+  final List<String> documentPaths; // paths to supporting documents
 
   Claim({
     required this.id,
@@ -21,6 +24,9 @@ class Claim {
     required this.reason,
     this.compensationAmount,
     required this.status,
+    this.bookingReference = '',
+    this.additionalInfo = '',
+    this.documentPaths = const [],
   });
 
   Claim copyWith({
@@ -33,6 +39,9 @@ class Claim {
     String? reason,
     double? compensationAmount,
     String? status,
+    String? bookingReference,
+    String? additionalInfo,
+    List<String>? documentPaths,
   }) {
     return Claim(
       id: id ?? this.id,
@@ -44,6 +53,9 @@ class Claim {
       reason: reason ?? this.reason,
       compensationAmount: compensationAmount ?? this.compensationAmount,
       status: status ?? this.status,
+      bookingReference: bookingReference ?? this.bookingReference,
+      additionalInfo: additionalInfo ?? this.additionalInfo,
+      documentPaths: documentPaths ?? this.documentPaths,
     );
   }
 
@@ -61,6 +73,11 @@ class Claim {
           ? (data['compensationAmount'] as num).toDouble()
           : null,
       status: data['status'] ?? 'pending',
+      bookingReference: data['bookingReference'] ?? '',
+      additionalInfo: data['additionalInfo'] ?? '',
+      documentPaths: data['documentPaths'] != null
+          ? List<String>.from(data['documentPaths'])
+          : [],
     );
   }
 
@@ -74,6 +91,9 @@ class Claim {
       'reason': reason,
       'compensationAmount': compensationAmount,
       'status': status,
+      'bookingReference': bookingReference,
+      'additionalInfo': additionalInfo,
+      'documentPaths': documentPaths,
     };
   }
 }

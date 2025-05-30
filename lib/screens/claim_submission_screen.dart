@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'faq_screen.dart';
 import '../services/airline_procedure_service.dart';
 import 'package:flutter/services.dart';
@@ -6,11 +7,16 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:math';
 import '../models/claim.dart';
+import '../models/document_ocr_result.dart';
 import '../services/firestore_service.dart';
 import '../services/claim_validation_service.dart';
 import '../services/opensky_api_service.dart';
+import '../core/services/service_initializer.dart';
+import '../viewmodels/document_scanner_viewmodel.dart';
+import 'document_scanner_screen.dart';
 
 class ClaimSubmissionScreen extends StatefulWidget {
   final String? prefillFlightNumber;
@@ -43,8 +49,15 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
   late final TextEditingController _arrivalAirportController;
   final _reasonController = TextEditingController();
   final _compensationAmountController = TextEditingController();
+  final _bookingReferenceController = TextEditingController();
+  final _additionalInfoController = TextEditingController();
   DateTime? _flightDate;
 
+  // Document attachment support
+  final List<File> _attachedDocuments = [];
+  bool _isDocumentProcessing = false;
+  late final DocumentScannerViewModel _documentScannerViewModel;
+  
   AirlineClaimProcedure? _airlineProcedure;
   String? _airlineProcedureError;
 
@@ -130,6 +143,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
     _flightNumberController = TextEditingController();
     _departureAirportController = TextEditingController();
     _arrivalAirportController = TextEditingController();
+    _documentScannerViewModel = ServiceInitializer.get<DocumentScannerViewModel>();
     // Set prefill values after controllers are created
     if (widget.prefillFlightNumber != null && widget.prefillFlightNumber!.isNotEmpty) {
       _flightNumberController.text = widget.prefillFlightNumber!;
@@ -276,7 +290,97 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
     _arrivalAirportController.dispose();
     _reasonController.dispose();
     _compensationAmountController.dispose();
+    _bookingReferenceController.dispose();
+    _additionalInfoController.dispose();
     super.dispose();
+  }
+  
+  /// Add a document to the claim
+  Future<void> _addDocument() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    
+    if (image != null) {
+      setState(() {
+        _attachedDocuments.add(File(image.path));
+      });
+    }
+  }
+  
+  /// Scan a document using the document scanner
+  Future<void> _scanDocument() async {
+    setState(() {
+      _isDocumentProcessing = true;
+    });
+    
+    try {
+      // Navigate to the document scanner screen
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DocumentScannerScreen(),
+        ),
+      );
+      
+      // Handle the scanned document if available
+      if (result != null && result is DocumentOcrResult) {
+        // Add the scanned document to the list
+        if (result.imagePath.isNotEmpty) {
+          setState(() {
+            _attachedDocuments.add(File(result.imagePath));
+          });
+        }
+        
+        // Pre-fill form fields if OCR extracted useful information
+        final fields = result.extractedFields;
+        
+        // Flight Number
+        if (fields.containsKey('flightNumber') && _flightNumberController.text.isEmpty) {
+          _flightNumberController.text = fields['flightNumber']!;
+        }
+        
+        // Departure Airport
+        if (fields.containsKey('departureAirport') && _departureAirportController.text.isEmpty) {
+          _departureAirportController.text = fields['departureAirport']!;
+        }
+        
+        // Arrival Airport
+        if (fields.containsKey('arrivalAirport') && _arrivalAirportController.text.isEmpty) {
+          _arrivalAirportController.text = fields['arrivalAirport']!;
+        }
+        
+        // Flight Date
+        if (fields.containsKey('flightDate') && _flightDate == null) {
+          try {
+            setState(() {
+              _flightDate = DateTime.parse(fields['flightDate']!);
+            });
+          } catch (e) {
+            // Ignore parsing errors
+          }
+        }
+        
+        // Booking Reference
+        if (fields.containsKey('bookingReference') && _bookingReferenceController.text.isEmpty) {
+          _bookingReferenceController.text = fields['bookingReference']!;
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error processing document: $e')),
+      );
+    } finally {
+      setState(() {
+        _isDocumentProcessing = false;
+      });
+    }
+  }
+  
+  /// Remove a document from the list
+  void _removeDocument(int index) {
+    setState(() {
+      _attachedDocuments.removeAt(index);
+    });
   }
 
   Future<void> _submitClaim() async {
@@ -299,6 +403,36 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
         });
         return;
       }
+      
+      // Check if user has attached documents (optional but recommended)
+      if (_attachedDocuments.isEmpty) {
+        final shouldContinue = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('No Documents Attached'),
+            content: const Text(
+              'It is recommended to attach supporting documents like boarding passes or tickets. Do you want to continue without documents?',
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Attach Documents'),
+                onPressed: () => Navigator.of(ctx).pop(false),
+              ),
+              TextButton(
+                child: const Text('Continue Anyway'),
+                onPressed: () => Navigator.of(ctx).pop(true),
+              ),
+            ],
+          ),
+        );
+        
+        if (shouldContinue == false) {
+          setState(() {
+            _isSubmitting = false;
+          });
+          return;
+        }
+      }
       final claim = Claim(
         id: const Uuid().v4(),
         userId: user.uid,
@@ -311,6 +445,9 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
             ? double.tryParse(_compensationAmountController.text)
             : null,
         status: 'pending',
+        bookingReference: _bookingReferenceController.text.trim(),
+        additionalInfo: _additionalInfoController.text.trim(),
+        documentPaths: _attachedDocuments.map((file) => file.path).toList(),
       );
       // --- Automated validation ---
       final userClaims = await FirestoreService().getClaimsForUser(user.uid);
@@ -740,6 +877,207 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
                     : const Text('Submit'),
+              ),
+              const SizedBox(height: 16),
+              
+              // Booking Reference and Additional Info
+              Container(
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Booking Reference',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _bookingReferenceController,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter your booking reference',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Additional Information',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _additionalInfoController,
+                      decoration: const InputDecoration(
+                        hintText: 'Any other details about your claim',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      ),
+                      maxLines: 3,
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Supporting Documents Section
+              Container(
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.amber.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.amber.shade200),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Supporting Documents',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.amber),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Attach boarding passes, tickets, and other documents to strengthen your claim.',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 12),
+                    if (_attachedDocuments.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: Text('No documents attached yet', style: TextStyle(fontStyle: FontStyle.italic)),
+                        ),
+                      )
+                    else
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _attachedDocuments.length,
+                        itemBuilder: (context, index) {
+                          final document = _attachedDocuments[index];
+                          return ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: Image.file(
+                                document,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => Container(
+                                  width: 50,
+                                  height: 50,
+                                  color: Colors.grey.shade300,
+                                  child: const Icon(Icons.description, color: Colors.grey),
+                                ),
+                              ),
+                            ),
+                            title: Text('Document ${index + 1}'),
+                            subtitle: Text(document.path.split('/').last),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => _removeDocument(index),
+                            ),
+                          );
+                        },
+                      ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.add_a_photo),
+                          label: const Text('Scan Document'),
+                          onPressed: _isDocumentProcessing ? null : _scanDocument,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.amber.shade600,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.upload_file),
+                          label: const Text('Upload'),
+                          onPressed: _addDocument,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Submission Checklist
+              Container(
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue.shade200),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Submission Checklist',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue),
+                    ),
+                    const SizedBox(height: 12),
+                    CheckboxListTile(
+                      title: const Text('Supporting Documents'),
+                      subtitle: const Text('Boarding passes, tickets, correspondence'),
+                      value: _attachedDocuments.isNotEmpty,
+                      onChanged: (value) {
+                        if (value == true && _attachedDocuments.isEmpty) {
+                          _scanDocument();
+                        }
+                      },
+                      activeColor: Colors.blue,
+                      checkColor: Colors.white,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    CheckboxListTile(
+                      title: const Text('Required Fields Completed'),
+                      subtitle: const Text('Flight details, reason for claim'),
+                      value: _formKey.currentState?.validate() ?? false,
+                      onChanged: null,
+                      activeColor: Colors.blue,
+                      checkColor: Colors.white,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 16),
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
+                ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isSubmitting ? null : _submitClaim,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text('Submit', style: TextStyle(fontSize: 16)),
+                ),
               ),
               const SizedBox(height: 24),
               Container(

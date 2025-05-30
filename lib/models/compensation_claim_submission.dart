@@ -18,6 +18,7 @@ class CompensationClaimSubmission {
   final String status;
   final bool hasAllDocuments;
   final List<String> completedChecklistItems;
+  final List<String> documentIds; // IDs of attached flight documents
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -38,6 +39,7 @@ class CompensationClaimSubmission {
     required this.status,
     required this.hasAllDocuments,
     required this.completedChecklistItems,
+    this.documentIds = const [], // Default to empty list if not provided
     required this.createdAt,
     this.updatedAt,
   });
@@ -49,6 +51,7 @@ class CompensationClaimSubmission {
     required Map<String, dynamic> flightData,
     required List<String> completedChecklistItems,
     required bool hasAllDocuments,
+    List<String> documentIds = const [],
   }) {
     // Extract delay minutes from form or flight data
     int delayMinutes = 0;
@@ -86,6 +89,7 @@ class CompensationClaimSubmission {
       status: 'Submitted', // Initial status
       hasAllDocuments: hasAllDocuments,
       completedChecklistItems: completedChecklistItems,
+      documentIds: documentIds, // Include attached document IDs
       createdAt: DateTime.now(),
     );
   }
@@ -108,6 +112,7 @@ class CompensationClaimSubmission {
       'status': status,
       'hasAllDocuments': hasAllDocuments,
       'completedChecklistItems': completedChecklistItems,
+      'documentIds': documentIds,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
     };
@@ -134,6 +139,7 @@ class CompensationClaimSubmission {
       status: data['status'] ?? 'Submitted',
       hasAllDocuments: data['hasAllDocuments'] ?? false,
       completedChecklistItems: List<String>.from(data['completedChecklistItems'] ?? []),
+      documentIds: List<String>.from(data['documentIds'] ?? []),
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       updatedAt: data['updatedAt'] != null ? (data['updatedAt'] as Timestamp).toDate() : null,
     );
@@ -157,6 +163,7 @@ class CompensationClaimSubmission {
     String? status,
     bool? hasAllDocuments,
     List<String>? completedChecklistItems,
+    List<String>? documentIds,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -177,6 +184,7 @@ class CompensationClaimSubmission {
       status: status ?? this.status,
       hasAllDocuments: hasAllDocuments ?? this.hasAllDocuments,
       completedChecklistItems: completedChecklistItems ?? this.completedChecklistItems,
+      documentIds: documentIds ?? this.documentIds,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt ?? DateTime.now(),
     );

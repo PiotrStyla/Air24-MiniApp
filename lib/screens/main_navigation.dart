@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
+
+// Screens
 import 'home_screen.dart';
 import 'claims_screen.dart';
 import 'profile_screen.dart';
@@ -6,14 +11,23 @@ import 'faq_screen.dart';
 import 'confirmed_flights_screen.dart';
 import 'quick_claim_screen.dart';
 import 'claim_submission_screen.dart';
+import 'document_management_screen.dart';
+import 'claim_detail_screen.dart';
+import 'claim_dashboard_screen.dart';
+
+// Services
 import '../services/airport_utils.dart';
-import '../models/confirmed_flight.dart';
 import '../services/confirmed_flight_storage.dart';
 import '../services/opensky_service.dart';
-import 'package:geolocator/geolocator.dart';
-import 'dart:async';
 import '../services/location_history_manager.dart';
-import '../services/airport_utils.dart';
+import '../services/notification_service.dart';
+
+// Models
+import '../models/confirmed_flight.dart';
+
+// Core
+import '../core/services/service_initializer.dart';
+import '../core/error/error_handler.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -26,11 +40,15 @@ class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
   Timer? _locationTimer;
   final LocationHistoryManager _historyManager = LocationHistoryManager();
+  late final NotificationService _notificationService;
+  late final ErrorHandler _errorHandler;
+  StreamSubscription<String>? _notificationSubscription;
+  StreamSubscription<AppError>? _errorSubscription;
 
   static final List<Widget> _screens = [
     HomeScreen(),
-    ClaimsScreen(),
-    // Wrap ProfileScreen with a button for confirmed flights
+    const ClaimDashboardScreen(),
+    // Wrap ProfileScreen with action buttons
     Builder(
       builder: (context) => Stack(
         children: [
@@ -38,14 +56,51 @@ class _MainNavigationState extends State<MainNavigation> {
           Positioned(
             right: 16,
             top: 16,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.flight_takeoff),
+                      label: const Text('My Flights'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueGrey,
+                        foregroundColor: Colors.white,
+                        elevation: 2,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ConfirmedFlightsScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    Tooltip(
+                      message: 'FAQ & Help',
+                      child: IconButton(
+                        icon: const Icon(Icons.help_outline, color: Colors.blue),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => FAQScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.flight_takeoff),
-                  label: const Text('My Flights'),
+                  icon: const Icon(Icons.description),
+                  label: const Text('My Documents'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueGrey,
+                    backgroundColor: Colors.teal,
                     foregroundColor: Colors.white,
                     elevation: 2,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -53,24 +108,10 @@ class _MainNavigationState extends State<MainNavigation> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => ConfirmedFlightsScreen(),
+                        builder: (context) => const DocumentManagementScreen(),
                       ),
                     );
                   },
-                ),
-                const SizedBox(width: 8),
-                Tooltip(
-                  message: 'FAQ & Help',
-                  child: IconButton(
-                    icon: const Icon(Icons.help_outline, color: Colors.blue),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => FAQScreen(),
-                        ),
-                      );
-                    },
-                  ),
                 ),
               ],
             ),
@@ -83,12 +124,88 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   void initState() {
     super.initState();
+    
+    // Initialize location tracking
     _startLocationSampling();
+    
+    // Initialize notifications
+    _initializeNotifications();
+    
+    // Initialize error handling
+    _initializeErrorHandling();
+  }
+  
+  /// Initialize push notifications
+  Future<void> _initializeNotifications() async {
+    try {
+      // Get notification service from DI container
+      _notificationService = ServiceInitializer.get<NotificationService>();
+      
+      // Initialize notifications
+      await _notificationService.initialize();
+      
+      // Register device token
+      await _notificationService.saveDeviceToken();
+      
+      // Listen for notification taps
+      _notificationSubscription = _notificationService.notificationTaps.listen(_handleNotificationTap);
+    } catch (e) {
+      debugPrint('Error initializing notifications: $e');
+    }
+  }
+  
+  /// Handle notification tap events
+  void _handleNotificationTap(String claimId) {
+    if (claimId.isNotEmpty) {
+      // Navigate to claim details
+      _navigateToClaimDetail(claimId);
+      
+      // Switch to dashboard tab
+      setState(() {
+        _selectedIndex = 1; // Index of dashboard tab
+      });
+    }
+  }
+  
+  /// Navigate to claim detail screen
+  void _navigateToClaimDetail(String claimId) {
+    // Use a small delay to ensure state is updated
+    Future.delayed(const Duration(milliseconds: 300), () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ClaimDetailScreen(claimId: claimId),
+        ),
+      );
+    });
+  }
+  
+  /// Initialize centralized error handling
+  void _initializeErrorHandling() {
+    try {
+      // Get error handler from DI container
+      _errorHandler = ServiceInitializer.get<ErrorHandler>();
+      
+      // Listen to app-wide errors
+      _errorSubscription = _errorHandler.errorStream.listen(_handleErrorNotification);
+    } catch (e) {
+      debugPrint('Error initializing error handling: $e');
+    }
+  }
+  
+  /// Handle errors that need UI notification
+  void _handleErrorNotification(AppError error) {
+    // If context is available, show error UI
+    if (mounted && context.mounted) {
+      _errorHandler.showErrorUI(context, error);
+    }
   }
 
   @override
   void dispose() {
+    // Cancel all timers and subscriptions
     _locationTimer?.cancel();
+    _notificationSubscription?.cancel();
+    _errorSubscription?.cancel();
     super.dispose();
   }
 
@@ -252,6 +369,8 @@ class _MainNavigationState extends State<MainNavigation> {
   }
 
   void _onItemTapped(int index) {
+    // Map the new navigation structure (3 tabs instead of 4)
+    // 0 = Home, 1 = Claims Dashboard, 2 = Profile
     setState(() {
       _selectedIndex = index;
     });
@@ -264,17 +383,23 @@ class _MainNavigationState extends State<MainNavigation> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
+            icon: Icon(Icons.dashboard_outlined),
+            activeIcon: Icon(Icons.dashboard),
             label: 'Claims',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
             label: 'Profile',
           ),
         ],

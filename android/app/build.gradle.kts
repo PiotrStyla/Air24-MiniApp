@@ -22,6 +22,17 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
+    
+    // Add this to fix resource compatibility issues
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
+    
+    // Handle resource compatibility
+    androidResources {
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).

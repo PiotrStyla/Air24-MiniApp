@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_profile.dart';
 import '../models/claim.dart';
+import '../models/compensation_claim_submission.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -61,5 +62,19 @@ class FirestoreService {
   // Delete a claim by ID
   Future<void> deleteClaim(String claimId) async {
     await _db.collection('claims').doc(claimId).delete();
+  }
+  
+  // Submit a compensation claim
+  Future<void> submitCompensationClaim(CompensationClaimSubmission claim) async {
+    // Use the claim ID as the document ID
+    await _db.collection('compensation_claims').doc(claim.id).set(claim.toMap());
+    
+    // Also add to user's claims collection for easier retrieval
+    await _db
+        .collection('users')
+        .doc(claim.userId)
+        .collection('compensation_claims')
+        .doc(claim.id)
+        .set(claim.toMap());
   }
 }
