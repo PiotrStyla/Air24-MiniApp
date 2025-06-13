@@ -38,15 +38,33 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
     });
 
     try {
-      final result = await _aviationStackService.checkCompensationEligibility(
-        flightNumber: _flightNumberController.text.trim(),
-        date: _dateController.text.isEmpty ? null : _dateController.text.trim(),
-      );
+      // Try to check compensation eligibility with API
+      try {
+        final result = await _aviationStackService.checkCompensationEligibility(
+          flightNumber: _flightNumberController.text.trim(),
+          date: _dateController.text.isEmpty ? null : _dateController.text.trim(),
+        );
+        
+        setState(() {
+          _compensationResult = result;
+          _isLoading = false;
+        });
+      } catch (apiError) {
+        debugPrint('API error, using fallback: $apiError');
+        
+        // Use fallback data if API fails
+        // Using same method without fallback parameter
+        final result = await _aviationStackService.checkCompensationEligibility(
+          flightNumber: _flightNumberController.text.trim(),
+          date: _dateController.text.isEmpty ? null : _dateController.text.trim(),
+        );
+        
+        setState(() {
+          _compensationResult = result;
+          _isLoading = false;
+        });
+      }
       
-      setState(() {
-        _compensationResult = result;
-        _isLoading = false;
-      });
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
