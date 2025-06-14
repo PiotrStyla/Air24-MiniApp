@@ -36,6 +36,11 @@ class LocalizationService extends ChangeNotifier {
   /// Get the current locale
   Locale get currentLocale => _currentLocale;
   
+  /// Get display language name based on language code
+  String getDisplayLanguage(String languageCode) {
+    return languageNames[languageCode] ?? languageCode;
+  }
+  
   /// Private constructor
   LocalizationService._();
   
@@ -113,8 +118,5 @@ class LocalizationService extends ChangeNotifier {
     return false;
   }
   
-  /// Get the display name for a language code
-  String getDisplayLanguage(String code) {
-    return languageNames[code] ?? code;
-  }
+  // We already have a getDisplayLanguage method that was added earlier
 }

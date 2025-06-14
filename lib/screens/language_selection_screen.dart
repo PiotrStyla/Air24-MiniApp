@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/localization_service.dart';
+import '../utils/translation_initializer.dart';
 import 'localization_debug_screen.dart';
 
 /// A screen that allows users to select their preferred language.
@@ -91,9 +92,20 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                         ? Icon(Icons.check_circle, color: Theme.of(context).primaryColor)
                         : null,
                       onTap: () async {
+                        // First update the main localization service
                         await _localizationService.changeLanguage(locale);
+                        
+                        // Ensure all translations are loaded for the new language
+                        TranslationInitializer.ensureAllTranslations();
+                        
+                        // Additional step for all languages to ensure UI is updated
                         if (mounted) {
                           setState(() {});
+                          
+                          // Show feedback to the user that language has changed
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Language changed to ${_localizationService.getDisplayLanguage(locale.languageCode)}'))
+                          );
                         }
                       },
                     ),

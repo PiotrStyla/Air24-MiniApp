@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_profile.dart';
 import '../services/firestore_service.dart';
+import '../utils/translation_helper.dart';
+import '../utils/translation_initializer.dart';
 
 
 class ProfileEditScreen extends StatefulWidget {
@@ -41,6 +43,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     _cityController = TextEditingController();
     _postalController = TextEditingController();
     _countryController = TextEditingController();
+    
+    // Ensure all translations are properly loaded
+    TranslationInitializer.ensureAllTranslations();
     
     // Then load profile data
     _loadProfile();
@@ -100,7 +105,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       if (mounted) {
         setState(() => _loading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading profile: $e'))
+          SnackBar(content: Text(TranslationHelper.getString(
+            context, 
+            'errorLoadingProfile', 
+            fallback: 'Error loading profile: $e'
+          )))
         );
       }
     }
@@ -126,7 +135,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       consentToNotifications: _consentNotifications,
     );
     await FirestoreService().setUserProfile(profile);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile saved!')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(TranslationHelper.getString(context, 'profileSaved', fallback: 'Profile saved!'))
+    ));
   }
 
   @override
@@ -135,7 +146,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Profile')),
+      appBar: AppBar(title: Text(TranslationHelper.getString(context, 'editProfile', fallback: 'Edit Profile'))),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -154,7 +165,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Please ensure your profile information is accurate. This is needed for claim processing and to contact you about your compensation.',
+                      TranslationHelper.getString(
+                        context, 
+                        'profileAccuracyInfo', 
+                        fallback: 'Please ensure your profile information is accurate. This is needed for claim processing and to contact you about your compensation.'
+                      ),
                       style: TextStyle(color: Colors.blue[900]),
                     ),
                   ),
@@ -172,14 +187,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Tips & Reminders',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
+                  Text(
+                    TranslationHelper.getString(context, 'tipsAndReminders', fallback: 'Tips & Reminders'),
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
                   ),
                   const SizedBox(height: 6),
-                  const Text('• Keep your profile up to date for smooth claim processing.'),
-                  const Text('• Your information is private and only used for compensation claims.'),
-                  const Text('• Make sure your contact details are correct so we can reach you about your claim.'),
+                  Text('• ${TranslationHelper.getString(context, 'keepProfileUpToDate', fallback: 'Keep your profile up to date for smooth claim processing.')}'),
+                  Text('• ${TranslationHelper.getString(context, 'profilePrivacy', fallback: 'Your information is private and only used for compensation claims.')}'),
+                  Text('• ${TranslationHelper.getString(context, 'correctContactDetails', fallback: 'Make sure your contact details are correct so we can reach you about your claim.')}'),
                 ],
               ),
             ),
@@ -190,29 +205,29 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 children: [
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(labelText: 'Full Name'),
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'fullName', fallback: 'Full Name')),
+                    validator: (v) => v == null || v.isEmpty ? TranslationHelper.getString(context, 'required', fallback: 'Required') : null,
                   ),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: const InputDecoration(labelText: 'Phone Number'),
-                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'phoneNumber', fallback: 'Phone Number')),
+                    validator: (v) => v == null || v.isEmpty ? TranslationHelper.getString(context, 'required', fallback: 'Required') : null,
                   ),
                   TextFormField(
                     controller: _passportController,
-                    decoration: const InputDecoration(labelText: 'Passport Number'),
+                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'passportNumber', fallback: 'Passport Number')),
                   ),
                   TextFormField(
                     controller: _nationalityController,
-                    decoration: const InputDecoration(labelText: 'Nationality'),
+                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'nationality', fallback: 'Nationality')),
                   ),
                   // Date of Birth with date picker
                   TextFormField(
                     controller: _dobController,
-                    decoration: const InputDecoration(
-                      labelText: 'Date of Birth',
-                      prefixIcon: Icon(Icons.calendar_today),
-                      hintText: 'YYYY-MM-DD',
+                    decoration: InputDecoration(
+                      labelText: TranslationHelper.getString(context, 'dateOfBirth', fallback: 'Date of Birth'),
+                      prefixIcon: const Icon(Icons.calendar_today),
+                      hintText: TranslationHelper.getString(context, 'dateFormat', fallback: 'YYYY-MM-DD'),
                     ),
                     readOnly: true, // Prevent keyboard from appearing
                     onTap: () async {
@@ -234,19 +249,19 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   ),
                   TextFormField(
                     controller: _addressController,
-                    decoration: const InputDecoration(labelText: 'Address'),
+                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'address', fallback: 'Address')),
                   ),
                   TextFormField(
                     controller: _cityController,
-                    decoration: const InputDecoration(labelText: 'City'),
+                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'city', fallback: 'City')),
                   ),
                   TextFormField(
                     controller: _postalController,
-                    decoration: const InputDecoration(labelText: 'Postal Code'),
+                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'postalCode', fallback: 'Postal Code')),
                   ),
                   TextFormField(
                     controller: _countryController,
-                    decoration: const InputDecoration(labelText: 'Country'),
+                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'country', fallback: 'Country')),
                   ),
                   const SizedBox(height: 16),
                   
@@ -260,22 +275,22 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16, top: 12),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16, top: 12),
                           child: Text(
-                            'Privacy Settings',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            TranslationHelper.getString(context, 'privacySettings', fallback: 'Privacy Settings'),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         SwitchListTile(
-                          title: const Text('Consent to Share Data'),
-                          subtitle: const Text('Required for processing compensation claims'),
+                          title: Text(TranslationHelper.getString(context, 'consentToShareData', fallback: 'Consent to Share Data')),
+                          subtitle: Text(TranslationHelper.getString(context, 'requiredForProcessing', fallback: 'Required for processing compensation claims')),
                           value: _consentData,
                           onChanged: (v) => setState(() => _consentData = v),
                         ),
                         SwitchListTile(
-                          title: const Text('Receive Notifications'),
-                          subtitle: const Text('Get updates about your compensation claims'),
+                          title: Text(TranslationHelper.getString(context, 'receiveNotifications', fallback: 'Receive Notifications')),
+                          subtitle: Text(TranslationHelper.getString(context, 'getClaimUpdates', fallback: 'Get updates about your compensation claims')),
                           value: _consentNotifications,
                           onChanged: (v) => setState(() => _consentNotifications = v),
                         ),
@@ -293,7 +308,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         backgroundColor: Colors.blue,
                         foregroundColor: Colors.white,
                       ),
-                      label: const Text('SAVE PROFILE', style: TextStyle(fontWeight: FontWeight.bold)),
+                      label: Text(
+                        TranslationHelper.getString(context, 'saveProfile', fallback: 'SAVE PROFILE'),
+                        style: const TextStyle(fontWeight: FontWeight.bold)
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),

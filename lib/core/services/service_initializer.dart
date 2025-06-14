@@ -9,6 +9,7 @@ import '../../services/notification_service.dart';
 import '../../services/flight_prediction_service.dart';
 import '../../services/claim_tracking_service.dart';
 import '../../services/localization_service.dart';
+import '../../services/manual_localization_service.dart';
 import '../accessibility/accessibility_service.dart';
 import '../error/error_handler.dart';
 import '../../viewmodels/auth_viewmodel.dart';
@@ -46,6 +47,13 @@ class ServiceInitializer {
           _locator.registerSingleton<LocalizationService>(service);
         }
       });
+    }
+    
+    // Register manual localization service
+    if (!_locator.isRegistered<ManualLocalizationService>()) {
+      _locator.registerLazySingleton<ManualLocalizationService>(
+        () => ManualLocalizationService()
+      );
     }
     
     // Register viewmodels as factories

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
 import '../core/accessibility/accessibility_service.dart';
 import '../core/accessibility/accessible_widgets.dart';
+import '../utils/translation_helper.dart';
+import '../services/manual_localization_service.dart';
 
 /// Screen for configuring accessibility settings
 class AccessibilitySettingsScreen extends StatelessWidget {
@@ -13,14 +16,19 @@ class AccessibilitySettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Force reload Polish translations if needed
+    final manualLocalizationService = GetIt.I<ManualLocalizationService>();
+    if (manualLocalizationService.currentLocale?.languageCode == 'pl') {
+      manualLocalizationService.forceReload(manualLocalizationService.currentLocale!);
+    }
     return Consumer<AccessibilityService>(
       builder: (context, accessibilityService, _) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Accessibility Settings'),
+            title: Text(TranslationHelper.getString(context, 'accessibilitySettings', fallback: 'Accessibility Settings')),
             // Add semantics to back button
             leading: Semantics(
-              label: 'Back to previous screen',
+              label: TranslationHelper.getString(context, 'backToPreviousScreen', fallback: 'Back to previous screen'),
               button: true,
               child: IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -38,45 +46,45 @@ class AccessibilitySettingsScreen extends StatelessWidget {
                   Semantics(
                     header: true,
                     child: Text(
-                      'Accessibility Options',
+                      TranslationHelper.getString(context, 'accessibilityOptions', fallback: 'Accessibility Options'),
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Configure settings to improve the accessibility of the app.',
+                    TranslationHelper.getString(context, 'configureAccessibilitySettings', fallback: 'Configure settings to improve the accessibility of the app.'),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 24),
                   
                   // High Contrast Mode
                   AccessibleCard(
-                    title: 'Display Settings',
-                    semanticLabel: 'Display and visual settings section',
+                    title: TranslationHelper.getString(context, 'displaySettings', fallback: 'Display Settings'),
+                    semanticLabel: TranslationHelper.getString(context, 'displayAndVisualSettingsSection', fallback: 'Display and visual settings section'),
                     child: Column(
                       children: [
                         AccessibleToggle(
-                          label: 'High Contrast Mode',
-                          semanticLabel: 'Enable high contrast mode for better visibility',
+                          label: TranslationHelper.getString(context, 'highContrastMode', fallback: 'High Contrast Mode'),
+                          semanticLabel: TranslationHelper.getString(context, 'enableHighContrastMode', fallback: 'Enable high contrast mode for better visibility'),
                           value: accessibilityService.highContrastMode,
                           onChanged: (_) => accessibilityService.toggleHighContrastMode(),
                         ),
                         const SizedBox(height: 16),
-                        const Text(
-                          'High contrast mode increases the color contrast to improve readability for users with low vision.',
+                        Text(
+                          TranslationHelper.getString(context, 'highContrastDescription', fallback: 'High contrast mode increases the color contrast to improve readability for users with low vision.'),
                           style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
                         ),
                         const SizedBox(height: 24),
                         
                         AccessibleToggle(
-                          label: 'Large Text',
-                          semanticLabel: 'Enable large text for better readability',
+                          label: TranslationHelper.getString(context, 'largeText', fallback: 'Large Text'),
+                          semanticLabel: TranslationHelper.getString(context, 'enableLargeText', fallback: 'Enable large text for better readability'),
                           value: accessibilityService.largeTextMode,
                           onChanged: (_) => accessibilityService.toggleLargeTextMode(),
                         ),
                         const SizedBox(height: 16),
-                        const Text(
-                          'Large text mode increases the font size throughout the app for better readability.',
+                        Text(
+                          TranslationHelper.getString(context, 'largeTextDescription', fallback: 'Large text mode increases the font size throughout the app for better readability.'),
                           style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
                         ),
                       ],
@@ -87,19 +95,19 @@ class AccessibilitySettingsScreen extends StatelessWidget {
                   
                   // Screen Reader Settings
                   AccessibleCard(
-                    title: 'Screen Reader Settings',
-                    semanticLabel: 'Screen reader enhancement settings',
+                    title: TranslationHelper.getString(context, 'screenReaderSettings', fallback: 'Screen Reader Settings'),
+                    semanticLabel: TranslationHelper.getString(context, 'screenReaderEnhancementSettings', fallback: 'Screen reader enhancement settings'),
                     child: Column(
                       children: [
                         AccessibleToggle(
-                          label: 'Enhanced Screen Reader Descriptions',
-                          semanticLabel: 'Enable more detailed descriptions for screen readers',
+                          label: TranslationHelper.getString(context, 'enhancedScreenReaderDescriptions', fallback: 'Enhanced Screen Reader Descriptions'),
+                          semanticLabel: TranslationHelper.getString(context, 'enableMoreDetailedDescriptions', fallback: 'Enable more detailed descriptions for screen readers'),
                           value: accessibilityService.screenReaderEmphasis,
                           onChanged: (_) => accessibilityService.toggleScreenReaderEmphasis(),
                         ),
                         const SizedBox(height: 16),
-                        const Text(
-                          'Provides more detailed descriptions for screen readers to better explain interface elements.',
+                        Text(
+                          TranslationHelper.getString(context, 'providesMoreDetailedDescriptions', fallback: 'Provides more detailed descriptions for screen readers to better explain interface elements.'),
                           style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
                         ),
                       ],
@@ -110,18 +118,18 @@ class AccessibilitySettingsScreen extends StatelessWidget {
                   
                   // Keyboard Navigation Guide
                   AccessibleCard(
-                    title: 'Keyboard Navigation',
-                    semanticLabel: 'Keyboard navigation guide',
+                    title: TranslationHelper.getString(context, 'keyboardNavigation', fallback: 'Keyboard Navigation'),
+                    semanticLabel: TranslationHelper.getString(context, 'keyboardNavigationGuide', fallback: 'Keyboard navigation guide'),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Use the following keyboard shortcuts:'),
+                        Text(TranslationHelper.getString(context, 'useTheFollowingKeyboardShortcuts', fallback: 'Use the following keyboard shortcuts:')),
                         const SizedBox(height: 12),
-                        _buildKeyboardShortcutRow(context, 'Tab', 'Move to next item'),
-                        _buildKeyboardShortcutRow(context, 'Shift+Tab', 'Move to previous item'),
-                        _buildKeyboardShortcutRow(context, 'Space/Enter', 'Activate focused item'),
-                        _buildKeyboardShortcutRow(context, 'Arrow Keys', 'Navigate within components'),
-                        _buildKeyboardShortcutRow(context, 'Esc', 'Close dialogs or menus'),
+                        _buildKeyboardShortcutRow(context, 'Tab', TranslationHelper.getString(context, 'moveToNextItem', fallback: 'Move to next item')),
+                        _buildKeyboardShortcutRow(context, 'Shift+Tab', TranslationHelper.getString(context, 'moveToPreviousItem', fallback: 'Move to previous item')),
+                        _buildKeyboardShortcutRow(context, 'Space/Enter', TranslationHelper.getString(context, 'activateFocusedItem', fallback: 'Activate focused item')),
+                        _buildKeyboardShortcutRow(context, 'Arrow Keys', TranslationHelper.getString(context, 'navigateWithinComponents', fallback: 'Navigate within components')),
+                        _buildKeyboardShortcutRow(context, 'Esc', TranslationHelper.getString(context, 'closeDialogsOrMenus', fallback: 'Close dialogs or menus')),
                       ],
                     ),
                   ),
@@ -130,19 +138,19 @@ class AccessibilitySettingsScreen extends StatelessWidget {
                   
                   // Test Area
                   AccessibleCard(
-                    title: 'Test Your Settings',
-                    semanticLabel: 'Area to test your accessibility settings',
+                    title: TranslationHelper.getString(context, 'testYourSettings', fallback: 'Test Your Settings'),
+                    semanticLabel: TranslationHelper.getString(context, 'areaToTestSettings', fallback: 'Area to test your accessibility settings'),
                     child: Column(
                       children: [
-                        const Text(
-                          'Use this area to test how your settings affect the appearance and behavior of the app.',
+                        Text(
+                          TranslationHelper.getString(context, 'useThisAreaToTest', fallback: 'Use this area to test how your settings affect the appearance and behavior of the app.'),
                         ),
                         const SizedBox(height: 16),
                         
                         // Sample input field
                         TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Sample Input Field',
+                          decoration: InputDecoration(
+                            labelText: TranslationHelper.getString(context, 'sampleInputField', fallback: 'Sample Input Field'),
                             border: OutlineInputBorder(),
                           ),
                         ),
@@ -153,24 +161,24 @@ class AccessibilitySettingsScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             AccessibleButton(
-                              label: 'Primary Button',
-                              semanticLabel: 'Sample primary button for testing',
+                              label: TranslationHelper.getString(context, 'primaryButton', fallback: 'Primary Button'),
+                              semanticLabel: TranslationHelper.getString(context, 'samplePrimaryButton', fallback: 'Sample primary button for testing'),
                               onPressed: () {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Primary button pressed'),
+                                  SnackBar(
+                                    content: Text(TranslationHelper.getString(context, 'primaryButtonPressed', fallback: 'Primary button pressed')),
                                   ),
                                 );
                               },
                               filled: true,
                             ),
                             AccessibleButton(
-                              label: 'Secondary Button',
-                              semanticLabel: 'Sample secondary button for testing',
+                              label: TranslationHelper.getString(context, 'secondaryButton', fallback: 'Secondary Button'),
+                              semanticLabel: TranslationHelper.getString(context, 'sampleSecondaryButton', fallback: 'Sample secondary button for testing'),
                               onPressed: () {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Secondary button pressed'),
+                                  SnackBar(
+                                    content: Text(TranslationHelper.getString(context, 'secondaryButtonPressed', fallback: 'Secondary button pressed')),
                                   ),
                                 );
                               },
@@ -187,8 +195,8 @@ class AccessibilitySettingsScreen extends StatelessWidget {
                   // Apply Settings Button
                   Center(
                     child: AccessibleButton(
-                      label: 'Save Settings',
-                      semanticLabel: 'Save accessibility settings and return to previous screen',
+                      label: TranslationHelper.getString(context, 'saveSettings', fallback: 'Save Settings'),
+                      semanticLabel: TranslationHelper.getString(context, 'saveAccessibilitySettings', fallback: 'Save accessibility settings and return to previous screen'),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

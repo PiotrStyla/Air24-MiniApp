@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get_it/get_it.dart';
 import '../services/auth_service.dart';
 import '../core/services/service_initializer.dart';
 import '../viewmodels/auth_viewmodel.dart';
@@ -9,6 +10,8 @@ import 'compensation_eligible_flights_screen.dart';
 import 'eu_eligible_flights_screen.dart';
 import '../services/airport_selection_helper.dart';
 import '../services/flight_detection_service.dart';
+import '../utils/translation_helper.dart';
+import '../services/manual_localization_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,6 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _checkForFlightJump();
+    // Force refresh of translations when screen loads to ensure consistency
+    Future.delayed(Duration.zero, () {
+      if (mounted) {
+        debugPrint('HomeScreen: Ensuring translations are loaded correctly');
+        TranslationHelper.forceReloadTranslations(context);
+      }
+    });
   }
 
   Future<void> _checkForFlightJump() async {
@@ -63,31 +73,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _showFlightDetectedDialog(DetectedFlight flight) {
     final status = (flight.flightData['status'] ?? '').toString().toLowerCase();
-    final localizations = AppLocalizations.of(context)!;
     if (status == 'delayed') {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text(localizations.delayedFlightDetected),
+          title: Text(TranslationHelper.getString(context, 'delayedFlightDetected', fallback: 'Delayed Flight Detected!')),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(localizations.flightLabel(flight.flightData['number'] ?? '')),
-              Text(localizations.fromAirport(flight.departureAirport.name)),
-              Text(localizations.toAirport(flight.arrivalAirport.name)),
-              Text(localizations.statusLabel(flight.flightData['status'] ?? '')),
+              Text(TranslationHelper.getString(context, 'flightLabel', fallback: 'Flight: {number}').replaceAll('{number}', flight.flightData['number'] ?? '')),
+              Text(TranslationHelper.getString(context, 'fromAirport', fallback: 'From: {airport}').replaceAll('{airport}', flight.departureAirport.name)),
+              Text(TranslationHelper.getString(context, 'toAirport', fallback: 'To: {airport}').replaceAll('{airport}', flight.arrivalAirport.name)),
+              Text(TranslationHelper.getString(context, 'statusLabel', fallback: 'Status: {status}').replaceAll('{status}', flight.flightData['status'] ?? '')),
               const SizedBox(height: 12),
-              Text(localizations.delayedEligible),
+              Text(TranslationHelper.getString(context, 'delayedEligible', fallback: 'This flight may be eligible for compensation!')),
             ],
           ),
           actions: [
             TextButton(
-              child: Text(localizations.dismiss),
+              child: Text(TranslationHelper.getString(context, 'dismiss', fallback: 'Dismiss')),
               onPressed: () => Navigator.of(ctx).pop(),
             ),
             ElevatedButton(
-              child: Text(localizations.startClaim),
+              child: Text(TranslationHelper.getString(context, 'startClaim', fallback: 'Start Claim')),
               onPressed: () {
                 Navigator.of(ctx).pop();
                 Navigator.of(context).pushNamed(
@@ -111,24 +120,24 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(localizations.flightDetected),
+        title: Text(TranslationHelper.getString(context, 'flightDetected', fallback: 'Flight Detected')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(localizations.flightLabel(flight.flightData['number'] ?? '')),
-            Text(localizations.fromAirport(flight.departureAirport.name)),
-            Text(localizations.toAirport(flight.arrivalAirport.name)),
-            Text(localizations.statusLabel(flight.flightData['status'] ?? '')),
+            Text(TranslationHelper.getString(context, 'flightLabel', fallback: 'Flight: {number}').replaceAll('{number}', flight.flightData['number'] ?? '')),
+            Text(TranslationHelper.getString(context, 'fromAirport', fallback: 'From: {airport}').replaceAll('{airport}', flight.departureAirport.name)),
+            Text(TranslationHelper.getString(context, 'toAirport', fallback: 'To: {airport}').replaceAll('{airport}', flight.arrivalAirport.name)),
+            Text(TranslationHelper.getString(context, 'statusLabel', fallback: 'Status: {status}').replaceAll('{status}', flight.flightData['status'] ?? '')),
           ],
         ),
         actions: [
           TextButton(
-            child: Text(localizations.dismiss),
+            child: Text(TranslationHelper.getString(context, 'dismiss', fallback: 'Dismiss')),
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           ElevatedButton(
-            child: Text(localizations.startClaim),
+            child: Text(TranslationHelper.getString(context, 'startClaim', fallback: 'Start Claim')),
             onPressed: () {
               Navigator.of(ctx).pop();
               // Navigate to claim submission with prefilled details
@@ -154,16 +163,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    // Use TranslationHelper instead of direct AppLocalizations
+    // to ensure consistent Polish translations
     return Scaffold(
-      appBar: AppBar(title: Text(localizations.home)),
+      appBar: AppBar(title: Text(TranslationHelper.getString(context, 'home', fallback: 'Home'))),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton.icon(
               icon: const Icon(Icons.calculate, color: Colors.blue),
-              label: Text(localizations.checkCompensationEligibility),
+              label: Text(TranslationHelper.getString(context, 'checkCompensationEligibility', fallback: 'Check Compensation Eligibility')),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.blue,
@@ -184,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 foregroundColor: Colors.green[800],
                 side: BorderSide(color: Colors.green[800]!),
               ),
-              label: Text(localizations.euWideEligibleFlights),
+              label: Text(TranslationHelper.getString(context, 'euWideEligibleFlights', fallback: 'EU-Wide Eligible Flights')),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -214,23 +224,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.grey,
                             ),
                             const SizedBox(height: 16),
-                            const Text(
-                              'Sign in to track your claims',
-                              style: TextStyle(
+                            Text(
+                              TranslationHelper.getString(context, 'signInToTrackClaims', fallback: 'Sign in to track your claims'),
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 8),
-                            const Text(
-                              'Create an account to save your flight data\nand manage your compensation claims',
+                            Text(
+                              TranslationHelper.getString(context, 'createAccountDescription', fallback: 'Create an account to save your flight data\nand manage your compensation claims'),
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.grey),
+                              style: const TextStyle(color: Colors.grey),
                             ),
                             const SizedBox(height: 24),
                             ElevatedButton.icon(
                               icon: const Icon(Icons.login),
-                              label: const Text('Sign In / Sign Up'),
+                              label: Text(TranslationHelper.getString(context, 'signInOrSignUp', fallback: 'Sign In / Sign Up')),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context).colorScheme.primary,
                                 foregroundColor: Colors.white,
@@ -278,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           const SizedBox(height: 16),
                           Text(
-                            'Welcome, ${user.displayName ?? user.email ?? "User"}',
+                            TranslationHelper.getString(context, 'welcomeUser', fallback: 'Welcome, {username}').replaceAll('{username}', user.displayName ?? user.email ?? TranslationHelper.getString(context, 'genericUser', fallback: 'User')),
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -287,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 24),
                           OutlinedButton.icon(
                             icon: const Icon(Icons.logout),
-                            label: const Text('Sign Out'),
+                            label: Text(TranslationHelper.getString(context, 'signOut', fallback: 'Sign Out')),
                             onPressed: () async {
                               try {
                                 await authService.signOut();
@@ -295,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Error signing out: $e'),
+                                      content: Text(TranslationHelper.getString(context, 'errorSigningOut', fallback: 'Error signing out: {error}').replaceAll('{error}', e.toString())),
                                       backgroundColor: Colors.red,
                                     ),
                                   );

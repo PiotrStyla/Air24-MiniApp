@@ -11,6 +11,7 @@ import 'services/auth_service.dart';
 import 'services/document_storage_service.dart';
 import 'services/firestore_service.dart';
 import 'services/localization_service.dart';
+import 'utils/translation_initializer.dart';
 import 'screens/main_navigation.dart';
 import 'screens/profile_edit_screen.dart';
 import 'screens/auth_screen.dart'; // Using new auth screen
@@ -33,6 +34,9 @@ void main() async {
   
   // Initialize async services like localization
   await ServiceInitializer.initAsync();
+  
+  // Ensure all translations are properly loaded at startup
+  TranslationInitializer.ensureAllTranslations();
   
   runApp(const F35FlightCompensationApp());
 }

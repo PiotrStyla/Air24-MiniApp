@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/aviation_stack_service.dart';
 import 'compensation_claim_form_screen.dart';
+import '../utils/translation_helper.dart';
+import '../services/manual_localization_service.dart';
 
 class EUEligibleFlightsScreen extends StatefulWidget {
   const EUEligibleFlightsScreen({super.key});
@@ -21,6 +23,14 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
     super.initState();
     // Use real API data
     _flightsFuture = _loadFlights();
+    
+    // Force refresh of translations when screen loads to ensure consistency
+    Future.delayed(Duration.zero, () {
+      if (mounted) {
+        debugPrint('EUEligibleFlightsScreen: Ensuring translations are loaded correctly');
+        TranslationHelper.forceReloadTranslations(context);
+      }
+    });
   }
 
   Future<List<Map<String, dynamic>>> _loadFlights() async {
@@ -263,15 +273,15 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('EU-wide Compensation Eligible Flights'),
+        title: Text(TranslationHelper.getString(context, 'euWideCompensationEligibleFlights', fallback: 'EU-wide Compensation Eligible Flights')),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Force refresh data',
+            tooltip: TranslationHelper.getString(context, 'forceRefreshData', fallback: 'Force refresh data'),
             onPressed: () {
               // Show a snackbar to indicate refresh is happening
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Forcing fresh data load...')),
+                SnackBar(content: Text(TranslationHelper.getString(context, 'forcingFreshDataLoad', fallback: 'Forcing fresh data load...'))),
               );
               // Force reload with debug flag
               setState(() {
@@ -289,8 +299,8 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
               children: [
                 Expanded(
                   child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Filter by airline',
+                    decoration: InputDecoration(
+                      labelText: TranslationHelper.getString(context, 'filterByAirline', fallback: 'Filter by airline'),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.search),
                     ),
@@ -305,15 +315,16 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.1),
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
                   ),
                   child: Row(
-                    children: const [
-                      Icon(Icons.schedule, size: 16, color: Colors.blue),
-                      SizedBox(width: 6),
-                      Text('Last 72 hours', style: TextStyle(fontWeight: FontWeight.bold)),
+                    children: [
+                      const Icon(Icons.schedule),
+                      const SizedBox(width: 4),
+                      Text(
+                        TranslationHelper.getString(context, 'lastHours', fallback: 'Last {hours} hours')
+                          .replaceAll('{hours}', _hoursFilter.toString()), style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -347,7 +358,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24.0),
                           child: Text(
-                            'Error: ${snapshot.error.toString()}',
+                            '${TranslationHelper.getString(context, 'error', fallback: 'Error')}: ${snapshot.error.toString()}',
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
@@ -358,7 +369,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                           children: [
                             ElevatedButton.icon(
                               icon: const Icon(Icons.refresh),
-                              label: const Text('Retry'),
+                              label: Text(TranslationHelper.getString(context, 'retry', fallback: 'Retry')),
                               onPressed: () {
                                 setState(() {
                                   _flightsFuture = _loadFlights();
@@ -368,7 +379,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                             const SizedBox(width: 16),
                             ElevatedButton.icon(
                               icon: const Icon(Icons.offline_bolt),
-                              label: const Text('Use Demo Data'),
+                              label: Text(TranslationHelper.getString(context, 'useDemoData', fallback: 'Use Demo Data')),
                               onPressed: () {
                                 setState(() {
                                   _flightsFuture = _loadFlightsWithFallback();
@@ -398,8 +409,11 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24.0),
                           child: Text(
-                            'We are having trouble connecting to the flight data service. '
-                            'This may be a temporary issue with the AviationStack API.',
+                            TranslationHelper.getString(
+                              context, 
+                              'apiConnectionTrouble', 
+                              fallback: 'We are having trouble connecting to the flight data service. This may be a temporary issue with the AviationStack API.'
+                            ),
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.grey[700],
@@ -435,7 +449,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Return to Home'),
+                          child: Text(TranslationHelper.getString(context, 'returnToHome', fallback: 'Return to Home')),
                         ),
                       ],
                     ),
@@ -448,7 +462,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                         const Icon(Icons.flight_land, size: 80, color: Colors.grey),
                         const SizedBox(height: 16),
                         Text(
-                          'No Eligible Flights Found',
+                          TranslationHelper.getString(context, 'noEligibleFlightsFound', fallback: 'No Eligible Flights Found'),
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.blueGrey[700],
@@ -458,8 +472,11 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: Text(
-                            'We have checked flights across major EU airports in the last $_hoursFilter hours, ' +
-                            'but no flights meet EU261 compensation criteria at the moment.',
+                            TranslationHelper.getString(
+                              context,
+                              'noEligibleFlightsDescription',
+                              fallback: 'We have checked flights across major EU airports in the last {hours} hours, but no flights meet EU261 compensation criteria at the moment.'
+                            ).replaceAll('{hours}', _hoursFilter.toString()),
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.grey[600],
@@ -478,11 +495,11 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                               _flightsFuture = _loadFlights();
                             });
                           },
-                          label: const Text('Check Again'),
+                          label: Text(TranslationHelper.getString(context, 'checkAgain', fallback: 'Check Again')),
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Try filtering for specific airlines or checking later', 
+                          TranslationHelper.getString(context, 'tryFilteringOrCheckLater', fallback: 'Try filtering for specific airlines or checking later'), 
                           style: TextStyle(fontSize: 13, color: Colors.grey[500]),
                         ),
                       ],
@@ -506,7 +523,11 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
 
                 if (filteredFlights.isEmpty) {
                   return Center(
-                    child: Text('No flights found matching "${_carrierFilter}" filter.'),
+                    child: Text(TranslationHelper.getString(
+                      context, 
+                      'noFlightsMatchingFilter', 
+                      fallback: 'No flights found matching "{filter}" filter.'
+                    ).replaceAll('{filter}', _carrierFilter)),
                   );
                 }
 
@@ -576,7 +597,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                           ),
                           const SizedBox(width: 8),
                           Icon(Icons.verified, color: Colors.green, size: 20),
-                          const Text(' EU Compensation',
+                          Text(' ${TranslationHelper.getString(context, 'euCompensation', fallback: 'EU Compensation')}',
                             style: TextStyle(color: Colors.green, fontSize: 12),
                           ),
                         ],
@@ -591,7 +612,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                 const SizedBox(width: 4),
                                 Expanded(
                                   child: Text(
-                                    'Arrival: ${airportCode.isNotEmpty ? airportCode : ''} ${airportName.isNotEmpty ? '($airportName)' : ''}',
+                                    '${TranslationHelper.getString(context, 'arrival', fallback: 'Arrival')}: ${airportCode.isNotEmpty ? airportCode : ''} ${airportName.isNotEmpty ? '($airportName)' : ''}',
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -601,7 +622,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                             children: [
                               Icon(Icons.access_time, size: 16, color: Colors.grey),
                               const SizedBox(width: 4),
-                              Text('Scheduled: ${scheduled['local'] ?? scheduled['utc'] ?? ''}'),
+                              Text('${TranslationHelper.getString(context, 'scheduled', fallback: 'Scheduled')}: ${scheduled['local'] ?? scheduled['utc'] ?? ''}'),
                             ],
                           ),
                           if (revised['local'] != null && revised['local'] != scheduled['local'])
@@ -610,7 +631,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                 Icon(Icons.update, size: 16, color: Colors.orange),
                                 const SizedBox(width: 4),
                                 Text(
-                                  'Revised: ${revised['local']}',
+                                  '${TranslationHelper.getString(context, 'revised', fallback: 'Revised')}: ${revised['local']}',
                                   style: TextStyle(color: Colors.orange[700]),
                                 ),
                               ],
@@ -621,7 +642,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                 Icon(Icons.flight_land, size: 16, color: Colors.blue),
                                 const SizedBox(width: 4),
                                 Text(
-                                  'Actual: ${actual['local']}',
+                                  '${TranslationHelper.getString(context, 'actual', fallback: 'Actual')}: ${actual['local']}',
                                   style: const TextStyle(fontWeight: FontWeight.w500),
                                 ),
                               ],
@@ -631,7 +652,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                               Icon(Icons.info_outline, size: 16, color: Colors.grey),
                               const SizedBox(width: 4),
                               Text(
-                                'Status: ${flight['status'] ?? ''}',
+                                '${TranslationHelper.getString(context, 'status', fallback: 'Status')}: ${flight['status'] ?? ''}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: flight['status'] == 'Delayed' || flight['status'] == 'Diverted' ? Colors.orange[700] : 
@@ -646,7 +667,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                 Icon(Icons.timelapse, size: 16, color: _calculateDelayMinutes(scheduled, actual) >= 180 ? Colors.red : Colors.orange),
                                 const SizedBox(width: 4),
                                 Text(
-                                  'Delay: ${_formatDelay(_calculateDelayMinutes(scheduled, actual))}',
+                                  '${TranslationHelper.getString(context, 'delay', fallback: 'Delay')}: ${_formatDelay(_calculateDelayMinutes(scheduled, actual))}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: _calculateDelayMinutes(scheduled, actual) >= 180 ? Colors.red : Colors.orange,

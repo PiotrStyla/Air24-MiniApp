@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'faq_screen.dart';
 import 'profile_edit_screen.dart';
 import 'accessibility_settings_screen.dart';
@@ -8,6 +9,8 @@ import 'language_selection_screen.dart';
 import '../core/accessibility/accessibility_service.dart';
 import '../core/accessibility/accessible_widgets.dart';
 import '../services/localization_service.dart';
+import '../services/manual_localization_service.dart';
+import '../utils/translation_helper.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,10 +21,23 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Force refresh of translations when screen loads to ensure consistency
+    Future.delayed(Duration.zero, () {
+      if (mounted) {
+        debugPrint('ProfileScreen: Ensuring translations are loaded correctly');
+        TranslationHelper.forceReloadTranslations(context);
+      }
+    });
+  }
+  
+  @override
   Widget build(BuildContext context) {
     // Get accessibility service and localizations
     final accessibilityService = Provider.of<AccessibilityService>(context);
     final localizations = AppLocalizations.of(context)!;
+    final manualLocalizations = GetIt.instance<ManualLocalizationService>();
     
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Semantics(
                 label: accessibilityService.semanticLabel(
-                  'Information banner', 
+                  TranslationHelper.getString(context, 'profileInformation', fallback: 'Profile Information'), 
                   'Information about your profile data usage'
                 ),
                 child: Container(
@@ -79,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.',
+                          TranslationHelper.getString(context, 'profileDescription', fallback: 'Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.'),
                           style: TextStyle(color: Colors.blue[900]),
                         ),
                       ),
@@ -99,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Semantics(
                     header: true,
                     child: Text(
-                      'Account Settings',
+                      TranslationHelper.getString(context, 'accountSettings', fallback: 'Account Settings'),
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -107,8 +123,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Profile Information Card
                   AccessibleCard(
-                    title: 'Profile Information',
-                    semanticLabel: 'Edit your personal information',
+                    title: TranslationHelper.getString(context, 'profileInformation', fallback: 'Profile Information'),
+                    semanticLabel: TranslationHelper.getString(context, 'editPersonalInfo', fallback: 'Edit your personal information'),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -120,8 +136,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         const Icon(Icons.person),
                         const SizedBox(width: 16),
-                        const Expanded(
-                          child: Text('Edit your personal and contact information'),
+                        Expanded(
+                          child: Text(TranslationHelper.getString(context, 'editPersonalInfo', fallback: 'Edit your personal and contact information')),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -132,8 +148,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Accessibility Settings Card
                   AccessibleCard(
-                    title: 'Accessibility Settings',
-                    semanticLabel: 'Configure accessibility options for the app',
+                    title: TranslationHelper.getString(context, 'accessibilitySettings', fallback: 'Accessibility Settings'),
+                    semanticLabel: TranslationHelper.getString(context, 'configureAccessibility', fallback: 'Configure accessibility options for the app'),
                     hasFocus: true, // Highlight as an important option
                     onTap: () {
                       Navigator.of(context).push(
@@ -155,10 +171,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Accessibility Options'),
+                              Text(TranslationHelper.getString(context, 'accessibilityOptions', fallback: 'Accessibility Options')),
                               const SizedBox(height: 4),
                               Text(
-                                'Configure high contrast, large text, and screen reader support',
+                                TranslationHelper.getString(context, 'configureAccessibility', fallback: 'Configure high contrast, large text, and screen reader support'),
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
@@ -190,12 +206,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Notification Settings Card
                   AccessibleCard(
-                    title: 'Notification Settings',
-                    semanticLabel: 'Configure notification preferences',
+                    title: TranslationHelper.getString(context, 'notificationSettings', fallback: 'Notification Settings'),
+                    semanticLabel: TranslationHelper.getString(context, 'configureNotifications', fallback: 'Configure notification preferences'),
                     onTap: () {
                       // Show a toast message that this will be implemented in a future update
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Notification settings coming soon'),
+                        content: Text('${TranslationHelper.getString(context, 'notificationSettings', fallback: 'Notification Settings')} coming soon'),
                         duration: const Duration(seconds: 2),
                       ));
                     },
@@ -204,7 +220,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Icon(Icons.notifications_active),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: Text('Configure how you receive claim updates'),
+                          child: Text(TranslationHelper.getString(context, 'configureNotifications', fallback: 'Configure how you receive claim updates')),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -232,7 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Icon(Icons.language),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: Text('Select your preferred language'),
+                          child: Text(TranslationHelper.getString(context, 'selectLanguage', fallback: 'Select your preferred language')),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -247,7 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Semantics(
                 label: accessibilityService.semanticLabel(
-                  'Tips and Reminders', 
+                  TranslationHelper.getString(context, 'tipsAndReminders', fallback: 'Tips and Reminders'), 
                   'Important tips about your profile information'
                 ),
                 child: Container(
@@ -262,18 +278,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Semantics(
                         header: true,
-                        child: const Text(
-                          'Tips & Reminders',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 16),
+                        child: Text(
+                          TranslationHelper.getString(context, 'tipsAndReminders', fallback: 'Tips & Reminders'),
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 16),
                         ),
                       ),
                       const SizedBox(height: 12),
                       // Each tip is separated semantically for better screen reader experience
                       ...[  
-                        'Keep your profile up to date for smooth claim processing.',
-                        'Your information is private and only used for compensation claims.',
-                        'Make sure your contact details are correct so we can reach you about your claim.',
-                        'Check the Accessibility Settings to customize the app for your needs.'
+                        TranslationHelper.getString(context, 'tipProfileUpToDate', fallback: 'Keep your profile up to date for smooth claim processing.'),
+                        TranslationHelper.getString(context, 'tipInformationPrivate', fallback: 'Your information is private and only used for compensation claims.'),
+                        TranslationHelper.getString(context, 'tipContactDetails', fallback: 'Make sure your contact details are correct so we can reach you about your claim.'),
+                        TranslationHelper.getString(context, 'tipAccessibilitySettings', fallback: 'Check the Accessibility Settings to customize the app for your needs.')
                       ].map((tip) => Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Row(

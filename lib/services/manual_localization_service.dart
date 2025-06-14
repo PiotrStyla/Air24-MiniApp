@@ -16,10 +16,32 @@ class ManualLocalizationService extends ChangeNotifier {
   // Global key to force app rebuilds on locale changes
   static final ValueNotifier<int> rebuildNotifier = ValueNotifier<int>(0);
   
-  // Force global rebuild of all widgets listening to this notifier
+  /// Force global rebuild of all widgets listening to this notifier
   static void forceAppRebuild() {
     debugPrint('ManualLocalizationService: Forcing global app rebuild');
     rebuildNotifier.value++;
+  }
+  
+  /// Ensure language is loaded without changing the current locale
+  /// This is useful for preloading languages before they're needed
+  Future<void> ensureLanguageLoaded(String languageCode) async {
+    try {
+      debugPrint('Ensuring language is loaded: $languageCode');
+      
+      // Skip if we've already loaded this language
+      if (_allStrings.containsKey(languageCode) && 
+          (_allStrings[languageCode]?.isNotEmpty ?? false)) {
+        debugPrint('Language $languageCode already loaded with ${_allStrings[languageCode]?.length} keys');
+        return;
+      }
+      
+      // Load the language without changing the current locale
+      await _loadStrings(languageCode);
+      
+      debugPrint('Successfully loaded language: $languageCode');
+    } catch (e) {
+      debugPrint('Error ensuring language loaded for $languageCode: $e');
+    }
   }
   
   // All supported languages
@@ -327,7 +349,8 @@ class ManualLocalizationService extends ChangeNotifier {
     debugPrint('==== TRIGGERING GLOBAL APP REBUILD FROM MANUAL LOCALIZATION SERVICE ====');
     // Small delay to ensure all async operations complete before rebuild
     await Future.delayed(const Duration(milliseconds: 100));
-    app.rebuildEntireApp();
+    // Trigger rebuild using our own method instead of non-existent app method
+    forceAppRebuild();
     
     // Debug output to verify the reload was successful
     debugPrint('ManualLocalizationService: Force reload completed for $locale');
@@ -450,6 +473,32 @@ class ManualLocalizationService extends ChangeNotifier {
           'tipContactDetails': 'Certifique-se de que seus detalhes de contato estão corretos para que possamos contatá-lo sobre sua reclamação.',
           'tipAccessibilitySettings': 'Verifique as Configurações de Acessibilidade para personalizar o aplicativo para suas necessidades.',
           
+          // Profile Edit Screen
+          'editProfile': 'Editar Perfil',
+          'profileAccuracyInfo': 'Certifique-se de que as informações em seu perfil são precisas. Isso é essencial para processar reclamações e contactar você sobre sua compensação.',
+          'keepProfileUpToDate': 'Mantenha seu perfil atualizado para garantir um processamento tranquilo de reclamações.',
+          'profilePrivacy': 'Suas informações são privadas e usadas apenas para reclamações de compensação.',
+          'correctContactDetails': 'Certifique-se de que seus dados de contato estão corretos para que possamos contatar você sobre sua reclamação.',
+          'fullName': 'Nome Completo',
+          'required': 'Obrigatório',
+          'phoneNumber': 'Número de Telefone',
+          'passportNumber': 'Número do Passaporte',
+          'nationality': 'Nacionalidade',
+          'dateOfBirth': 'Data de Nascimento',
+          'dateFormat': 'AAAA-MM-DD',
+          'address': 'Endereço',
+          'city': 'Cidade',
+          'postalCode': 'Código Postal',
+          'country': 'País',
+          'privacySettings': 'Configurações de Privacidade',
+          'consentToShareData': 'Consentimento para Compartilhar Dados',
+          'requiredForProcessing': 'Necessário para processar reclamações de compensação',
+          'receiveNotifications': 'Receber Notificações',
+          'getClaimUpdates': 'Receba atualizações sobre suas reclamações de compensação',
+          'saveProfile': 'SALVAR PERFIL',
+          'profileSaved': 'Perfil salvo!',
+          'errorLoadingProfile': 'Erro ao carregar perfil: {0}',
+          
           // Flight details strings
           'flightInfo': 'Informações do Voo',
           'airline': 'Companhia Aérea',
@@ -522,6 +571,32 @@ class ManualLocalizationService extends ChangeNotifier {
           'supportingDocumentsHint': 'Añada billetes, tarjetas de embarque u otros documentos relevantes',
           'noDocumentsYet': 'Aún no se han añadido documentos',
           'submissionChecklist': 'Lista de Verificación de Envío',
+          
+          // Profile Edit Screen
+          'editProfile': 'Editar Perfil',
+          'profileAccuracyInfo': 'Asegúrese de que la información en su perfil sea precisa. Esto es esencial para procesar reclamos y contactarlo sobre su compensación.',
+          'keepProfileUpToDate': 'Mantenga su perfil actualizado para garantizar un procesamiento fluido de reclamaciones.',
+          'profilePrivacy': 'Su información es privada y se utiliza solo para reclamaciones de compensación.',
+          'correctContactDetails': 'Asegúrese de que sus datos de contacto sean correctos para que podamos comunicarnos con usted sobre su reclamación.',
+          'fullName': 'Nombre Completo',
+          'required': 'Obligatorio',
+          'phoneNumber': 'Número de Teléfono',
+          'passportNumber': 'Número de Pasaporte',
+          'nationality': 'Nacionalidad',
+          'dateOfBirth': 'Fecha de Nacimiento',
+          'dateFormat': 'AAAA-MM-DD',
+          'address': 'Dirección',
+          'city': 'Ciudad',
+          'postalCode': 'Código Postal',
+          'country': 'País',
+          'privacySettings': 'Configuración de Privacidad',
+          'consentToShareData': 'Consentimiento para Compartir Datos',
+          'requiredForProcessing': 'Necesario para procesar reclamaciones de compensación',
+          'receiveNotifications': 'Recibir Notificaciones',
+          'getClaimUpdates': 'Reciba actualizaciones sobre sus reclamaciones de compensación',
+          'saveProfile': 'GUARDAR PERFIL',
+          'profileSaved': '¡Perfil guardado!',
+          'errorLoadingProfile': 'Error al cargar el perfil: {0}',
           'submissionChecklistTitle': 'Lista de Verificación de Envío',
           'claimDetails': 'Detalles de Reclamación',
           'status': 'Estado',
@@ -637,6 +712,32 @@ class ManualLocalizationService extends ChangeNotifier {
           'noDocumentsYet': 'Aucun document ajouté pour l\'instant',
           'submissionChecklistTitle': 'Liste de Vérification de Soumission',
           'submitted': 'Soumise',
+          
+          // Profile Edit Screen
+          'editProfile': 'Modifier le Profil',
+          'profileAccuracyInfo': 'Assurez-vous que les informations de votre profil sont exactes. Ceci est essentiel pour traiter les réclamations et vous contacter concernant votre compensation.',
+          'keepProfileUpToDate': 'Gardez votre profil à jour pour assurer un traitement fluide des réclamations.',
+          'profilePrivacy': 'Vos informations sont privées et utilisées uniquement pour les réclamations de compensation.',
+          'correctContactDetails': 'Assurez-vous que vos coordonnées sont correctes afin que nous puissions vous contacter au sujet de votre réclamation.',
+          'fullName': 'Nom Complet',
+          'required': 'Obligatoire',
+          'phoneNumber': 'Numéro de Téléphone',
+          'passportNumber': 'Numéro de Passeport',
+          'nationality': 'Nationalité',
+          'dateOfBirth': 'Date de Naissance',
+          'dateFormat': 'AAAA-MM-JJ',
+          'address': 'Adresse',
+          'city': 'Ville',
+          'postalCode': 'Code Postal',
+          'country': 'Pays',
+          'privacySettings': 'Paramètres de Confidentialité',
+          'consentToShareData': 'Consentement pour Partager les Données',
+          'requiredForProcessing': 'Nécessaire pour traiter les réclamations de compensation',
+          'receiveNotifications': 'Recevoir des Notifications',
+          'getClaimUpdates': 'Recevez des mises à jour sur vos réclamations de compensation',
+          'saveProfile': 'ENREGISTRER LE PROFIL',
+          'profileSaved': 'Profil enregistré !',
+          'errorLoadingProfile': 'Erreur lors du chargement du profil: {0}',
           'inReview': 'En Révision',
           'additionalInfoNeeded': 'Informations Supplémentaires Requises',
           'rejected': 'Rejetée',
@@ -748,6 +849,33 @@ class ManualLocalizationService extends ChangeNotifier {
           'noDocumentsYet': 'Noch keine Dokumente hinzugefügt',
           'submissionChecklist': 'Einreichungscheckliste',
           'submissionChecklistTitle': 'Einreichungscheckliste',
+          
+          // Profile Edit Screen
+          'editProfile': 'Profil Bearbeiten',
+          'profileAccuracyInfo': 'Stellen Sie sicher, dass die Informationen in Ihrem Profil korrekt sind. Dies ist wichtig für die Bearbeitung von Ansprüchen und die Kontaktaufnahme bezüglich Ihrer Entschädigung.',
+          'keepProfileUpToDate': 'Halten Sie Ihr Profil aktuell, um eine reibungslose Bearbeitung der Ansprüche zu gewährleisten.',
+          'profilePrivacy': 'Ihre Informationen sind privat und werden nur für Entschädigungsansprüche verwendet.',
+          'correctContactDetails': 'Stellen Sie sicher, dass Ihre Kontaktdaten korrekt sind, damit wir Sie bezüglich Ihres Anspruchs kontaktieren können.',
+          'fullName': 'Vollständiger Name',
+          'required': 'Erforderlich',
+          'phoneNumber': 'Telefonnummer',
+          'passportNumber': 'Passnummer',
+          'nationality': 'Nationalität',
+          'dateOfBirth': 'Geburtsdatum',
+          'dateFormat': 'JJJJ-MM-TT',
+          'address': 'Adresse',
+          'city': 'Stadt',
+          'postalCode': 'Postleitzahl',
+          'country': 'Land',
+          'privacySettings': 'Datenschutzeinstellungen',
+          'consentToShareData': 'Einwilligung zur Datenweitergabe',
+          'requiredForProcessing': 'Erforderlich für die Bearbeitung von Entschädigungsansprüchen',
+          'receiveNotifications': 'Benachrichtigungen erhalten',
+          'getClaimUpdates': 'Erhalten Sie Updates zu Ihren Entschädigungsansprüchen',
+          'saveProfile': 'PROFIL SPEICHERN',
+          'profileSaved': 'Profil gespeichert!',
+          'errorLoadingProfile': 'Fehler beim Laden des Profils: {0}',
+          
           'rejected': 'Abgelehnt',
           'successful': 'Erfolgreich',
           'paid': 'Bezahlt',
