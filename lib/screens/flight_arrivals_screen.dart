@@ -21,7 +21,7 @@ class _FlightArrivalsScreenState extends State<FlightArrivalsScreen> {
   }
 
   Future<List<Map<String, dynamic>>> _loadArrivals() async {
-    _service = AviationStackService();
+    _service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'YOUR_PYTHON_BACKEND_URL_HERE');
     return _service.getRecentArrivals(airportIcao: widget.airportIcao, minutesBeforeNow: 720);
   }
 

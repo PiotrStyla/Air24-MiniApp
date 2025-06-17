@@ -244,14 +244,12 @@ class _AuthScreenState extends State<AuthScreen> {
                                   }
                                 } else if (_isSignUp) {
                                   success = await viewModel.signUp();
-                                  if (success && mounted) {
-                                    Navigator.pop(context);
-                                  }
+                                  // The Navigator.pop(context) was removed from here.
+                                  // AuthGate handles navigation automatically on auth state change.
                                 } else {
                                   success = await viewModel.signIn();
-                                  if (success && mounted) {
-                                    Navigator.pop(context);
-                                  }
+                                  // The Navigator.pop(context) was removed from here.
+                                  // AuthGate handles navigation automatically on auth state change.
                                 }
                               },
                           child: Text(
@@ -289,9 +287,8 @@ class _AuthScreenState extends State<AuthScreen> {
                               ? null 
                               : () async {
                                   final success = await viewModel.signInWithGoogle();
-                                  if (success && mounted) {
-                                    Navigator.pop(context);
-                                  }
+                                  // The Navigator.pop(context) was removed from here.
+                                  // AuthGate handles navigation automatically on auth state change.
                                 },
                           ),
                         

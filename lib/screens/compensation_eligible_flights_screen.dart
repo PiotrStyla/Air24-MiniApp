@@ -28,7 +28,7 @@ class _CompensationEligibleFlightsScreenState extends State<CompensationEligible
     try {
       // Initialize AviationStackService to get flight data
       // Using only AviationStack as the source for all flight data
-      _service = AviationStackService();
+      _service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'YOUR_PYTHON_BACKEND_URL_HERE');
       return await _service.getRecentArrivals(airportIcao: widget.airportIcao, minutesBeforeNow: 720);
     } catch (e) {
       print('Error loading arrivals: $e');

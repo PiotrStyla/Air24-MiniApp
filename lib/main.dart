@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'core/services/service_initializer.dart';
 import 'core/accessibility/accessibility_service.dart';
@@ -53,7 +54,7 @@ class F35FlightCompensationApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         // Provide global services
-        Provider<AuthService>(
+        ChangeNotifierProvider<AuthService>(
           create: (_) => ServiceInitializer.get<AuthService>(),
         ),
         Provider<DocumentStorageService>(
@@ -119,9 +120,11 @@ class F35FlightCompensationApp extends StatelessWidget {
                     child: child,
                   );
                 },
-                initialRoute: '/',
+                home: const AuthGate(),
                 routes: {
-                  '/': (context) => const MainNavigation(),
+                  // The '/' route is now handled by the AuthGate
+                  // It is no longer needed here
+
                   // New improved auth screen
                   '/auth': (context) => const AuthScreen(),
                   // Keep old auth screen for backward compatibility
@@ -146,5 +149,22 @@ class F35FlightCompensationApp extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authService = context.watch<AuthService>();
+
+    // The authService now uses ChangeNotifier. We watch it for changes
+    // and rebuild the UI accordingly.
+    if (authService.currentUser != null) {
+      return const MainNavigation();
+    } else {
+      return const AuthScreen();
+    }
   }
 }

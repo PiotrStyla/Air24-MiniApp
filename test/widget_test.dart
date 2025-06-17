@@ -13,7 +13,7 @@ import 'package:f35_flight_compensation/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const F35FlightCompensationApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

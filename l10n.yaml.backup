@@ -1,0 +1,10 @@
+# Minimal configuration to avoid crashes with Portuguese placeholders
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: true
+untranslated-messages-file: untranslated_messages.json
+# Only generate for English to avoid Portuguese placeholder crashes
+preferred-supported-locales:
+  - en

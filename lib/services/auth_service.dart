@@ -15,12 +15,22 @@ class AuthException implements Exception {
 
 /// Service class for handling all authentication operations
 /// Following MVVM pattern for separation of concerns
-class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+class AuthService with ChangeNotifier {
+  final FirebaseAuth _auth;
+  final GoogleSignIn _googleSignIn;
+
+  User? _currentUser;
+
+  // Allow injecting FirebaseAuth and GoogleSignIn for testing
+  AuthService({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn})
+      : _auth = firebaseAuth ?? FirebaseAuth.instance,
+        _googleSignIn = googleSignIn ?? GoogleSignIn() {
+    _auth.authStateChanges().listen(_onAuthStateChanged);
+    _currentUser = _auth.currentUser;
+  }
 
   // Current user getter
-  User? get currentUser => _auth.currentUser;
+  User? get currentUser => _currentUser;
 
   // Stream for auth state changes
   Stream<User?> get userChanges => _auth.authStateChanges();
@@ -109,6 +119,11 @@ class AuthService {
       debugPrint('Unexpected password reset error: $e');
       throw AuthException('unknown', 'An unexpected error occurred. Please try again.');
     }
+  }
+
+  Future<void> _onAuthStateChanged(User? user) async {
+    _currentUser = user;
+    notifyListeners();
   }
 
   /// Sign out

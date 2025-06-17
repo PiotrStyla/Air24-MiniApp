@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -398,14 +399,14 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
           ),
           const SizedBox(height: 16),
           const Text(
-            'No Claims Yet',
+            AppLocalizations.of(context)!.noClaimsYetTitle,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
-              'Start your compensation claim by selecting a flight from the EU Eligible Flights section',
+              AppLocalizations.of(context)!.noClaimsYetSubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey),
             ),

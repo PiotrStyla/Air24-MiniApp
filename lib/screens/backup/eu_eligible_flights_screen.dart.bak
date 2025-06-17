@@ -1,0 +1,1082 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
+import 'dart:async';
+import '../services/aviation_stack_service.dart';
+import '../services/localization_service.dart';
+import '../services/manual_localization_service.dart';
+import '../utils/localization_util.dart';
+import '../utils/localization_migration_helper.dart';
+import 'compensation_claim_form_screen.dart';
+
+class EUEligibleFlightsScreen extends StatefulWidget {
+  const EUEligibleFlightsScreen({super.key});
+
+  @override
+  State<EUEligibleFlightsScreen> createState() => _EUEligibleFlightsScreenState();
+}
+
+class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
+  late Future<List<Map<String, dynamic>>> _flightsFuture;
+  String _carrierFilter = '';
+  // Fixed at 72 hours - no time filter selection needed
+  static const int _hoursFilter = 72;
+  DateTime? _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _flightsFuture = _loadFlights();
+  }
+
+  Future<List<Map<String, dynamic>>> _loadFlights() async {
+    try {
+      debugPrint('Attempting to load EU compensation eligible flights...');
+      final service = AviationStackService();
+      return await service.getEUCompensationEligibleFlights(hours: _hoursFilter);
+    } catch (e) {
+      debugPrint('Error loading flights: $e');
+      // Rethrow to be handled by the FutureBuilder error handler
+      rethrow;
+    }
+  }
+  
+  int _calculateDelayMinutes(Map<String, dynamic> scheduled, Map<String, dynamic> actual) {
+    try {
+      final scheduledStr = scheduled['utc'] ?? scheduled['local'];
+      final actualStr = actual['utc'] ?? actual['local'];
+      
+      if (scheduledStr != null && actualStr != null) {
+        final scheduledTime = DateTime.parse(scheduledStr);
+        final actualTime = DateTime.parse(actualStr);
+        return actualTime.difference(scheduledTime).inMinutes;
+      }
+    } catch (e) {
+      debugPrint('Error calculating delay: $e');
+    }
+    return 0;
+  }
+
+  String _formatDelay(int minutes) {
+    if (minutes < 60) {
+      return '$minutes min';
+    } else {
+      final hours = minutes ~/ 60;
+      final remainingMinutes = minutes % 60;
+      return '$hours h ${remainingMinutes > 0 ? '$remainingMinutes min' : ''}'.trim();
+    }
+  }
+  
+  String _getCompensationAmount(Map<String, dynamic> flight) {
+    final int amount = _calculateCompensationAmount(flight);
+    
+    if (amount <= 0) {
+      return 'Eligible (calculation needed)';
+    }
+    
+    return '€$amount';
+  }
+
+  int _calculateCompensationAmount(Map<String, dynamic> flight) {
+    // Simple EU261 compensation calculation logic based on the flight data
+    try {
+      // Determine flight distance
+      int distance = 0;
+      if (flight.containsKey('distance')) {
+        distance = (flight['distance'] is int) ? flight['distance'] : int.tryParse(flight['distance'].toString()) ?? 0;
+      }
+      
+      // If no distance, estimate based on departure and arrival
+      if (distance == 0) {
+        // Default to medium-haul flight
+        distance = 1800;
+      }
+      
+      // Calculate compensation based on EU261 rules
+      // - Short distance (<1500 km): €250
+      // - Medium distance (1500-3500 km): €400
+      // - Long distance (>3500 km): €600
+      if (distance < 1500) {
+        return 250;
+      } else if (distance < 3500) {
+        return 400;
+      } else {
+        return 600;
+      }
+    } catch (e) {
+      debugPrint('Error calculating compensation: $e');
+      return 0;
+    }
+  }
+  
+  void _openCompensationForm(BuildContext context, Map<String, dynamic> flight) {
+    final flightData = {
+      'airline': flight['airline'] ?? 'Unknown',
+      'flight_number': flight['flightNumber'] ?? '',
+      'departure_airport': flight['departureAirport'] ?? '',
+      'arrival_airport': flight['arrivalAirport'] ?? '',
+      'departure_date': flight['departureTime'] ?? '',
+      'compensation_amount_eur': _calculateCompensationAmount(flight)
+    };
+    
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CompensationClaimFormScreen(flightData: flightData),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = MigrationLocalizations.of(context);
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(localizations.getString('euWideCompensation') ?? 'EU-wide Compensation Eligible Flights'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              setState(() {
+                _flightsFuture = _loadFlights();
+              });
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Filters row
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: localizations?.filterByAirline ?? 'Filter by airline',
+                      prefixIcon: const Icon(Icons.search),
+                      border: const OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _carrierFilter = value.trim().toUpperCase();
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.schedule, size: 16, color: Colors.blue),
+                      const SizedBox(width: 6),
+                      Text(
+                        localizations?.last72Hours ?? 'Last 72 hours',
+                        style: const TextStyle(color: Colors.blue),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Flight list
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _flightsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.cloud_off, size: 48, color: Colors.grey),
+                        const SizedBox(height: 10),
+                        Text(
+                          localizations?.apiConnectionIssue ?? 'API Connection Issue', 
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: Colors.red[700],
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: Text(
+                            localizations?.apiConnectionIssueMessage ?? 
+                            'We are having trouble connecting to the flight data service. ' +
+                            'This may be a temporary issue with the AviationStack API.',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.refresh),
+                          label: Text(localizations?.retryConnection ?? 'Retry Connection'),
+                          onPressed: () {
+                            setState(() {
+                              _flightsFuture = _loadFlights();
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(localizations?.returnToHome ?? 'Return to Home'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.flight_land, size: 80, color: Colors.grey),
+                        const SizedBox(height: 16),
+                        Text(
+                          localizations?.noEligibleFlightsFound ?? 'No Eligible Flights Found',
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey[700],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: Text(
+                            (localizations?.noEligibleFlightsMessageTemplate ?? 
+                             'We have checked flights across major EU airports in the last $_hoursFilter hours, but no flights meet EU261 compensation criteria at the moment.').replaceAll('{hours}', _hoursFilter.toString()),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.refresh),
+                          label: Text(localizations?.checkAgain ?? 'Check Again'),
+                          onPressed: () {
+                            setState(() {
+                              _flightsFuture = _loadFlights();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                
+                // Filter flights by carrier if filter is set
+                final allFlights = snapshot.data!;
+                final filteredFlights = _carrierFilter.isEmpty
+                    ? allFlights
+                    : allFlights.where((flight) {
+                        final airline = flight['airline'] ?? '';
+                        final flightNumber = flight['flightNumber'] ?? '';
+                        return airline.toString().toUpperCase().contains(_carrierFilter) ||
+                               flightNumber.toString().toUpperCase().contains(_carrierFilter);
+                      }).toList();
+                
+                if (filteredFlights.isEmpty) {
+                  return Center(
+                    child: Text((localizations?.noFlightsFoundTemplate ?? 
+                      'No flights found matching "{filter}" filter.').replaceAll('{filter}', _carrierFilter)),
+                  );
+                }
+                
+                return ListView.builder(
+                  itemCount: filteredFlights.length,
+                  itemBuilder: (context, index) {
+                    final flight = filteredFlights[index];
+                    final flightNumber = flight['flightNumber'] ?? 'Unknown';
+                    final airline = flight['airline'] ?? 'Unknown';
+                    final departureAirport = flight['departureAirport'] ?? 'Unknown';
+                    final arrivalAirport = flight['arrivalAirport'] ?? 'Unknown';
+                    final departureTime = flight['departureTime'] ?? 'Unknown';
+                    final arrivalTime = flight['arrivalTime'] ?? 'Unknown';
+                    final status = flight['status'] ?? 'Unknown';
+                    
+                    // Calculate compensation amount
+                    final compensation = _getCompensationAmount(flight);
+                    
+                    // Custom flight card
+                    return Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Airline and flight number
+                            Row(
+                              children: [
+                                const Icon(Icons.flight, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '$airline $flightNumber',
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.shade100,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.verified, color: Colors.green, size: 12),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        localizations?.euCompensation ?? 'EU Compensation',
+                                        style: const TextStyle(fontSize: 12, color: Colors.green),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Divider(),
+                            
+                            // Route
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        localizations?.from ?? 'From',
+                                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                      ),
+                                      Text(departureAirport),
+                                    ],
+                                  ),
+                                ),
+                                const Icon(Icons.arrow_forward, color: Colors.grey),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        localizations?.to ?? 'To',
+                                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                      ),
+                                      Text(arrivalAirport, textAlign: TextAlign.right),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            
+                            // Time info
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        localizations?.scheduled ?? 'Scheduled:',
+                                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                      ),
+                                      Text(departureTime),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      localizations?.statusLabelText ?? 'Status:',
+                                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      status,
+                                      style: TextStyle(
+                                        color: status == 'Delayed' ? Colors.orange : Colors.blueGrey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            
+                            // Compensation info and action button
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        localizations?.potentialCompensationLabel ?? 'Potential Compensation:',
+                                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                                          children: [
+                                            TextSpan(
+                                              text: '${localizations?.euCompensationEligible ?? 'EU261 Eligible'}: ',
+                                              style: const TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              compensation,
+                                              style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                ElevatedButton.icon(
+                                  icon: const Icon(Icons.edit_document, size: 16),
+                                  label: Text(localizations?.preFillCompensationForm ?? 'Pre-fill Compensation Form'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  onPressed: () => _openCompensationForm(context, flight),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+  
+  // Special debug version with extra logging
+  Future<List<Map<String, dynamic>>> _loadFlightsWithDebug() async {
+    try {
+      debugPrint('========== FORCED DATA REFRESH ==========');
+      debugPrint('Current time: ${DateTime.now().toIso8601String()}');
+      
+      // Create service with direct HTTP client
+      final service = AviationStackService();
+      final flights = await service.getEUCompensationEligibleFlights(hours: _hoursFilter);
+      
+      // Check if we got results
+      if (flights.isEmpty) {
+        debugPrint('WARNING: Received empty flight list from API');
+      } else {
+        debugPrint('Received ${flights.length} flights:');
+        for (var i = 0; i < flights.length; i++) {
+          final flight = flights[i];
+          debugPrint('Flight $i: ${flight['flightNumber']} - ${flight['airline']} - ${flight['departureTime']}');
+        }
+      }
+      
+      debugPrint('======================================');
+      return flights;
+    } catch (e) {
+      debugPrint('ERROR in debug load flights: $e');
+      rethrow;
+    }
+  }
+  
+  Future<void> _retryConnection() async {
+    setState(() {
+      _flightsFuture = _loadFlights();
+    });
+  }
+
+  int _calculateDelayMinutes(Map<String, dynamic> scheduled, Map<String, dynamic> actual) {
+    try {
+      final scheduledStr = scheduled['utc'] ?? scheduled['local'];
+      final actualStr = actual['utc'] ?? actual['local'];
+      
+      if (scheduledStr != null && actualStr != null) {
+        final scheduledTime = DateTime.parse(scheduledStr);
+        final actualTime = DateTime.parse(actualStr);
+        return actualTime.difference(scheduledTime).inMinutes;
+      }
+    } catch (e) {
+      debugPrint('Error calculating delay: $e');
+    }
+    return 0;
+  }
+
+  String _formatDelay(int minutes) {
+    if (minutes < 60) {
+      return '$minutes min';
+    } else {
+      final hours = minutes ~/ 60;
+      final remainingMinutes = minutes % 60;
+      return '$hours h ${remainingMinutes > 0 ? '$remainingMinutes min' : ''}'.trim();
+    }
+  }
+  
+  void _openCompensationForm(BuildContext context, Map<String, dynamic> flight) {
+    // Extract data for the form in a structured way
+    // Following AviationStack format exclusively
+    Map<String, dynamic> formattedFlight = {};
+    
+    // Log all available keys for debugging
+    debugPrint('Available flight data keys: ${flight.keys.join(', ')}');
+    
+    // Extract airline from AviationStack format
+    if (flight['airline'] is Map) {
+      formattedFlight['airline'] = flight['airline']['name'] ?? 'Unknown Airline';
+    } else if (flight['airline'] is String) {
+      formattedFlight['airline'] = flight['airline'];
+    }
+    
+    // Extract flight number - AviationStack uses 'flight' object with 'iata' property
+    if (flight['flight'] is Map) {
+      formattedFlight['flight_number'] = flight['flight']['iata'] ?? '';
+    } else {
+      formattedFlight['flight_number'] = flight['number'] ?? flight['flightNumber'] ?? '';
+    }
+    
+    // Extract departure info from AviationStack format
+    if (flight['departure'] is Map) {
+      // Airport info
+      formattedFlight['departure_airport'] = '${flight['departure']['airport'] ?? 'Unknown'} ' +
+          '(${flight['departure']['iata'] ?? flight['departure']['icao'] ?? ''})';
+      
+      // Date/time info - AviationStack uses 'scheduled' property
+      formattedFlight['departure_date'] = flight['departure']['scheduled'] ?? '';
+    } else if (flight['departureAirport'] != null || flight['departure_airport'] != null) {
+      // Fallback for already formatted data
+      formattedFlight['departure_airport'] = flight['departureAirport'] ?? flight['departure_airport'] ?? 'Unknown Airport';
+      formattedFlight['departure_date'] = flight['departureTime'] ?? flight['departure_date'] ?? 'Unknown Date';
+    }
+    
+    // Extract arrival info from AviationStack format
+    if (flight['arrival'] is Map) {
+      // Airport info
+      formattedFlight['arrival_airport'] = '${flight['arrival']['airport'] ?? 'Unknown'} ' +
+          '(${flight['arrival']['iata'] ?? flight['arrival']['icao'] ?? ''})';
+    } else if (flight['arrivalAirport'] != null || flight['arrival_airport'] != null) {
+      // Fallback for already formatted data
+      formattedFlight['arrival_airport'] = flight['arrivalAirport'] ?? flight['arrival_airport'] ?? 'Unknown Airport';
+    }
+    
+    // Extract delay information - AviationStack has 'arrival.delay' property
+    if (flight['arrival'] is Map && flight['arrival']['delay'] != null) {
+      formattedFlight['delay_minutes'] = flight['arrival']['delay'];
+    } else if (flight['delay_minutes'] != null) {
+      formattedFlight['delay_minutes'] = flight['delay_minutes'];
+    } else if (flight['delayMinutes'] != null) {
+      formattedFlight['delay_minutes'] = flight['delayMinutes'];
+    }
+    
+    // Add status information - AviationStack uses 'flight_status'
+    if (flight['flight_status'] != null) {
+      formattedFlight['status'] = flight['flight_status'];
+    } else if (flight['status'] != null) {
+      formattedFlight['status'] = flight['status'];
+    }
+    
+    // Extract compensation amount
+    int amount = 0;
+    if (flight['potentialCompensationAmount'] != null) {
+      amount = flight['potentialCompensationAmount'] is int 
+          ? flight['potentialCompensationAmount'] 
+          : int.tryParse(flight['potentialCompensationAmount'].toString()) ?? 0;
+    } else {
+      amount = _calculateCompensationAmount(flight);
+    }
+    
+    if (amount > 0) {
+      formattedFlight['compensation_amount_eur'] = amount;
+    }
+    
+    debugPrint('Formatted flight data for form (AviationStack format): $formattedFlight');
+    
+    // Navigate to the compensation form with structured data
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CompensationClaimFormScreen(flightData: formattedFlight),
+      ),
+    );
+  }
+
+  String _getCompensationAmount(Map<String, dynamic> flight) {
+    final int amount = _calculateCompensationAmount(flight);
+    
+    if (amount <= 0) {
+      return 'Eligible (calculation needed)';
+    }
+    
+    return '€$amount';
+  }
+
+  int _calculateCompensationAmount(Map<String, dynamic> flight) {
+    try {
+      if (flight.containsKey('potentialCompensationAmount') && 
+          flight['potentialCompensationAmount'] is num && 
+          flight['potentialCompensationAmount'] > 0) {
+        return flight['potentialCompensationAmount'].toInt();
+      }
+      
+      final distance = flight['distance'] as int? ?? _estimateFlightDistance(flight);
+      
+      if (distance <= 1500) {
+        return 250; // Short flights up to 1500 km: €250
+      } else if (distance <= 3500) {
+        return 400; // Medium flights 1500-3500 km: €400
+      } else {
+        return 600; // Long flights over 3500 km: €600
+      }
+    } catch (e) {
+      debugPrint('Error calculating compensation amount: $e');
+      return 0;
+    }
+  }
+
+  int _estimateFlightDistance(Map<String, dynamic> flight) {
+    // Default distance categories for compensation calculation
+    if (flight['isLongHaul'] == true) {
+      return 4000; // Long-haul flight
+    } else if (flight['isMediumHaul'] == true) {
+      return 2500; // Medium-haul flight
+    } else {
+      return 1000; // Assume short-haul flight
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Get current locale to force rebuild when language changes
+    final localizationService = Provider.of<LocalizationService>(context);
+    final currentLocale = localizationService.currentLocale;
+    
+    // Get manual localization service for direct string access without relying on generated code
+    final manualLocalizationService = GetIt.instance<ManualLocalizationService>();
+    
+    debugPrint('EU Flights Screen - Current locale: $currentLocale');
+    
+    // Helper function to get localized text with proper fallback
+    // Helper method to get localized text using the unified LocalizationUtil
+  String getLocalizedText(String key, String fallback, {Map<String, String>? replacements}) {
+    // Use our centralized LocalizationUtil, which handles fallbacks and replacements consistently
+    return LocalizationUtil.getText(key, replacements: replacements, fallback: fallback);
+  }
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(getLocalizedText('euWideCompensation', 'EU-wide Compensation Eligible Flights')),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Force refresh data',
+            onPressed: () {
+              // Show a snackbar to indicate refresh is happening
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Forcing fresh data load...')),
+              );
+              // Force reload with debug flag
+              setState(() {
+                _flightsFuture = _loadFlightsWithDebug();
+              });
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: getLocalizedText('filterByAirline', 'Filter by airline'),
+                      hintText: getLocalizedText('filterByAirline', 'Filter by airline...'),
+                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.search),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _carrierFilter = value;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.schedule, size: 16, color: Colors.blue),
+                      const SizedBox(width: 6),
+                      Text(getLocalizedText('last72Hours', 'Last 72 hours'), style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _flightsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.cloud_off, size: 48, color: Colors.grey),
+                        const SizedBox(height: 10),
+                        Text(
+                          getLocalizedText('apiConnectionIssue', 'API Connection Issue'), 
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: Colors.red[700],
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: Text(
+                            getLocalizedText('apiConnectionIssueMessage', 
+                            'We are having trouble connecting to the flight data service. '
+                            'This may be a temporary issue with the AviationStack API.'),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        if (snapshot.error != null)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                            child: Text(
+                              'Error details: ${snapshot.error}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                            ),
+                          ),
+                        const SizedBox(height: 20),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.refresh),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _flightsFuture = _loadFlights();
+                            });
+                          },
+                          label: Text(getLocalizedText('retryConnection', 'Retry Connection')),
+                        ),
+                        const SizedBox(height: 12),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(getLocalizedText('returnToHome', 'Return to Home')),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.flight_land, size: 80, color: Colors.grey),
+                        const SizedBox(height: 16),
+                        Text(
+                          getLocalizedText('noEligibleFlightsFound', 'No Eligible Flights Found'),
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey[700],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: Text(
+                            getLocalizedText('noEligibleFlightsMessage', 
+                              'We have checked flights across major EU airports in the last {hours} hours, but no flights meet EU261 compensation criteria at the moment.',
+                              replacements: {'hours': _hoursFilter.toString()}),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.update),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _flightsFuture = _loadFlights();
+                            });
+                          },
+                          label: Text(getLocalizedText('checkAgain', 'Check Again')),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.hasData) {
+                  // We have data, process it
+                  final allFlights = snapshot.data!;
+                  
+                  // Apply filters
+                  final List<Map<String, dynamic>> filteredFlights = allFlights.where((flight) {
+                    final airlineName = flight['airline'] is Map ? 
+                      flight['airline']['name']?.toString().toLowerCase() ?? '' : 
+                      flight['airline']?.toString().toLowerCase() ?? '';
+                      
+                    final passesCarrierFilter = _carrierFilter.isEmpty || 
+                      airlineName.contains(_carrierFilter.toLowerCase());
+                    
+                    return passesCarrierFilter;
+                  }).toList();
+
+                  if (filteredFlights.isEmpty) {
+                    return Center(
+                      child: Text(getLocalizedText('noFlightsFound', 'No flights found matching "{filter}" filter.', replacements: {'filter': _carrierFilter})),
+                    );
+                  }
+
+                  return ListView.separated(
+                    itemCount: filteredFlights.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, idx) {
+                      final flight = filteredFlights[idx];
+                      // Handle airline (Map or String)
+                      final airline = flight['airline'];
+                      String airlineName = '';
+                      if (airline is Map && airline.containsKey('name')) {
+                        airlineName = airline['name'] ?? '';
+                      } else if (airline is String) {
+                        airlineName = airline;
+                      }
+                      
+                      // Handle movement (Map or String)
+                      final movement = flight['movement'];
+                      Map<String, dynamic> airport = {};
+                      Map<String, dynamic> scheduled = {};
+                      Map<String, dynamic> revised = {};
+                      Map<String, dynamic> actual = {};
+                      if (movement is Map) {
+                        airport = movement['airport'] is Map ? 
+                          Map<String, dynamic>.from(movement['airport']) : {};
+                        scheduled = movement['scheduledTime'] is Map ? 
+                          Map<String, dynamic>.from(movement['scheduledTime']) : {};
+                        revised = movement['revisedTime'] is Map ? 
+                          Map<String, dynamic>.from(movement['revisedTime']) : {};
+                        actual = movement['actualTime'] is Map ? 
+                          Map<String, dynamic>.from(movement['actualTime']) : {};
+                      }
+                      
+                      // Handle aircraft (Map or String)
+                      final aircraft = flight['aircraft'];
+                      String aircraftModel = '';
+                      if (aircraft is Map && aircraft.containsKey('model')) {
+                        aircraftModel = aircraft['model'] ?? '';
+                      } else if (aircraft is String) {
+                        aircraftModel = aircraft;
+                      }
+                      
+                      String flightNumber = (flight['number'] ?? '').toString();
+                      String airportCode = airport['iata'] ?? airport['icao'] ?? '';
+                      String airportName = airport['name'] ?? '';
+
+                      String titleText = '';
+                      if (flightNumber.isNotEmpty && airlineName.isNotEmpty) {
+                        titleText = '$flightNumber - $airlineName';
+                      } else if (flightNumber.isNotEmpty) {
+                        titleText = flightNumber;
+                      } else {
+                        titleText = airlineName;
+                      }
+
+                      return ListTile(
+                        leading: const Icon(Icons.flight_land, size: 32, color: Colors.blueGrey),
+                        title: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                titleText,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: flight['status'] == 'Cancelled' ? Colors.red : Colors.grey[900],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.verified, color: Colors.green, size: 20),
+                            Text(
+                              getLocalizedText('euCompensation', 'EU Compensation:'),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)
+                            ),
+                          ],
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                          if (airportCode.isNotEmpty || airportName.isNotEmpty)
+                            Row(
+                              children: [
+                                const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    'Arrival: ${airportCode.isNotEmpty ? airportCode : ''} ${airportName.isNotEmpty ? '($airportName)' : ''}',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          Row(
+                            children: [
+                              const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                              const SizedBox(width: 4),
+                              Text(getLocalizedText('from', 'From: ${scheduled['local'] ?? scheduled['utc'] ?? ''}')),
+                            ],
+                          ),
+                          if (revised['local'] != null && revised['local'] != scheduled['local'])
+                            Row(
+                              children: [
+                                const Icon(Icons.update, size: 16, color: Colors.orange),
+                                const SizedBox(width: 4),
+                                Text(
+                                  getLocalizedText('revised', 'Revised: ${revised['local']}'),
+                                  style: TextStyle(color: Colors.orange.shade700),
+                                ),
+                              ],
+                            ),
+                          if (actual['local'] != null)
+                            Row(
+                              children: [
+                                const Icon(Icons.flight_land, size: 16, color: Colors.blue),
+                                const SizedBox(width: 4),
+                                Text(
+                                  getLocalizedText('actual', 'Actual: ${actual['local']}'),
+                                  style: const TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          Row(
+                            children: [
+                              const Icon(Icons.info_outline, size: 16, color: Colors.grey),
+                              const SizedBox(width: 4),
+                              Text(
+                                getLocalizedText('statusLabelText', 'Status: ${flight['status'] ?? ''}'),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: flight['status'] == 'Delayed' || flight['status'] == 'Diverted' ? Colors.orange[700] : 
+                                         flight['status'] == 'Cancelled' ? Colors.red : Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (_calculateDelayMinutes(scheduled, actual) > 0)
+                            Row(
+                              children: [
+                                Icon(Icons.timelapse, size: 16, color: _calculateDelayMinutes(scheduled, actual) >= 180 ? Colors.red : Colors.orange),
+                                const SizedBox(width: 4),
+                                Text(
+                                  MigrationLocalizations.of(context).replaceParams(MigrationLocalizations.of(context).delay, {'minutes': _formatDelay(_calculateDelayMinutes(scheduled, actual))}),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: _calculateDelayMinutes(scheduled, actual) >= 180 ? Colors.red : Colors.orange,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.euro, size: 16, color: Colors.green),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  '${MigrationLocalizations.of(context).potentialCompensationLabel}: ${_getCompensationAmount(flight)}',
+                                   style: const TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.flight, size: 16, color: Colors.blueGrey),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Aircraft: ${aircraftModel.isNotEmpty ? aircraftModel : flight['aircraft']?['model'] ?? 'Unknown'}',
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                            ),
+                            onPressed: () => _openCompensationForm(context, flight),
+                            icon: const Icon(Icons.description, size: 16),
+                            label: const Text('Pre-fill Compensation Form'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

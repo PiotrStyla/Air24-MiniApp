@@ -65,9 +65,9 @@ class ManualLocalizationService extends ChangeNotifier {
   };
   
   /// Maps to store localized strings for each supported locale
+  // Initialize _allStrings with all supported locales
   final Map<String, Map<String, dynamic>> _allStrings = {
-    'en': {},
-    'pt': {},
+    for (var locale in LocalizationService.supportedLocales) locale.languageCode: {}
   };
   
   /// Current active localization strings
@@ -130,16 +130,29 @@ class ManualLocalizationService extends ChangeNotifier {
         _currentLocale = Locale(languageCode, countryCode);
       }
       
-      // Load English strings (always as fallback)
-      await _loadStrings('en');
-      
-      // Load Portuguese strings (our focus language)
-      await _loadStrings('pt');
-      
-      // Finally load the current locale if it's different
-      if (_currentLocale.languageCode != 'en' && _currentLocale.languageCode != 'pt') {
-        await _loadStrings(_currentLocale.languageCode);
+      // Determine the initial locale to load
+      // prefs, languageCode, and countryCode are already declared earlier in the original _init method
+      if (languageCode != null) {
+        _currentLocale = Locale(languageCode, countryCode);
+      } else {
+        // Default to English or try to match platform locale if not set
+        // This part can be enhanced based on LocalizationService's _init logic if needed
+        _currentLocale = const Locale('en', 'US'); 
       }
+
+      // Ensure English is loaded as a fallback
+      if (!_allStrings.containsKey('en') || _allStrings['en']!.isEmpty) {
+        await _loadStrings('en');
+      }
+
+      // Load the current/persisted locale's strings if it's not English (which is already loaded or will be)
+      if (_currentLocale.languageCode != 'en') {
+         if (!_allStrings.containsKey(_currentLocale.languageCode) || _allStrings[_currentLocale.languageCode]!.isEmpty) {
+            await _loadStrings(_currentLocale.languageCode);
+         }
+      }
+      // Set active strings to the current locale, falling back to English if necessary
+      _strings = _allStrings[_currentLocale.languageCode] ?? _allStrings['en'] ?? {};
       
       _hasLoadedAllLanguages = true;
       _isInitialized = true;

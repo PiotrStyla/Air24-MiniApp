@@ -3,6 +3,8 @@ import '../services/aviation_stack_service.dart';
 import 'compensation_claim_form_screen.dart';
 import '../utils/translation_helper.dart';
 import '../services/manual_localization_service.dart';
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:intl/intl.dart';
 
 class EUEligibleFlightsScreen extends StatefulWidget {
   const EUEligibleFlightsScreen({super.key});
@@ -14,8 +16,8 @@ class EUEligibleFlightsScreen extends StatefulWidget {
 class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   late Future<List<Map<String, dynamic>>> _flightsFuture;
   String _carrierFilter = '';
-  // Fixed at 72 hours - no time filter selection needed
-  static const int _hoursFilter = 72;
+  // Increased time window to find more eligible flights
+  static const int _hoursFilter = 144;
   DateTime? _selectedDate;
 
   @override
@@ -27,7 +29,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
     // Force refresh of translations when screen loads to ensure consistency
     Future.delayed(Duration.zero, () {
       if (mounted) {
-        debugPrint('EUEligibleFlightsScreen: Ensuring translations are loaded correctly');
+        foundation.debugPrint('EUEligibleFlightsScreen: Ensuring translations are loaded correctly');
         TranslationHelper.forceReloadTranslations(context);
       }
     });
@@ -35,73 +37,74 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
 
   Future<List<Map<String, dynamic>>> _loadFlights() async {
     try {
-      debugPrint('Attempting to load EU compensation eligible flights...');
+      foundation.debugPrint('Attempting to load EU compensation eligible flights...');
       final service = AviationStackService(
         baseUrl: 'http://api.aviationstack.com/v1',
-        pythonBackendUrl: 'https://piotrs.pythonanywhere.com',
+        pythonBackendUrl: 'http://piotrs.pythonanywhere.com',
         usePythonBackend: true, // Try Python backend first
       );
       // Add extra diagnostics
-      debugPrint('Current time: ${DateTime.now().toIso8601String()}');
-      debugPrint('Looking for flights in past $_hoursFilter hours');
-      // The service now handles exceptions internally and returns fallback data
-      return await service.getEUCompensationEligibleFlights(hours: _hoursFilter);
+      foundation.debugPrint('Current time: ${DateTime.now().toIso8601String()}');
+      foundation.debugPrint('Looking for flights in past $_hoursFilter hours');
+      // Enable debugging mode to see why flights aren't passing eligibility checks
+      return await service.getEUCompensationEligibleFlights(
+        hours: _hoursFilter,
+        relaxEligibilityForDebugging: true, // Show all flights including ineligible ones
+      );
     } catch (e) {
-      debugPrint('Error loading flights: $e');
+      foundation.debugPrint('Error loading flights: $e');
       // This shouldn't happen anymore since the service handles errors
       // But provide empty list just in case
       return [];
     }
   }
   
-  // Special debug version with extra logging
+  // Now uses external data sources only - no fallback data
   Future<List<Map<String, dynamic>>> _loadFlightsWithFallback() async {
     try {
-      debugPrint('========== LOADING FALLBACK DATA ==========');
-      debugPrint('Current time: ${DateTime.now().toIso8601String()}');
+      foundation.debugPrint('========== LOADING FROM EXTERNAL SOURCES ONLY ==========');
+      foundation.debugPrint('Current time: ${DateTime.now().toIso8601String()}');
       
-      final service = AviationStackService();
+      final service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'http://piotrs.pythonanywhere.com');
       final flights = await service.getEUCompensationEligibleFlights(
-        hours: _hoursFilter,
-        useFallback: true // Explicitly use fallback data
+        hours: _hoursFilter
       );
       
-      debugPrint('Loaded ${flights.length} flights from fallback data');
+      foundation.debugPrint('Loaded ${flights.length} flights from external sources');
       return flights;
     } catch (e) {
-      debugPrint('ERROR in fallback load: $e');
+      foundation.debugPrint('ERROR loading flights: $e');
       return []; // Return empty list as a last resort
     }
   }
 
   Future<List<Map<String, dynamic>>> _loadFlightsWithDebug() async {
     try {
-      debugPrint('========== FORCED DATA REFRESH ==========');
-      debugPrint('Current time: ${DateTime.now().toIso8601String()}');
+      foundation.debugPrint('========== FORCED DATA REFRESH ==========');
+      foundation.debugPrint('Current time: ${DateTime.now().toIso8601String()}');
       
       // Create service with direct HTTP client
-      final service = AviationStackService();
+      final service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'http://piotrs.pythonanywhere.com');
       // Use real API data
       final flights = await service.getEUCompensationEligibleFlights(
-        hours: _hoursFilter,
-        // Don't force fallbacks - use real API data
+        hours: _hoursFilter
       );
       
       // Check if we got results
       if (flights.isEmpty) {
-        debugPrint('WARNING: Received empty flight list from API');
+        foundation.debugPrint('WARNING: Received empty flight list from API');
       } else {
-        debugPrint('Received ${flights.length} flights from API:');
+        foundation.debugPrint('Received ${flights.length} flights from API:');
         for (var i = 0; i < flights.length; i++) {
           final flight = flights[i];
-          debugPrint('Flight $i: ${flight['flightNumber']} - ${flight['airline']} - ${flight['departureTime']}');
+          foundation.debugPrint('Flight $i: ${flight['flightNumber']} - ${flight['airline']} - ${flight['departureTime']}');
         }
       }
       
-      debugPrint('======================================');
+      foundation.debugPrint('======================================');
       return flights;
     } catch (e) {
-      debugPrint('ERROR in debug load flights: $e');
+      foundation.debugPrint('ERROR in debug load flights: $e');
       return []; // Return empty list instead of throwing
     }
   }
@@ -124,7 +127,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
         return actualTime.difference(scheduledTime).inMinutes;
       }
     } catch (e) {
-      debugPrint('Error calculating delay: $e');
+      foundation.debugPrint('Error calculating delay: $e');
     }
     return 0;
   }
@@ -140,84 +143,36 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   }
   
   void _openCompensationForm(BuildContext context, Map<String, dynamic> flight) {
-    // Extract data for the form in a structured way
-    // Following AviationStack format exclusively
-    Map<String, dynamic> formattedFlight = {};
+    // FINAL FIX: This function now correctly extracts flattened data for the form.
+    final Map<String, dynamic> formattedFlight = {};
+
+    // Log the raw data to help with any future debugging
+    foundation.debugPrint('Pre-filling form with flight data: $flight');
+
+    // Extract data using the correct keys identified from logs
+    formattedFlight['airline'] = flight['airline_name'] ?? '';
+    formattedFlight['flight_number'] = flight['flight_iata'] ?? '';
+    formattedFlight['departure_airport'] = flight['departure_airport_iata'] ?? '';
+    formattedFlight['arrival_airport'] = flight['arrival_airport_iata'] ?? '';
     
-    // Log all available keys for debugging
-    debugPrint('Available flight data keys: ${flight.keys.join(', ')}');
-    
-    // Extract airline from AviationStack format
-    if (flight['airline'] is Map) {
-      formattedFlight['airline'] = flight['airline']['name'] ?? 'Unknown Airline';
-    } else if (flight['airline'] is String) {
-      formattedFlight['airline'] = flight['airline'];
-    }
-    
-    // Extract flight number - AviationStack uses 'flight' object with 'iata' property
-    if (flight['flight'] is Map) {
-      formattedFlight['flight_number'] = flight['flight']['iata'] ?? '';
+    // Safely parse and format the departure date
+    final departureTimeStr = flight['departure_scheduled_time']?.toString();
+    if (departureTimeStr?.isNotEmpty ?? false) {
+      try {
+        final departureTime = DateTime.parse(departureTimeStr!);
+        // The form expects the date in 'yyyy-MM-dd' format
+        formattedFlight['departure_date'] = DateFormat('yyyy-MM-dd').format(departureTime);
+      } catch (e) {
+        foundation.debugPrint('Error parsing departure date: $e. Fallback to today.');
+        formattedFlight['departure_date'] = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }
     } else {
-      formattedFlight['flight_number'] = flight['number'] ?? flight['flightNumber'] ?? '';
+      // Fallback to today's date if not available
+      formattedFlight['departure_date'] = DateFormat('yyyy-MM-dd').format(DateTime.now());
     }
-    
-    // Extract departure info from AviationStack format
-    if (flight['departure'] is Map) {
-      // Airport info
-      formattedFlight['departure_airport'] = '${flight['departure']['airport'] ?? 'Unknown'} ' +
-          '(${flight['departure']['iata'] ?? flight['departure']['icao'] ?? ''})';
-      
-      // Date/time info - AviationStack uses 'scheduled' property
-      formattedFlight['departure_date'] = flight['departure']['scheduled'] ?? '';
-    } else if (flight['departureAirport'] != null || flight['departure_airport'] != null) {
-      // Fallback for already formatted data
-      formattedFlight['departure_airport'] = flight['departureAirport'] ?? flight['departure_airport'] ?? 'Unknown Airport';
-      formattedFlight['departure_date'] = flight['departureTime'] ?? flight['departure_date'] ?? 'Unknown Date';
-    }
-    
-    // Extract arrival info from AviationStack format
-    if (flight['arrival'] is Map) {
-      // Airport info
-      formattedFlight['arrival_airport'] = '${flight['arrival']['airport'] ?? 'Unknown'} ' +
-          '(${flight['arrival']['iata'] ?? flight['arrival']['icao'] ?? ''})';
-    } else if (flight['arrivalAirport'] != null || flight['arrival_airport'] != null) {
-      // Fallback for already formatted data
-      formattedFlight['arrival_airport'] = flight['arrivalAirport'] ?? flight['arrival_airport'] ?? 'Unknown Airport';
-    }
-    
-    // Extract delay information - AviationStack has 'arrival.delay' property
-    if (flight['arrival'] is Map && flight['arrival']['delay'] != null) {
-      formattedFlight['delay_minutes'] = flight['arrival']['delay'];
-    } else if (flight['delay_minutes'] != null) {
-      formattedFlight['delay_minutes'] = flight['delay_minutes'];
-    } else if (flight['delayMinutes'] != null) {
-      formattedFlight['delay_minutes'] = flight['delayMinutes'];
-    }
-    
-    // Add status information - AviationStack uses 'flight_status'
-    if (flight['flight_status'] != null) {
-      formattedFlight['status'] = flight['flight_status'];
-    } else if (flight['status'] != null) {
-      formattedFlight['status'] = flight['status'];
-    }
-    
-    // Extract compensation amount
-    int amount = 0;
-    if (flight['potentialCompensationAmount'] != null) {
-      amount = flight['potentialCompensationAmount'] is int 
-          ? flight['potentialCompensationAmount'] 
-          : int.tryParse(flight['potentialCompensationAmount'].toString()) ?? 0;
-    } else {
-      amount = _calculateCompensationAmount(flight);
-    }
-    
-    if (amount > 0) {
-      formattedFlight['compensation_amount_eur'] = amount;
-    }
-    
-    debugPrint('Formatted flight data for form (AviationStack format): $formattedFlight');
-    
-    // Navigate to the compensation form with structured data
+
+    // Pass the correctly formatted data to the form screen
+    foundation.debugPrint('Formatted flight data for form: $formattedFlight');
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CompensationClaimFormScreen(flightData: formattedFlight),
@@ -253,7 +208,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
         return 600; // Long flights over 3500 km: €600
       }
     } catch (e) {
-      debugPrint('Error calculating compensation amount: $e');
+      foundation.debugPrint('Error calculating compensation amount: $e');
       return 0;
     }
   }
@@ -267,6 +222,26 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
     } else {
       return 1000; // Assume short-haul flight
     }
+  }
+
+  Widget _buildInfoRow(BuildContext context, IconData icon, String label, String value, {Color? valueColor}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: Colors.grey[600]),
+          const SizedBox(width: 8),
+          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.w500)),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(color: valueColor, fontWeight: valueColor != null ? FontWeight.bold : FontWeight.normal),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -283,9 +258,9 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(TranslationHelper.getString(context, 'forcingFreshDataLoad', fallback: 'Forcing fresh data load...'))),
               );
-              // Force reload with debug flag
+              // Re-fetch flights using the primary load function
               setState(() {
-                _flightsFuture = _loadFlightsWithDebug();
+                _flightsFuture = _loadFlights();
               });
             },
           ),
@@ -339,7 +314,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   // Show API error with option to retry or use fallback
-                  debugPrint('Error loading flights: ${snapshot.error}');
+                  foundation.debugPrint('Error loading flights: ${snapshot.error}');
                   
                   return Center(
                     child: Column(
@@ -531,189 +506,61 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                   );
                 }
 
-                return ListView.separated(
+                return ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
                   itemCount: filteredFlights.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (context, idx) {
                     final flight = filteredFlights[idx];
-                    // Handle airline (Map or String)
-                    final airline = flight['airline'];
-                    String airlineName = '';
-                    if (airline is Map && airline.containsKey('name')) {
-                      airlineName = airline['name'] ?? '';
-                    } else if (airline is String) {
-                      airlineName = airline;
-                    }
-                    
-                    // Handle movement (Map or String)
-                    final movement = flight['movement'];
-                    Map<String, dynamic> airport = {};
-                    Map<String, dynamic> scheduled = {};
-                    Map<String, dynamic> revised = {};
-                    Map<String, dynamic> actual = {};
-                    if (movement is Map) {
-                      airport = movement['airport'] is Map ? 
-                        Map<String, dynamic>.from(movement['airport']) : {};
-                      scheduled = movement['scheduledTime'] is Map ? 
-                        Map<String, dynamic>.from(movement['scheduledTime']) : {};
-                      revised = movement['revisedTime'] is Map ? 
-                        Map<String, dynamic>.from(movement['revisedTime']) : {};
-                      actual = movement['actualTime'] is Map ? 
-                        Map<String, dynamic>.from(movement['actualTime']) : {};
-                    }
-                    
-                    // Handle aircraft (Map or String)
-                    final aircraft = flight['aircraft'];
-                    String aircraftModel = '';
-                    if (aircraft is Map && aircraft.containsKey('model')) {
-                      aircraftModel = aircraft['model'] ?? '';
-                    } else if (aircraft is String) {
-                      aircraftModel = aircraft;
-                    }
-                    
-                    String flightNumber = (flight['number'] ?? '').toString();
-                    String airportCode = airport['iata'] ?? airport['icao'] ?? '';
-                    String airportName = airport['name'] ?? '';
 
-                    String titleText = '';
-                    if (flightNumber.isNotEmpty && airlineName.isNotEmpty) {
-                      titleText = '$flightNumber - $airlineName';
-                    } else if (flightNumber.isNotEmpty) {
-                      titleText = flightNumber;
-                    } else {
-                      titleText = airlineName;
-                    }
+                    // FINAL FIX: Using correct keys from the log data
+                    final airlineName = flight['airline_name']?.toString() ?? 'Unknown Airline';
+                    final flightNumber = flight['flight_iata']?.toString() ?? '';
+                    final departureAirport = flight['departure_airport_iata']?.toString() ?? 'N/A';
+                    final arrivalAirport = flight['arrival_airport_iata']?.toString() ?? 'N/A';
+                    final status = flight['status']?.toString() ?? 'Unknown';
+                    final aircraftModel = flight['aircraft_registration']?.toString() ?? 'Unknown';
+                    final departureTimeStr = flight['departure_scheduled_time']?.toString();
+                    final departureTime = (departureTimeStr?.isNotEmpty ?? false) ? DateTime.parse(departureTimeStr!) : null;
+                    final compensation = flight['eligibility_details']?['estimatedCompensation'] ?? 0;
+                    final delayMinutes = flight['delay_minutes'] ?? 0;
 
-                    return ListTile(
-                      leading: Icon(Icons.flight_land, size: 32, color: Colors.blueGrey),
-                      title: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              titleText,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Icon(Icons.verified, color: Colors.green, size: 20),
-                          Text(' ${TranslationHelper.getString(context, 'euCompensation', fallback: 'EU Compensation')}',
-                            style: TextStyle(color: Colors.green, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (airportCode.isNotEmpty || airportName.isNotEmpty)
-                            Row(
-                              children: [
-                                Icon(Icons.location_on, size: 16, color: Colors.grey),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    '${TranslationHelper.getString(context, 'arrival', fallback: 'Arrival')}: ${airportCode.isNotEmpty ? airportCode : ''} ${airportName.isNotEmpty ? '($airportName)' : ''}',
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                    String titleText = flightNumber.isNotEmpty ? '$airlineName $flightNumber' : airlineName;
+                    String routeText = '$departureAirport ➔ $arrivalAirport';
+
+                    return Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(titleText, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 4),
+                            Text(routeText, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.blueGrey[700])),
+                            const Divider(height: 20),
+                            _buildInfoRow(context, Icons.access_time, 'Scheduled', departureTime != null ? DateFormat('E, MMM d, HH:mm').format(departureTime) : 'N/A'),
+                            _buildInfoRow(context, Icons.info_outline, 'Status', status, valueColor: status.toLowerCase() == 'cancelled' ? Colors.red : (delayMinutes > 0 ? Colors.orange : Colors.green)),
+                            if (delayMinutes > 0)
+                              _buildInfoRow(context, Icons.timelapse, 'Delay', _formatDelay(delayMinutes), valueColor: delayMinutes >= 180 ? Colors.red : Colors.orange),
+                            _buildInfoRow(context, Icons.euro, 'Potential Compensation', '€$compensation', valueColor: Colors.green[700]),
+                            _buildInfoRow(context, Icons.airplanemode_active, 'Aircraft', aircraftModel),
+                            const SizedBox(height: 16),
+                            Center(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                  textStyle: const TextStyle(fontSize: 16)
                                 ),
-                              ],
-                            ),
-                          Row(
-                            children: [
-                              Icon(Icons.access_time, size: 16, color: Colors.grey),
-                              const SizedBox(width: 4),
-                              Text('${TranslationHelper.getString(context, 'scheduled', fallback: 'Scheduled')}: ${scheduled['local'] ?? scheduled['utc'] ?? ''}'),
-                            ],
-                          ),
-                          if (revised['local'] != null && revised['local'] != scheduled['local'])
-                            Row(
-                              children: [
-                                Icon(Icons.update, size: 16, color: Colors.orange),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${TranslationHelper.getString(context, 'revised', fallback: 'Revised')}: ${revised['local']}',
-                                  style: TextStyle(color: Colors.orange[700]),
-                                ),
-                              ],
-                            ),
-                          if (actual['local'] != null)
-                            Row(
-                              children: [
-                                Icon(Icons.flight_land, size: 16, color: Colors.blue),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${TranslationHelper.getString(context, 'actual', fallback: 'Actual')}: ${actual['local']}',
-                                  style: const TextStyle(fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                          Row(
-                            children: [
-                              Icon(Icons.info_outline, size: 16, color: Colors.grey),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${TranslationHelper.getString(context, 'status', fallback: 'Status')}: ${flight['status'] ?? ''}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: flight['status'] == 'Delayed' || flight['status'] == 'Diverted' ? Colors.orange[700] : 
-                                         flight['status'] == 'Cancelled' ? Colors.red : Colors.grey[700],
-                                ),
+                                onPressed: () => _openCompensationForm(context, flight),
+                                icon: const Icon(Icons.description),
+                                label: Text(TranslationHelper.getString(context, 'prefillCompensationForm', fallback: 'Pre-fill Compensation Form')),
                               ),
-                            ],
-                          ),
-                          if (_calculateDelayMinutes(scheduled, actual) > 0)
-                            Row(
-                              children: [
-                                Icon(Icons.timelapse, size: 16, color: _calculateDelayMinutes(scheduled, actual) >= 180 ? Colors.red : Colors.orange),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${TranslationHelper.getString(context, 'delay', fallback: 'Delay')}: ${_formatDelay(_calculateDelayMinutes(scheduled, actual))}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: _calculateDelayMinutes(scheduled, actual) >= 180 ? Colors.red : Colors.orange,
-                                  ),
-                                ),
-                              ],
                             ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(Icons.euro, size: 16, color: Colors.green),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  'Potential Compensation: ${_getCompensationAmount(flight)}',
-                                  style: const TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.flight, size: 16, color: Colors.blueGrey),
-                              const SizedBox(width: 4),
-                              Text(
-                                'Aircraft: ${aircraftModel.isNotEmpty ? aircraftModel : flight['aircraft']?['model'] ?? 'Unknown'}',
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                              visualDensity: VisualDensity.compact,
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                            ),
-                            onPressed: () => _openCompensationForm(context, flight),
-                            icon: const Icon(Icons.description, size: 16),
-                            label: const Text('Pre-fill Compensation Form'),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

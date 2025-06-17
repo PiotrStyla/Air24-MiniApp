@@ -227,9 +227,119 @@
     "description": "Title for document scanner screen"
   },
   
-  "processingDocument": "Processing document...",
-  "@processingDocument": {
-    "description": "Message when processing a document"
+  "tipAccessibilitySettings": "Check the Accessibility Settings to customize the app for your needs.",
+  "@tipAccessibilitySettings": {
+    "description": "Tip to check accessibility settings"
+  },
+
+  "accountSettings": "Account Settings",
+  "@accountSettings": {
+    "description": "Title for the Account Settings section"
+  },
+
+  "profileInformation": "Profile Information",
+  "@profileInformation": {
+    "description": "Title for the Profile Information card"
+  },
+
+  "editPersonalInformation": "Edit your personal information",
+  "@editPersonalInformation": {
+    "description": "Semantic label for editing personal information"
+  },
+
+  "editPersonalAndContactInformation": "Edit your personal and contact information",
+  "@editPersonalAndContactInformation": {
+    "description": "Text for the profile information card body"
+  },
+
+  "configureAccessibilityOptions": "Configure accessibility options for the app",
+  "@configureAccessibilityOptions": {
+    "description": "Semantic label for accessibility settings"
+  },
+
+  "accessibilityOptions": "Accessibility Options",
+  "@accessibilityOptions": {
+    "description": "Title for accessibility options"
+  },
+
+  "configureHighContrastLargeTextAndScreenReaderSupport": "Configure high contrast, large text, and screen reader support",
+  "@configureHighContrastLargeTextAndScreenReaderSupport": {
+    "description": "Subtitle for accessibility options"
+  },
+
+  "applicationPreferences": "Application Preferences",
+  "@applicationPreferences": {
+    "description": "Title for the Application Preferences section"
+  },
+
+  "notificationSettings": "Notification Settings",
+  "@notificationSettings": {
+    "description": "Title for the Notification Settings card"
+  },
+
+  "configureNotificationPreferences": "Configure notification preferences",
+  "@configureNotificationPreferences": {
+    "description": "Semantic label for notification settings"
+  },
+
+  "configureHowYouReceiveClaimUpdates": "Configure how you receive claim updates",
+  "@configureHowYouReceiveClaimUpdates": {
+    "description": "Text for the notification settings card body"
+  },
+
+  "language": "Language",
+  "@language": {
+    "description": "Title for the Language card"
+  },
+
+  "changeApplicationLanguage": "Change application language",
+  "@changeApplicationLanguage": {
+    "description": "Semantic label for language settings"
+  },
+
+  "selectYourPreferredLanguage": "Select your preferred language",
+  "@selectYourPreferredLanguage": {
+    "description": "Text for the language settings card body"
+  },
+
+  "tipsAndReminders": "Tips & Reminders",
+  "@tipsAndReminders": {
+    "description": "Title for the Tips & Reminders section"
+  },
+
+  "importantTipsAboutProfileInformation": "Important tips about your profile information",
+  "@importantTipsAboutProfileInformation": {
+    "description": "Semantic label for the tips section"
+  },
+
+  "tipProfileUpToDate": "Keep your profile up to date for smooth claim processing.",
+  "@tipProfileUpToDate": {
+    "description": "A tip about keeping profile up to date"
+  },
+
+  "tipInformationPrivate": "Your information is private and only used for compensation claims.",
+  "@tipInformationPrivate": {
+    "description": "A tip about data privacy"
+  },
+
+  "tipContactDetails": "Make sure your contact details are correct so we can reach you about your claim.",
+  "@tipContactDetails": {
+    "description": "A tip about correct contact details"
+  },
+  
+  "profileInfoCardTitle": "Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.",
+  "@profileInfoCardTitle": {
+    "description": "Informational banner on the profile screen"
+  },
+  
+  "noClaimsYetTitle": "No Claims Yet",
+  "@noClaimsYetTitle": {
+    "description": "Title displayed when there are no claims"
+  },
+  
+  "noClaimsYetSubtitle": "Start your compensation claim by selecting a flight from the EU Eligible Flights section",
+  "@noClaimsYetSubtitle": {
+    "description": "Subtitle/instruction when there are no claims"
   },
   
   "extractingText": "Extracting text and identifying fields",
@@ -430,6 +540,11 @@
   "useExtractedData": "Use Extracted Data",
   "@useExtractedData": {
     "description": "Button to use extracted data"
+  },
+
+  "processingDocument": "Processing document...",
+  "@processingDocument": {
+    "description": "Message when processing a document"
   },
   
   "copyToClipboard": "Copy to Clipboard",

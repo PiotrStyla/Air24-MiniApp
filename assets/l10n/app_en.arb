@@ -1,0 +1,113 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Flight Compensation",
+  "@appTitle": {
+    "description": "Title of the application"
+  },
+
+  "welcomeMessage": "Welcome to Flight Compensation App",
+  "@welcomeMessage": {
+    "description": "Welcome message shown on home screen"
+  },
+
+  "languageSettings": "Language Settings",
+  "@languageSettings": {
+    "description": "Title for language selection screen"
+  },
+
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+
+  "ok": "OK",
+  "@ok": {
+    "description": "Confirmation button text"
+  },
+
+  "euWideCompensation": "EU-Wide Compensation Eligible Flights",
+  "@euWideCompensation": {
+    "description": "Title for EU-wide compensation screen"
+  },
+  
+  "filterByAirline": "Filter by airline",
+  "@filterByAirline": {
+    "description": "Placeholder for airline filter field"
+  },
+  
+  "last72Hours": "Last 72 hours",
+  "@last72Hours": {
+    "description": "Label showing time filter for flights"
+  },
+  
+  "apiConnectionIssue": "API Connection Issue",
+  "@apiConnectionIssue": {
+    "description": "Error title when API connection fails"
+  },
+  
+  "apiConnectionIssueMessage": "We are having trouble connecting to the flight data service. This may be a temporary issue with the AviationStack API.",
+  "@apiConnectionIssueMessage": {
+    "description": "Error message when API connection fails"
+  },
+  
+  "retryConnection": "Retry Connection",
+  "@retryConnection": {
+    "description": "Button to retry API connection"
+  },
+  
+  "returnToHome": "Return to Home",
+  "@returnToHome": {
+    "description": "Button to go back to home screen"
+  },
+  
+  "noEligibleFlightsFound": "No Eligible Flights Found",
+  "@noEligibleFlightsFound": {
+    "description": "Message when no eligible flights are available"
+  },
+  
+  "noEligibleFlightsMessageTemplate": "We have checked flights across major EU airports in the last {hours} hours, but no flights meet EU261 compensation criteria at the moment.",
+  "@noEligibleFlightsMessageTemplate": {
+    "description": "Template message when no eligible flights are found"
+  },
+  
+  "checkAgain": "Check Again",
+  "@checkAgain": {
+    "description": "Button to refresh flight data"
+  },
+  
+  "noFlightsFoundTemplate": "No flights found matching \"{filter}\" filter.",
+  "@noFlightsFoundTemplate": {
+    "description": "Template message when no flights match filter"
+  },
+  
+  "euCompensation": "EU Compensation",
+  "@euCompensation": {
+    "description": "Label for eligible flights"
+  },
+  
+  "from": "From",
+  "@from": {
+    "description": "Label for departure airport"
+  },
+  
+  "to": "To",
+  "@to": {
+    "description": "Label for arrival airport"
+  },
+  
+  "scheduled": "Scheduled:",
+  "@scheduled": {
+    "description": "Label for scheduled time"
+  },
+  
+  "statusLabel": "Status:",
+  "@statusLabel": {
+    "description": "Label for flight status"
+  },
+  
+  "preFillCompensationForm": "Pre-fill Compensation Form",
+  "@preFillCompensationForm": {
+    "description": "Button to fill compensation claim form with flight data"
+  }
+}

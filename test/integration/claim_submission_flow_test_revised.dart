@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart'; // Added for ImageSource
 
 // App imports
 import 'package:f35_flight_compensation/main.dart' as app;
@@ -17,19 +16,14 @@ import 'package:f35_flight_compensation/services/document_ocr_service.dart';
 import 'package:f35_flight_compensation/services/document_storage_service.dart';
 import 'package:f35_flight_compensation/services/claim_submission_service.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
-import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
+
 import 'package:f35_flight_compensation/models/flight_document.dart';
+import 'package:f35_flight_compensation/models/document_ocr_result.dart'; // Added for DocumentOcrResult and DocumentType
 
 /// This class provides the ability to override services during testing
 class TestServiceInitializer {
-  static bool _testMode = false;
-  static Map<Type, dynamic> _testOverrides = {};
-
-  static bool get testMode => _testMode;
-  static set testMode(bool value) => _testMode = value;
-
-  static Map<Type, dynamic> get testOverrides => _testOverrides;
-  static set testOverrides(Map<Type, dynamic> value) => _testOverrides = value;
+  static bool testMode = false;
+  static Map<Type, dynamic> testOverrides = {};
 
   /// Register services with specific overrides for testing
   static void registerServices() {
@@ -39,7 +33,7 @@ class TestServiceInitializer {
 
 // Mock classes for services
 class MockAviationStackService extends AviationStackService {
-  MockAviationStackService() : super(baseUrl: 'https://test-api.example.com');
+  MockAviationStackService({super.baseUrl = 'https://test-api.example.com', super.pythonBackendUrl = 'https://test-python-backend.example.com'});
   
   @override
   Future<List<Map<String, dynamic>>> getRecentArrivals({
@@ -64,6 +58,7 @@ class MockAviationStackService extends AviationStackService {
   @override
   Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
     int hours = 72,
+    bool relaxEligibilityForDebugging = false,
   }) async {
     // Return mock eligible flights
     return [
@@ -105,66 +100,177 @@ class MockAviationStackService extends AviationStackService {
   }
 }
 
-class MockDocumentOcrService extends ChangeNotifier implements DocumentOcrService {
+// Mock class for DocumentOcrService
+class MockDocumentOcrService implements DocumentOcrService {
+  final Map<String, List<DocumentOcrResult>> _resultsByUserId = {}; // Store results per user, made final
+
   @override
-  Future<Map<String, String>> extractTextFromImage(File imageFile) async {
-    // Return mock OCR results
-    return {
-      'flightNumber': 'LH1234',
-      'airline': 'Lufthansa',
-      'passengerName': 'John Smith',
-      'departureAirport': 'MUC',
-      'arrivalAirport': 'MAD',
-      'departureDate': '2025-05-28',
-    };
+  Future<DocumentOcrResult> scanDocument({
+    required File imageFile,
+    required DocumentType documentType,
+    String userId = 'mock-user-id', // Default mock user ID
+  }) async {
+    final result = DocumentOcrResult(
+      documentId: 'ocr-doc-${DateTime.now().millisecondsSinceEpoch}',
+      imagePath: imageFile.path,
+      scanDate: DateTime.now(),
+      extractedFields: {'field1': 'value1', 'type': documentType.toString()},
+      rawText: 'Mock raw text from ${imageFile.path}',
+      documentType: documentType,
+      // userId: userId, // DocumentOcrResult does not have userId field
+    );
+    _resultsByUserId.putIfAbsent(userId, () => []).add(result);
+    return result;
+  }
+
+  @override
+  Future<List<DocumentOcrResult>> getOcrResultsForUser(String userId) async {
+    return List.from(_resultsByUserId[userId] ?? []);
+  }
+
+  @override // Added back based on analyzer feedback
+  Future<DocumentOcrResult?> getOcrResultById(String userId, String documentId) async {
+    final userResults = _resultsByUserId[userId];
+    if (userResults == null) return null;
+    try {
+      return userResults.firstWhere((res) => res.documentId == documentId);
+    } catch (e) {
+      return null; // Not found
+    }
+  }
+
+  @override
+  Stream<DocumentOcrResult?> getOcrResultStream(String userId, String documentId) {
+    final userResults = _resultsByUserId[userId];
+    DocumentOcrResult? currentResult;
+    if (userResults != null) {
+      try {
+        currentResult = userResults.firstWhere((res) => res.documentId == documentId);
+      } catch (e) {
+        currentResult = null; // Not found
+      }
+    }
+    return Stream.value(currentResult);
+  }
+
+  @override
+  Future<void> deleteOcrResult(String userId, String documentId) async {
+    _resultsByUserId[userId]?.removeWhere((result) => result.documentId == documentId);
+  }
+
+  @override // Added back based on analyzer feedback
+  Future<void> updateOcrResult(String userId, String documentId, Map<String, dynamic> data) async {
+    final userResults = _resultsByUserId[userId];
+    if (userResults == null) return;
+    final index = userResults.indexWhere((result) => result.documentId == documentId);
+    if (index != -1) {
+      // This is a simplified update. A real mock might merge fields or reconstruct the object.
+      // For example, if 'data' contains new 'extractedFields':
+      // final currentResult = userResults[index];
+      // final updatedFields = Map<String, String>.from(currentResult.extractedFields)..addAll(Map<String, String>.from(data['extractedFields'] as Map));
+      // userResults[index] = currentResult.copyWith(extractedFields: updatedFields); // Assuming a copyWith method
+      // print('MockDocumentOcrService: updateOcrResult called for $documentId. Data: $data'); // Removed print
+    }
+  }
+
+  @override
+  void dispose() {
+    _resultsByUserId.clear();
+    // print('MockDocumentOcrService disposed.'); // Removed print
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    // print('MockDocumentOcrService: Called unmocked method ${invocation.memberName}'); // Removed print
+    return super.noSuchMethod(invocation);
   }
 }
 
-class MockDocumentStorageService extends ChangeNotifier implements DocumentStorageService {
+// Mock class for DocumentStorageService
+class MockDocumentStorageService implements DocumentStorageService {
   final List<FlightDocument> _documents = [];
-  
-  @override
-  Future<List<FlightDocument>> getUserDocuments() async {
-    return _documents;
+  String _currentUserId = 'mock-user-id'; // Mock current user
+
+  // Helper to simulate user context, actual service uses FirebaseAuth.instance.currentUser.uid
+  void setCurrentUserId(String userId) {
+    _currentUserId = userId;
   }
-  
+
   @override
-  Future<void> uploadDocument(File file, String documentType) async {
+  Future<List<FlightDocument>> getAllUserDocuments() async {
+    return List.from(_documents.where((doc) => doc.userId == _currentUserId));
+  }
+
+  @override
+  Future<FlightDocument?> saveDocument({
+    required String flightNumber,
+    required DateTime flightDate,
+    required FlightDocumentType documentType,
+    required String documentName,
+    required String storageUrl, // This would typically come from a separate upload step
+    String? description,
+    String? thumbnailUrl,
+    Map<String, dynamic>? metadata,
+  }) async {
     final newDocument = FlightDocument(
-      id: 'test-doc-${DateTime.now().millisecondsSinceEpoch}',
-      userId: 'test-user',
-      flightNumber: 'LH1234',
-      flightDate: DateTime.now(),
-      documentType: FlightDocumentType.boardingPass,
-      documentName: 'Test Boarding Pass',
-      storageUrl: 'https://example.com/test.pdf',
+      id: metadata?['id'] as String? ?? 'mock-doc-${DateTime.now().millisecondsSinceEpoch}',
+      userId: _currentUserId, // Use the mock current user ID
+      flightNumber: flightNumber,
+      flightDate: flightDate,
+      documentType: documentType,
+      documentName: documentName,
+      storageUrl: storageUrl,
+      description: description,
       uploadDate: DateTime.now(),
+      thumbnailUrl: thumbnailUrl,
+      metadata: metadata,
     );
-    
     _documents.add(newDocument);
-    notifyListeners();
+    return newDocument;
   }
-  
+
   @override
   Future<bool> deleteDocument(FlightDocument document) async {
+    if (document.userId != _currentUserId) return false; // Basic security check
     final lengthBefore = _documents.length;
-    _documents.removeWhere((doc) => doc.id == document.id);
-    final success = lengthBefore > _documents.length;
-    notifyListeners();
-    return success;
+    _documents.removeWhere((doc) => doc.id == document.id && doc.userId == _currentUserId);
+    return lengthBefore > _documents.length;
+  }
+
+  @override
+  Stream<List<FlightDocument>> streamFlightDocuments(String flightNumber) {
+    return Stream.value(_documents.where((doc) => doc.flightNumber == flightNumber && doc.userId == _currentUserId).toList());
   }
   
+  // Methods from DocumentStorageService that might be needed by tests, but are not the primary focus of current fixes.
+  // They are not part of a strict 'interface' if we only consider what ClaimSubmissionFlow tests use directly via the mock.
+  // However, if other tests use this mock and need these, they should be implemented or properly mocked.
+
+  @override // Added @override
+  Future<File?> pickImage(ImageSource source) async {
+    // print('MockDocumentStorageService: pickImage called. Returning null.'); // Removed print
+    return null; // Mock behavior
+  }
+
+  @override // Added @override
+  Future<String?> uploadFile(File file, String flightNumber, FlightDocumentType type) async {
+    // print('MockDocumentStorageService: uploadFile called. Returning mock URL.'); // Removed print
+    // Simulate an upload and return a mock URL
+    final String fileName = file.path.split(Platform.pathSeparator).last;
+    return 'mock/storage/users/$_currentUserId/flight_documents/$flightNumber/$fileName';
+  }
+
+  @override // Added @override
+  Future<String?> createThumbnail(File file) async {
+    // print('MockDocumentStorageService: createThumbnail called. Returning null.'); // Removed print
+    return null; // Mock behavior
+  }
+
   @override
-  Future<File?> pickImage(source) async => null;
-  
-  @override
-  Future<String?> uploadImage(File file, {String? customPath}) async => 'https://example.com/test.jpg';
-  
-  @override
-  Future<String?> generateThumbnail(File file) async => 'https://example.com/test-thumb.jpg';
-  
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  dynamic noSuchMethod(Invocation invocation) {
+    // print('MockDocumentStorageService: Called unmocked method ${invocation.memberName}'); // Removed print
+    return super.noSuchMethod(invocation);
+  }
 }
 
 class MockClaimSubmissionService extends ClaimSubmissionService {
@@ -213,7 +319,6 @@ void main() {
       final mockClaimSubmissionService = MockClaimSubmissionService();
       
       // Register services for dependency injection
-      TestServiceInitializer.testMode = true;
       TestServiceInitializer.testOverrides = {
         AviationStackService: mockAviationService,
         DocumentOcrService: mockDocumentOcrService,
@@ -222,7 +327,7 @@ void main() {
       };
       
       // Inject our test services
-      ServiceInitializer.registerMockServices(TestServiceInitializer.testOverrides);
+      ServiceInitializer.overrideForTesting(TestServiceInitializer.testOverrides.cast<Type, Object>());
       
       // Launch the app
       app.main();

@@ -3,7 +3,7 @@ import 'package:f35_flight_compensation/services/aviation_stack_service.dart';
 
 // Mock implementation of the AviationStackService for testing
 class MockAviationStackService extends AviationStackService {
-  MockAviationStackService() : super(baseUrl: 'https://test-api.example.com');
+  MockAviationStackService() : super(baseUrl: 'https://test-api.example.com', pythonBackendUrl: 'https://test-python-backend.example.com');
   
   // Mock data for recent arrivals
   final _mockRecentArrivals = [
@@ -86,6 +86,7 @@ class MockAviationStackService extends AviationStackService {
   @override
   Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
     int hours = 72,
+    bool relaxEligibilityForDebugging = false,
   }) async {
     if (simulateError) {
       throw Exception('API Error: Failed to fetch eligible flights');

@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:provider/provider.dart';
+
 
 // App imports
 import 'package:f35_flight_compensation/main.dart' as app;
@@ -17,12 +16,13 @@ import 'package:f35_flight_compensation/services/document_ocr_service.dart';
 import 'package:f35_flight_compensation/services/document_storage_service.dart';
 import 'package:f35_flight_compensation/services/claim_submission_service.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
-import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
 import 'package:f35_flight_compensation/models/flight_document.dart';
+import 'package:f35_flight_compensation/models/document_ocr_result.dart'; // Added
 
 // Mock classes for services
 class MockAviationStackService extends AviationStackService {
-  MockAviationStackService() : super(baseUrl: 'https://test-api.example.com');
+  MockAviationStackService({super.pythonBackendUrl = 'http://localhost:8000'})
+      : super(baseUrl: 'https://mock-api.example.com');
   
   @override
   Future<List<Map<String, dynamic>>> getRecentArrivals({
@@ -47,6 +47,7 @@ class MockAviationStackService extends AviationStackService {
   @override
   Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
     int hours = 72,
+    bool relaxEligibilityForDebugging = false,
   }) async {
     // Return mock eligible flights
     return [
@@ -88,33 +89,73 @@ class MockAviationStackService extends AviationStackService {
   }
 }
 
-class MockDocumentOcrService extends DocumentOcrService {
+class MockDocumentOcrService implements DocumentOcrService {
   @override
-  Future<Map<String, String>> extractTextFromImage(File imageFile) async {
-    // Return mock OCR results
-    return {
-      'flightNumber': 'LH1234',
-      'airline': 'Lufthansa',
-      'passengerName': 'John Smith',
-      'departureAirport': 'MUC',
-      'arrivalAirport': 'MAD',
-      'departureDate': '2025-05-28',
-    };
+  Future<DocumentOcrResult> scanDocument({
+    required File imageFile,
+    required DocumentType documentType,
+    String userId = '',
+  }) async {
+    // Return a mock DocumentOcrResult
+    return DocumentOcrResult(
+      documentId: 'mock_doc_id_${DateTime.now().millisecondsSinceEpoch}',
+      imagePath: imageFile.path,
+      scanDate: DateTime.now(),
+      extractedFields: {'mockField': 'mockValue'},
+      rawText: 'Mock raw text',
+      documentType: documentType,
+    );
+  }
+
+  @override
+  Future<List<DocumentOcrResult>> getOcrResultsForUser(String userId) async {
+    return [];
+  }
+
+  @override
+  Future<DocumentOcrResult?> getOcrResultById(String userId, String documentId) async {
+    return null;
+  }
+
+  Stream<DocumentOcrResult?> getOcrResultStream(String userId, String documentId) {
+    // Create a mock DocumentOcrResult for the stream
+    final mockResult = DocumentOcrResult(
+      documentId: documentId,
+      imagePath: '/mock/path',
+      scanDate: DateTime.now(),
+      extractedFields: {'streamField': 'streamValue'},
+      rawText: 'Mock stream text',
+      documentType: DocumentType.unknown, // Default or make configurable
+    );
+    return Stream.value(mockResult);
+  }
+
+  @override
+  Future<void> deleteOcrResult(String userId, String documentId) async {
+    return;
+  }
+
+  Future<void> updateOcrResult(String userId, String documentId, Map<String, dynamic> data) async {
+    return;
+  }
+
+  // Add dispose method to satisfy the interface, even if it does nothing in the mock.
+  // The actual service uses TextRecognizer which has a close() method.
+  @override
+  void dispose() {
+    // In a real scenario, if _textRecognizer were part of this mock, you'd call _textRecognizer.close() here.
   }
 }
 
-// Create a mock abstract class that implements DocumentStorageService and extends ChangeNotifier
-abstract class MockableDocumentStorageService implements DocumentStorageService {}
-
-class MockDocumentStorageService implements MockableDocumentStorageService {
+class MockDocumentStorageService implements DocumentStorageService {
   final List<FlightDocument> _documents = [];
   
   @override
-  Future<List<FlightDocument>> getUserDocuments() async {
+  Future<List<FlightDocument>> getAllUserDocuments() async {
     return _documents;
   }
   
-  @override
+  // This mock method differs from DocumentStorageService.uploadFile
   Future<void> uploadDocument(File file, String documentType) async {
     final newDocument = FlightDocument(
       id: 'test-doc-${DateTime.now().millisecondsSinceEpoch}',
@@ -140,14 +181,71 @@ class MockDocumentStorageService implements MockableDocumentStorageService {
   @override
   Future<File?> pickImage(source) async => null;
   
-  @override
+  // This method is not in DocumentStorageService
   Future<String?> uploadImage(File file, {String? customPath}) async => 'https://example.com/test.jpg';
   
   @override
-  Future<String?> generateThumbnail(File file) async => 'https://example.com/test-thumb.jpg';
+  Future<String?> createThumbnail(File file) async => 'https://example.com/test-thumb.jpg';
   
   @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  Future<String?> uploadFile(File file, String flightNumber, FlightDocumentType type) async {
+    final newDocument = FlightDocument(
+      id: 'test-doc-file-${DateTime.now().millisecondsSinceEpoch}',
+      userId: 'test-user',
+      flightNumber: flightNumber,
+      flightDate: DateTime.now(),
+      documentType: type,
+      documentName: 'Uploaded ${type.name}',
+      storageUrl: 'https://example.com/uploaded_${file.path.split('/').last}',
+      uploadDate: DateTime.now(),
+    );
+    _documents.add(newDocument);
+    return newDocument.storageUrl;
+  }
+
+  @override
+  Future<File?> pickDocument() async {
+    return null;
+  }
+
+  @override
+  Future<FlightDocument?> saveDocument({
+    required String flightNumber,
+    required DateTime flightDate,
+    required FlightDocumentType documentType,
+    required String documentName,
+    required String storageUrl,
+    String? description,
+    String? thumbnailUrl,
+    Map<String, dynamic>? metadata,
+  }) async {
+    final newDoc = FlightDocument(
+        id: 'doc_save_${DateTime.now().millisecondsSinceEpoch}',
+        userId: 'mock_user_id', // The actual service gets this internally
+        flightNumber: flightNumber,
+        flightDate: flightDate,
+        documentType: documentType,
+        documentName: documentName,
+        storageUrl: storageUrl,
+        description: description,
+        thumbnailUrl: thumbnailUrl,
+        metadata: metadata,
+        uploadDate: DateTime.now());
+    _documents.add(newDoc);
+    return newDoc;
+  }
+
+  @override
+  Future<List<FlightDocument>> getFlightDocuments(String flightNumber) async {
+    return _documents.where((doc) => doc.flightNumber == flightNumber).toList();
+  }
+
+  @override
+  Stream<List<FlightDocument>> streamFlightDocuments(String flightNumber) {
+    // Return a stream that emits the current list of matching documents
+    // For a more sophisticated mock, you might use a StreamController
+    return Stream.value(_documents.where((doc) => doc.flightNumber == flightNumber).toList());
+  }
 }
 
 class MockClaimSubmissionService extends ClaimSubmissionService {

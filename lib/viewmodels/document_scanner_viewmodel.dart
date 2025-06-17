@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:camera/camera.dart';
 import 'package:crop_image/crop_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 import '../models/document_ocr_result.dart';
 import '../services/document_ocr_service.dart';
 
 /// ViewModel for document scanning and OCR processing
 class DocumentScannerViewModel extends ChangeNotifier {
   final DocumentOcrService _ocrService;
-  final FirebaseAuth _auth;
-  
+  final AuthService _authService;
+
   DocumentScannerViewModel({
     required DocumentOcrService ocrService,
-    required FirebaseAuth auth,
-  }) : _ocrService = ocrService,
-       _auth = auth;
+    required AuthService authService,
+  })  : _ocrService = ocrService,
+        _authService = authService;
   
   // State variables
   bool _isScanning = false;
@@ -138,8 +138,8 @@ class DocumentScannerViewModel extends ChangeNotifier {
       
       // Get current user ID if logged in
       String userId = '';
-      if (_auth.currentUser != null) {
-        userId = _auth.currentUser!.uid;
+      if (_authService.currentUser != null) {
+        userId = _authService.currentUser!.uid;
       }
       
       // Process the document with OCR
@@ -164,14 +164,14 @@ class DocumentScannerViewModel extends ChangeNotifier {
   
   /// Load saved documents for current user
   Future<void> loadSavedDocuments() async {
-    if (_auth.currentUser == null) {
+    if (_authService.currentUser == null) {
       _savedDocuments = [];
       notifyListeners();
       return;
     }
     
     try {
-      _savedDocuments = await _ocrService.getOcrResultsForUser(_auth.currentUser!.uid);
+      _savedDocuments = await _ocrService.getOcrResultsForUser(_authService.currentUser!.uid);
       notifyListeners();
     } catch (e) {
       _errorMessage = 'Error loading saved documents: ${e.toString()}';
@@ -181,10 +181,10 @@ class DocumentScannerViewModel extends ChangeNotifier {
   
   /// Delete a saved document
   Future<void> deleteDocument(String documentId) async {
-    if (_auth.currentUser == null) return;
+    if (_authService.currentUser == null) return;
     
     try {
-      await _ocrService.deleteOcrResult(_auth.currentUser!.uid, documentId);
+      await _ocrService.deleteOcrResult(_authService.currentUser!.uid, documentId);
       await loadSavedDocuments(); // Reload the list
     } catch (e) {
       _errorMessage = 'Error deleting document: ${e.toString()}';
@@ -195,10 +195,10 @@ class DocumentScannerViewModel extends ChangeNotifier {
   
   /// Get document by ID
   Future<DocumentOcrResult?> getDocumentById(String documentId) async {
-    if (_auth.currentUser == null) return null;
+    if (_authService.currentUser == null) return null;
     
     try {
-      return await _ocrService.getOcrResultById(_auth.currentUser!.uid, documentId);
+      return await _ocrService.getOcrResultById(_authService.currentUser!.uid, documentId);
     } catch (e) {
       _errorMessage = 'Error getting document: ${e.toString()}';
       debugPrint(_errorMessage);

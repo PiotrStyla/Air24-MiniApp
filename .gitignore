@@ -64,3 +64,5 @@ app.*.map.json
 *.xcuserstate
 *.xcuserdata/
 DerivedData/
+CON
+

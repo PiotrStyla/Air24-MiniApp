@@ -4,24 +4,22 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:provider/provider.dart';
 
 // App imports
 import 'package:f35_flight_compensation/main.dart' as app;
-import 'package:f35_flight_compensation/screens/main_navigation.dart';
-import 'package:f35_flight_compensation/screens/profile_screen.dart';
-import 'package:f35_flight_compensation/screens/accessibility_settings_screen.dart';
-import 'package:f35_flight_compensation/screens/claim_submission_screen.dart';
 import 'package:f35_flight_compensation/services/aviation_stack_service.dart';
 import 'package:f35_flight_compensation/services/document_ocr_service.dart';
 import 'package:f35_flight_compensation/services/document_storage_service.dart';
 import 'package:f35_flight_compensation/services/claim_submission_service.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:f35_flight_compensation/models/document_ocr_result.dart';
+import 'package:f35_flight_compensation/models/flight_document.dart';
 
 // Mock classes for services
 class MockAviationStackService extends AviationStackService {
-  MockAviationStackService() : super(baseUrl: 'https://test-api.example.com');
+  MockAviationStackService() : super(baseUrl: 'https://test-api.example.com', pythonBackendUrl: 'mock_python_url');
   
   @override
   Future<List<Map<String, dynamic>>> getRecentArrivals({required String airportIcao, int minutesBeforeNow = 360}) async {
@@ -41,7 +39,7 @@ class MockAviationStackService extends AviationStackService {
   }
   
   @override
-  Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({int hoursBeforeNow = 72}) async {
+  Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({int hours = 72, bool relaxEligibilityForDebugging = false}) async {
     // Return mock eligible flights
     return [
       {
@@ -63,7 +61,7 @@ class MockAviationStackService extends AviationStackService {
   }
   
   @override
-  Future<Map<String, dynamic>> checkCompensationEligibility({required String flightNumber}) async {
+  Future<Map<String, dynamic>> checkCompensationEligibility({String? date, required String flightNumber}) async {
     // Return mock eligibility data
     return {
       'isEligible': true,
@@ -81,52 +79,166 @@ class MockAviationStackService extends AviationStackService {
   }
 }
 
-class MockDocumentOcrService extends DocumentOcrService {
+class MockDocumentOcrService implements DocumentOcrService {
+  final Map<String, Map<String, DocumentOcrResult>> _resultsByUserId = {};
+  String _currentUserId = 'test_user_fixed';
+
+  void setCurrentUserId(String userId) {
+    _currentUserId = userId;
+  }
+
   @override
-  Future<Map<String, dynamic>> extractTextFromImage(File imageFile) async {
-    // Return mock OCR data
-    return {
-      'boardingPass': {
-        'flightNumber': 'BA123',
-        'passengerName': 'John Smith',
-        'departureAirport': 'LHR',
-        'arrivalAirport': 'BER',
-        'date': '2025-05-30',
-      },
-    };
+  Future<DocumentOcrResult> scanDocument({
+    required File imageFile,
+    required DocumentType documentType,
+    String userId = '',
+  }) async {
+    final effectiveUserId = userId.isEmpty ? _currentUserId : userId;
+    final docId = 'ocr_fixed_${DateTime.now().millisecondsSinceEpoch}';
+    final result = DocumentOcrResult(
+      documentId: docId,
+      imagePath: imageFile.path,
+      scanDate: DateTime.now(),
+      extractedFields: {'mockField': 'mockValueFixed', 'flightNumber': 'BA123'},
+      rawText: 'Mock OCR raw text from fixed test',
+      documentType: documentType,
+    );
+    _resultsByUserId.putIfAbsent(effectiveUserId, () => {})[docId] = result;
+    return result;
+  }
+
+  @override
+  Future<List<DocumentOcrResult>> getOcrResultsForUser(String userId) async {
+    return _resultsByUserId[userId]?.values.toList() ?? [];
+  }
+
+  @override
+  Future<DocumentOcrResult?> getOcrResultById(String userId, String documentId) async {
+    return _resultsByUserId[userId]?[documentId];
+  }
+
+  Future<void> updateOcrResult(String userId, String documentId, Map<String, dynamic> data) async {
+    final result = _resultsByUserId[userId]?[documentId];
+    if (result != null) {
+      final updatedResult = result.copyWith(
+        extractedFields: {...result.extractedFields, ...data},
+      );
+      _resultsByUserId[userId]![documentId] = updatedResult;
+    }
+  }
+
+  @override
+  Future<void> deleteOcrResult(String userId, String documentId) async {
+    _resultsByUserId[userId]?.remove(documentId);
+  }
+
+  @override
+  void dispose() {
+    _resultsByUserId.clear();
+    // In a real scenario with a TextRecognizer, you might call _textRecognizer.close();
   }
 }
 
-class MockDocumentStorageService extends DocumentStorageService {
-  final List<Map<String, dynamic>> _documents = [];
-  
+class MockDocumentStorageService implements DocumentStorageService {
+  final Map<String, List<FlightDocument>> _documentsByUserId = {};
+  String _currentUserId = 'test_user_fixed';
+
+  void setCurrentUserId(String userId) {
+    _currentUserId = userId;
+  }
+
   @override
-  Future<List<Map<String, dynamic>>> getUserDocuments() async {
-    return _documents;
+  Future<FlightDocument?> saveDocument({
+    String? description,
+    required String documentName,
+    required FlightDocumentType documentType,
+    required DateTime flightDate,
+    required String flightNumber,
+    Map<String, dynamic>? metadata,
+    required String storageUrl,
+    String? thumbnailUrl,
+  }) async {
+    final docId = 'doc_fixed_${DateTime.now().millisecondsSinceEpoch}';
+    final document = FlightDocument(
+      id: docId,
+      userId: _currentUserId,
+      documentName: documentName,
+      documentType: documentType,
+      flightDate: flightDate,
+      flightNumber: flightNumber,
+      uploadDate: DateTime.now(),
+      storageUrl: storageUrl,
+      thumbnailUrl: thumbnailUrl ?? 'https://example.com/thumb-$docId.jpg',
+      description: description ?? '',
+      metadata: metadata ?? {},
+    );
+    _documentsByUserId.putIfAbsent(_currentUserId, () => []).add(document);
+    return document;
+  }
+
+  @override
+  Future<List<FlightDocument>> getAllUserDocuments() async {
+    return _documentsByUserId[_currentUserId] ?? [];
+  }
+
+  @override
+  Future<bool> deleteDocument(FlightDocument document) async {
+    final userDocs = _documentsByUserId[document.userId];
+    if (userDocs != null) {
+      final initialLength = userDocs.length;
+      userDocs.removeWhere((d) => d.id == document.id);
+      return userDocs.length < initialLength;
+    }
+    return false;
+  }
+
+  @override
+  Future<List<FlightDocument>> getFlightDocuments(String flightNumber) async {
+    final userDocs = _documentsByUserId[_currentUserId] ?? [];
+    return userDocs.where((doc) => doc.flightNumber == flightNumber).toList();
+  }
+
+  @override
+  Stream<List<FlightDocument>> streamFlightDocuments(String flightNumber) {
+    final userDocs = _documentsByUserId[_currentUserId] ?? [];
+    final filteredDocs = userDocs.where((doc) => doc.flightNumber == flightNumber).toList();
+    return Stream.value(filteredDocs);
+  }
+
+  @override
+  Future<File?> pickDocument() async {
+    final tempDir = await Directory.systemTemp.createTemp('test_doc_fixed');
+    final dummyFile = File('${tempDir.path}/dummy_document_fixed.pdf');
+    await dummyFile.writeAsString('dummy document content fixed');
+    return dummyFile;
+  }
+
+  @override
+  Future<File?> pickImage(ImageSource source) async {
+    final tempDir = await Directory.systemTemp.createTemp('test_img_fixed');
+    final dummyFile = File('${tempDir.path}/dummy_image_fixed.jpg');
+    await dummyFile.writeAsString('dummy image content fixed');
+    return dummyFile;
+  }
+
+  @override
+  Future<String?> uploadFile(File file, String flightNumber, FlightDocumentType documentType) async {
+    // The 'path' parameter from the old mock seems to correspond to 'flightNumber'
+    return 'https://mockstorage.example.com/fixed/$flightNumber/${file.path.split('/').last}';
   }
   
   @override
-  Future<void> uploadDocument(File file, String documentType) async {
-    _documents.add({
-      'id': 'doc_${_documents.length + 1}',
-      'name': 'Test $documentType',
-      'type': documentType,
-      'uploadDate': DateTime.now().toIso8601String(),
-      'url': 'https://example.com/test-$documentType.pdf',
-    });
+  Future<String?> createThumbnail(File imageFile) async {
+    // Simplified mock, actual implementation might involve image processing
+    return 'https://mockstorage.example.com/fixed/thumbnails/${imageFile.path.split('/').last}.jpg';
   }
 }
 
 class MockClaimSubmissionService extends ClaimSubmissionService {
   @override
-  Future<Map<String, dynamic>> submitClaim(Map<String, dynamic> claimData) async {
-    // Return mock submission result
-    return {
-      'success': true,
-      'claimId': 'CLM12345',
-      'estimatedProcessingDays': 14,
-      'message': 'Your claim has been successfully submitted.',
-    };
+  Future<String> submitClaim(Map<String, dynamic> claimData) async {
+    // Return mock submission result (claim ID)
+    return 'CLM12345_fixed';
   }
 }
 
@@ -142,19 +254,19 @@ void main() {
   
   // Register a special version of ServiceInitializer that uses our mock services
   setUp(() {
-    ServiceInitializer.testMode = true;
-    ServiceInitializer.testOverrides = {
-      'aviationStackService': mockAviationStackService,
-      'documentOcrService': mockDocumentOcrService,
-      'documentStorageService': mockDocumentStorageService,
-      'claimSubmissionService': mockClaimSubmissionService,
-    };
+    ServiceInitializer.setTestMode(true);
+    ServiceInitializer.overrideForTesting({
+      AviationStackService: mockAviationStackService,
+      DocumentOcrService: mockDocumentOcrService,
+      DocumentStorageService: mockDocumentStorageService,
+      ClaimSubmissionService: mockClaimSubmissionService,
+      AccessibilityService: accessibilityService,
+    });
   });
   
   // Reset test mode after each test
   tearDown(() {
-    ServiceInitializer.testMode = false;
-    ServiceInitializer.testOverrides = {};
+    ServiceInitializer.resetForTesting();
   });
   
   testWidgets('Complete claim submission flow with accessibility features',
@@ -265,7 +377,7 @@ void main() {
     // Verify the accessibility features are still applied
     // This is best done by checking certain widget properties or theme data
     // For example, check that text scales are bigger than the default
-    final textScaleFactor = tester.binding.window.textScaleFactor;
+    final textScaleFactor = tester.platformDispatcher.textScaleFactor;
     expect(textScaleFactor, greaterThan(1.0));
     
     // Return to home screen

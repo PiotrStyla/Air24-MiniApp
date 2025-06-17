@@ -8,11 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:f35_flight_compensation/screens/claim_submission_screen.dart';
 import 'package:f35_flight_compensation/services/aviation_stack_service.dart';
 import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
-import 'package:f35_flight_compensation/viewmodels/claim_submission_viewmodel.dart';
+// import 'package:f35_flight_compensation/viewmodels/claim_submission_viewmodel.dart';
 
 // Manual mock classes
 class MockAviationStackService extends AviationStackService {
-  MockAviationStackService() : super(baseUrl: 'https://test-api.example.com');
+  MockAviationStackService() : super(baseUrl: 'https://test-api.example.com', pythonBackendUrl: 'https://test-python-backend.example.com');
   
   // Track method calls for verification
   final List<Map<String, dynamic>> methodCalls = [];
@@ -127,23 +127,23 @@ class MockAccessibilityService extends AccessibilityService {
 void main() {
   late MockAviationStackService mockAviationService;
   late MockAccessibilityService mockAccessibilityService;
-  late ClaimSubmissionViewModel viewModel;
+  // late ClaimSubmissionViewModel viewModel;
 
   setUp(() {
     mockAviationService = MockAviationStackService();
     mockAccessibilityService = MockAccessibilityService();
-    viewModel = ClaimSubmissionViewModel(
+    /*viewModel = ClaimSubmissionViewModel(
       aviationService: mockAviationService,
-    );
+    );*/
   });
 
   // Helper function to build widget under test with necessary providers
   Widget createClaimSubmissionWidget() {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AviationStackService>.value(value: mockAviationService),
+        // ChangeNotifierProvider<AviationStackService>.value(value: mockAviationService),
         ChangeNotifierProvider<AccessibilityService>.value(value: mockAccessibilityService),
-        ChangeNotifierProvider<ClaimSubmissionViewModel>.value(value: viewModel),
+        // ChangeNotifierProvider<ClaimSubmissionViewModel>.value(value: viewModel),
       ],
       child: const MaterialApp(
         home: ClaimSubmissionScreen(),

@@ -95,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          TranslationHelper.getString(context, 'profileDescription', fallback: 'Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.'),
+                          TranslationHelper.getString(context, 'profileInfoCardTitle', fallback: 'Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.'),
                           style: TextStyle(color: Colors.blue[900]),
                         ),
                       ),
@@ -137,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Icon(Icons.person),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: Text(TranslationHelper.getString(context, 'editPersonalInfo', fallback: 'Edit your personal and contact information')),
+                                                    child: Text(TranslationHelper.getString(context, 'editPersonalInfoDescription', fallback: 'Edit your personal and contact information')),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -174,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Text(TranslationHelper.getString(context, 'accessibilityOptions', fallback: 'Accessibility Options')),
                               const SizedBox(height: 4),
                               Text(
-                                TranslationHelper.getString(context, 'configureAccessibility', fallback: 'Configure high contrast, large text, and screen reader support'),
+                                                                  TranslationHelper.getString(context, 'configureAccessibilityDescription', fallback: 'Configure high contrast, large text, and screen reader support'),
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
@@ -211,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {
                       // Show a toast message that this will be implemented in a future update
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('${TranslationHelper.getString(context, 'notificationSettings', fallback: 'Notification Settings')} coming soon'),
+                                                content: Text(TranslationHelper.getString(context, 'notificationSettingsComingSoon', fallback: 'Notification Settings coming soon')),
                         duration: const Duration(seconds: 2),
                       ));
                     },
@@ -220,7 +220,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Icon(Icons.notifications_active),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: Text(TranslationHelper.getString(context, 'configureNotifications', fallback: 'Configure how you receive claim updates')),
+                                                    child: Text(TranslationHelper.getString(context, 'configureNotificationsDescription', fallback: 'Configure how you receive claim updates')),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Language Settings Card
                   AccessibleCard(
                     title: localizations.languageSelection,
-                    semanticLabel: 'Change application language',
+                                        semanticLabel: TranslationHelper.getString(context, 'changeApplicationLanguage', fallback: 'Change application language'),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(

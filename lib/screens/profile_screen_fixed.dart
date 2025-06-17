@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'faq_screen.dart';
 import 'profile_edit_screen.dart';
@@ -72,7 +73,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.',
+                          AppLocalizations.of(context)!.profileInfoCardTitle,
                           style: TextStyle(color: Colors.blue[900]),
                         ),
                       ),
@@ -92,7 +93,7 @@ class ProfileScreen extends StatelessWidget {
                   Semantics(
                     header: true,
                     child: Text(
-                      'Account Settings',
+                      AppLocalizations.of(context)!.accountSettings,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -100,8 +101,8 @@ class ProfileScreen extends StatelessWidget {
                   
                   // Profile Information Card
                   AccessibleCard(
-                    title: 'Profile Information',
-                    semanticLabel: 'Edit your personal information',
+                    title: AppLocalizations.of(context)!.profileInformation,
+                    semanticLabel: AppLocalizations.of(context)!.editPersonalInformation,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -114,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
                         const Icon(Icons.person),
                         const SizedBox(width: 16),
                         const Expanded(
-                          child: Text('Edit your personal and contact information'),
+                          child: Text(AppLocalizations.of(context)!.editPersonalAndContactInformation),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -125,8 +126,8 @@ class ProfileScreen extends StatelessWidget {
                   
                   // Accessibility Settings Card
                   AccessibleCard(
-                    title: 'Accessibility Settings',
-                    semanticLabel: 'Configure accessibility options for the app',
+                    title: AppLocalizations.of(context)!.accessibilitySettings,
+                    semanticLabel: AppLocalizations.of(context)!.configureAccessibilityOptions,
                     hasFocus: true, // Highlight as an important option
                     onTap: () {
                       Navigator.of(context).push(
@@ -145,10 +146,10 @@ class ProfileScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Accessibility Options'),
+                              Text(AppLocalizations.of(context)!.accessibilityOptions),
                               const SizedBox(height: 4),
                               Text(
-                                'Configure high contrast, large text, and screen reader support',
+                                AppLocalizations.of(context)!.configureHighContrastLargeTextAndScreenReaderSupport,
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
@@ -172,7 +173,7 @@ class ProfileScreen extends StatelessWidget {
                   Semantics(
                     header: true,
                     child: Text(
-                      'Application Preferences',
+                      AppLocalizations.of(context)!.applicationPreferences,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -180,14 +181,14 @@ class ProfileScreen extends StatelessWidget {
                   
                   // Notification Settings Card
                   AccessibleCard(
-                    title: 'Notification Settings',
-                    semanticLabel: 'Configure notification preferences',
+                    title: AppLocalizations.of(context)!.notificationSettings,
+                    semanticLabel: AppLocalizations.of(context)!.configureNotificationPreferences,
                     child: Row(
                       children: [
                         const Icon(Icons.notifications_active),
                         const SizedBox(width: 16),
                         const Expanded(
-                          child: Text('Configure how you receive claim updates'),
+                          child: Text(AppLocalizations.of(context)!.configureHowYouReceiveClaimUpdates),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -198,8 +199,8 @@ class ProfileScreen extends StatelessWidget {
                   
                   // Language Settings Card
                   AccessibleCard(
-                    title: 'Language',
-                    semanticLabel: 'Change application language',
+                    title: AppLocalizations.of(context)!.language,
+                    semanticLabel: AppLocalizations.of(context)!.changeApplicationLanguage,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -212,7 +213,7 @@ class ProfileScreen extends StatelessWidget {
                         const Icon(Icons.language),
                         const SizedBox(width: 16),
                         const Expanded(
-                          child: Text('Select your preferred language'),
+                          child: Text(AppLocalizations.of(context)!.selectYourPreferredLanguage),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -227,8 +228,8 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Semantics(
                 label: accessibilityService.semanticLabel(
-                  'Tips and Reminders', 
-                  'Important tips about your profile information'
+                  AppLocalizations.of(context)!.tipsAndReminders, 
+                  AppLocalizations.of(context)!.importantTipsAboutProfileInformation
                 ),
                 child: Container(
                   padding: const EdgeInsets.all(16),
@@ -242,24 +243,24 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Semantics(
                         header: true,
-                        child: const Text(
-                          'Tips & Reminders',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 16),
+                        child: Text(
+                          AppLocalizations.of(context)!.tipsAndReminders,
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 16),
                         ),
                       ),
                       const SizedBox(height: 12),
                       // Each tip is separated semantically for better screen reader experience
                       ...[  
-                        'Keep your profile up to date for smooth claim processing.',
-                        'Your information is private and only used for compensation claims.',
-                        'Make sure your contact details are correct so we can reach you about your claim.',
-                        'Check the Accessibility Settings to customize the app for your needs.'
+                        AppLocalizations.of(context)!.tipProfileUpToDate,
+                        AppLocalizations.of(context)!.tipInformationPrivate,
+                        AppLocalizations.of(context)!.tipContactDetails,
+                        AppLocalizations.of(context)!.tipAccessibilitySettings
                       ].map((tip) => Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('• ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            const Text('• ', style: const TextStyle(fontWeight: FontWeight.bold)),
                             Expanded(child: Text(tip)),
                           ],
                         ),

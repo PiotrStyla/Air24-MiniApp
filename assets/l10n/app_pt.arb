@@ -1,0 +1,113 @@
+{
+  "@@locale": "pt",
+
+  "appTitle": "Compensação de Voo",
+  "@appTitle": {
+    "description": "Title of the application"
+  },
+
+  "welcomeMessage": "Bem-vindo ao App de Compensação de Voo",
+  "@welcomeMessage": {
+    "description": "Welcome message shown on home screen"
+  },
+
+  "languageSettings": "Configurações de Idioma",
+  "@languageSettings": {
+    "description": "Title for language selection screen"
+  },
+
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+
+  "ok": "OK",
+  "@ok": {
+    "description": "Confirmation button text"
+  },
+
+  "euWideCompensation": "Voos Elegíveis para Compensação na UE",
+  "@euWideCompensation": {
+    "description": "Title for EU-wide compensation screen"
+  },
+  
+  "filterByAirline": "Filtrar por companhia aérea",
+  "@filterByAirline": {
+    "description": "Placeholder for airline filter field"
+  },
+  
+  "last72Hours": "Últimas 72 horas",
+  "@last72Hours": {
+    "description": "Label showing time filter for flights"
+  },
+  
+  "apiConnectionIssue": "Problema de Conexão com API",
+  "@apiConnectionIssue": {
+    "description": "Error title when API connection fails"
+  },
+  
+  "apiConnectionIssueMessage": "Estamos com problemas para conectar ao serviço de dados de voo. Pode ser um problema temporário com a API AviationStack.",
+  "@apiConnectionIssueMessage": {
+    "description": "Error message when API connection fails"
+  },
+  
+  "retryConnection": "Tentar Novamente",
+  "@retryConnection": {
+    "description": "Button to retry API connection"
+  },
+  
+  "returnToHome": "Voltar para Início",
+  "@returnToHome": {
+    "description": "Button to go back to home screen"
+  },
+  
+  "noEligibleFlightsFound": "Nenhum Voo Elegível Encontrado",
+  "@noEligibleFlightsFound": {
+    "description": "Message when no eligible flights are available"
+  },
+  
+  "noEligibleFlightsMessageTemplate": "Verificamos voos em grandes aeroportos da UE nas últimas {hours} horas, mas nenhum voo atende aos critérios de compensação EU261 no momento.",
+  "@noEligibleFlightsMessageTemplate": {
+    "description": "Template message when no eligible flights are found"
+  },
+  
+  "checkAgain": "Verificar Novamente",
+  "@checkAgain": {
+    "description": "Button to refresh flight data"
+  },
+  
+  "noFlightsFoundTemplate": "Nenhum voo encontrado com o filtro \"{filter}\".",
+  "@noFlightsFoundTemplate": {
+    "description": "Template message when no flights match filter"
+  },
+  
+  "euCompensation": "Compensação UE",
+  "@euCompensation": {
+    "description": "Label for eligible flights"
+  },
+  
+  "from": "De",
+  "@from": {
+    "description": "Label for departure airport"
+  },
+  
+  "to": "Para",
+  "@to": {
+    "description": "Label for arrival airport"
+  },
+  
+  "scheduled": "Programado:",
+  "@scheduled": {
+    "description": "Label for scheduled time"
+  },
+  
+  "statusLabel": "Status:",
+  "@statusLabel": {
+    "description": "Label for flight status"
+  },
+  
+  "preFillCompensationForm": "Pré-preencher Formulário",
+  "@preFillCompensationForm": {
+    "description": "Button to fill compensation claim form with flight data"
+  }
+}

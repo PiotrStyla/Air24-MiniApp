@@ -1,0 +1,1796 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import '../services/firestore_service.dart';
+import '../services/document_storage_service.dart';
+import '../models/user_profile.dart';
+import '../models/compensation_claim_submission.dart';
+import '../models/flight_document.dart';
+import '../widgets/claim_checklist_widget.dart';
+import '../utils/localization_migration_helper.dart';
+import 'document_upload_screen.dart';
+import 'document_management_screen.dart';
+import 'document_detail_screen.dart';
+
+class CompensationClaimFormScreen extends StatefulWidget {
+  final Map<String, dynamic> flightData;
+  
+  const CompensationClaimFormScreen({Key? key, required this.flightData}) : super(key: key);
+
+  @override
+  _CompensationClaimFormScreenState createState() => _CompensationClaimFormScreenState();
+}
+
+class _CompensationClaimFormScreenState extends State<CompensationClaimFormScreen> {
+  // Date fields
+  DateTime? _departureDate;
+  
+  // Handle document uploads - defined early to avoid reference errors
+  void _uploadDocument(FlightDocumentType type) async {
+    // Simulating document upload
+    setState(() {
+      _isLoading = true;
+    });
+    
+    // Wait 1 second to simulate upload process
+    await Future.delayed(const Duration(seconds: 1));
+    
+    // Add a fake document
+    setState(() {
+      _documents.add(
+        FlightDocument(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          userId: FirebaseAuth.instance.currentUser?.uid ?? 'anonymous',
+          flightNumber: _flightNumberController.text.isNotEmpty ? _flightNumberController.text : 'UNKNOWN',
+          flightDate: _departureDate ?? DateTime.now(),
+          documentType: type,
+          documentName: 'uploaded_document.pdf',
+          storageUrl: 'placeholder-url', // No actual file being uploaded
+          uploadDate: DateTime.now(),
+        ),
+      );
+      _isLoading = false;
+    });
+  }
+  
+  // Helper method declarations at the top of the class to avoid reference errors
+  Widget _buildPrefilledFormField({
+    required TextEditingController controller,
+    required String controllerName,
+    required String labelText,
+    String? hintText,
+    bool required = false,
+  }) {
+    final isPrefilled = _prefilledFields[controllerName] == true;
+    
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText + (required ? ' *' : ''),
+        hintText: hintText,
+        suffixIcon: isPrefilled ? Tooltip(
+          message: 'Pre-filled from your profile',
+          child: Icon(Icons.account_circle, color: Colors.green.shade700, size: 18),
+        ) : null,
+      ),
+      validator: required ? (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field is required';
+        }
+        return null;
+      } : null,
+    );
+  }
+  // Get access to localization
+  MigrationLocalizations get localizations => MigrationLocalizations.of(context);
+  final _formKey = GlobalKey<FormState>();
+  
+  // Form controllers
+  late TextEditingController _airlineController;
+  late TextEditingController _flightNumberController;
+  late TextEditingController _departureDateController;
+  late TextEditingController _departureAirportController;
+  late TextEditingController _arrivalAirportController;
+  late TextEditingController _delayController;
+  late TextEditingController _compensationAmountController;
+  late TextEditingController _passengerNameController;
+  late TextEditingController _passengerEmailController;
+  late TextEditingController _passengerPhoneController;
+  late TextEditingController _passengerNationalityController;
+  late TextEditingController _passengerPassportController;
+  late TextEditingController _passengerAddressController;
+  late TextEditingController _passengerCityController;
+  late TextEditingController _passengerPostalCodeController;
+  late TextEditingController _passengerCountryController;
+  late TextEditingController _bookingReferenceController;
+  late TextEditingController _additionalInfoController;
+
+  bool _isLoading = false;
+  String _errorMessage = '';
+  
+  // Document management state
+  List<FlightDocument> _attachedDocuments = [];
+  bool _loadingDocuments = false;
+  String? _documentError;
+  bool _isChecklistComplete = true; // Auto-set to true since the flight is already verified
+
+  // Track which fields were prefilled from profile
+  final Map<String, bool> _prefilledFields = {};
+  
+  // Track completed checklist items
+  Map<String, bool> _checklistItems = {};
+  
+  // Form field builder
+  Widget _buildPrefilledFormField({
+    required TextEditingController controller,
+    required String controllerName,
+    required String labelText,
+    String? hintText,
+    bool required = false,
+  }) {
+    final isPrefilled = _prefilledFields[controllerName] == true;
+    
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText + (required ? ' *' : ''),
+        hintText: hintText,
+        suffixIcon: isPrefilled ? Tooltip(
+          message: 'Pre-filled from your profile',
+          child: Icon(Icons.account_circle, color: Colors.green.shade700, size: 18),
+        ) : null,
+      ),
+      validator: required ? (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field is required';
+        }
+        return null;
+      } : null,
+    );
+  }
+  
+  /// Builds a section header with consistent styling
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+  
+  /// Build document section UI for the claim form
+  Widget _buildDocumentSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.amber.shade50,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.amber.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.file_present, color: Colors.amber.shade700),
+              const SizedBox(width: 8),
+              Text(
+                localizations.supportingDocuments,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber.shade800,
+                ),
+              ),
+              const Spacer(),
+              if (_attachedDocuments.isNotEmpty)
+                Chip(
+                  label: Text(
+                    localizations.documentsAttached(_attachedDocuments.length),
+                    style: TextStyle(fontSize: 12, color: Colors.amber.shade800),
+                  ),
+                  backgroundColor: Colors.amber.shade100,
+                  padding: const EdgeInsets.all(4),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            localizations.documentUploadHint,
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 16),
+          
+          if (_loadingDocuments)
+            Center(
+              child: Column(
+                children: [
+                  CircularProgressIndicator(color: Colors.amber.shade700),
+                  const SizedBox(height: 8),
+                  Text(
+                    localizations.loadingDocuments,
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                  ),
+                ],
+              ),
+            )
+          else if (_documentError != null)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.red.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.error_outline, color: Colors.red.shade800),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _documentError!,
+                      style: TextStyle(color: Colors.red.shade800),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else if (_attachedDocuments.isEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade200, style: BorderStyle.dashed),
+              ),
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.upload_file, size: 40, color: Colors.grey.shade400),
+                    const SizedBox(height: 12),
+                    Text(
+                      localizations.noDocumentsYet,
+                      style: TextStyle(color: Colors.grey.shade700),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      localizations.addDocumentsBelow,
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _attachedDocuments.length,
+              separatorBuilder: (context, index) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                final document = _attachedDocuments[index];
+                IconData iconData;
+                Color iconColor;
+                
+                switch (document.documentType) {
+                  case FlightDocumentType.boardingPass:
+                    iconData = Icons.airplane_ticket;
+                    iconColor = Colors.blue.shade700;
+                    break;
+                  case FlightDocumentType.ticket:
+                    iconData = Icons.confirmation_number;
+                    iconColor = Colors.purple.shade700;
+                    break;
+                  case FlightDocumentType.luggageTag:
+                    iconData = Icons.luggage;
+                    iconColor = Colors.amber.shade700;
+                    break;
+                  case FlightDocumentType.delayConfirmation:
+                    iconData = Icons.av_timer;
+                    iconColor = Colors.red.shade700;
+                    break;
+                  case FlightDocumentType.hotelReceipt:
+                    iconData = Icons.hotel;
+                    iconColor = Colors.teal.shade700;
+                    break;
+                  case FlightDocumentType.mealReceipt:
+                    iconData = Icons.restaurant;
+                    iconColor = Colors.orange.shade700;
+                    break;
+                  case FlightDocumentType.transportReceipt:
+                    iconData = Icons.directions_bus;
+                    iconColor = Colors.green.shade700;
+                    break;
+                  default:
+                    iconData = Icons.description;
+                    iconColor = Colors.grey.shade700;
+                }
+                
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    leading: CircleAvatar(
+                      backgroundColor: iconColor.withOpacity(0.1),
+                      child: Icon(iconData, color: iconColor, size: 22),
+                    ),
+                    title: Text(
+                      document.documentName,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      semanticsLabel: '${_formatDocumentType(document.documentType)}: ${document.documentName}',
+                    ),
+                    subtitle: Row(
+                      children: [
+                        Icon(Icons.label_outline, size: 14, color: Colors.grey.shade600),
+                        const SizedBox(width: 4),
+                        Text(
+                          _formatDocumentType(document.documentType),
+                          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.visibility, size: 20, color: Colors.blue.shade700),
+                          tooltip: localizations.viewDocument,
+                          onPressed: () {
+                            // Open document detail
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DocumentDetailScreen(document: document),
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline, size: 20),
+                          color: Colors.red.shade700,
+                          tooltip: localizations.removeDocument,
+                          onPressed: () {
+                            setState(() {
+                              _attachedDocuments.removeAt(index);
+                              if (_attachedDocuments.isEmpty) {
+                                _checklistItems['documents'] = false;
+                              }
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(localizations.documentRemoved),
+                              backgroundColor: Colors.grey.shade800,
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(seconds: 2),
+                              action: SnackBarAction(
+                                label: localizations.undo,
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  // Restore the document
+                                  setState(() {
+                                    _attachedDocuments.insert(index, document);
+                                    _checklistItems['documents'] = true;
+                                  });
+                                },
+                              ),
+                            ));
+                          },
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Open document detail
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DocumentDetailScreen(document: document),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          
+          const SizedBox(height: 24),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.shade200),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  localizations.addDocuments,
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.amber.shade600,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                          elevation: 0,
+                        ),
+                        icon: const Icon(Icons.upload_file, size: 20),
+                        label: Text(localizations.uploadFile),
+                        onPressed: () {
+                          if (_flightNumberController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(localizations.pleaseEnterFlightNumber)),
+                            );
+                            return;
+                          }
+                          _showDocumentTypePicker(context);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.blue.shade600,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                          elevation: 0,
+                        ),
+                        icon: const Icon(Icons.document_scanner, size: 20),
+                        label: Text(localizations.scanDocument),
+                        onPressed: () {
+                          if (_flightNumberController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(localizations.pleaseEnterFlightNumber)),
+                            );
+                            return;
+                          }
+                          _scanDocument(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                if (_attachedDocuments.isNotEmpty) ...[  
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.grey.shade700,
+                      side: BorderSide(color: Colors.grey.shade300),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    ),
+                    icon: const Icon(Icons.folder_open, size: 18),
+                    label: Text(localizations.manageAllDocuments),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DocumentManagementScreen(
+                            flightNumber: _flightNumberController.text,
+                          ),
+                        ),
+                      ).then((_) => _loadFlightDocuments());
+                    },
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Initialize controllers
+    _flightNumberController = TextEditingController();
+    _airlineController = TextEditingController();
+    _departureAirportController = TextEditingController();
+    _arrivalAirportController = TextEditingController();
+    _departureDateController = TextEditingController();
+    _passengerNameController = TextEditingController();
+    _passengerEmailController = TextEditingController();
+    _passengerPhoneController = TextEditingController();
+    _passengerNationalityController = TextEditingController();
+    _passengerPassportController = TextEditingController();
+    _passengerAddressController = TextEditingController();
+    _passengerCityController = TextEditingController();
+    _passengerPostalCodeController = TextEditingController();
+    _passengerCountryController = TextEditingController();
+    _bookingReferenceController = TextEditingController();
+    _additionalInfoController = TextEditingController();
+    
+    // Process the flight data to pre-fill the form
+    _processFlightData();
+    
+    // Then load the user profile from Firebase
+    _loadUserProfile();
+    
+    // Load any existing documents for this flight
+    _loadFlightDocuments();
+  }
+  
+  /// Load documents related to this flight number
+  Future<void> _loadFlightDocuments() async {
+    if (_flightNumberController.text.isEmpty) return;
+    
+    setState(() {
+      _loadingDocuments = true;
+      _documentError = null;
+    });
+    
+    try {
+      final documentService = Provider.of<DocumentStorageService>(context, listen: false);
+      final documents = await documentService.getFlightDocuments(_flightNumberController.text);
+      
+      setState(() {
+        _attachedDocuments = documents;
+        _loadingDocuments = false;
+        
+        // Auto-mark the checklist item if we have documents
+        if (documents.isNotEmpty) {
+          _checklistItems['documents'] = true;
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _documentError = 'Error loading documents: $e';
+        _loadingDocuments = false;
+      });
+    }
+  }
+
+  void _processFlightData() {
+    try {
+      debugPrint('Processing flight data: ${widget.flightData}');
+      final flight = widget.flightData;
+      
+      // Log all keys to identify available data
+      debugPrint('Available flight data keys: ${flight.keys.join(', ')}');
+      
+      // Extract airline - use AviationStack format first, then fall back to other formats
+      String airline = '';
+      if (flight['airline'] is String) {
+        airline = flight['airline'];
+      } else if (flight['airline_name'] is String) {
+        airline = flight['airline_name'];
+      }
+      
+      // Extract flight number
+      String flightNumber = '';
+      if (flight['number'] != null) {
+        flightNumber = flight['number'].toString();
+      } else if (flight['flight_number'] != null) {
+        flightNumber = flight['flight_number'].toString();
+      } else if (flight['flight'] != null) {
+        flightNumber = flight['flight'].toString();
+      }
+      
+      // Extract departure info
+      String departureAirport = '';
+      String departureDate = '';
+      if (flight['departure'] is Map) {
+        if (flight['departure']['airport'] is Map) {
+          departureAirport = '${flight['departure']['airport']['name'] ?? ''} (${flight['departure']['airport']['iata'] ?? flight['departure']['airport']['icao'] ?? ''})';
+        }
+        
+        if (flight['departure']['scheduledTime'] is Map) {
+          String dateTimeStr = flight['departure']['scheduledTime']['local'] ?? '';
+          if (dateTimeStr.isNotEmpty) {
+            try {
+              DateTime dt = DateTime.parse(dateTimeStr.replaceAll(' ', 'T'));
+              departureDate = DateFormat('yyyy-MM-dd').format(dt);
+            } catch (e) {
+              departureDate = dateTimeStr.split(' ').first;
+            }
+          }
+        }
+      }
+      
+      if (departureAirport.isEmpty && flight['departure_airport'] is String) {
+        departureAirport = flight['departure_airport'];
+      }
+      
+      if (departureDate.isEmpty && flight['departure_date'] is String) {
+        departureDate = flight['departure_date'];
+      }
+      
+      // Extract arrival info
+      String arrivalAirport = '';
+      if (flight['arrival'] is Map && flight['arrival']['airport'] is Map) {
+        arrivalAirport = '${flight['arrival']['airport']['name'] ?? ''} (${flight['arrival']['airport']['iata'] ?? flight['arrival']['airport']['icao'] ?? ''})';
+      } else if (flight['arrival_airport'] is String) {
+        arrivalAirport = flight['arrival_airport'];
+      }
+      
+      // Get delay information
+      String delay = '';
+      if (flight['delay_minutes'] != null) {
+        delay = _formatDelay(flight['delay_minutes']);
+      } else if (flight['delay'] != null) {
+        delay = _formatDelay(flight['delay']);
+      } else if (flight['status'] == 'Cancelled') {
+        delay = 'Flight Cancelled';
+      }
+      
+      // Get compensation amount
+      String compensation = '';
+      if (flight['compensation_amount_eur'] != null) {
+        compensation = '€${flight['compensation_amount_eur']}';
+      } else if (flight['compensationAmount'] != null) {
+        compensation = '€${flight['compensationAmount']}';
+      } else if (flight['distance_km'] != null) {
+        // Use the distance to calculate based on EU261 rules
+        int distanceKm = flight['distance_km'];
+        if (distanceKm <= 1500) {
+          compensation = '€250';
+        } else if (distanceKm <= 3500) {
+          compensation = '€400';
+        } else {
+          compensation = '€600';
+        }
+      }
+      
+      // Add debug statements to see values being processed
+      debugPrint('Airline: $airline');
+      debugPrint('Flight Number: $flightNumber');
+      debugPrint('Departure Date: $departureDate');
+      debugPrint('Departure Airport: $departureAirport');
+      debugPrint('Arrival Airport: $arrivalAirport');
+      debugPrint('Delay: $delay');
+      debugPrint('Compensation: $compensation');
+      
+      // Always set default values if empty to ensure display
+      airline = airline.isNotEmpty ? airline : 'Unknown Airline';
+      flightNumber = flightNumber.isNotEmpty ? flightNumber : 'Unknown';
+      departureDate = departureDate.isNotEmpty ? departureDate : 'Unknown Date';
+      departureAirport = departureAirport.isNotEmpty ? departureAirport : 'Unknown Airport';
+      arrivalAirport = arrivalAirport.isNotEmpty ? arrivalAirport : 'Unknown Airport';
+      delay = delay.isNotEmpty ? delay : 'Unknown Delay';
+      compensation = compensation.isNotEmpty ? compensation : 'Unknown Amount';
+      
+      // Update controller values
+      _airlineController.text = airline;
+      _flightNumberController.text = flightNumber;
+      _departureDateController.text = departureDate;
+      _departureAirportController.text = departureAirport;
+      _arrivalAirportController.text = arrivalAirport;
+      _delayController.text = delay;
+      _compensationAmountController.text = compensation;
+      
+      debugPrint('Flight data processed successfully');
+    } catch (e) {
+      debugPrint('Error processing flight data: $e');
+      setState(() {
+        _errorMessage = 'Error processing flight data. Using default values.';
+      });
+    }
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      // Get the current user from Firebase Auth
+      final user = FirebaseAuth.instance.currentUser;
+      debugPrint('Current Firebase user: ${user?.email ?? 'No user logged in'}');
+      
+      if (user != null) {
+        // Use the FirestoreService to get the user profile
+        final firestoreService = FirestoreService();
+        debugPrint('Attempting to load profile for user: ${user.uid}');
+        
+        final userProfile = await firestoreService.getUserProfile(user.uid);
+        debugPrint('Profile loaded: ${userProfile != null ? 'Yes' : 'No'}');
+        
+        if (userProfile != null && mounted) {
+          debugPrint('Setting profile data: ${userProfile.fullName}, ${userProfile.email}');
+          
+          // Pre-fill the form with user data - track which fields were prefilled
+          _setAndTrackPrefill('_passengerNameController', _passengerNameController, userProfile.fullName);
+          _setAndTrackPrefill('_passengerEmailController', _passengerEmailController, userProfile.email);
+          
+          // Add additional fields from the profile
+          if (userProfile.phoneNumber != null && userProfile.phoneNumber!.isNotEmpty) {
+            _setAndTrackPrefill('_passengerPhoneController', _passengerPhoneController, userProfile.phoneNumber!);
+          }
+          
+          if (userProfile.nationality != null && userProfile.nationality!.isNotEmpty) {
+            _setAndTrackPrefill('_passengerNationalityController', _passengerNationalityController, userProfile.nationality!);
+          }
+          
+          if (userProfile.passportNumber != null && userProfile.passportNumber!.isNotEmpty) {
+            _setAndTrackPrefill('_passengerPassportController', _passengerPassportController, userProfile.passportNumber!);
+          }
+          
+          if (userProfile.addressLine != null && userProfile.addressLine!.isNotEmpty) {
+            _setAndTrackPrefill('_passengerAddressController', _passengerAddressController, userProfile.addressLine!);
+          }
+          
+          if (userProfile.city != null && userProfile.city!.isNotEmpty) {
+            _setAndTrackPrefill('_passengerCityController', _passengerCityController, userProfile.city!);
+          }
+          
+          if (userProfile.postalCode != null && userProfile.postalCode!.isNotEmpty) {
+            _setAndTrackPrefill('_passengerPostalCodeController', _passengerPostalCodeController, userProfile.postalCode!);
+          }
+          
+          if (userProfile.country != null && userProfile.country!.isNotEmpty) {
+            _setAndTrackPrefill('_passengerCountryController', _passengerCountryController, userProfile.country!);
+          }
+        } else {
+          // If no profile exists, use basic user data from Firebase Auth
+          if (mounted) {
+            // Use what's available from the Firebase user object
+            if (user.displayName != null && user.displayName!.isNotEmpty) {
+              _setAndTrackPrefill('_passengerNameController', _passengerNameController, user.displayName!);
+            }
+            if (user.email != null && user.email!.isNotEmpty) {
+              _setAndTrackPrefill('_passengerEmailController', _passengerEmailController, user.email!);
+            }
+            if (user.phoneNumber != null && user.phoneNumber!.isNotEmpty) {
+              _setAndTrackPrefill('_passengerPhoneController', _passengerPhoneController, user.phoneNumber!);
+            }
+            
+            debugPrint('Using Firebase Auth data: ${user.displayName}, ${user.email}');
+            
+            // Set default country based on device locale if available
+            final locale = WidgetsBinding.instance.window.locale;
+            if (locale.countryCode != null && locale.countryCode!.isNotEmpty) {
+              _setAndTrackPrefill('_passengerCountryController', _passengerCountryController, _getCountryName(locale.countryCode!));
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading user profile: $e');
+      // We already have default values set, so no need for additional fallback
+    } finally {
+      // Always set loading to false when we're done, whether successful or not
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+  
+  // Helper to set controller text and track that it was prefilled
+  void _setAndTrackPrefill(String controllerName, TextEditingController controller, String value) {
+    controller.text = value;
+    _prefilledFields[controllerName] = true;
+  }
+
+  /// Load documents related to this flight number
+  Future<void> _loadFlightDocuments() async {
+    if (_flightNumberController.text.isEmpty) return;
+    
+    setState(() {
+      _loadingDocuments = true;
+      _documentError = null;
+    });
+    
+    try {
+      final documentService = Provider.of<DocumentStorageService>(context, listen: false);
+      final documents = await documentService.getFlightDocuments(_flightNumberController.text);
+      
+      setState(() {
+        _attachedDocuments = documents;
+        _loadingDocuments = false;
+        
+        // Auto-mark the checklist item if we have documents
+        if (documents.isNotEmpty) {
+          _checklistItems['documents'] = true;
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _documentError = 'Error loading documents: $e';
+        _loadingDocuments = false;
+      });
+    }
+  }
+
+  String _getCountryName(String countryCode) {
+    // Simple mapping function - expand as needed
+    final countryCodes = {
+      'US': 'United States',
+      'GB': 'United Kingdom',
+      'CA': 'Canada',
+      'DE': 'Germany',
+      'FR': 'France',
+      'PL': 'Poland',
+      // Add more as needed
+    };
+    return countryCodes[countryCode] ?? countryCode;
+  }
+  
+  @override
+  void dispose() {
+    _airlineController.dispose();
+    _flightNumberController.dispose();
+    _departureDateController.dispose();
+    _departureAirportController.dispose();
+    _arrivalAirportController.dispose();
+    _delayController.dispose();
+    _compensationAmountController.dispose();
+    _passengerNameController.dispose();
+    _passengerEmailController.dispose();
+    _passengerPhoneController.dispose();
+    _passengerNationalityController.dispose();
+    _passengerPassportController.dispose();
+    _passengerAddressController.dispose();
+    _passengerCityController.dispose();
+    _passengerPostalCodeController.dispose();
+    _passengerCountryController.dispose();
+    _bookingReferenceController.dispose();
+    _additionalInfoController.dispose();
+    super.dispose();
+  }
+  
+  String _formatDelay(dynamic minutes) {
+    int delayMinutes;
+    if (minutes is int) {
+      delayMinutes = minutes;
+    } else if (minutes is String) {
+      delayMinutes = int.tryParse(minutes) ?? 0;
+    } else {
+      delayMinutes = 0;
+    }
+    
+    if (delayMinutes < 60) {
+      return '$delayMinutes minutes';
+    } else {
+      final hours = delayMinutes ~/ 60;
+      final remainingMinutes = delayMinutes % 60;
+      return '$hours ${hours == 1 ? 'hour' : 'hours'} ${remainingMinutes > 0 ? '$remainingMinutes minutes' : ''}'.trim();
+    }
+  }
+  
+  /// Format document type enum to readable string
+  String _formatDocumentType(FlightDocumentType type) {
+    final text = type.toString().split('.').last
+        .replaceAllMapped(
+          RegExp(r'([A-Z])'),
+          (match) => ' ${match.group(0)}',
+        )
+        .trim();
+    return text.isNotEmpty
+        ? text[0].toUpperCase() + text.substring(1)
+        : text;
+  }
+
+// Helper to set controller text and track that it was prefilled
+void _setAndTrackPrefill(String controllerName, TextEditingController controller, String value) {
+controller.text = value;
+_prefilledFields[controllerName] = true;
+}
+
+/// Load documents related to this flight number
+Future<void> _loadFlightDocuments() async {
+if (_flightNumberController.text.isEmpty) return;
+  
+setState(() {
+  _loadingDocuments = true;
+  _documentError = null;
+});
+  
+try {
+final documentService = Provider.of<DocumentStorageService>(context, listen: false);
+final documents = await documentService.getFlightDocuments(_flightNumberController.text);
+  
+setState(() {
+  _attachedDocuments = documents;
+  _loadingDocuments = false;
+  
+  // Auto-mark the checklist item if we have documents
+  if (documents.isNotEmpty) {
+    _checklistItems['documents'] = true;
+  }
+});
+} catch (e) {
+setState(() {
+  _documentError = 'Error loading documents: $e';
+  _loadingDocuments = false;
+});
+}
+}
+
+String _getCountryName(String countryCode) {
+// Simple mapping function - expand as needed
+final countryCodes = {
+  'US': 'United States',
+  'GB': 'United Kingdom',
+  'CA': 'Canada',
+  'DE': 'Germany',
+  'FR': 'France',
+  'PL': 'Poland',
+  // Add more as needed
+};
+return countryCodes[countryCode] ?? countryCode;
+}
+
+@override
+void dispose() {
+_airlineController.dispose();
+_flightNumberController.dispose();
+_departureDateController.dispose();
+_departureAirportController.dispose();
+_arrivalAirportController.dispose();
+_delayController.dispose();
+_compensationAmountController.dispose();
+_passengerNameController.dispose();
+_passengerEmailController.dispose();
+_passengerPhoneController.dispose();
+_passengerNationalityController.dispose();
+_passengerPassportController.dispose();
+_passengerAddressController.dispose();
+_passengerCityController.dispose();
+_passengerPostalCodeController.dispose();
+_passengerCountryController.dispose();
+_bookingReferenceController.dispose();
+_additionalInfoController.dispose();
+super.dispose();
+}
+
+String _formatDelay(dynamic minutes) {
+  // Initialize with a default value to ensure a non-null return
+  int delayMinutes = 0;
+  
+  if (minutes is int) {
+    delayMinutes = minutes;
+  } else if (minutes is String) {
+    delayMinutes = int.tryParse(minutes) ?? 0;
+  } else {
+    delayMinutes = 0;
+  }
+  
+  // Format the delay with proper units
+  if (delayMinutes < 60) {
+    return '$delayMinutes minutes';
+  } else {
+    int hours = delayMinutes ~/ 60;
+    int remainingMinutes = delayMinutes % 60;
+    if (remainingMinutes == 0) {
+      return '$hours hours';
+    } else {
+      return '$hours hours $remainingMinutes minutes';
+    }
+  }
+}
+
+Widget _buildDocumentSection() {
+  return Container(
+    padding: const EdgeInsets.all(12),
+    margin: const EdgeInsets.only(bottom: 16),
+    decoration: BoxDecoration(
+      color: Colors.amber.shade50,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.amber.shade200),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+              const Text(
+                'Attach boarding passes, tickets, and other documents to strengthen your claim.',
+                style: TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(height: 16),
+              
+              if (_loadingDocuments)
+                const Center(child: CircularProgressIndicator())
+              else if (_documentError != null)
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.red[50],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.red[700], size: 16),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _documentError!,
+                          style: TextStyle(color: Colors.red[700], fontSize: 12),
+                        ),
+              // Flight Information Section
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Flight Information',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    if (_airlineController.text.isNotEmpty)
+                      TextFormField(
+                        controller: _airlineController,
+                        decoration: const InputDecoration(labelText: 'Airline'),
+                        readOnly: true,
+                      ),
+                      
+                    if (_flightNumberController.text.isNotEmpty)
+                      TextFormField(
+                        controller: _flightNumberController,
+                        decoration: const InputDecoration(labelText: 'Flight Number'),
+                        readOnly: true,
+                      ),
+                      
+                    if (_departureDateController.text.isNotEmpty)
+                      TextFormField(
+                        controller: _departureDateController,
+                        decoration: const InputDecoration(labelText: 'Date of Flight'),
+                        readOnly: true,
+                      ),
+                      
+                    if (_departureAirportController.text.isNotEmpty)
+                      TextFormField(
+                        controller: _departureAirportController,
+                        decoration: const InputDecoration(labelText: 'Departure Airport'),
+                        readOnly: true,
+                      ),
+                      
+                    if (_arrivalAirportController.text.isNotEmpty)
+                      TextFormField(
+                        controller: _arrivalAirportController,
+                        decoration: const InputDecoration(labelText: 'Arrival Airport'),
+                        readOnly: true,
+                      ),
+                  ],
+                ),
+              ),
+              
+              // Delay and Compensation Section
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orange.shade200),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Compensation Information',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    if (_delayController.text.isNotEmpty)
+                      TextFormField(
+                        controller: _delayController,
+                        decoration: const InputDecoration(labelText: 'Delay / Cancellation'),
+                        readOnly: true,
+                      ),
+                      
+                    if (_compensationAmountController.text.isNotEmpty)
+                      TextFormField(
+                        controller: _compensationAmountController,
+                        decoration: const InputDecoration(labelText: 'Potential Compensation'),
+                        readOnly: true,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              
+              // Passenger Information Section
+              Container(
+                padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'Passenger Information',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        if (_prefilledFields.isNotEmpty)
+                          Tooltip(
+                            message: 'Some fields were pre-filled from your profile',
+                            child: Chip(
+                              label: const Text('Pre-filled'),
+                              backgroundColor: Colors.green.shade100,
+                              avatar: Icon(Icons.account_circle, color: Colors.green.shade700, size: 18),
+                              labelStyle: TextStyle(color: Colors.green.shade700, fontSize: 12),
+                              padding: const EdgeInsets.all(2),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _buildPrefilledFormField(
+                      controller: _passengerNameController,
+                      controllerName: '_passengerNameController',
+                      labelText: 'Full Name', 
+                      hintText: 'Your full legal name',
+                      required: true,
+                    ),
+                    const SizedBox(height: 8),
+                    _buildPrefilledFormField(
+                      controller: _passengerEmailController,
+                      controllerName: '_passengerEmailController',
+                      labelText: 'Email Address', 
+                      hintText: 'Your email address',
+                      required: true,
+                    ),
+                    const SizedBox(height: 8),
+                    _buildPrefilledFormField(
+                      controller: _passengerPhoneController,
+                      controllerName: '_passengerPhoneController',
+                      labelText: 'Phone Number', 
+                      hintText: 'Your phone number',
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildPrefilledFormField(
+                            controller: _passengerNationalityController,
+                            controllerName: '_passengerNationalityController',
+                            labelText: 'Nationality', 
+                            hintText: 'Your nationality',
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _buildPrefilledFormField(
+                            controller: _passengerPassportController,
+                            controllerName: '_passengerPassportController',
+                            labelText: 'Passport/ID', 
+                            hintText: 'Your passport/ID number',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Address Information',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildPrefilledFormField(
+                      controller: _passengerAddressController,
+                      controllerName: '_passengerAddressController',
+                      labelText: 'Address', 
+                      hintText: 'Street address',
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildPrefilledFormField(
+                            controller: _passengerCityController,
+                            controllerName: '_passengerCityController',
+                            labelText: 'City', 
+                            hintText: 'City',
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _buildPrefilledFormField(
+                            controller: _passengerPostalCodeController,
+                            controllerName: '_passengerPostalCodeController',
+                            labelText: 'Postal Code', 
+                            hintText: 'Postal code',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    _buildPrefilledFormField(
+                      controller: _passengerCountryController,
+                      controllerName: '_passengerCountryController',
+                      labelText: 'Country', 
+                      hintText: 'Country',
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Claim Information',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _bookingReferenceController,
+                      decoration: const InputDecoration(
+                        labelText: 'Booking Reference',
+                        hintText: 'Optional: Enter your booking reference',
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _additionalInfoController,
+                      decoration: const InputDecoration(
+                        labelText: 'Additional Information',
+                        hintText: 'Optional: Any other details about your claim',
+                      ),
+                      maxLines: 3,
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Document Section
+              _buildDocumentSection(),
+              
+              // No Checklist Section for Pre-verified Flights
+              // We're not using a checklist since these flights are already verified
+              
+              // Submit Button
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: _submitForm,
+                  icon: const Icon(Icons.send),
+                  label: const Text(
+                    'SUBMIT CLAIM', 
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      // Show loading indicator
+      setState(() {
+        _isLoading = true;
+      });
+      
+      try {
+        // Get current user
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          throw Exception('User not logged in');
+        }
+        
+        // Get form data
+        final formData = {
+          'flightNumber': _flightNumberController.text,
+          'airline': _airlineController.text,
+          'departureAirport': _departureAirportController.text,
+          'arrivalAirport': _arrivalAirportController.text,
+          'departureDate': _departureDateController.text,
+          'passengerName': _passengerNameController.text,
+          'passengerEmail': _passengerEmailController.text,
+          'bookingReference': _bookingReferenceController.text,
+          'additionalInfo': _additionalInfoController.text,
+        };
+        
+        // Get document IDs to include with submission
+        final List<String> documentIds = _attachedDocuments.map((doc) => doc.id).toList();
+        
+        // Create claim submission
+        final claimSubmission = CompensationClaimSubmission.fromFormData(
+          userId: user.uid,
+          formData: formData,
+          flightData: widget.flightData,
+          completedChecklistItems: _checklistItems.entries
+              .where((entry) => entry.value)
+              .map((entry) => entry.key)
+              .toList(),
+          documentIds: documentIds,
+          hasAllDocuments: _checklistItems['documents'] ?? false,
+        );
+        
+        // Save to Firestore
+        final firestoreService = FirestoreService();
+        await firestoreService.submitCompensationClaim(claimSubmission);
+        
+        // Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Claim submitted successfully!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        
+        // Navigate back after a short delay
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+      } catch (e) {
+        // Show error message
+        if (mounted) {
+          setState(() {
+            _errorMessage = 'Error submitting claim: ${e.toString()}';
+            _isLoading = false;
+          });
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to submit claim: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        // Reset loading state if still mounted
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    }
+  }
+
+  // Build a form field with prefill indicator if it was prefilled from profile
+  Widget _buildPrefilledFormField({
+    required TextEditingController controller,
+    required String controllerName,
+    required String labelText,
+    required String hintText,
+    bool required = false,
+  }) {
+    final isPrefilled = _prefilledFields[controllerName] == true;
+    
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        // Add a prefill indicator icon for prefilled fields
+        suffixIcon: isPrefilled ? Tooltip(
+          message: 'Pre-filled from your profile',
+          child: Icon(Icons.account_circle, color: Colors.green, size: 20),
+        ) : null,
+        // Add a subtle background color for prefilled fields
+        fillColor: isPrefilled ? Colors.green.shade50 : null,
+        filled: isPrefilled,
+      ),
+      validator: required ? (v) => v == null || v.isEmpty ? 'Required' : null : null,
+    );
+  }
+
+  /// Formats the document type enum into localized display text
+  String _formatDocumentType(FlightDocumentType type) {
+    switch (type) {
+      case FlightDocumentType.boardingPass:
+        return localizations.boardingPass;
+      case FlightDocumentType.ticket:
+        return localizations.ticket;
+      case FlightDocumentType.luggageTag:
+        return localizations.luggageTag;
+      case FlightDocumentType.delayConfirmation:
+        return localizations.delayConfirmation;
+      case FlightDocumentType.hotelReceipt:
+        return localizations.hotelReceipt;
+      case FlightDocumentType.mealReceipt:
+        return localizations.mealReceipt;
+      case FlightDocumentType.transportReceipt:
+        return localizations.transportReceipt;
+      case FlightDocumentType.other:
+        return localizations.other;
+    }
+  }
+  
+  /// Shows a dialog with document type options for upload
+  void _showDocumentTypePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => SafeArea(
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Row(
+                  children: [
+                    Icon(Icons.file_present, color: Colors.amber.shade700),
+                    const SizedBox(width: 8),
+                    Text(
+                      localizations.selectDocumentType,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      semanticsLabel: localizations.selectDocumentType,
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                      tooltip: localizations.close,
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: FlightDocumentType.values.length,
+                  itemBuilder: (context, index) {
+                    final type = FlightDocumentType.values[index];
+                    IconData iconData;
+                    Color iconColor;
+
+                    switch (type) {
+                      case FlightDocumentType.boardingPass:
+                        iconData = Icons.airplane_ticket;
+                        iconColor = Colors.blue.shade700;
+                        break;
+                      case FlightDocumentType.ticket:
+                        iconData = Icons.confirmation_number;
+                        iconColor = Colors.purple.shade700;
+                        break;
+                      case FlightDocumentType.luggageTag:
+                        iconData = Icons.luggage;
+                        iconColor = Colors.amber.shade700;
+                        break;
+                      case FlightDocumentType.delayConfirmation:
+                        iconData = Icons.av_timer;
+                        iconColor = Colors.red.shade700;
+                        break;
+                      case FlightDocumentType.hotelReceipt:
+                        iconData = Icons.hotel;
+                        iconColor = Colors.teal.shade700;
+                        break;
+                      case FlightDocumentType.mealReceipt:
+                        iconData = Icons.restaurant;
+                        iconColor = Colors.orange.shade700;
+                        break;
+                      case FlightDocumentType.transportReceipt:
+                        iconData = Icons.directions_bus;
+                        iconColor = Colors.green.shade700;
+                        break;
+                      default:
+                        iconData = Icons.description;
+                        iconColor = Colors.grey.shade700;
+                    }
+
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: iconColor.withOpacity(0.1),
+                        radius: 20,
+                        child: Icon(iconData, color: iconColor, size: 22),
+                      ),
+                      title: Text(
+                        _formatDocumentType(type),
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _uploadDocument(type);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Handles document upload for a specific type
+  /// This is a simplified version that adds placeholder documents for demo purposes
+  void _uploadDocument(FlightDocumentType type) async {
+    // In a real app, this would integrate with a file picker
+    
+    setState(() {
+      _loadingDocuments = true;
+      _documentError = null;
+    });
+    
+    try {
+      // Simulate network delay
+      await Future.delayed(const Duration(seconds: 1));
+      
+      final documentService = Provider.of<DocumentStorageService>(context, listen: false);
+      
+      // Create a unique document name based on type and timestamp
+      final documentName = '${_formatDocumentType(type)}_${DateTime.now().millisecondsSinceEpoch}';
+      
+      // In a real app, you would upload the actual file here
+      // For this demo, we're creating a placeholder document with mock data
+      final document = FlightDocument(
+        id: 'doc_${DateTime.now().millisecondsSinceEpoch}',
+        userId: FirebaseAuth.instance.currentUser?.uid ?? 'anonymous',
+        flightNumber: _flightNumberController.text.isNotEmpty ? _flightNumberController.text : 'UNKNOWN',
+        flightDate: _departureDate ?? DateTime.now(),
+        documentType: type,
+        documentName: documentName,
+        storageUrl: 'placeholder-url', // Placeholder URL since we're not uploading a real file
+        uploadDate: DateTime.now(),
+      );
+      
+      // Add document to list
+      setState(() {
+        _attachedDocuments.add(document);
+        _checklistItems['documents'] = true;
+      });
+      
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.documentUploaded),
+            backgroundColor: Colors.green.shade600,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _documentError = '${localizations.uploadFailed}: $e';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${localizations.uploadFailed}: $e'),
+            backgroundColor: Colors.red.shade700,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loadingDocuments = false;
+        });
+      }
+    }
+  }
+
+  /// Handles document scanning functionality
+  /// This simulates a camera-based document scanning process
+  
+  void _scanDocument(BuildContext context) async {
+    final scanResult = await showDialog<Map<String, dynamic>>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.document_scanner, color: Colors.blue.shade700),
+            const SizedBox(width: 8),
+            Expanded(child: Text(localizations.scanDocument)),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 20),
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.blue.shade50,
+                child: Icon(Icons.camera_alt, size: 40, color: Colors.blue.shade700),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                localizations.scanDocumentHint,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(localizations.cancel),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.camera_alt),
+            label: Text(localizations.startScanning),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue.shade700,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              // First show a loading dialog
+              Navigator.pop(context); // Close the camera dialog
+              
+              // Show scanning in progress dialog
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => AlertDialog(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 16),
+                      CircularProgressIndicator(color: Colors.blue.shade700),
+                      const SizedBox(height: 16),
+                      Text(
+                        localizations.processingDocument,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        localizations.pleaseWait,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+              
+              // Simulate processing delay
+              await Future.delayed(const Duration(seconds: 2));
+              
+              // Close the loading dialog
+              if (context.mounted) Navigator.pop(context);
+              
+              // Return simulated scan result
+              if (context.mounted) {
+                Navigator.pop(context, {
+                  'type': FlightDocumentType.boardingPass,
+                  'data': {
+                    'flight_number': _flightNumberController.text,
+                    'passenger_name': _passengerNameController.text,
+                    'date': _departureDateController.text,
+                  }
+                });
+              }
+            },
+          ),
+        ],
+      ),
+    );
+    
+    // If scan was canceled
+    if (scanResult == null) return;
+    
+    // Process the scan result
+    try {
+      setState(() {
+        _loadingDocuments = true;
+        _documentError = null;
+      });
+      
+      // Simulate network delay
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      // Get document data from the scan result
+      final documentType = scanResult['type'] as FlightDocumentType;
+      final extractedData = scanResult['data'] as Map<String, String>;
+      
+      // Create document 
+      final document = FlightDocument(
+        id: 'scan_${DateTime.now().millisecondsSinceEpoch}',
+        userId: FirebaseAuth.instance.currentUser?.uid ?? 'anonymous',
+        flightNumber: _flightNumberController.text.isNotEmpty ? _flightNumberController.text : 'UNKNOWN',
+        flightDate: _departureDate ?? DateTime.now(),
+        documentType: documentType,
+        documentName: '${_formatDocumentType(documentType)} (${localizations.scanned})',
+        storageUrl: 'placeholder-url', // This would be the uploaded file URL in a real app
+        uploadDate: DateTime.now(),
+      );
+      
+      // Add document to list
+      setState(() {
+        _attachedDocuments.add(document);
+        _checklistItems['documents'] = true;
+      });
+      
+      // Show success message with extracted data notification
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.documentScannedSuccessfully),
+            backgroundColor: Colors.green.shade600,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+      
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _documentError = '${localizations.scanFailed}: $e';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${localizations.scanFailed}: $e'),
+            backgroundColor: Colors.red.shade700,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loadingDocuments = false;
+        });
+      }
+    }
+  }
+}

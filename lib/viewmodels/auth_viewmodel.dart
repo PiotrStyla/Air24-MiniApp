@@ -26,7 +26,9 @@ class AuthViewModel extends ChangeNotifier {
   User? get currentUser => _authService.currentUser;
 
   // Constructor
-  AuthViewModel(this._authService);
+  AuthViewModel(this._authService) {
+    print('[AuthViewModel Constructor] Initialized with AuthService of type: ${_authService.runtimeType}');
+  }
 
   // Input handlers
   void setEmail(String email) {

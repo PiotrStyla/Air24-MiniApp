@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Keep for User type, but not for instance
+import 'package:get_it/get_it.dart';
+import '../viewmodels/auth_viewmodel.dart';
 import '../models/user_profile.dart';
 import '../services/firestore_service.dart';
 import '../utils/translation_helper.dart';
@@ -28,11 +30,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   bool _consentNotifications = false;
 
   bool _loading = true;
-
+  late AuthViewModel _authViewModel;
 
   @override
   void initState() {
     super.initState();
+    _authViewModel = GetIt.I<AuthViewModel>();
     // Initialize controllers with empty values
     _nameController = TextEditingController();
     _phoneController = TextEditingController();
@@ -69,7 +72,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   Future<void> _loadProfile() async {
     setState(() => _loading = true);
     try {
-      final user = FirebaseAuth.instance.currentUser;
+      final user = _authViewModel.currentUser; // Use AuthViewModel
       if (user == null) {
         setState(() => _loading = false);
         return;
@@ -117,7 +120,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
-    final user = FirebaseAuth.instance.currentUser;
+    final user = _authViewModel.currentUser; // Use AuthViewModel
     if (user == null) return;
     final profile = UserProfile(
       uid: user.uid,
