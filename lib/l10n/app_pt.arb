@@ -551,5 +551,321 @@
   "loginRequiredForClaim": "Você deve estar logado para enviar uma solicitação",
   "@loginRequiredForClaim": {
     "description": "Error message shown when user tries to submit a claim without being logged in"
+  },
+  "newClaim": "Nova Reclamação",
+  "@newClaim": {
+    "description": "Button or title for starting a new claim"
+  },
+  "euWideEligibleFlights": "Voos Elegíveis para Compensação em Toda a UE",
+  "@euWideEligibleFlights": {
+    "description": "Button to view EU-wide eligible flights"
+  },
+  "welcomeUser": "Bem-vindo(a) {userName}",
+  "@welcomeUser": {
+    "description": "Welcome message for a logged-in user",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "John Doe"
+      }
+    }
+  },
+  "signOut": "Sair",
+  "@signOut": {
+    "description": "Sign out button label"
+  },
+  "editPersonalInfoDescription": "Edite suas informações pessoais e de contato.",
+  "@editPersonalInfoDescription": {
+    "description": "Text for the profile information card body"
+  },
+  "accessibilitySettings": "Configurações de Acessibilidade",
+  "@accessibilitySettings": {
+    "description": "Title for accessibility settings screen or section"
+  },
+  "languageSettings": "Configurações de Idioma",
+  "@languageSettings": {
+    "description": "Title for language settings screen or section"
+  },
+  "notificationSettingsDescription": "Configure como você recebe atualizações sobre suas reivindicações.",
+  "@notificationSettingsDescription": {
+    "description": "Text for the notification settings card body"
+  },
+  "claimsDashboard": "Painel de Reivindicações",
+  "@claimsDashboard": {
+    "description": "Title for the claims dashboard screen"
+  },
+  "noClaimsMessage": "Você ainda não tem nenhuma reivindicação. Comece uma nova para acompanhar seu progresso aqui.",
+  "@noClaimsMessage": {
+    "description": "Message displayed when user has no claims"
+  },
+  "claimStatus": "Status da Reclamação: {status}",
+  "@claimStatus": {
+    "description": "Label showing the status of a claim",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "example": "Processing"
+      }
+    }
+  },
+  "claimSubmittedDate": "Enviado em: {date}",
+  "@claimSubmittedDate": {
+    "description": "Label showing the submission date of a claim",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2023-10-26"
+      }
+    }
+  },
+  "viewClaimDetails": "Ver Detalhes",
+  "@viewClaimDetails": {
+    "description": "Button to view the details of a specific claim"
+  },
+  "startNewClaim": "Iniciar Nova Reclamação",
+  "@startNewClaim": {
+    "description": "Button to start a new compensation claim"
+  },
+  "flightNumberHint": "Ex: BA245",
+  "@flightNumberHint": {
+    "description": "Hint text for flight number input field"
+  },
+  "dateHint": "DD/MM/AAAA",
+  "@dateHint": {
+    "description": "Hint text for date input field"
+  },
+  "search": "Buscar",
+  "@search": {
+    "description": "Search button label"
+  },
+  "flightResults": "Resultados do Voo",
+  "@flightResults": {
+    "description": "Title for flight search results screen or section"
+  },
+  "selectFlight": "Selecionar Voo",
+  "@selectFlight": {
+    "description": "Button to select a flight from search results"
+  },
+  "noFlightsFound": "Nenhum voo encontrado para os critérios fornecidos.",
+  "@noFlightsFound": {
+    "description": "Message displayed when flight search yields no results"
+  },
+  "personalInformation": "Informações Pessoais",
+  "@personalInformation": {
+    "description": "Title for personal information section in a form"
+  },
+  "fullName": "Nome Completo",
+  "@fullName": {
+    "description": "Label for full name input field"
+  },
+  "emailAddress": "Endereço de E-mail",
+  "@emailAddress": {
+    "description": "Label for email address input field"
+  },
+  "phoneNumberOptional": "Número de Telefone (Opcional)",
+  "@phoneNumberOptional": {
+    "description": "Label for optional phone number input field"
+  },
+  "address": "Endereço",
+  "@address": {
+    "description": "Label for address input field"
+  },
+  "city": "Cidade",
+  "@city": {
+    "description": "Label for city input field"
+  },
+  "postalCode": "Código Postal",
+  "@postalCode": {
+    "description": "Label for postal code input field"
+  },
+  "country": "País",
+  "@country": {
+    "description": "Label for country input field"
+  },
+  "departureAirport": "Aeroporto de Partida",
+  "@departureAirport": {
+    "description": "Departure airport label"
+  },
+  "arrivalAirport": "Aeroporto de Chegada",
+  "@arrivalAirport": {
+    "description": "Arrival airport label"
+  },
+  "scheduledDeparture": "Partida Programada",
+  "@scheduledDeparture": {
+    "description": "Label for scheduled departure time"
+  },
+  "actualDeparture": "Partida Real",
+  "@actualDeparture": {
+    "description": "Label for actual departure time"
+  },
+  "scheduledArrival": "Chegada Programada",
+  "@scheduledArrival": {
+    "description": "Label for scheduled arrival time"
+  },
+  "actualArrival": "Chegada Real",
+  "@actualArrival": {
+    "description": "Label for actual arrival time"
+  },
+  "airline": "Companhia Aérea",
+  "@airline": {
+    "description": "Airline field label"
+  },
+  "bookingReferenceOptional": "Referência da Reserva (Opcional)",
+  "@bookingReferenceOptional": {
+    "description": "Label for optional booking reference input field"
+  },
+  "reasonForClaim": "Motivo da Reclamação",
+  "@reasonForClaim": {
+    "description": "Label for reason for claim input field or section title"
+  },
+  "delayReason": "Atraso",
+  "@delayReason": {
+    "description": "Option for claim reason: Delay"
+  },
+  "cancellationReason": "Cancelamento",
+  "@cancellationReason": {
+    "description": "Option for claim reason: Cancellation"
+  },
+  "deniedBoardingReason": "Embarque Negado",
+  "@deniedBoardingReason": {
+    "description": "Option for claim reason: Denied Boarding"
+  },
+  "additionalCommentsOptional": "Comentários Adicionais (Opcional)",
+  "@additionalCommentsOptional": {
+    "description": "Label for optional additional comments input field"
+  },
+  "uploadSupportingDocuments": "Carregar Documentos de Suporte",
+  "@uploadSupportingDocuments": {
+    "description": "Button or section title for uploading supporting documents"
+  },
+  "documentsSuccessfullyUploaded": "{count} documentos carregados com sucesso.",
+  "@documentsSuccessfullyUploaded": {
+    "description": "Success message after uploading documents",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "errorUploadingDocument": "Erro ao carregar o documento: {error}",
+  "@errorUploadingDocument": {
+    "description": "Error message when a document upload fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "File too large"
+      }
+    }
+  },
+  "maxFileSize": "Tamanho máximo do arquivo: {size}MB",
+  "@maxFileSize": {
+    "description": "Information about maximum allowed file size for uploads",
+    "placeholders": {
+      "size": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "supportedFormats": "Formatos suportados: PDF, JPG, PNG",
+  "@supportedFormats": {
+    "description": "Information about supported file formats for uploads"
+  },
+  "iAgreeToTerms": "Eu concordo com os Termos e Condições e com a Política de Privacidade.",
+  "@iAgreeToTerms": {
+    "description": "Checkbox label for agreeing to terms and conditions"
+  },
+  "pleaseAgreeToTerms": "Por favor, concorde com os Termos e Condições.",
+  "@pleaseAgreeToTerms": {
+    "description": "Validation message if terms are not agreed to"
+  },
+  "submittingClaim": "Enviando reivindicação...",
+  "@submittingClaim": {
+    "description": "Loading message displayed when a claim is being submitted"
+  },
+  "claimSubmissionSuccess": "Reivindicação enviada com sucesso! Entraremos em contato em breve.",
+  "@claimSubmissionSuccess": {
+    "description": "Success message after a claim is submitted"
+  },
+  "claimSubmissionError": "Erro ao enviar reivindicação. Por favor, tente novamente.",
+  "@claimSubmissionError": {
+    "description": "Error message if claim submission fails"
+  },
+  "cameraPermissionDenied": "Permissão da câmera negada. Por favor, habilite nas configurações.",
+  "@cameraPermissionDenied": {
+    "description": "Error message when camera permission is denied"
+  },
+  "storagePermissionDenied": "Permissão de armazenamento negada. Por favor, habilite nas configurações.",
+  "@storagePermissionDenied": {
+    "description": "Error message when storage permission is denied"
+  },
+  "scanBoardingPass": "Digitalizar Cartão de Embarque",
+  "@scanBoardingPass": {
+    "description": "Button label to scan a boarding pass"
+  },
+  "scanPassport": "Digitalizar Passaporte",
+  "@scanPassport": {
+    "description": "Button label to scan a passport"
+  },
+  "ocrProcessing": "Processando imagem...",
+  "@ocrProcessing": {
+    "description": "Loading message displayed during OCR processing"
+  },
+  "ocrSuccess": "Informações extraídas com sucesso.",
+  "@ocrSuccess": {
+    "description": "Success message after OCR processing"
+  },
+  "ocrError": "Não foi possível extrair informações da imagem.",
+  "@ocrError": {
+    "description": "Error message if OCR fails"
+  },
+  "retakePhoto": "Tirar Foto Novamente",
+  "@retakePhoto": {
+    "description": "Button label to retake a photo for OCR"
+  },
+  "useThisPhoto": "Usar Esta Foto",
+  "@useThisPhoto": {
+    "description": "Button label to confirm using the current photo for OCR"
+  },
+  "english": "Inglês",
+  "@english": {
+    "description": "Language option: English"
+  },
+  "german": "Alemão",
+  "@german": {
+    "description": "Language option: German"
+  },
+  "polish": "Polonês",
+  "@polish": {
+    "description": "Language option: Polish"
+  },
+  "portuguese": "Português",
+  "@portuguese": {
+    "description": "Language option: Portuguese"
+  },
+  "darkMode": "Modo Escuro",
+  "@darkMode": {
+    "description": "Theme option: Dark Mode"
+  },
+  "lightMode": "Modo Claro",
+  "@lightMode": {
+    "description": "Theme option: Light Mode"
+  },
+  "systemDefault": "Padrão do Sistema",
+  "@systemDefault": {
+    "description": "Theme option: System Default"
+  },
+  "themeSettings": "Configurações de Tema",
+  "@themeSettings": {
+    "description": "Title for theme settings section or screen"
+  },
+  "notifications": "Notificações",
+  "@notifications": {
+    "description": "Title for notifications settings section or screen"
+  },
+  "allowNotifications": "Permitir Notificações",
+  "@allowNotifications": {
+    "description": "Toggle switch label to allow or disallow notifications"
   }
 }
