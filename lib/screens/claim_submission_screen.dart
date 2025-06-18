@@ -572,6 +572,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
               ),
               // Flight Number with enhanced accessibility
               AccessibleTextField(
+                key: const Key('flightNumberField'),
                 controller: _flightNumberController,
                 label: 'Flight Number',
                 semanticLabel: 'Flight number, usually a 2-letter airline code followed by digits',
@@ -806,6 +807,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
               const SizedBox(height: 12),
               // Departure Airport with enhanced accessibility
               AccessibleTextField(
+                key: const Key('departureAirportField'),
                 controller: _departureAirportController,
                 label: 'Departure Airport',
                 semanticLabel: 'Departure airport, enter the 3-letter IATA code',
@@ -821,6 +823,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
               
               // Arrival Airport with enhanced accessibility
               AccessibleTextField(
+                key: const Key('arrivalAirportField'),
                 controller: _arrivalAirportController,
                 label: 'Arrival Airport',
                 semanticLabel: 'Arrival airport, enter the 3-letter IATA code',
@@ -884,6 +887,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
                 ),
               ElevatedButton(
                 onPressed: _isSubmitting ? null : _submitClaim,
+                  key: const Key('submitClaimButton'),
                 child: _isSubmitting
                     ? const SizedBox(
                         width: 20,

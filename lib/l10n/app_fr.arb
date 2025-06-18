@@ -1,29 +1,208 @@
 {
   "@@locale": "fr",
-  
-  "appTitle": "Indemnisation des Vols",
-  "welcomeMessage": "Bienvenue sur Indemnisation des Vols",
-  "searchFlights": "Rechercher des Vols",
-  "uploadDocuments": "Télécharger des Documents",
-  "checkCompensation": "Vérifier l'Indemnisation",
-  "submitClaim": "Soumettre une Réclamation",
+  "appTitle": "Indemnisation de vol",
+  "@appTitle": {
+    "description": "Le titre de l'application"
+  },
+  "welcomeUser": "Bienvenue, {userName}",
+  "@welcomeUser": {
+    "description": "Un message de bienvenue pour l'utilisateur",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Jean Dupont"
+      }
+    }
+  },
+  "signOut": "Déconnexion",
+  "@signOut": {
+    "description": "Étiquette du bouton de déconnexion"
+  },
+  "newClaim": "Nouvelle Réclamation",
+  "@newClaim": {
+    "description": "Étiquette du bouton de nouvelle réclamation"
+  },
+  "home": "Accueil",
+  "@home": {
+    "description": "Titre de l'écran d'accueil"
+  },
   "settings": "Paramètres",
+  "@settings": {
+    "description": "Titre de l'écran des paramètres"
+  },
   "languageSelection": "Langue",
+  "@languageSelection": {
+    "description": "Étiquette de sélection de la langue"
+  },
+  "passengerName": "Nom du Passager",
+  "passengerDetails": "Détails du Passager",
+  "flightNumber": "Numéro de Vol",
+  "airline": "Compagnie Aérienne",
+  "departureAirport": "Aéroport de Départ",
+  "arrivalAirport": "Aéroport d'Arrivée",
+  "email": "Email",
+  "bookingReference": "Référence de Réservation",
+  "additionalInformation": "Informations Additionnelles",
+  "optional": "(Optionnel)",
+  "thisFieldIsRequired": "Ce champ est requis.",
+  "pleaseEnterDepartureAirport": "Veuillez saisir un aéroport de départ.",
+  "uploadDocuments": "Télécharger des Documents",
+  "submitClaim": "Soumettre la Réclamation",
+  "addDocument": "Ajouter un Document",
+  "claimSubmittedSuccessfully": "Réclamation soumise avec succès !",
+  "completeAllFields": "Veuillez remplir tous les champs.",
+  "supportingDocuments": "Documents Justificatifs",
+  "cropDocument": "Rogner le Document",
+  "crop": "Rogner",
+  "cropping": "Rognage...",
+  "rotate": "Pivoter",
+  "aspectRatio": "Ratio d'Aspect",
+  "aspectRatioFree": "Libre",
+  "aspectRatioSquare": "Carré",
+  "aspectRatioPortrait": "Portrait",
+  "aspectRatioLandscape": "Paysage",
+  "aspectRatioMode": "Ratio d'aspect : {ratio}",
+  "@aspectRatioMode": {
+    "placeholders": {
+      "ratio": {
+        "type": "String"
+      }
+    }
+  },
+  "documentOcrResult": "Résultat OCR",
+  "extractedFields": "Champs Extraits",
+  "fullText": "Texte Complet",
+  "documentSaved": "Document sauvegardé.",
+  "useExtractedData": "Utiliser les Données Extraites",
+  "copyToClipboard": "Copié dans le presse-papiers.",
+  "documentType": "Type de Document",
+  "saveDocument": "Sauvegarder le Document",
+  "fieldName": "Nom du Champ",
+  "done": "Terminé",
+  "yes": "Oui",
+  "no": "Non",
+  "ok": "OK",
   "back": "Retour",
+  "save": "Sauvegarder",
+  "welcomeMessage": "Bienvenue dans l'application !",
+  "copiedToClipboard": "Copié dans le presse-papiers",
+  "fillForm": "Remplir le Formulaire",
+  "chooseUseInfo": "Choisissez comment utiliser ces informations :",
+  "fillPassengerFlight": "Remplir les informations passager et vol",
+  "ocrResults": "Résultats OCR",
+  "noFieldsExtracted": "Aucun champ n'a été extrait du document.",
+  "extractedInformation": "Informations Extraites",
+  "rawOcrText": "Texte OCR Brut",
+  "copyAllText": "Copier tout le texte",
+  "claims": "Réclamations",
+  "noClaimsYet": "Aucune réclamation pour le moment",
+  "startCompensationClaimInstructions": "Commencez votre demande d'indemnisation en sélectionnant un vol dans la section Vols Éligibles de l'UE",
+  "active": "Active",
+  "actionRequired": "Action Requise",
+  "completed": "Terminée",
+  "profileInfoCardTitle": "Votre profil contient vos informations personnelles et de contact. Celles-ci sont utilisées pour traiter vos demandes d'indemnisation de vol et vous tenir informé.",
+  "accountSettings": "Paramètres du Compte",
+  "accessibilityOptions": "Options d'Accessibilité",
+  "configureAccessibilityDescription": "Configurer le contraste élevé, le grand texte et le support du lecteur d'écran",
+  "configureNotificationsDescription": "Configurer la manière dont vous recevez les mises à jour des réclamations",
+  "tipProfileUpToDate": "Gardez votre profil à jour pour un traitement fluide des réclamations.",
+  "tipInformationPrivate": "Vos informations sont privées et utilisées uniquement pour les demandes d'indemnisation.",
+  "tipContactDetails": "Assurez-vous que vos coordonnées sont correctes afin que nous puissions vous contacter au sujet de votre réclamation.",
+  "tipAccessibilitySettings": "Consultez les paramètres d'accessibilité pour personnaliser l'application selon vos besoins.",
+  "cancel": "Annuler",
+  "next": "Suivant",
+  "previous": "Précédent",
   "arrivalsAt": "Arrivées à {airport}",
+  "@arrivalsAt": {
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
+  },
   "filterByAirline": "Filtrer par compagnie aérienne",
   "flightStatusDelayed": "Retardé",
   "flightStatusCancelled": "Annulé",
   "flightStatusDiverted": "Détourné",
   "flightStatusOnTime": "À l'heure",
-  "errorConnectionFailed": "Échec de la connexion. Veuillez vérifier votre connexion Internet.",
-  "errorApiLimitExceeded": "Limite de requêtes API dépassée. Veuillez réessayer plus tard.",
-  "errorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
-  "documentTypePassport": "Passeport",
-  "documentTypeBoardingPass": "Carte d'Embarquement",
-  "documentTypeFlightTicket": "Billet d'Avion",
-  "documentTypeReceipt": "Reçu",
-  "saveButton": "Enregistrer",
-  "cancelButton": "Annuler",
-  "euCompensationEligible": "Éligible à l'Indemnisation UE"
+  "flight": "Vol",
+  "flights": "Vols",
+  "myFlights": "Mes Vols",
+  "findFlight": "Trouver un Vol",
+  "flightDate": "Date du Vol",
+  "checkCompensationEligibility": "Vérifier l'Éligibilité à l'Indemnisation",
+  "supportingDocumentsHint": "Joignez les cartes d'embarquement, les billets et d'autres documents pour renforcer votre demande.",
+  "scanDocument": "Scanner un Document",
+  "uploadDocument": "Télécharger un Document",
+  "scanDocumentHint": "Utiliser l'appareil photo pour remplir automatiquement le formulaire",
+  "uploadDocumentHint": "Sélectionner depuis le stockage de l'appareil",
+  "noDocumentsYet": "Aucun document joint pour le moment",
+  "enterFlightNumberFirst": "Veuillez d'abord saisir un numéro de vol",
+  "viewAll": "Voir Tout",
+  "documentScanner": "Scanner de Documents",
+  "profileInformation": "Informations du Profil",
+  "editPersonalInformation": "Modifier vos informations personnelles",
+  "editPersonalAndContactInformation": "Modifier vos informations personnelles et de contact",
+  "configureAccessibilityOptions": "Configurer les options d'accessibilité de l'application",
+  "configureHighContrastLargeTextAndScreenReaderSupport": "Configurer le contraste élevé, le grand texte et le support du lecteur d'écran",
+  "applicationPreferences": "Préférences de l'Application",
+  "notificationSettings": "Paramètres de Notification",
+  "configureNotificationPreferences": "Configurer les préférences de notification",
+  "configureHowYouReceiveClaimUpdates": "Configurer la manière dont vous recevez les mises à jour des réclamations",
+  "language": "Langue",
+  "changeApplicationLanguage": "Changer la langue de l'application",
+  "selectYourPreferredLanguage": "Sélectionnez votre langue préférée",
+  "tipsAndReminders": "Conseils & Rappels",
+  "importantTipsAboutProfileInformation": "Conseils importants concernant vos informations de profil",
+  "noClaimsYetTitle": "Aucune Réclamation Pour le Moment",
+  "noClaimsYetSubtitle": "Commencez votre demande d'indemnisation en sélectionnant un vol dans la section Vols Éligibles de l'UE",
+  "extractingText": "Extraction du texte et identification des champs",
+  "scanInstructions": "Positionnez votre document dans le cadre et prenez une photo",
+  "formFilledWithScannedData": "Formulaire rempli avec les données du document scanné",
+  "flightDetails": "Détails du Vol",
+  "phoneNumber": "Numéro de Téléphone",
+  "required": "Requis",
+  "submit": "Soumettre",
+  "submissionChecklist": "Liste de Contrôle de Soumission",
+  "documentAttached": "Document Joint",
+  "compensationClaimForm": "Formulaire de Demande d'Indemnisation",
+  "prefilledFromProfile": "Pré-rempli depuis votre profil",
+  "flightSearch": "Recherche de Vol",
+  "searchFlightNumber": "Rechercher par numéro de vol",
+  "delayedFlightDetected": "Vol Retardé Détecté",
+  "flightDetected": "Vol Détecté",
+  "flightLabel": "Vol :",
+  "fromAirport": "De :",
+  "toAirport": "À :",
+  "statusLabel": "Statut :",
+  "delayedEligible": "Retardé et potentiellement éligible",
+  "startClaim": "Commencer la Réclamation",
+  "euWideEligibleFlights": "Vols Éligibles à l'Indemnisation à l'échelle de l'UE",
+  "requiredFieldsCompleted": "Tous les champs requis sont remplis.",
+  "scanningDocumentsNote": "La numérisation de documents peut pré-remplir certains champs.",
+  "tipCheckEligibility": "• Assurez-vous que votre vol est éligible à une indemnisation (par ex. retard >3h, annulation, refus d'embarquement).",
+  "tipDoubleCheckDetails": "• Vérifiez tous les détails avant de soumettre pour éviter les retards.",
+  "tooltipFaqHelp": "Accéder à la foire aux questions et à la section d'aide",
+  "formSubmissionError": "Erreur lors de la soumission du formulaire : {errorMessage}. Veuillez vérifier votre connexion et réessayer.",
+  "@formSubmissionError": {
+    "description": "Message d'erreur en cas d'échec de la soumission du formulaire",
+    "placeholders": {
+      "errorMessage": {
+        "type": "String",
+        "example": "Délai d'attente réseau"
+      }
+    }
+  },
+  "processingDocument": "Traitement du document...",
+  "@processingDocument": {
+    "description": "Message affiché pendant le traitement OCR d'un document"
+  },
+  "fieldValue": "Valeur du Champ",
+  "@fieldValue": {
+    "description": "Étiquette pour une valeur de champ générique en débogage ou affichage"
+  },
+  "errorConnectionFailed": "Échec de la connexion. Veuillez vérifier votre réseau.",
+  "@errorConnectionFailed": {
+    "description": "Message d'erreur lorsqu'une connexion réseau échoue"
+  }
 }

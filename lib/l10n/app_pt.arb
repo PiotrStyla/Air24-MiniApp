@@ -1,1089 +1,207 @@
 {
   "@@locale": "pt",
-  
   "appTitle": "Compensação de Voo",
   "@appTitle": {
-    "description": "The title of the application"
+    "description": "O título da aplicação"
   },
-  
-  "myFlights": "Meus Voos",
-  "@myFlights": {
-    "description": "Label for My Flights button"
-  },
-  
-  "myDocuments": "Meus Documentos",
-  "@myDocuments": {
-    "description": "Label for My Documents button"
-  },
-  
-  "welcomeMessage": "Bem-vindo à Compensação de Voo",
-  "@welcomeMessage": {
-    "description": "Welcome message displayed on the splash screen"
-  },
-  
-  "searchFlights": "Buscar Voos",
-  "@searchFlights": {
-    "description": "Button to search for flights"
-  },
-  
-  "uploadDocuments": "Carregar Documentos",
-  "@uploadDocuments": {
-    "description": "Button to upload flight documents"
-  },
-  
-  "checkFlightCompensation": "Verificar Elegibilidade para Compensação de Voo",
-  "@checkFlightCompensation": {
-    "description": "Button to check compensation eligibility"
-  },
-  
-  "submitClaim": "Enviar Reclamação",
-  "@submitClaim": {
-    "description": "Button to submit a compensation claim"
-  },
-  
-  "settings": "Configurações",
-  "@settings": {
-    "description": "Settings screen title"
-  },
-  
-  "languageSelection": "Idioma",
-  "noClaimsYet": "Ainda Não Há Reclamações",
-  "startCompensationClaimInstructions": "Inicie a sua reclamação de compensação selecionando um voo na secção Voos Elegíveis da UE",
-  "active": "Ativas",
-  "actionRequired": "Ação Requerida",
-  "completed": "Concluídas",
-  "profileInfoCardTitle": "O seu perfil contém as suas informações pessoais e de contacto. Esta informação é usada para processar as suas reclamações de compensação de voo e mantê-lo atualizado.",
-  "accountSettings": "Configurações da Conta",
-  "accessibilityOptions": "Opções de Acessibilidade",
-  "configureAccessibilityDescription": "Configure o alto contraste, texto grande e suporte para leitor de ecrã",
-  "configureNotificationsDescription": "Configure como recebe as atualizações das reclamações",
-  "tipProfileUpToDate": "Mantenha o seu perfil atualizado para um processamento tranquilo das reclamações.",
-  "tipInformationPrivate": "A sua informação é privada e usada apenas para reclamações de compensação.",
-  "tipContactDetails": "Certifique-se de que os seus detalhes de contacto estão corretos para que possamos contactá-lo sobre a sua reclamação.",
-  "tipAccessibilitySettings": "Verifique as Configurações de Acessibilidade para personalizar a aplicação às suas necessidades.",
-  "@languageSelection": {
-    "description": "Language selection option in settings"
-  },
-  
-  "back": "Voltar",
-  "@back": {
-    "description": "Back button label"
-  },
-  
-  "arrivalsAt": "Chegadas em {airport}",
-  "@arrivalsAt": {
-    "description": "Title for airport arrivals screen",
-    "placeholders": {
-      "airport": {
-        "type": "String",
-        "example": "JFK Airport"
-      }
-    }
-  },
-  
-  "departuresFrom": "Partidas de {airport}",
-  "@departuresFrom": {
-    "description": "Title for airport departures screen",
-    "placeholders": {
-      "airport": {
-        "type": "String",
-        "example": "LAX Airport"
-      }
-    }
-  },
-  
-  "flightNumber": "Número do Voo",
-  "@flightNumber": {
-    "description": "Flight number label"
-  },
-  
-  "departureTime": "Horário de Partida",
-  "@departureTime": {
-    "description": "Departure time label"
-  },
-  
-  "arrivalTime": "Horário de Chegada",
-  "@arrivalTime": {
-    "description": "Arrival time label"
-  },
-  
-  "aircraft": "Aeronave",
-  "@aircraft": {
-    "description": "Label for aircraft type"
-  },
-  
-  "delay": "Atraso",
-  "@delay": {
-    "description": "Delay label"
-  },
-  
-  "cancelled": "Cancelado",
-  "@cancelled": {
-    "description": "Cancelled flight status"
-  },
-  
-  "onTime": "No Horário",
-  "@onTime": {
-    "description": "On-time flight status"
-  },
-  
-  "compensation": "Compensação",
-  "@compensation": {
-    "description": "Compensation label"
-  },
-  
-  "eligible": "Elegível",
-  "@eligible": {
-    "description": "Eligible for compensation status"
-  },
-  
-  "notEligible": "Não Elegível",
-  "@notEligible": {
-    "description": "Not eligible for compensation status"
-  },
-  
-  "profile": "Perfil",
-  "@profile": {
-    "description": "Profile screen title"
-  },
-  
-  "claims": "Reclamações",
-  "@claims": {
-    "description": "Claims screen title"
-  },
-  
-  "home": "Início",
-  "@home": {
-    "description": "Home screen title"
-  },
-  
-  "faq": "Perguntas Frequentes",
-  "@faq": {
-    "description": "FAQ screen title"
-  },
-  
-  "selectLanguage": "Selecione o Idioma",
-  "@selectLanguage": {
-    "description": "Title for language selection screen"
-  },
-  
-  "filterByAirline": "Filtrar por companhia aérea",
-  "@filterByAirline": {
-    "description": "Label for airline filter field"
-  },
-  
-  "flightStatusDelayed": "Atrasado",
-  "@flightStatusDelayed": {
-    "description": "Flight status: delayed"
-  },
-  
-  "flightStatusCancelled": "Cancelado",
-  "@flightStatusCancelled": {
-    "description": "Flight status: cancelled"
-  },
-  
-  "flightStatusDiverted": "Desviado",
-  "@flightStatusDiverted": {
-    "description": "Flight status: diverted"
-  },
-  
-  "flightStatusOnTime": "No horário",
-  "@flightStatusOnTime": {
-    "description": "Flight status: on time"
-  },
-  
-  "errorConnectionFailed": "Falha na conexão. Verifique sua conexão com a internet.",
-  "@errorConnectionFailed": {
-    "description": "Error message for connection failure"
-  },
-  
-  "errorApiLimitExceeded": "Limite de requisições da API excedido. Tente novamente mais tarde.",
-  "@errorApiLimitExceeded": {
-    "description": "Error message for API rate limiting"
-  },
-  
-  "errorGeneric": "Ocorreu um erro. Tente novamente.",
-  "@errorGeneric": {
-    "description": "Generic error message"
-  },
-  
-  "documentTypePassport": "Passaporte",
-  "@documentTypePassport": {
-    "description": "Document type: passport"
-  },
-  
-  "documentTypeBoardingPass": "Cartão de embarque",
-  "@documentTypeBoardingPass": {
-    "description": "Document type: boarding pass"
-  },
-  
-  "documentTypeFlightTicket": "Bilhete aéreo",
-  "@documentTypeFlightTicket": {
-    "description": "Document type: flight ticket"
-  },
-  
-  "documentTypeReceipt": "Recibo",
-  "@documentTypeReceipt": {
-    "description": "Document type: receipt"
-  },
-  
-  "saveButton": "Salvar",
-  "@saveButton": {
-    "description": "Save button label"
-  },
-  
-  "cancelButton": "Cancelar",
-  "@cancelButton": {
-    "description": "Cancel button label"
-  },
-  
-  "euCompensationEligible": "Voos Elegíveis para Compensação na UE",
-  "@euCompensationEligible": {
-    "description": "Label for EU compensation eligible flights"
-  },
-  
-  "cropDocument": "Recortar Documento",
-  "@cropDocument": {
-    "description": "Title for document crop screen"
-  },
-  
-  "crop": "Recortar",
-  "@crop": {
-    "description": "Crop button label"
-  },
-  
-  "rotate": "Girar",
-  "@rotate": {
-    "description": "Rotate button label"
-  },
-  
-  "aspectRatio": "Proporção",
-  "@aspectRatio": {
-    "description": "Aspect ratio button label"
-  },
-  
-  "adjustDocument": "Ajustar bordas do documento",
-  "@adjustDocument": {
-    "description": "Instructions for document cropping"
-  },
-  
-  "cropping": "Recortando...",
-  "@cropping": {
-    "description": "Message shown when document is being cropped"
-  },
-  
-  "aspectRatioFree": "Formato Livre",
-  "@aspectRatioFree": {
-    "description": "Free form aspect ratio mode"
-  },
-  
-  "aspectRatioSquare": "Quadrado (1:1)",
-  "@aspectRatioSquare": {
-    "description": "Square aspect ratio mode"
-  },
-  
-  "aspectRatioPortrait": "Retrato (3:4)",
-  "@aspectRatioPortrait": {
-    "description": "Portrait aspect ratio mode"
-  },
-  
-  "aspectRatioLandscape": "Paisagem (4:3)",
-  "@aspectRatioLandscape": {
-    "description": "Landscape aspect ratio mode"
-  },
-  
-  "aspectRatioMode": "Proporção: {mode}",
-  "@aspectRatioMode": {
-    "description": "Snackbar message for aspect ratio mode",
-    "placeholders": {
-      "mode": {
-        "type": "String"
-      }
-    }
-  },
-  
-  "documentOcrResult": "Resultado da Análise do Documento",
-  "@documentOcrResult": {
-    "description": "Title for document OCR result screen"
-  },
-  
-  "extractedFields": "Campos Extraídos",
-  "@extractedFields": {
-    "description": "Tab title for extracted fields"
-  },
-  
-  "fullText": "Texto Completo",
-  "@fullText": {
-    "description": "Tab title for full OCR text"
-  },
-  
-  "documentSaved": "Documento salvo",
-  "@documentSaved": {
-    "description": "Message when document is saved"
-  },
-  
-  "useExtractedData": "Usar Dados Extraídos",
-  "@useExtractedData": {
-    "description": "Button to use extracted data"
-  },
-  
-  "copyToClipboard": "Copiar para Área de Transferência",
-  "@copyToClipboard": {
-    "description": "Button to copy text to clipboard"
-  },
-  
-  "textCopied": "Texto copiado para a área de transferência",
-  "@textCopied": {
-    "description": "Message when text is copied to clipboard"
-  },
-  
-  "documentType": "Tipo de Documento",
-  "@documentType": {
-    "description": "Label for document type field"
-  },
-  
-  "saveDocument": "Salvar Documento",
-  "@saveDocument": {
-    "description": "Button to save document"
-  },
-  
-  "fieldName": "Nome do Campo",
-  "@fieldName": {
-    "description": "Column header for field name"
-  },
-  
-  "fieldValue": "Valor",
-  "@fieldValue": {
-    "description": "Column header for field value"
-  },
-  
-  "noFieldsExtracted": "Nenhum campo foi extraído deste documento",
-  "@noFieldsExtracted": {
-    "description": "Message when no fields were extracted from document"
-  },
-  
-  "extractedInformation": "Informações Extraídas",
-  "@extractedInformation": {
-    "description": "Heading for extracted information section"
-  },
-  
-  "rawOcrText": "Texto OCR Bruto",
-  "@rawOcrText": {
-    "description": "Heading for raw OCR text section"
-  },
-  
-  "copyAllText": "Copiar todo o texto",
-  "@copyAllText": {
-    "description": "Tooltip for copy all text button"
-  },
-  
-  "copiedToClipboard": "Copiado para a área de transferência",
-  "@copiedToClipboard": {
-    "description": "Message shown when text is copied to clipboard"
-  },
-  
-  "fillForm": "Preencher Formulário",
-  "@fillForm": {
-    "description": "Title for form selection dialog"
-  },
-  
-  "chooseUseInfo": "Escolha onde usar esta informação:",
-  "@chooseUseInfo": {
-    "description": "Instructions for form selection dialog"
-  },
-  
-  "compensationClaimForm": "Formulário de Pedido de Compensação",
-  "@compensationClaimForm": {
-    "description": "Option in form selection dialog"
-  },
-  
-  "fillPassengerFlight": "Preencher detalhes do passageiro e do voo",
-  "@fillPassengerFlight": {
-    "description": "Subtitle for compensation claim form option"
-  },
-  
-  "flightSearch": "Busca de Voos",
-  "@flightSearch": {
-    "description": "Option in form selection dialog"
-  },
-  
-  "searchFlightNumber": "Buscar usando número do voo",
-  "@searchFlightNumber": {
-    "description": "Subtitle for flight search option"
-  },
-  
-  "done": "Concluído",
-  "@done": {
-    "description": "Done button label"
-  },
-  
-  "delayedFlightDetected": "Voo Atrasado Detectado!",
-  "@delayedFlightDetected": {
-    "description": "Title of dialog when a delayed flight is detected"
-  },
-  
-  "welcome": "Bem-vindo",
-  "@welcome": {
-    "description": "Welcome greeting"
-  },
-  
-  "signOut": "Sair",
-  "@signOut": {
-    "description": "Sign out button"
-  },
-  
-  "flightDetected": "Voo Detectado!",
-  "@flightDetected": {
-    "description": "Title of dialog when a flight is detected"
-  },
-  
-  "flightLabel": "Voo: {number}",
-  "@flightLabel": {
-    "description": "Flight number label in detection dialog",
-    "placeholders": {
-      "number": {
-        "type": "String"
-      }
-    }
-  },
-  
-  "fromAirport": "De: {airport}",
-  "@fromAirport": {
-    "description": "Departure airport label in detection dialog",
-    "placeholders": {
-      "airport": {
-        "type": "String"
-      }
-    }
-  },
-  
-  "toAirport": "Para: {airport}",
-  "@toAirport": {
-    "description": "Arrival airport label in detection dialog",
-    "placeholders": {
-      "airport": {
-        "type": "String"
-      }
-    }
-  },
-  
-  "statusLabel": "Status: {status}",
-  "@statusLabel": {
-    "description": "Flight status label in detection dialog",
-    "placeholders": {
-      "status": {
-        "type": "String"
-      }
-    }
-  },
-  
-  "delayed": "Atrasado",
-  "@delayed": {
-    "description": "Flight status: delayed"
-  },
-  
-  "potentialCompensation": "Compensação Potencial",
-  "@potentialCompensation": {
-    "description": "Label for potential compensation amount"
-  },
-  
-  "preFillCompensationForm": "Pré-preencher Formulário",
-  "@preFillCompensationForm": {
-    "description": "Button to pre-fill compensation form"
-  },
-  
-  "delayedEligible": "Este voo está atrasado. Você pode ter direito a uma compensação.",
-  "@delayedEligible": {
-    "description": "Message about compensation eligibility for delayed flights"
-  },
-  
-  "dismiss": "Fechar",
-  "@dismiss": {
-    "description": "Dismiss button label"
-  },
-  
-  "startClaim": "Iniciar Pedido",
-  "@startClaim": {
-    "description": "Button to start a compensation claim"
-  },
-  
-  "home": "Início",
-  "@home": {
-    "description": "Home screen title"
-  },
-  
-  "checkCompensationEligibility": "Verificar Elegibilidade para Compensação de Voo",
-  "@checkCompensationEligibility": {
-    "description": "Button to check compensation eligibility"
-  },
-  
-  "euWideEligibleFlights": "Voos Elegíveis para Compensação na UE",
-  "@euWideEligibleFlights": {
-    "description": "Button to view EU-wide eligible flights"
-  },
-  
-  "pleaseEnterDepartureAirport": "Por favor, insira o aeroporto de partida",
-  "@pleaseEnterDepartureAirport": {
-    "description": "Validation message for departure airport field"
-  },
-  
-  "requiredFieldsCompleted": "Campos obrigatórios preenchidos",
-  "@requiredFieldsCompleted": {
-    "description": "Checklist item indicating required fields are completed"
-  },
-  
-  "scanningDocumentsNote": "Nota: A digitalização de documentos extrairá automaticamente informações para ajudar a preencher seu formulário de solicitação.",
-  "@scanningDocumentsNote": {
-    "description": "Note about document scanning benefits"
-  },
-  
-  "submitClaim": "Enviar Solicitação",
-  "@submitClaim": {
-    "description": "Button to submit the compensation claim"
-  },
-  
-  "formSubmissionError": "Erro ao enviar formulário: {message}",
-  "@formSubmissionError": {
-    "description": "Error message shown when form submission fails",
-    "placeholders": {
-      "message": {
-        "type": "String"
-      }
-    }
-  },
-  
-  "networkError": "Erro de rede. Verifique sua conexão e tente novamente.",
-  "@networkError": {
-    "description": "Error message shown when there's a network issue"
-  },
-  
-  "generalError": "Ocorreu um erro. Por favor, tente novamente mais tarde.",
-  "@generalError": {
-    "description": "Generic error message"
-  },
-  
-  "loginRequiredForClaim": "Você deve estar logado para enviar uma solicitação",
-  "@loginRequiredForClaim": {
-    "description": "Error message shown when user tries to submit a claim without being logged in"
-  },
-  "newClaim": "Nova Reclamação",
-  "@newClaim": {
-    "description": "Button or title for starting a new claim"
-  },
-  "euWideEligibleFlights": "Voos Elegíveis para Compensação em Toda a UE",
-  "@euWideEligibleFlights": {
-    "description": "Button to view EU-wide eligible flights"
-  },
-  "welcomeUser": "Bem-vindo(a) {userName}",
+  "welcomeUser": "Bem-vindo, {userName}",
   "@welcomeUser": {
-    "description": "Welcome message for a logged-in user",
+    "description": "Uma mensagem de boas-vindas para o utilizador",
     "placeholders": {
       "userName": {
         "type": "String",
-        "example": "John Doe"
+        "example": "João Silva"
       }
     }
   },
-  "signOut": "Sair",
+  "signOut": "Terminar Sessão",
   "@signOut": {
-    "description": "Sign out button label"
+    "description": "Rótulo do botão de terminar sessão"
   },
-  "editPersonalInfoDescription": "Edite suas informações pessoais e de contato.",
-  "@editPersonalInfoDescription": {
-    "description": "Text for the profile information card body"
+  "newClaim": "Nova Reclamação",
+  "@newClaim": {
+    "description": "Rótulo do botão de nova reclamação"
   },
-  "accessibilitySettings": "Configurações de Acessibilidade",
-  "@accessibilitySettings": {
-    "description": "Title for accessibility settings screen or section"
+  "home": "Início",
+  "@home": {
+    "description": "Título do ecrã inicial"
   },
-  "languageSettings": "Configurações de Idioma",
-  "@languageSettings": {
-    "description": "Title for language settings screen or section"
+  "settings": "Definições",
+  "@settings": {
+    "description": "Título do ecrã de definições"
   },
-  "notificationSettingsDescription": "Configure como você recebe atualizações sobre suas reivindicações.",
-  "@notificationSettingsDescription": {
-    "description": "Text for the notification settings card body"
+  "languageSelection": "Idioma",
+  "@languageSelection": {
+    "description": "Rótulo de seleção de idioma"
   },
-  "claimsDashboard": "Painel de Reivindicações",
-  "@claimsDashboard": {
-    "description": "Title for the claims dashboard screen"
-  },
-  "noClaimsMessage": "Você ainda não tem nenhuma reivindicação. Comece uma nova para acompanhar seu progresso aqui.",
-  "@noClaimsMessage": {
-    "description": "Message displayed when user has no claims"
-  },
-  "claimStatus": "Status da Reclamação: {status}",
-  "@claimStatus": {
-    "description": "Label showing the status of a claim",
-    "placeholders": {
-      "status": {
-        "type": "String",
-        "example": "Processing"
-      }
-    }
-  },
-  "claimSubmittedDate": "Enviado em: {date}",
-  "@claimSubmittedDate": {
-    "description": "Label showing the submission date of a claim",
-    "placeholders": {
-      "date": {
-        "type": "String",
-        "example": "2023-10-26"
-      }
-    }
-  },
-  "viewClaimDetails": "Ver Detalhes",
-  "@viewClaimDetails": {
-    "description": "Button to view the details of a specific claim"
-  },
-  "startNewClaim": "Iniciar Nova Reclamação",
-  "@startNewClaim": {
-    "description": "Button to start a new compensation claim"
-  },
-  "flightNumberHint": "Ex: BA245",
-  "@flightNumberHint": {
-    "description": "Hint text for flight number input field"
-  },
-  "dateHint": "DD/MM/AAAA",
-  "@dateHint": {
-    "description": "Hint text for date input field"
-  },
-  "search": "Buscar",
-  "@search": {
-    "description": "Search button label"
-  },
-  "flightResults": "Resultados do Voo",
-  "@flightResults": {
-    "description": "Title for flight search results screen or section"
-  },
-  "selectFlight": "Selecionar Voo",
-  "@selectFlight": {
-    "description": "Button to select a flight from search results"
-  },
-  "noFlightsFound": "Nenhum voo encontrado para os critérios fornecidos.",
-  "@noFlightsFound": {
-    "description": "Message displayed when flight search yields no results"
-  },
-  "personalInformation": "Informações Pessoais",
-  "@personalInformation": {
-    "description": "Title for personal information section in a form"
-  },
-  "fullName": "Nome Completo",
-  "@fullName": {
-    "description": "Label for full name input field"
-  },
-  "emailAddress": "Endereço de E-mail",
-  "@emailAddress": {
-    "description": "Label for email address input field"
-  },
-  "phoneNumberOptional": "Número de Telefone (Opcional)",
-  "@phoneNumberOptional": {
-    "description": "Label for optional phone number input field"
-  },
-  "address": "Endereço",
-  "@address": {
-    "description": "Label for address input field"
-  },
-  "city": "Cidade",
-  "@city": {
-    "description": "Label for city input field"
-  },
-  "postalCode": "Código Postal",
-  "@postalCode": {
-    "description": "Label for postal code input field"
-  },
-  "country": "País",
-  "@country": {
-    "description": "Label for country input field"
-  },
-  "departureAirport": "Aeroporto de Partida",
-  "@departureAirport": {
-    "description": "Departure airport label"
-  },
-  "arrivalAirport": "Aeroporto de Chegada",
-  "@arrivalAirport": {
-    "description": "Arrival airport label"
-  },
-  "scheduledDeparture": "Partida Programada",
-  "@scheduledDeparture": {
-    "description": "Label for scheduled departure time"
-  },
-  "actualDeparture": "Partida Real",
-  "@actualDeparture": {
-    "description": "Label for actual departure time"
-  },
-  "scheduledArrival": "Chegada Programada",
-  "@scheduledArrival": {
-    "description": "Label for scheduled arrival time"
-  },
-  "actualArrival": "Chegada Real",
-  "@actualArrival": {
-    "description": "Label for actual arrival time"
-  },
-  "airline": "Companhia Aérea",
-  "@airline": {
-    "description": "Airline field label"
-  },
-  "bookingReferenceOptional": "Referência da Reserva (Opcional)",
-  "@bookingReferenceOptional": {
-    "description": "Label for optional booking reference input field"
-  },
-  "reasonForClaim": "Motivo da Reclamação",
-  "@reasonForClaim": {
-    "description": "Label for reason for claim input field or section title"
-  },
-  "delayReason": "Atraso",
-  "@delayReason": {
-    "description": "Option for claim reason: Delay"
-  },
-  "cancellationReason": "Cancelamento",
-  "@cancellationReason": {
-    "description": "Option for claim reason: Cancellation"
-  },
-  "deniedBoardingReason": "Embarque Negado",
-  "@deniedBoardingReason": {
-    "description": "Option for claim reason: Denied Boarding"
-  },
-  "additionalCommentsOptional": "Comentários Adicionais (Opcional)",
-  "@additionalCommentsOptional": {
-    "description": "Label for optional additional comments input field"
-  },
-  "uploadSupportingDocuments": "Carregar Documentos de Suporte",
-  "@uploadSupportingDocuments": {
-    "description": "Button or section title for uploading supporting documents"
-  },
-  "documentsSuccessfullyUploaded": "{count} documentos carregados com sucesso.",
-  "@documentsSuccessfullyUploaded": {
-    "description": "Success message after uploading documents",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
-  "errorUploadingDocument": "Erro ao carregar o documento: {error}",
-  "@errorUploadingDocument": {
-    "description": "Error message when a document upload fails",
-    "placeholders": {
-      "error": {
-        "type": "String",
-        "example": "File too large"
-      }
-    }
-  },
-  "maxFileSize": "Tamanho máximo do arquivo: {size}MB",
-  "@maxFileSize": {
-    "description": "Information about maximum allowed file size for uploads",
-    "placeholders": {
-      "size": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
-  "supportedFormats": "Formatos suportados: PDF, JPG, PNG",
-  "@supportedFormats": {
-    "description": "Information about supported file formats for uploads"
-  },
-  "iAgreeToTerms": "Eu concordo com os Termos e Condições e com a Política de Privacidade.",
-  "@iAgreeToTerms": {
-    "description": "Checkbox label for agreeing to terms and conditions"
-  },
-  "pleaseAgreeToTerms": "Por favor, concorde com os Termos e Condições.",
-  "@pleaseAgreeToTerms": {
-    "description": "Validation message if terms are not agreed to"
-  },
-  "submittingClaim": "Enviando reivindicação...",
-  "@submittingClaim": {
-    "description": "Loading message displayed when a claim is being submitted"
-  },
-  "claimSubmissionSuccess": "Reivindicação enviada com sucesso! Entraremos em contato em breve.",
-  "@claimSubmissionSuccess": {
-    "description": "Success message after a claim is submitted"
-  },
-  "claimSubmissionError": "Erro ao enviar reivindicação. Por favor, tente novamente.",
-  "@claimSubmissionError": {
-    "description": "Error message if claim submission fails"
-  },
-  "cameraPermissionDenied": "Permissão da câmera negada. Por favor, habilite nas configurações.",
-  "@cameraPermissionDenied": {
-    "description": "Error message when camera permission is denied"
-  },
-  "storagePermissionDenied": "Permissão de armazenamento negada. Por favor, habilite nas configurações.",
-  "@storagePermissionDenied": {
-    "description": "Error message when storage permission is denied"
-  },
-  "scanBoardingPass": "Digitalizar Cartão de Embarque",
-  "@scanBoardingPass": {
-    "description": "Button label to scan a boarding pass"
-  },
-  "scanPassport": "Digitalizar Passaporte",
-  "@scanPassport": {
-    "description": "Button label to scan a passport"
-  },
-  "ocrProcessing": "Processando imagem...",
-  "@ocrProcessing": {
-    "description": "Loading message displayed during OCR processing"
-  },
-  "ocrSuccess": "Informações extraídas com sucesso.",
-  "@ocrSuccess": {
-    "description": "Success message after OCR processing"
-  },
-  "ocrError": "Não foi possível extrair informações da imagem.",
-  "@ocrError": {
-    "description": "Error message if OCR fails"
-  },
-  "retakePhoto": "Tirar Foto Novamente",
-  "@retakePhoto": {
-    "description": "Button label to retake a photo for OCR"
-  },
-  "useThisPhoto": "Usar Esta Foto",
-  "@useThisPhoto": {
-    "description": "Button label to confirm using the current photo for OCR"
-  },
-  "english": "Inglês",
-  "@english": {
-    "description": "Language option: English"
-  },
-  "german": "Alemão",
-  "@german": {
-    "description": "Language option: German"
-  },
-  "polish": "Polonês",
-  "@polish": {
-    "description": "Language option: Polish"
-  },
-  "portuguese": "Português",
-  "@portuguese": {
-    "description": "Language option: Portuguese"
-  },
-  "darkMode": "Modo Escuro",
-  "@darkMode": {
-    "description": "Theme option: Dark Mode"
-  },
-  "lightMode": "Modo Claro",
-  "@lightMode": {
-    "description": "Theme option: Light Mode"
-  },
-  "systemDefault": "Padrão do Sistema",
-  "@systemDefault": {
-    "description": "Theme option: System Default"
-  },
-  "themeSettings": "Configurações de Tema",
-  "@themeSettings": {
-    "description": "Title for theme settings section or screen"
-  },
-  "notifications": "Notificações",
-  "@notifications": {
-    "description": "Title for notifications settings section or screen"
-  },
-  "allowNotifications": "Permitir Notificações",
-  "@allowNotifications": {
-    "description": "Toggle switch label to allow or disallow notifications"
-  },
-  "quickClaimTitle": "Reclamação Rápida",
-  "@quickClaimTitle": {
-    "description": "Title for the Quick Claim screen"
-  },
-  "quickClaimInfoBanner": "Revise e edite os detalhes da sua reclamação de voo abaixo. Todos os campos obrigatórios devem ser preenchidos. Toque nos ícones de informação para obter ajuda.",
-  "@quickClaimInfoBanner": {
-    "description": "Informational banner on the Quick Claim screen"
-  },
-  "flightNumberHintQuickClaim": "Normalmente um código de companhia aérea de 2 letras e dígitos, ex: LH1234",
-  "@flightNumberHintQuickClaim": {
-    "description": "Hint text for flight number input on Quick Claim screen"
-  },
-  "departureAirportHintQuickClaim": "ex: FRA para Frankfurt, LHR para Londres Heathrow",
-  "@departureAirportHintQuickClaim": {
-    "description": "Hint text for departure airport input on Quick Claim screen"
-  },
-  "arrivalAirportHintQuickClaim": "ex: JFK para Nova Iorque, CDG para Paris",
-  "@arrivalAirportHintQuickClaim": {
-    "description": "Hint text for arrival airport input on Quick Claim screen"
-  },
-  "reasonForClaimLabel": "Motivo *",
-  "@reasonForClaimLabel": {
-    "description": "Label for the reason for claim field on Quick Claim screen"
-  },
-  "reasonForClaimHint": "Indique o motivo da sua reclamação: atraso, cancelamento, embarque negado, etc.",
-  "@reasonForClaimHint": {
-    "description": "Hint text for reason for claim input on Quick Claim screen"
-  },
-  "compensationAmountOptionalLabel": "Valor da Compensação (opcional)",
-  "@compensationAmountOptionalLabel": {
-    "description": "Label for the optional compensation amount field on Quick Claim screen"
-  },
-  "compensationAmountHint": "Se souber o valor a que tem direito, insira-o aqui",
-  "@compensationAmountHint": {
-    "description": "Hint text for compensation amount input on Quick Claim screen"
-  },
-  "euWideCompensationTitle": "Compensação em Toda a UE",
-  "@euWideCompensationTitle": {
-    "description": "Title for the EU-wide compensation eligible flights screen"
-  },
-  "last144HoursButton": "Últimas 144 horas",
-  "@last144HoursButton": {
-    "description": "Button to filter flights from the last 144 hours"
-  },
-  "scheduledLabel": "Programado:",
-  "@scheduledLabel": {
-    "description": "Label for scheduled time in flight lists"
-  },
-  "statusLabelEuList": "Estado:",
-  "@statusLabelEuList": {
-    "description": "Label for flight status in EU-wide flight list"
-  },
-  "potentialCompensationLabel": "Compensação Potencial:",
-  "@potentialCompensationLabel": {
-    "description": "Label for potential compensation amount in flight lists"
-  },
-  "prefillCompensationFormButton": "Pré-preencher Formulário de Compensação",
-  "@prefillCompensationFormButton": {
-    "description": "Button to pre-fill compensation form from flight details"
-  },
-  "claimsTabActive": "Ativas",
-  "@claimsTabActive": {
-    "description": "Label for the 'Active' tab in claims dashboard"
-  },
-  "claimsTabActionRequired": "Ação Necessária",
-  "@claimsTabActionRequired": {
-    "description": "Label for the 'Action Required' tab in claims dashboard"
-  },
-  "claimsTabCompleted": "Concluídas",
-  "@claimsTabCompleted": {
-    "description": "Label for the 'Completed' tab in claims dashboard"
-  },
-  "createClaim": "Criar Reclamação",
-  "@createClaim": {
-    "description": "Button text to create a new claim from the dashboard"
-  },
-  "checkCompensationEligibility": "Verificar Elegibilidade para Compensação",
-  "@checkCompensationEligibility": {
-    "description": "Check compensation eligibility button"
-  },
-  "flightDate": "Data do Voo",
-  "@flightDate": {
-    "description": "Flight date label"
-  },
-  "optional": "Opcional",
-  "@optional": {
-    "description": "Optional field indicator"
-  },
-  "additionalInformation": "Informação Adicional",
-  "@additionalInformation": {
-    "description": "Additional information field label"
-  },
-  "supportingDocuments": "Documentos de Suporte",
-  "@supportingDocuments": {
-    "description": "Title for supporting documents section"
-  },
-  "supportingDocumentsHint": "Anexe cartões de embarque, bilhetes e outros documentos para fortalecer a sua reclamação.",
-  "@supportingDocumentsHint": {
-    "description": "Helper text for supporting documents section"
-  },
-  "submissionChecklist": "Lista de Verificação da Submissão",
-  "@submissionChecklist": {
-    "description": "Section header for submission checklist"
-  },
-  "flightDetails": "Detalhes do Voo",
-  "@flightDetails": {
-    "description": "Section header for flight details"
-  },
+  "passengerName": "Nome do Passageiro",
   "passengerDetails": "Detalhes do Passageiro",
-  "@passengerDetails": {
-    "description": "Section header for passenger details"
-  },
+  "flightNumber": "Número do Voo",
+  "airline": "Companhia Aérea",
+  "departureAirport": "Aeroporto de Partida",
+  "arrivalAirport": "Aeroporto de Chegada",
+  "email": "Email",
   "bookingReference": "Referência da Reserva",
-  "@bookingReference": {
-    "description": "Booking reference field label"
+  "additionalInformation": "Informação Adicional",
+  "optional": "(Opcional)",
+  "thisFieldIsRequired": "Este campo é obrigatório.",
+  "pleaseEnterDepartureAirport": "Por favor, introduza um aeroporto de partida.",
+  "uploadDocuments": "Carregar Documentos",
+  "submitClaim": "Submeter Reclamação",
+  "addDocument": "Adicionar Documento",
+  "claimSubmittedSuccessfully": "Reclamação submetida com sucesso!",
+  "completeAllFields": "Por favor, preencha todos os campos.",
+  "supportingDocuments": "Documentos de Suporte",
+  "cropDocument": "Recortar Documento",
+  "crop": "Recortar",
+  "cropping": "A recortar...",
+  "rotate": "Rodar",
+  "aspectRatio": "Proporção",
+  "aspectRatioFree": "Livre",
+  "aspectRatioSquare": "Quadrado",
+  "aspectRatioPortrait": "Retrato",
+  "aspectRatioLandscape": "Paisagem",
+  "aspectRatioMode": "Proporção: {ratio}",
+  "@aspectRatioMode": {
+    "placeholders": {
+      "ratio": {
+        "type": "String"
+      }
+    }
   },
-  "dialogTitleSuccess": "Sucesso",
-  "@dialogTitleSuccess": {
-    "description": "Dialog title for successful operations"
+  "documentOcrResult": "Resultado OCR",
+  "extractedFields": "Campos Extraídos",
+  "fullText": "Texto Completo",
+  "documentSaved": "Documento guardado.",
+  "useExtractedData": "Usar Dados Extraídos",
+  "copyToClipboard": "Copiado para a área de transferência.",
+  "documentType": "Tipo de Documento",
+  "saveDocument": "Guardar Documento",
+  "fieldName": "Nome do Campo",
+  "done": "Concluído",
+  "yes": "Sim",
+  "no": "Não",
+  "ok": "OK",
+  "back": "Voltar",
+  "save": "Guardar",
+  "welcomeMessage": "Bem-vindo à aplicação!",
+  "fillForm": "Preencher Formulário",
+  "chooseUseInfo": "Escolha como usar esta informação:",
+  "fillPassengerFlight": "Preencher informações do passageiro e do voo",
+  "ocrResults": "Resultados OCR",
+  "noFieldsExtracted": "Nenhum campo foi extraído do documento.",
+  "extractedInformation": "Informação Extraída",
+  "rawOcrText": "Texto OCR Bruto",
+  "copyAllText": "Copiar Todo o Texto",
+  "claims": "Reclamações",
+  "noClaimsYet": "Ainda não há reclamações",
+  "startCompensationClaimInstructions": "Comece a sua reclamação de compensação selecionando um voo na secção Voos Elegíveis da UE",
+  "active": "Ativa",
+  "actionRequired": "Ação Necessária",
+  "completed": "Concluída",
+  "profileInfoCardTitle": "O seu perfil contém as suas informações pessoais e de contacto. Estas são usadas para processar as suas reclamações de compensação de voo e mantê-lo informado.",
+  "accountSettings": "Definições da Conta",
+  "accessibilityOptions": "Opções de Acessibilidade",
+  "configureAccessibilityDescription": "Configurar contraste elevado, texto grande e suporte para leitor de ecrã",
+  "configureNotificationsDescription": "Configurar como recebe atualizações de reclamações",
+  "tipProfileUpToDate": "Mantenha o seu perfil atualizado para um processamento tranquilo das reclamações.",
+  "tipInformationPrivate": "A sua informação é privada e usada apenas para reclamações de compensação.",
+  "tipContactDetails": "Certifique-se de que os seus detalhes de contacto estão corretos para que o possamos contactar sobre a sua reclamação.",
+  "tipAccessibilitySettings": "Reveja as definições de acessibilidade para personalizar a aplicação às suas necessidades.",
+  "cancel": "Cancelar",
+  "next": "Seguinte",
+  "previous": "Anterior",
+  "arrivalsAt": "Chegadas a {airport}",
+  "@arrivalsAt": {
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
   },
-  "dialogContentClaimSubmitted": "A sua reclamação foi submetida!",
-  "@dialogContentClaimSubmitted": {
-    "description": "Dialog content for successful claim submission"
-  },
-  "dialogButtonOK": "OK",
-  "@dialogButtonOK": {
-    "description": "Label for OK button in dialogs"
-  },
-  "errorMustBeLoggedIn": "Deve estar autenticado para submeter uma reclamação.",
-  "@errorMustBeLoggedIn": {
-    "description": "Error message when user is not logged in during claim submission"
-  },
-  "errorFailedToSubmitClaim": "Falha ao submeter a reclamação. Por favor, tente novamente.",
-  "@errorFailedToSubmitClaim": {
-    "description": "Error message when claim submission fails"
-  },
-  "dialogTitleError": "Erro",
-  "@dialogTitleError": {
-    "description": "Dialog title for error messages"
-  },
-  "validatorFlightNumberRequired": "O número do voo é obrigatório",
-  "@validatorFlightNumberRequired": {
-    "description": "Validation error message for flight number field"
-  },
-  "tooltipFlightNumberQuickClaim": "Insira o número do seu voo como mostrado no seu bilhete ou cartão de embarque.",
-  "@tooltipFlightNumberQuickClaim": {
-    "description": "Tooltip for flight number input on Quick Claim screen"
-  },
-  "tooltipFlightDateQuickClaim": "A data em que o seu voo partiu ou estava programado para partir.",
-  "@tooltipFlightDateQuickClaim": {
-    "description": "Tooltip for flight date display on Quick Claim screen"
-  },
-  "validatorDepartureAirportRequired": "O aeroporto de partida é obrigatório",
-  "@validatorDepartureAirportRequired": {
-    "description": "Validation error message for departure airport field"
-  },
-  "tooltipDepartureAirportQuickClaim": "Insira o código IATA do aeroporto onde o seu voo começou.",
-  "@tooltipDepartureAirportQuickClaim": {
-    "description": "Tooltip for departure airport input on Quick Claim screen"
-  },
-  "validatorArrivalAirportRequired": "O aeroporto de chegada é obrigatório",
-  "@validatorArrivalAirportRequired": {
-    "description": "Validation error message for arrival airport field"
-  },
-  "tooltipArrivalAirportQuickClaim": "Insira o código IATA do aeroporto onde o seu voo aterrou.",
-  "@tooltipArrivalAirportQuickClaim": {
-    "description": "Tooltip for arrival airport input on Quick Claim screen"
-  },
-  "hintTextReasonQuickClaim": "Motivo (atraso, cancelamento, etc.)",
-  "@hintTextReasonQuickClaim": {
-    "description": "Hint text (placeholder) for reason input on Quick Claim screen"
-  },
-  "validatorReasonRequired": "O motivo é obrigatório",
-  "@validatorReasonRequired": {
-    "description": "Validation error message for reason field"
-  },
-  "tooltipReasonQuickClaim": "Descreva o problema: ex. atraso superior a 3 horas, cancelado, overbooking.",
-  "@tooltipReasonQuickClaim": {
-    "description": "Tooltip for reason input on Quick Claim screen"
-  },
-  "tooltipCompensationAmountQuickClaim": "Deixe em branco se não tiver a certeza. Compensação típica da UE: €250-€600 dependendo da distância.",
-  "@tooltipCompensationAmountQuickClaim": {
-    "description": "Tooltip for compensation amount input on Quick Claim screen"
-  },
-  "tipsAndRemindersTitle": "Dicas e Lembretes",
-  "@tipsAndRemindersTitle": {
-    "description": "Title for the Tips & Reminders section on Quick Claim screen"
-  },
-  "tipSecureData": "• Os seus dados são processados de forma segura e usados apenas para reclamações de compensação.",
-  "@tipSecureData": {
-    "description": "Tip about secure data processing"
-  },
-  "tipCheckEligibility": "• Certifique-se de que o seu voo é elegível para compensação (ex: atraso >3h, cancelamento, embarque negado).",
-  "@tipCheckEligibility": {
-    "description": "Tip about checking flight eligibility"
-  },
+  "filterByAirline": "Filtrar por companhia aérea",
+  "flightStatusDelayed": "Atrasado",
+  "flightStatusCancelled": "Cancelado",
+  "flightStatusDiverted": "Desviado",
+  "flightStatusOnTime": "A tempo",
+  "flight": "Voo",
+  "flights": "Voos",
+  "myFlights": "Os Meus Voos",
+  "findFlight": "Encontrar Voo",
+  "flightDate": "Data do Voo",
+  "checkCompensationEligibility": "Verificar Elegibilidade para Compensação",
+  "supportingDocumentsHint": "Anexe cartões de embarque, bilhetes e outros documentos para fortalecer a sua reclamação.",
+  "scanDocument": "Digitalizar Documento",
+  "uploadDocument": "Carregar Documento",
+  "scanDocumentHint": "Usar a câmara para preencher automaticamente o formulário",
+  "uploadDocumentHint": "Selecionar do armazenamento do dispositivo",
+  "noDocumentsYet": "Ainda não há documentos anexados",
+  "enterFlightNumberFirst": "Por favor, introduza primeiro um número de voo",
+  "viewAll": "Ver Tudo",
+  "documentScanner": "Scanner de Documentos",
+  "profileInformation": "Informação do Perfil",
+  "editPersonalInformation": "Editar as suas informações pessoais",
+  "editPersonalAndContactInformation": "Editar as suas informações pessoais e de contacto",
+  "configureAccessibilityOptions": "Configurar as opções de acessibilidade da aplicação",
+  "configureHighContrastLargeTextAndScreenReaderSupport": "Configurar contraste elevado, texto grande e suporte para leitor de ecrã",
+  "applicationPreferences": "Preferências da Aplicação",
+  "notificationSettings": "Definições de Notificação",
+  "configureNotificationPreferences": "Configurar preferências de notificação",
+  "configureHowYouReceiveClaimUpdates": "Configurar como recebe atualizações de reclamações",
+  "language": "Idioma",
+  "changeApplicationLanguage": "Alterar idioma da aplicação",
+  "selectYourPreferredLanguage": "Selecione o seu idioma preferido",
+  "tipsAndReminders": "Dicas e Lembretes",
+  "importantTipsAboutProfileInformation": "Dicas importantes sobre as informações do seu perfil",
+  "noClaimsYetTitle": "Ainda Não Há Reclamações",
+  "noClaimsYetSubtitle": "Comece a sua reclamação de compensação selecionando um voo na secção Voos Elegíveis da UE",
+  "extractingText": "A extrair texto e a identificar campos",
+  "scanInstructions": "Posicione o seu documento dentro da moldura e tire uma foto",
+  "formFilledWithScannedData": "Formulário preenchido com dados do documento digitalizado",
+  "flightDetails": "Detalhes do Voo",
+  "phoneNumber": "Número de Telefone",
+  "required": "Obrigatório",
+  "submit": "Submeter",
+  "submissionChecklist": "Lista de Verificação da Submissão",
+  "documentAttached": "Documento Anexado",
+  "compensationClaimForm": "Formulário de Reclamação de Compensação",
+  "prefilledFromProfile": "Pré-preenchido a partir do seu perfil",
+  "flightSearch": "Pesquisa de Voos",
+  "searchFlightNumber": "Pesquisar por número de voo",
+  "delayedFlightDetected": "Voo Atrasado Detetado",
+  "flightDetected": "Voo Detetado",
+  "flightLabel": "Voo:",
+  "fromAirport": "De:",
+  "toAirport": "Para:",
+  "statusLabel": "Estado:",
+  "delayedEligible": "Atrasado e potencialmente elegível",
+  "startClaim": "Iniciar Reclamação",
+  "euWideEligibleFlights": "Voos elegíveis para compensação em toda a UE",
+  "requiredFieldsCompleted": "Todos os campos obrigatórios estão preenchidos.",
+  "scanningDocumentsNote": "A digitalização de documentos pode pré-preencher alguns campos.",
+  "tipCheckEligibility": "• Certifique-se de que o seu voo é elegível para compensação (ex: atraso >3h, cancelamento, recusa de embarque).",
   "tipDoubleCheckDetails": "• Verifique todos os detalhes antes de submeter para evitar atrasos.",
-  "@tipDoubleCheckDetails": {
-    "description": "Tip about double-checking details"
+  "tooltipFaqHelp": "Aceder às perguntas frequentes e secção de ajuda",
+  "formSubmissionError": "Erro ao submeter o formulário: {errorMessage}. Verifique a sua ligação e tente novamente.",
+  "@formSubmissionError": {
+    "description": "Mensagem de erro exibida quando o envio do formulário falha",
+    "placeholders": {
+      "errorMessage": {
+        "type": "String",
+        "example": "Timeout da rede"
+      }
+    }
   },
-  "tooltipFaqHelp": "FAQ e Ajuda",
-  "@tooltipFaqHelp": {
-    "description": "Tooltip for FAQ/Help icon button in AppBar"
+  "processingDocument": "Processando documento...",
+  "@processingDocument": {
+    "description": "Mensagem exibida durante o processamento OCR de um documento"
+  },
+  "fieldValue": "Valor do Campo",
+  "@fieldValue": {
+    "description": "Rótulo para um valor de campo genérico ao depurar ou exibir"
+  },
+  "errorConnectionFailed": "Falha na ligação. Por favor, verifique a sua rede.",
+  "@errorConnectionFailed": {
+    "description": "Mensagem de erro quando uma ligação de rede falha"
   }
 }

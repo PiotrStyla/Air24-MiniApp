@@ -61,17 +61,17 @@ class _MainNavigationState extends State<MainNavigation> {
     super.dispose();
   }
 
-  // Simplified screens list (minimal functionality)
-  static final List<Widget> _screens = [
-    HomeScreen(),
-    const ClaimDashboardScreen(),
-    const ProfileScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    // Define screens inside build to pass the correct context for localization
+    final List<Widget> screens = [
+      HomeScreen(),
+      const ClaimDashboardScreen(),
+      const ProfileScreen(),
+    ];
+
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {

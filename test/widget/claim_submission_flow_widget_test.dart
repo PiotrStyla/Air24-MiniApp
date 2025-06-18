@@ -10,6 +10,9 @@ import 'package:f35_flight_compensation/screens/auth_screen.dart';
 import 'package:f35_flight_compensation/screens/main_navigation.dart';
 import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
 import 'package:f35_flight_compensation/services/localization_service.dart';
+import 'package:f35_flight_compensation/services/manual_localization_service.dart';
+import 'package:f35_flight_compensation/services/notification_service.dart';
+import 'package:f35_flight_compensation/core/error/error_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // --- Mocks ---
@@ -59,6 +62,12 @@ class MockLocalizationService extends Mock implements LocalizationService {
   // Override the getter directly to avoid issues with mockito's 'when()'
   @override
   Locale get currentLocale => const Locale('en');
+
+  @override
+  Future<void> initialize() => Future.value();
+
+  @override
+  Future<void> changeLanguage(Locale locale) => Future.value();
 }
 
 class MockAccessibilityService extends Mock implements AccessibilityService {
@@ -95,11 +104,47 @@ class MockHttpClient extends Mock implements io.HttpClient {
 class MockHttpClientRequest extends Mock implements io.HttpClientRequest {}
 class MockHttpClientResponse extends Mock implements io.HttpClientResponse {}
 
+class MockNotificationService extends Mock implements NotificationService {
+  @override
+  Future<void> initialize() => Future.value();
+}
+
+class MockErrorHandler extends Mock implements ErrorHandler {
+  @override
+  Future<void> initialize() => Future.value();
+
+  @override
+  Future<void> handleError(dynamic error, {StackTrace? stackTrace, Map<String, dynamic>? context}) async {
+    // Do nothing in mock
+  }
+}
+
+class MockManualLocalizationService extends Mock implements ManualLocalizationService {
+  @override
+  Future<void> initialize() => Future.value();
+
+  @override
+  String getString(String key, {Map<String, String> placeholders = const {}}) {
+    return key; // Return the key as a default for testing
+  }
+
+  @override
+  Future<void> forceReload(Locale locale) => Future.value();
+
+  @override
+  Future<void> ensureLanguageLoaded(String languageCode) async {
+    // Do nothing in mock
+  }
+}
+
 
 void main() {
   late MockAuthService mockAuthService;
   late MockAccessibilityService mockAccessibilityService;
   late MockLocalizationService mockLocalizationService;
+  late MockNotificationService mockNotificationService;
+  late MockManualLocalizationService mockManualLocalizationService;
+  late MockErrorHandler mockErrorHandler;
   late User mockUser;
 
   setUp(() async {
@@ -108,6 +153,9 @@ void main() {
     mockAuthService = MockAuthService(); // Starts logged out
     mockAccessibilityService = MockAccessibilityService();
     mockLocalizationService = MockLocalizationService();
+    mockNotificationService = MockNotificationService();
+    mockManualLocalizationService = MockManualLocalizationService();
+    mockErrorHandler = MockErrorHandler();
 
     // Set up default behaviors for mocks
         // The currentLocale getter is now overridden directly in the MockLocalizationService class.
@@ -129,6 +177,9 @@ void main() {
       AuthService: mockAuthService,
       AccessibilityService: mockAccessibilityService,
       LocalizationService: mockLocalizationService,
+      NotificationService: mockNotificationService,
+      ManualLocalizationService: mockManualLocalizationService,
+      ErrorHandler: mockErrorHandler,
     });
   });
 

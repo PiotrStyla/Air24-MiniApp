@@ -17,9 +17,10 @@ class DocumentViewModel extends ChangeNotifier {
   String _description = '';
   String _flightNumber = '';
   DateTime _flightDate = DateTime.now();
+  Stream<List<FlightDocument>> _documentsStream = Stream.value([]);
   
   // Getters
-  List<FlightDocument> get documents => _documents;
+  Stream<List<FlightDocument>> get documentsStream => _documentsStream;
   File? get selectedFile => _selectedFile;
   bool get isUploading => _isUploading;
   String? get errorMessage => _errorMessage;
@@ -222,6 +223,7 @@ class DocumentViewModel extends ChangeNotifier {
     
     try {
       _documents = await _documentService.getFlightDocuments(flightNumber);
+      _documentsStream = Stream.value(_documents);
       _isUploading = false;
       notifyListeners();
     } catch (e) {
@@ -238,6 +240,7 @@ class DocumentViewModel extends ChangeNotifier {
     
     try {
       _documents = await _documentService.getAllUserDocuments();
+      _documentsStream = Stream.value(_documents);
       _isUploading = false;
       notifyListeners();
     } catch (e) {
