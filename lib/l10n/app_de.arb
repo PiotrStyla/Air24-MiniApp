@@ -686,6 +686,79 @@
   "@delayedEligible": {
     "description": "Nachricht über Entschädigungsberechtigung für verspätete Flüge"
   },
+  "newClaim": "Neuer Anspruch",
+  "@newClaim": {
+    "description": "German translation for newClaim"
+  },
+  "euWideEligibleFlights": "EU-weit entschädigungsberechtigte Flüge",
+  "@euWideEligibleFlights": {
+    "description": "German translation for euWideEligibleFlights"
+  },
+  "welcomeUser": "Willkommen, {username}",
+  "@welcomeUser": {
+    "description": "German translation for welcomeUser, with username placeholder",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "signOut": "Abmelden",
+  "@signOut": {
+    "description": "German translation for signOut"
+  },
+  "editPersonalInfoDescription": "Persönliche Daten und Kontakt bearbeiten",
+  "@editPersonalInfoDescription": {
+    "description": "German translation for editPersonalInfoDescription"
+  },
+  "accessibilitySettings": "Barrierefreiheits-Einstellungen",
+  "@accessibilitySettings": {
+    "description": "German translation for accessibilitySettings"
+  },
+  "configureAccessibilityDescription": "Hohen Kontrast, vergrößerte Texte und Bildschirmleser einstellen",
+  "@configureAccessibilityDescription": {
+    "description": "German translation for configureAccessibilityDescription"
+  },
+  "configureNotificationsDescription": "Art der Benachrichtigungen über Antragsstatus einstellen",
+  "@configureNotificationsDescription": {
+    "description": "German translation for configureNotificationsDescription"
+  },
+  "selectLanguage": "Sprache auswählen",
+  "@selectLanguage": {
+    "description": "German translation for selectLanguage"
+  },
+  "claimsDashboard": "Antrags-Dashboard",
+  "@claimsDashboard": {
+    "description": "German translation for claimsDashboard"
+  },
+  "active": "Aktiv",
+  "@active": {
+    "description": "German translation for active"
+  },
+  "actionRequired": "Aktion erforderlich",
+  "@actionRequired": {
+    "description": "German translation for actionRequired"
+  },
+  "completed": "Abgeschlossen",
+  "@completed": {
+    "description": "German translation for completed"
+  },
+  "noClaimsYet": "Noch keine Ansprüche",
+  "@noClaimsYet": {
+    "description": "German translation for noClaimsYet"
+  },
+  "startClaimFromEuFlights": "Füllen Sie einen Entschädigungsantrag aus, indem Sie einen Flug aus der Liste der potenziell entschädigungsberechtigten Flüge auswählen",
+  "@startClaimFromEuFlights": {
+    "description": "German translation for startClaimFromEuFlights"
+  },
+  "createClaim": "Anspruch erstellen",
+  "@createClaim": {
+    "description": "German translation for createClaim"
+  },
+  "startCompensationClaimInstructions": "Füllen Sie einen Entschädigungsantrag aus, indem Sie einen Flug aus der Liste der potenziell entschädigungsberechtigten Flüge auswählen",
+  "@startCompensationClaimInstructions": {
+    "description": "German translation for startCompensationClaimInstructions"
+  },
 
   "dismiss": "Verwerfen",
   "@dismiss": {
