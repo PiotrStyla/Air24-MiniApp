@@ -47,6 +47,20 @@
   },
   
   "languageSelection": "Language",
+  "noClaimsYet": "No Claims Yet",
+  "startCompensationClaimInstructions": "Start your compensation claim by selecting a flight from the EU Eligible Flights section",
+  "active": "Active",
+  "actionRequired": "Action Required",
+  "completed": "Completed",
+  "profileInfoCardTitle": "Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.",
+  "accountSettings": "Account Settings",
+  "accessibilityOptions": "Accessibility Options",
+  "configureAccessibilityDescription": "Configure high contrast, large text, and screen reader support",
+  "configureNotificationsDescription": "Configure how you receive claim updates",
+  "tipProfileUpToDate": "Keep your profile up to date for smooth claim processing.",
+  "tipInformationPrivate": "Your information is private and only used for compensation claims.",
+  "tipContactDetails": "Make sure your contact details are correct so we can reach you about your claim.",
+  "tipAccessibilitySettings": "Check the Accessibility Settings to customize the app for your needs.",
   "@languageSelection": {
     "description": "Language selection option in settings"
   },
@@ -810,5 +824,169 @@
   "euCompensationEligible": "EU Compensation Eligible",
   "@euCompensationEligible": {
     "description": "Text indicating flight is eligible for EU compensation"
+  },
+  "quickClaimTitle": "Quick Claim",
+  "@quickClaimTitle": {
+    "description": "Title for the Quick Claim screen"
+  },
+  "quickClaimInfoBanner": "Review and edit your flight claim details below. All required fields must be filled. Tap the info icons for help.",
+  "@quickClaimInfoBanner": {
+    "description": "Informational banner on the Quick Claim screen"
+  },
+  "flightNumberHintQuickClaim": "Usually a 2-letter airline code and digits, e.g. LH1234",
+  "@flightNumberHintQuickClaim": {
+    "description": "Hint text for flight number input on Quick Claim screen"
+  },
+  "departureAirportHintQuickClaim": "e.g. FRA for Frankfurt, LHR for London Heathrow",
+  "@departureAirportHintQuickClaim": {
+    "description": "Hint text for departure airport input on Quick Claim screen"
+  },
+  "arrivalAirportHintQuickClaim": "e.g. JFK for New York, CDG for Paris",
+  "@arrivalAirportHintQuickClaim": {
+    "description": "Hint text for arrival airport input on Quick Claim screen"
+  },
+  "reasonForClaimLabel": "Reason *",
+  "@reasonForClaimLabel": {
+    "description": "Label for the reason for claim field on Quick Claim screen"
+  },
+  "reasonForClaimHint": "State why you are claiming: delay, cancellation, denied boarding, etc.",
+  "@reasonForClaimHint": {
+    "description": "Hint text for reason for claim input on Quick Claim screen"
+  },
+  "compensationAmountOptionalLabel": "Compensation Amount (optional)",
+  "@compensationAmountOptionalLabel": {
+    "description": "Label for the optional compensation amount field on Quick Claim screen"
+  },
+  "compensationAmountHint": "If you know the amount you are eligible for, enter it here",
+  "@compensationAmountHint": {
+    "description": "Hint text for compensation amount input on Quick Claim screen"
+  },
+  "euWideCompensationTitle": "EU-wide Compensation",
+  "@euWideCompensationTitle": {
+    "description": "Title for the EU-wide compensation eligible flights screen"
+  },
+  "last144HoursButton": "Last 144 hours",
+  "@last144HoursButton": {
+    "description": "Button to filter flights from the last 144 hours"
+  },
+  "scheduledLabel": "Scheduled:",
+  "@scheduledLabel": {
+    "description": "Label for scheduled time in flight lists"
+  },
+  "statusLabelEuList": "Status:",
+  "@statusLabelEuList": {
+    "description": "Label for flight status in EU-wide flight list"
+  },
+  "potentialCompensationLabel": "Potential Compensation:",
+  "@potentialCompensationLabel": {
+    "description": "Label for potential compensation amount in flight lists"
+  },
+  "prefillCompensationFormButton": "Pre-fill Compensation Form",
+  "@prefillCompensationFormButton": {
+    "description": "Button to pre-fill compensation form from flight details"
+  },
+  "claimsTabActive": "Active",
+  "@claimsTabActive": {
+    "description": "Label for the 'Active' tab in claims dashboard"
+  },
+  "claimsTabActionRequired": "Action Required",
+  "@claimsTabActionRequired": {
+    "description": "Label for the 'Action Required' tab in claims dashboard"
+  },
+  "claimsTabCompleted": "Completed",
+  "@claimsTabCompleted": {
+    "description": "Label for the 'Completed' tab in claims dashboard"
+  },
+  "createClaim": "Create a Claim",
+  "@createClaim": {
+    "description": "Button text to create a new claim from the dashboard"
+  },
+  "dialogTitleSuccess": "Success",
+  "@dialogTitleSuccess": {
+    "description": "Dialog title for successful operations"
+  },
+  "dialogContentClaimSubmitted": "Your claim has been submitted!",
+  "@dialogContentClaimSubmitted": {
+    "description": "Dialog content for successful claim submission"
+  },
+  "dialogButtonOK": "OK",
+  "@dialogButtonOK": {
+    "description": "Label for OK button in dialogs"
+  },
+  "errorMustBeLoggedIn": "You must be logged in to submit a claim.",
+  "@errorMustBeLoggedIn": {
+    "description": "Error message when user is not logged in during claim submission"
+  },
+  "errorFailedToSubmitClaim": "Failed to submit claim. Please try again.",
+  "@errorFailedToSubmitClaim": {
+    "description": "Error message when claim submission fails"
+  },
+  "dialogTitleError": "Error",
+  "@dialogTitleError": {
+    "description": "Dialog title for error messages"
+  },
+  "validatorFlightNumberRequired": "Flight number is required",
+  "@validatorFlightNumberRequired": {
+    "description": "Validation error message for flight number field"
+  },
+  "tooltipFlightNumberQuickClaim": "Enter your flight number as shown on your ticket or boarding pass.",
+  "@tooltipFlightNumberQuickClaim": {
+    "description": "Tooltip for flight number input on Quick Claim screen"
+  },
+  "tooltipFlightDateQuickClaim": "The date your flight departed or was scheduled to depart.",
+  "@tooltipFlightDateQuickClaim": {
+    "description": "Tooltip for flight date display on Quick Claim screen"
+  },
+  "validatorDepartureAirportRequired": "Departure airport is required",
+  "@validatorDepartureAirportRequired": {
+    "description": "Validation error message for departure airport field"
+  },
+  "tooltipDepartureAirportQuickClaim": "Enter the IATA code of the airport where your flight started.",
+  "@tooltipDepartureAirportQuickClaim": {
+    "description": "Tooltip for departure airport input on Quick Claim screen"
+  },
+  "validatorArrivalAirportRequired": "Arrival airport is required",
+  "@validatorArrivalAirportRequired": {
+    "description": "Validation error message for arrival airport field"
+  },
+  "tooltipArrivalAirportQuickClaim": "Enter the IATA code of the airport where your flight landed.",
+  "@tooltipArrivalAirportQuickClaim": {
+    "description": "Tooltip for arrival airport input on Quick Claim screen"
+  },
+  "hintTextReasonQuickClaim": "Reason (delay, cancellation, etc.)",
+  "@hintTextReasonQuickClaim": {
+    "description": "Hint text (placeholder) for reason input on Quick Claim screen"
+  },
+  "validatorReasonRequired": "Reason is required",
+  "@validatorReasonRequired": {
+    "description": "Validation error message for reason field"
+  },
+  "tooltipReasonQuickClaim": "Describe the issue: e.g. delayed more than 3 hours, cancelled, overbooked.",
+  "@tooltipReasonQuickClaim": {
+    "description": "Tooltip for reason input on Quick Claim screen"
+  },
+  "tooltipCompensationAmountQuickClaim": "Leave blank if unsure. Typical EU compensation: €250-€600 depending on distance.",
+  "@tooltipCompensationAmountQuickClaim": {
+    "description": "Tooltip for compensation amount input on Quick Claim screen"
+  },
+  "tipsAndRemindersTitle": "Tips & Reminders",
+  "@tipsAndRemindersTitle": {
+    "description": "Title for the Tips & Reminders section on Quick Claim screen"
+  },
+  "tipSecureData": "• Your data is securely processed and only used for compensation claims.",
+  "@tipSecureData": {
+    "description": "Tip about secure data processing"
+  },
+  "tipCheckEligibility": "• Make sure your flight is eligible for compensation (e.g., delay >3h, cancellation, denied boarding).",
+  "@tipCheckEligibility": {
+    "description": "Tip about checking flight eligibility"
+  },
+  "tipDoubleCheckDetails": "• Double-check all details before submitting to avoid delays.",
+  "@tipDoubleCheckDetails": {
+    "description": "Tip about double-checking details"
+  },
+  "tooltipFaqHelp": "FAQ & Help",
+  "@tooltipFaqHelp": {
+    "description": "Tooltip for FAQ/Help icon button in AppBar"
   }
 }

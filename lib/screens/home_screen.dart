@@ -288,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           const SizedBox(height: 16),
                           Text(
-                            TranslationHelper.getString(context, 'welcomeUser', fallback: 'Welcome, {username}').replaceAll('{username}', user.displayName ?? user.email ?? TranslationHelper.getString(context, 'genericUser', fallback: 'User')),
+                            TranslationHelper.getString(context, 'welcomeUser', fallback: 'Welcome, {userName}!').replaceAll('{userName}', user.displayName ?? user.email ?? TranslationHelper.getString(context, 'genericUser', fallback: 'User')),
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

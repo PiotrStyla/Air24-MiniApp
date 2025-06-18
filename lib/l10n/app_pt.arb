@@ -47,6 +47,20 @@
   },
   
   "languageSelection": "Idioma",
+  "noClaimsYet": "Ainda Não Há Reclamações",
+  "startCompensationClaimInstructions": "Inicie a sua reclamação de compensação selecionando um voo na secção Voos Elegíveis da UE",
+  "active": "Ativas",
+  "actionRequired": "Ação Requerida",
+  "completed": "Concluídas",
+  "profileInfoCardTitle": "O seu perfil contém as suas informações pessoais e de contacto. Esta informação é usada para processar as suas reclamações de compensação de voo e mantê-lo atualizado.",
+  "accountSettings": "Configurações da Conta",
+  "accessibilityOptions": "Opções de Acessibilidade",
+  "configureAccessibilityDescription": "Configure o alto contraste, texto grande e suporte para leitor de ecrã",
+  "configureNotificationsDescription": "Configure como recebe as atualizações das reclamações",
+  "tipProfileUpToDate": "Mantenha o seu perfil atualizado para um processamento tranquilo das reclamações.",
+  "tipInformationPrivate": "A sua informação é privada e usada apenas para reclamações de compensação.",
+  "tipContactDetails": "Certifique-se de que os seus detalhes de contacto estão corretos para que possamos contactá-lo sobre a sua reclamação.",
+  "tipAccessibilitySettings": "Verifique as Configurações de Acessibilidade para personalizar a aplicação às suas necessidades.",
   "@languageSelection": {
     "description": "Language selection option in settings"
   },
@@ -867,5 +881,209 @@
   "allowNotifications": "Permitir Notificações",
   "@allowNotifications": {
     "description": "Toggle switch label to allow or disallow notifications"
+  },
+  "quickClaimTitle": "Reclamação Rápida",
+  "@quickClaimTitle": {
+    "description": "Title for the Quick Claim screen"
+  },
+  "quickClaimInfoBanner": "Revise e edite os detalhes da sua reclamação de voo abaixo. Todos os campos obrigatórios devem ser preenchidos. Toque nos ícones de informação para obter ajuda.",
+  "@quickClaimInfoBanner": {
+    "description": "Informational banner on the Quick Claim screen"
+  },
+  "flightNumberHintQuickClaim": "Normalmente um código de companhia aérea de 2 letras e dígitos, ex: LH1234",
+  "@flightNumberHintQuickClaim": {
+    "description": "Hint text for flight number input on Quick Claim screen"
+  },
+  "departureAirportHintQuickClaim": "ex: FRA para Frankfurt, LHR para Londres Heathrow",
+  "@departureAirportHintQuickClaim": {
+    "description": "Hint text for departure airport input on Quick Claim screen"
+  },
+  "arrivalAirportHintQuickClaim": "ex: JFK para Nova Iorque, CDG para Paris",
+  "@arrivalAirportHintQuickClaim": {
+    "description": "Hint text for arrival airport input on Quick Claim screen"
+  },
+  "reasonForClaimLabel": "Motivo *",
+  "@reasonForClaimLabel": {
+    "description": "Label for the reason for claim field on Quick Claim screen"
+  },
+  "reasonForClaimHint": "Indique o motivo da sua reclamação: atraso, cancelamento, embarque negado, etc.",
+  "@reasonForClaimHint": {
+    "description": "Hint text for reason for claim input on Quick Claim screen"
+  },
+  "compensationAmountOptionalLabel": "Valor da Compensação (opcional)",
+  "@compensationAmountOptionalLabel": {
+    "description": "Label for the optional compensation amount field on Quick Claim screen"
+  },
+  "compensationAmountHint": "Se souber o valor a que tem direito, insira-o aqui",
+  "@compensationAmountHint": {
+    "description": "Hint text for compensation amount input on Quick Claim screen"
+  },
+  "euWideCompensationTitle": "Compensação em Toda a UE",
+  "@euWideCompensationTitle": {
+    "description": "Title for the EU-wide compensation eligible flights screen"
+  },
+  "last144HoursButton": "Últimas 144 horas",
+  "@last144HoursButton": {
+    "description": "Button to filter flights from the last 144 hours"
+  },
+  "scheduledLabel": "Programado:",
+  "@scheduledLabel": {
+    "description": "Label for scheduled time in flight lists"
+  },
+  "statusLabelEuList": "Estado:",
+  "@statusLabelEuList": {
+    "description": "Label for flight status in EU-wide flight list"
+  },
+  "potentialCompensationLabel": "Compensação Potencial:",
+  "@potentialCompensationLabel": {
+    "description": "Label for potential compensation amount in flight lists"
+  },
+  "prefillCompensationFormButton": "Pré-preencher Formulário de Compensação",
+  "@prefillCompensationFormButton": {
+    "description": "Button to pre-fill compensation form from flight details"
+  },
+  "claimsTabActive": "Ativas",
+  "@claimsTabActive": {
+    "description": "Label for the 'Active' tab in claims dashboard"
+  },
+  "claimsTabActionRequired": "Ação Necessária",
+  "@claimsTabActionRequired": {
+    "description": "Label for the 'Action Required' tab in claims dashboard"
+  },
+  "claimsTabCompleted": "Concluídas",
+  "@claimsTabCompleted": {
+    "description": "Label for the 'Completed' tab in claims dashboard"
+  },
+  "createClaim": "Criar Reclamação",
+  "@createClaim": {
+    "description": "Button text to create a new claim from the dashboard"
+  },
+  "checkCompensationEligibility": "Verificar Elegibilidade para Compensação",
+  "@checkCompensationEligibility": {
+    "description": "Check compensation eligibility button"
+  },
+  "flightDate": "Data do Voo",
+  "@flightDate": {
+    "description": "Flight date label"
+  },
+  "optional": "Opcional",
+  "@optional": {
+    "description": "Optional field indicator"
+  },
+  "additionalInformation": "Informação Adicional",
+  "@additionalInformation": {
+    "description": "Additional information field label"
+  },
+  "supportingDocuments": "Documentos de Suporte",
+  "@supportingDocuments": {
+    "description": "Title for supporting documents section"
+  },
+  "supportingDocumentsHint": "Anexe cartões de embarque, bilhetes e outros documentos para fortalecer a sua reclamação.",
+  "@supportingDocumentsHint": {
+    "description": "Helper text for supporting documents section"
+  },
+  "submissionChecklist": "Lista de Verificação da Submissão",
+  "@submissionChecklist": {
+    "description": "Section header for submission checklist"
+  },
+  "flightDetails": "Detalhes do Voo",
+  "@flightDetails": {
+    "description": "Section header for flight details"
+  },
+  "passengerDetails": "Detalhes do Passageiro",
+  "@passengerDetails": {
+    "description": "Section header for passenger details"
+  },
+  "bookingReference": "Referência da Reserva",
+  "@bookingReference": {
+    "description": "Booking reference field label"
+  },
+  "dialogTitleSuccess": "Sucesso",
+  "@dialogTitleSuccess": {
+    "description": "Dialog title for successful operations"
+  },
+  "dialogContentClaimSubmitted": "A sua reclamação foi submetida!",
+  "@dialogContentClaimSubmitted": {
+    "description": "Dialog content for successful claim submission"
+  },
+  "dialogButtonOK": "OK",
+  "@dialogButtonOK": {
+    "description": "Label for OK button in dialogs"
+  },
+  "errorMustBeLoggedIn": "Deve estar autenticado para submeter uma reclamação.",
+  "@errorMustBeLoggedIn": {
+    "description": "Error message when user is not logged in during claim submission"
+  },
+  "errorFailedToSubmitClaim": "Falha ao submeter a reclamação. Por favor, tente novamente.",
+  "@errorFailedToSubmitClaim": {
+    "description": "Error message when claim submission fails"
+  },
+  "dialogTitleError": "Erro",
+  "@dialogTitleError": {
+    "description": "Dialog title for error messages"
+  },
+  "validatorFlightNumberRequired": "O número do voo é obrigatório",
+  "@validatorFlightNumberRequired": {
+    "description": "Validation error message for flight number field"
+  },
+  "tooltipFlightNumberQuickClaim": "Insira o número do seu voo como mostrado no seu bilhete ou cartão de embarque.",
+  "@tooltipFlightNumberQuickClaim": {
+    "description": "Tooltip for flight number input on Quick Claim screen"
+  },
+  "tooltipFlightDateQuickClaim": "A data em que o seu voo partiu ou estava programado para partir.",
+  "@tooltipFlightDateQuickClaim": {
+    "description": "Tooltip for flight date display on Quick Claim screen"
+  },
+  "validatorDepartureAirportRequired": "O aeroporto de partida é obrigatório",
+  "@validatorDepartureAirportRequired": {
+    "description": "Validation error message for departure airport field"
+  },
+  "tooltipDepartureAirportQuickClaim": "Insira o código IATA do aeroporto onde o seu voo começou.",
+  "@tooltipDepartureAirportQuickClaim": {
+    "description": "Tooltip for departure airport input on Quick Claim screen"
+  },
+  "validatorArrivalAirportRequired": "O aeroporto de chegada é obrigatório",
+  "@validatorArrivalAirportRequired": {
+    "description": "Validation error message for arrival airport field"
+  },
+  "tooltipArrivalAirportQuickClaim": "Insira o código IATA do aeroporto onde o seu voo aterrou.",
+  "@tooltipArrivalAirportQuickClaim": {
+    "description": "Tooltip for arrival airport input on Quick Claim screen"
+  },
+  "hintTextReasonQuickClaim": "Motivo (atraso, cancelamento, etc.)",
+  "@hintTextReasonQuickClaim": {
+    "description": "Hint text (placeholder) for reason input on Quick Claim screen"
+  },
+  "validatorReasonRequired": "O motivo é obrigatório",
+  "@validatorReasonRequired": {
+    "description": "Validation error message for reason field"
+  },
+  "tooltipReasonQuickClaim": "Descreva o problema: ex. atraso superior a 3 horas, cancelado, overbooking.",
+  "@tooltipReasonQuickClaim": {
+    "description": "Tooltip for reason input on Quick Claim screen"
+  },
+  "tooltipCompensationAmountQuickClaim": "Deixe em branco se não tiver a certeza. Compensação típica da UE: €250-€600 dependendo da distância.",
+  "@tooltipCompensationAmountQuickClaim": {
+    "description": "Tooltip for compensation amount input on Quick Claim screen"
+  },
+  "tipsAndRemindersTitle": "Dicas e Lembretes",
+  "@tipsAndRemindersTitle": {
+    "description": "Title for the Tips & Reminders section on Quick Claim screen"
+  },
+  "tipSecureData": "• Os seus dados são processados de forma segura e usados apenas para reclamações de compensação.",
+  "@tipSecureData": {
+    "description": "Tip about secure data processing"
+  },
+  "tipCheckEligibility": "• Certifique-se de que o seu voo é elegível para compensação (ex: atraso >3h, cancelamento, embarque negado).",
+  "@tipCheckEligibility": {
+    "description": "Tip about checking flight eligibility"
+  },
+  "tipDoubleCheckDetails": "• Verifique todos os detalhes antes de submeter para evitar atrasos.",
+  "@tipDoubleCheckDetails": {
+    "description": "Tip about double-checking details"
+  },
+  "tooltipFaqHelp": "FAQ e Ajuda",
+  "@tooltipFaqHelp": {
+    "description": "Tooltip for FAQ/Help icon button in AppBar"
   }
 }
