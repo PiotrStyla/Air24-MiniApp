@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../models/claim.dart';
-import 'opensky_api_service.dart';
+import 'aviation_stack_api_service.dart';
 import 'package:flutter/material.dart';
 
 class ClaimValidationResult {
@@ -17,12 +17,16 @@ class ClaimValidationResult {
 }
 
 class ClaimValidationService {
+  static bool isTestMode = false;
   // Deadline for EU261 claims in days (varies by country, using 2 years as default)
   static const int EU261_CLAIM_DEADLINE_DAYS = 730; // 2 years
   static List<String>? _iataCodes;
 
   /// Loads IATA codes from the local JSON file (singleton)
   static Future<List<String>> _loadIataCodes() async {
+    if (isTestMode) {
+      return Future.value(['LHR', 'JFK', 'CDG', 'AMS']);
+    }
     if (_iataCodes != null) return _iataCodes!;
     final String jsonString = await rootBundle.loadString('lib/data/iata_codes.json');
     final List<dynamic> jsonList = json.decode(jsonString);
@@ -126,31 +130,11 @@ class ClaimValidationService {
   }
 
   /// Validates claim for IATA, date, and duplicate
-  /// Optionally verifies flight existence using OpenSky API. ICAO codes required.
-  static Future<bool> verifyFlightWithOpenSky({
-    required String flightNumber,
-    required String departureIcao,
-    required DateTime flightDate,
-    String? username,
-    String? password,
-  }) async {
-    return await OpenSkyApiService.verifyFlight(
-      flightNumber: flightNumber,
-      departureIcao: departureIcao,
-      flightDate: flightDate,
-      username: username,
-      password: password,
-    );
-  }
-
-  /// Validates claim for IATA, date, duplicate, and optionally flight existence
+  /// Validates claim for IATA, date, and duplicate.
   static Future<ClaimValidationResult> validateClaim(
     Claim claim,
-    List<Claim> userClaims, {
-    bool verifyWithOpenSky = false,
-    String? openSkyUsername,
-    String? openSkyPassword,
-  }) async {
+    List<Claim> userClaims
+  ) async {
     List<String> errors = [];
     if (!await isValidIata(claim.departureAirport)) {
       errors.add('Invalid departure airport IATA code.');
@@ -163,18 +147,6 @@ class ClaimValidationService {
     }
     if (await isDuplicateClaim(claim, userClaims)) {
       errors.add('Duplicate claim for this flight already exists.');
-    }
-    if (verifyWithOpenSky && errors.isEmpty) {
-      final found = await verifyFlightWithOpenSky(
-        flightNumber: claim.flightNumber,
-        departureIcao: claim.departureAirport,
-        flightDate: claim.flightDate,
-        username: openSkyUsername,
-        password: openSkyPassword,
-      );
-      if (!found) {
-        errors.add('Flight not found in OpenSky for the selected date and airport.');
-      }
     }
     return ClaimValidationResult(isValid: errors.isEmpty, errors: errors);
   }

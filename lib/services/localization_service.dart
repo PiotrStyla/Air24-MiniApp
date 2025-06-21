@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Service that manages language preferences and localization settings.
-class LocalizationService extends ChangeNotifier {
+/// Abstract class defining the contract for localization services.
+abstract class LocalizationService extends ChangeNotifier {
   /// Storage key for the selected language code
   static const String LANGUAGE_CODE = 'languageCode';
   
@@ -30,23 +30,46 @@ class LocalizationService extends ChangeNotifier {
     'pl': 'Polski',
   };
   
+  /// Get the current locale
+  Locale get currentLocale;
+  
+  /// Get display language name based on language code
+  String getDisplayLanguage(String languageCode);
+
+  /// Set the current locale and persist the choice.
+  Future<void> setLocale(Locale locale);
+
+  /// Get a localized string for the given key.
+  String getString(String key, {String fallback = ''});
+
+  /// Initialize the service.
+  Future<void> init();
+
+  /// Check if the service is ready.
+  bool get isReady;
+}
+
+/// Service that manages language preferences and localization settings.
+class DefaultLocalizationService extends LocalizationService {
   /// Current locale
   Locale _currentLocale = const Locale('en', 'US');
   
   /// Get the current locale
+  @override
   Locale get currentLocale => _currentLocale;
   
   /// Get display language name based on language code
+  @override
   String getDisplayLanguage(String languageCode) {
-    return languageNames[languageCode] ?? languageCode;
+    return LocalizationService.languageNames[languageCode] ?? languageCode;
   }
   
   /// Private constructor
-  LocalizationService._();
+  DefaultLocalizationService._();
   
   /// Factory constructor to create a new instance
-  static Future<LocalizationService> create() async {
-    final instance = LocalizationService._();
+  static Future<DefaultLocalizationService> create() async {
+    final instance = DefaultLocalizationService._();
     await instance._init();
     return instance;
   }
@@ -54,11 +77,11 @@ class LocalizationService extends ChangeNotifier {
   /// Initialize the service by loading stored preferences
   Future<void> _init() async {
     final prefs = await SharedPreferences.getInstance();
-    final storedLangCode = prefs.getString(LANGUAGE_CODE);
-    final storedCountryCode = prefs.getString(COUNTRY_CODE);
+    final storedLangCode = prefs.getString(LocalizationService.LANGUAGE_CODE);
+    final storedCountryCode = prefs.getString(LocalizationService.COUNTRY_CODE);
     
     if (storedLangCode != null) {
-      for (var locale in supportedLocales) {
+      for (var locale in LocalizationService.supportedLocales) {
         if (locale.languageCode == storedLangCode && 
             (storedCountryCode == null || locale.countryCode == storedCountryCode)) {
           _currentLocale = locale;
@@ -70,7 +93,7 @@ class LocalizationService extends ChangeNotifier {
       final platformLocale = WidgetsBinding.instance.platformDispatcher.locale;
       
       // Check if the platform locale is supported
-      for (var locale in supportedLocales) {
+      for (var locale in LocalizationService.supportedLocales) {
         if (locale.languageCode == platformLocale.languageCode) {
           _currentLocale = locale;
           break;
@@ -79,8 +102,9 @@ class LocalizationService extends ChangeNotifier {
     }
   }
   
-  /// Change the current language
-  Future<void> changeLanguage(Locale locale) async {
+  /// Set the current locale and persist the choice.
+  @override
+  Future<void> setLocale(Locale locale) async {
     if (!isSupported(locale)) return;
     
     // Only proceed if the locale is actually different
@@ -93,11 +117,11 @@ class LocalizationService extends ChangeNotifier {
     
     // Save to preferences
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(LANGUAGE_CODE, locale.languageCode);
+    await prefs.setString(LocalizationService.LANGUAGE_CODE, locale.languageCode);
     if (locale.countryCode != null) {
-      await prefs.setString(COUNTRY_CODE, locale.countryCode!);
+      await prefs.setString(LocalizationService.COUNTRY_CODE, locale.countryCode!);
     } else {
-      await prefs.remove(COUNTRY_CODE);
+      await prefs.remove(LocalizationService.COUNTRY_CODE);
     }
     
     // Notify listeners that the locale has changed
@@ -108,9 +132,26 @@ class LocalizationService extends ChangeNotifier {
     print('Language changed to: ${locale.languageCode}_${locale.countryCode}');
   }
   
+  /// Get a localized string for the given key.
+  @override
+  String getString(String key, {String fallback = ''}) {
+    // TODO: implement localized string retrieval
+    return fallback;
+  }
+  
+  /// Initialize the service.
+  @override
+  Future<void> init() async {
+    await _init();
+  }
+  
+  /// Check if the service is ready.
+  @override
+  bool get isReady => true;
+  
   /// Check if a locale is supported
   bool isSupported(Locale locale) {
-    for (var supportedLocale in supportedLocales) {
+    for (var supportedLocale in LocalizationService.supportedLocales) {
       if (supportedLocale.languageCode == locale.languageCode) {
         return true;
       }

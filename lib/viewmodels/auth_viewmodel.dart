@@ -127,13 +127,15 @@ class AuthViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return true;
-    } on AuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
       _isLoading = false;
       notifyListeners();
       return false;
-    } catch (e) {
+    } catch (e, stackTrace) {
       _errorMessage = 'An unexpected error occurred. Please try again.';
+      // Log the error for debugging
+      print('Sign-in error: $e\n$stackTrace');
       _isLoading = false;
       notifyListeners();
       return false;
@@ -152,13 +154,15 @@ class AuthViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return true;
-    } on AuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
       _isLoading = false;
       notifyListeners();
       return false;
-    } catch (e) {
+    } catch (e, stackTrace) {
       _errorMessage = 'An unexpected error occurred. Please try again.';
+      // Log the error for debugging
+      print('Sign-up error: $e\n$stackTrace');
       _isLoading = false;
       notifyListeners();
       return false;
@@ -175,13 +179,15 @@ class AuthViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return result != null;
-    } on AuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
       _isLoading = false;
       notifyListeners();
       return false;
-    } catch (e) {
+    } catch (e, stackTrace) {
       _errorMessage = 'Google sign-in failed. Please try again.';
+      // Log the error for debugging
+      print('Google sign-in error: $e\n$stackTrace');
       _isLoading = false;
       notifyListeners();
       return false;

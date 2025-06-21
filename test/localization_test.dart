@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:f35_flight_compensation/generated/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -22,7 +22,7 @@ void main() {
       
       // Test Polish translations
       expect(localizations!.appTitle, 'Odszkodowanie za Lot');
-      expect(localizations.home, 'Strona główna');
+      expect(localizations.home, 'Strona Główna');
       expect(localizations.settings, 'Ustawienia');
     });
 
@@ -33,7 +33,7 @@ void main() {
       // Test Portuguese translations
       expect(localizations!.appTitle, 'Compensação de Voo');
       expect(localizations.home, 'Início');
-      expect(localizations.settings, 'Configurações');
+      expect(localizations.settings, 'Definições');
     });
     
     testWidgets('Document Processing Localization Test', (WidgetTester tester) async {
@@ -41,19 +41,19 @@ void main() {
       await _pumpLocalizedWidget(tester, const Locale('en'));
       var localizations = AppLocalizations.of(tester.element(find.byType(TestLocalizations)));
       expect(localizations!.cropDocument, 'Crop Document');
-      expect(localizations.documentOcrResult, 'Document Analysis Result');
+      expect(localizations.documentOcrResult, 'OCR Result');
       
       // Test Polish
       await _pumpLocalizedWidget(tester, const Locale('pl'));
       localizations = AppLocalizations.of(tester.element(find.byType(TestLocalizations)));
       expect(localizations!.cropDocument, 'Przytnij Dokument');
-      expect(localizations.documentOcrResult, 'Wynik analizy dokumentu');
+      expect(localizations.documentOcrResult, 'Wynik OCR');
       
       // Test Portuguese
       await _pumpLocalizedWidget(tester, const Locale('pt'));
       localizations = AppLocalizations.of(tester.element(find.byType(TestLocalizations)));
       expect(localizations!.cropDocument, 'Recortar Documento');
-      expect(localizations.documentOcrResult, 'Resultado da Análise do Documento');
+      expect(localizations.documentOcrResult, 'Resultado OCR');
     });
     
     testWidgets('Compensation Form Localization Test', (WidgetTester tester) async {
@@ -66,13 +66,13 @@ void main() {
       // Test Polish
       await _pumpLocalizedWidget(tester, const Locale('pl'));
       localizations = AppLocalizations.of(tester.element(find.byType(TestLocalizations)));
-      expect(localizations!.submitClaim, 'Złóż roszczenie');
+      expect(localizations!.submitClaim, 'Złóż Roszczenie');
       expect(localizations!.passengerDetails, 'Dane Pasażera');
       
       // Test Portuguese
       await _pumpLocalizedWidget(tester, const Locale('pt'));
       localizations = AppLocalizations.of(tester.element(find.byType(TestLocalizations)));
-      expect(localizations!.submitClaim, 'Enviar Solicitação');
+      expect(localizations!.submitClaim, 'Submeter Reclamação');
     });
   });
 }

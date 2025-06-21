@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'faq_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 import 'package:uuid/uuid.dart';
 import '../models/claim.dart';
-import '../services/firestore_service.dart';
+import '../services/claim_tracking_service.dart';
+import '../core/services/service_initializer.dart';
 import 'package:intl/intl.dart';
 import '../utils/translation_helper.dart';
 
@@ -66,7 +67,8 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
       _errorMessage = null;
     });
     try {
-      final user = FirebaseAuth.instance.currentUser;
+      final authService = ServiceInitializer.get<AuthService>();
+      final user = authService.currentUser;
       if (user == null) {
         setState(() {
           _errorMessage = TranslationHelper.getString(context, 'errorMustBeLoggedIn', fallback: 'You must be logged in to submit a claim.');
@@ -75,6 +77,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
         return;
       }
       final claim = Claim(
+        bookingReference: '', // Placeholder for quick claim
         id: const Uuid().v4(),
         userId: user.uid,
         flightNumber: _flightNumberController.text.trim(),
@@ -82,12 +85,11 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
         departureAirport: _departureAirportController.text.trim(),
         arrivalAirport: _arrivalAirportController.text.trim(),
         reason: _reasonController.text.trim(),
-        compensationAmount: _compensationAmountController.text.isNotEmpty
-            ? double.tryParse(_compensationAmountController.text)
-            : null,
+        compensationAmount: double.tryParse(_compensationAmountController.text) ?? 0.0,
         status: 'pending',
       );
-      await FirestoreService().setClaim(claim);
+      final claimTrackingService = ServiceInitializer.get<ClaimTrackingService>();
+      await claimTrackingService.saveClaim(claim);
       if (mounted) {
         showDialog(
           context: context,

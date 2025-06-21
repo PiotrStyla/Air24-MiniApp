@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../models/claim.dart';
 import '../models/claim_status.dart';
-import '../services/firestore_service.dart';
+
 import '../services/claim_tracking_service.dart';
+import '../services/auth_service.dart';
+import '../core/services/service_initializer.dart';
 
 /// Dashboard statistics model
 class DashboardStats {
@@ -26,8 +28,9 @@ class DashboardStats {
 
 /// ViewModel for the claims dashboard - follows MVVM architecture
 class ClaimDashboardViewModel extends ChangeNotifier {
-  final FirestoreService _firestoreService;
+  
   final ClaimTrackingService _trackingService;
+  final AuthService _authService;
   
   // Dashboard state
   List<Claim> _claims = [];
@@ -58,10 +61,10 @@ class ClaimDashboardViewModel extends ChangeNotifier {
   StreamSubscription<List<Claim>>? _claimsSubscription;
   
   ClaimDashboardViewModel({
-    required FirestoreService firestoreService,
     required ClaimTrackingService trackingService,
-  }) : _firestoreService = firestoreService,
-       _trackingService = trackingService;
+    required AuthService authService,
+  })  : _trackingService = trackingService,
+        _authService = authService;
   
   /// Initialize the dashboard by loading claims and analytics
   Future<void> initialize() async {
@@ -85,9 +88,9 @@ class ClaimDashboardViewModel extends ChangeNotifier {
   /// Load claims from Firestore
   Future<void> _loadClaims() async {
     try {
-      final currentUser = await _trackingService.getCurrentUserId();
+      final currentUser = _authService.currentUser?.uid;
       if (currentUser != null) {
-        _claims = await _firestoreService.getClaimsForUser(currentUser);
+        _claims = await _trackingService.getClaimsForUser(currentUser);
         notifyListeners();
       } else {
         _errorMessage = 'User not logged in';

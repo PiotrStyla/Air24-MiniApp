@@ -1,22 +1,25 @@
 import 'package:get_it/get_it.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../../services/auth_service.dart';
-import '../../services/document_storage_service.dart';
-import '../../services/firestore_service.dart';
-import '../../services/aviation_stack_service.dart';
-import '../../services/document_ocr_service.dart';
-import '../../services/notification_service.dart';
-import '../../services/flight_prediction_service.dart';
-import '../../services/claim_tracking_service.dart';
-import '../../services/localization_service.dart';
-import '../../services/manual_localization_service.dart';
-import '../accessibility/accessibility_service.dart';
-import '../../services/claim_submission_service.dart';
-import '../error/error_handler.dart';
-import '../../viewmodels/auth_viewmodel.dart';
-import '../../viewmodels/document_viewmodel.dart';
-import '../../viewmodels/document_scanner_viewmodel.dart';
-import '../../viewmodels/claim_dashboard_viewmodel.dart';
+
+import 'package:f35_flight_compensation/services/auth_service.dart';
+import 'package:f35_flight_compensation/services/document_storage_service.dart';
+import 'package:f35_flight_compensation/services/firebase_document_storage_service.dart';
+
+import 'package:f35_flight_compensation/services/aviation_stack_service.dart';
+import 'package:f35_flight_compensation/services/document_ocr_service.dart';
+import 'package:f35_flight_compensation/services/notification_service.dart';
+import 'package:f35_flight_compensation/services/flight_prediction_service.dart';
+import 'package:f35_flight_compensation/services/claim_tracking_service.dart';
+import 'package:f35_flight_compensation/services/firebase_claim_tracking_service.dart';
+import 'package:f35_flight_compensation/services/localization_service.dart';
+import 'package:f35_flight_compensation/services/manual_localization_service.dart';
+import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
+import 'package:f35_flight_compensation/services/claim_submission_service.dart';
+import 'package:f35_flight_compensation/services/claim_validation_service.dart';
+import 'package:f35_flight_compensation/core/error/error_handler.dart';
+import 'package:f35_flight_compensation/viewmodels/auth_viewmodel.dart';
+import 'package:f35_flight_compensation/viewmodels/document_viewmodel.dart';
+import 'package:f35_flight_compensation/viewmodels/document_scanner_viewmodel.dart';
+import 'package:f35_flight_compensation/viewmodels/claim_dashboard_viewmodel.dart';
 
 /// Service initializer for dependency injection
 /// Following MVVM pattern with GetIt
@@ -24,40 +27,46 @@ class ServiceInitializer {
   static final GetIt _locator = GetIt.instance;
   static bool _isTestMode = false;
 
-  /// Register all services and viewmodels
-  static void init() {
-    print('[ServiceInitializer] init() called. _isTestMode: $_isTestMode');
-    // Skip initialization if in test mode with overrides
+  /// Register all services and viewmodels asynchronously
+  static Future<void> initAsync() async {
+    print('[ServiceInitializer] initAsync() called.');
     if (_isTestMode) return;
-    
-    // Register services as singletons
-    _locator.registerLazySingleton<AuthService>(() => AuthService());
-    _locator.registerLazySingleton<DocumentStorageService>(() => DocumentStorageService());
-    _locator.registerLazySingleton<FirestoreService>(() => FirestoreService());
-    _locator.registerLazySingleton<AviationStackService>(() => AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'YOUR_PYTHON_BACKEND_URL_HERE'));
+
+    // Asynchronously register AuthService
+    _locator.registerSingletonAsync<AuthService>(() => AuthService.create());
+
+    // Register other services as lazy singletons
+    _locator.registerLazySingleton<DocumentStorageService>(() => FirebaseDocumentStorageService());
+        _locator.registerLazySingleton<AviationStackService>(() => AviationStackService(baseUrl: 'http://api.aviationstack.com/v1'));
     _locator.registerLazySingleton<DocumentOcrService>(() => DocumentOcrService());
     _locator.registerLazySingleton<NotificationService>(() => NotificationService());
     _locator.registerLazySingleton<FlightPredictionService>(() => FlightPredictionService());
     _locator.registerLazySingleton<ErrorHandler>(() => ErrorHandler());
-    _locator.registerLazySingleton<ClaimTrackingService>(() => ClaimTrackingService());
+    _locator.registerLazySingleton<ClaimTrackingService>(() => FirebaseClaimTrackingService());
+    _locator.registerLazySingleton<ClaimValidationService>(() => ClaimValidationService());
     _locator.registerLazySingleton<AccessibilityService>(() => AccessibilityService());
-    
-    // Register localization service
-    if (!_locator.isRegistered<LocalizationService>()) {
-      LocalizationService.create().then((service) {
-        if (!_locator.isRegistered<LocalizationService>()) {
-          _locator.registerSingleton<LocalizationService>(service);
-        }
-      });
-    }
-    
-    // Register manual localization service
+
+    // Register manual localization service and point the abstract service to it
     if (!_locator.isRegistered<ManualLocalizationService>()) {
-      _locator.registerLazySingleton<ManualLocalizationService>(
-        () => ManualLocalizationService()
-      );
+      _locator.registerLazySingleton<ManualLocalizationService>(() => ManualLocalizationService());
     }
-    
+    _locator.registerLazySingleton<LocalizationService>(() => _locator<ManualLocalizationService>());
+
+    // Initialize services that require it
+    // ManualLocalizationService might not have an init method, if so, this line can be removed.
+    // await _locator<ManualLocalizationService>().init(); 
+    // print('[ServiceInitializer] ManualLocalizationService initialized.');
+
+    // Ensure async singletons are ready before dependent services use them.
+    await _locator.isReady<AuthService>();
+    print('[ServiceInitializer] AuthService initialized.');
+
+    // Register services that depend on other services
+    _locator.registerLazySingleton<ClaimSubmissionService>(() => ClaimSubmissionService(
+        claimTrackingService: _locator<ClaimTrackingService>(),
+        authService: _locator<AuthService>(),
+    ));
+
     // Register viewmodels as factories
     _locator.registerFactory<AuthViewModel>(() => AuthViewModel(_locator<AuthService>()));
     _locator.registerFactory<DocumentViewModel>(() => DocumentViewModel(_locator<DocumentStorageService>()));
@@ -66,9 +75,19 @@ class ServiceInitializer {
       authService: _locator<AuthService>(),
     ));
     _locator.registerFactory<ClaimDashboardViewModel>(() => ClaimDashboardViewModel(
-      firestoreService: _locator<FirestoreService>(),
       trackingService: _locator<ClaimTrackingService>(),
+      authService: _locator<AuthService>(),
     ));
+    print('[ServiceInitializer] All services and viewmodels registered.');
+  }
+
+  /// Deprecated synchronous initializer. Use initAsync() instead.
+  @Deprecated('Use initAsync() instead for safe asynchronous initialization.')
+  static void init() {
+    print('[ServiceInitializer] init() called. _isTestMode: $_isTestMode');
+    // This is now a wrapper for the async initializer for backward compatibility.
+    // In a real app, you would migrate all calls to initAsync().
+    initAsync();
   }
   
   /// Get instance of registered service or viewmodel
@@ -93,66 +112,53 @@ class ServiceInitializer {
     // Register each mock service with its specific type
     mocks.forEach((type, implementation) {
       print('[ServiceInitializer] overrideForTesting: Processing type: $type with impl: ${implementation.runtimeType}');
-      switch (type) {
-        case AviationStackService:
-          _locator.registerSingleton<AviationStackService>(
-              implementation as AviationStackService);
-          break;
-        case DocumentOcrService:
-          _locator.registerSingleton<DocumentOcrService>(
-              implementation as DocumentOcrService);
-          break;
-        case DocumentStorageService:
-          _locator.registerSingleton<DocumentStorageService>(
-              implementation as DocumentStorageService);
-          break;
-        case ClaimSubmissionService:
-          _locator.registerSingleton<ClaimSubmissionService>(
-              implementation as ClaimSubmissionService);
-          break;
-        case LocalizationService:
-          _locator.registerSingleton<LocalizationService>(implementation as LocalizationService);
-          break;
-        case AccessibilityService:
-          print('[ServiceInitializer] overrideForTesting: Matched case AccessibilityService.');
-          _locator.registerSingleton<AccessibilityService>(implementation as AccessibilityService);
-          print('[ServiceInitializer] overrideForTesting: Called _locator.registerSingleton for AccessibilityService with ${implementation.runtimeType}.');
-          if (_locator.isRegistered<AccessibilityService>()) {
-            print('[ServiceInitializer] overrideForTesting: VERIFIED - AccessibilityService IS registered in GetIt post-registration.');
-          } else {
-            print('[ServiceInitializer] overrideForTesting: CRITICAL FAILURE - AccessibilityService IS NOT registered in GetIt post-registration.');
-          }
-          break; // Corrected break for AccessibilityService
-        case ManualLocalizationService:
-          _locator.registerSingleton<ManualLocalizationService>(implementation as ManualLocalizationService);
-          print('[ServiceInitializer] overrideForTesting: Registered ManualLocalizationService with ${implementation.runtimeType}.');
-          break;
-        case NotificationService:
-          _locator.registerSingleton<NotificationService>(implementation as NotificationService);
-          print('[ServiceInitializer] overrideForTesting: Registered NotificationService with ${implementation.runtimeType}.');
-          break;
-        case ErrorHandler:
-          _locator.registerSingleton<ErrorHandler>(implementation as ErrorHandler);
-          print('[ServiceInitializer] overrideForTesting: Registered ErrorHandler with ${implementation.runtimeType}.');
-          break;
-        case AuthService:
-          _locator.registerSingleton<AuthService>(implementation as AuthService);
-          break;
-        case AuthViewModel:
-          _locator.registerFactory<AuthViewModel>(() => implementation as AuthViewModel);
-          break;
-        case DocumentViewModel:
-          _locator.registerFactory<DocumentViewModel>(() => implementation as DocumentViewModel);
-          break;
-        case DocumentScannerViewModel:
-          _locator.registerFactory<DocumentScannerViewModel>(() => implementation as DocumentScannerViewModel);
-          break;
-        case ClaimDashboardViewModel:
-          _locator.registerFactory<ClaimDashboardViewModel>(() => implementation as ClaimDashboardViewModel);
-          break;
-        default:
-        print('[ServiceInitializer] overrideForTesting: Unknown service type encountered in switch: $type');
-          throw Exception('Attempted to mock an unknown service type: $type');
+      
+      if (type == AuthService) {
+        _locator.registerSingleton<AuthService>(implementation as AuthService);
+        print('[ServiceInitializer] overrideForTesting: Registered AuthService with ${implementation.runtimeType}.');
+      } else if (type == AccessibilityService) {
+        _locator.registerSingleton<AccessibilityService>(implementation as AccessibilityService);
+        print('[ServiceInitializer] overrideForTesting: Registered AccessibilityService with ${implementation.runtimeType}.');
+      } else if (type == NotificationService) {
+        _locator.registerSingleton<NotificationService>(implementation as NotificationService);
+        print('[ServiceInitializer] overrideForTesting: Registered NotificationService with ${implementation.runtimeType}.');
+      } else if (type == AviationStackService) {
+        _locator.registerSingleton<AviationStackService>(implementation as AviationStackService);
+      } else if (type == DocumentOcrService) {
+        _locator.registerSingleton<DocumentOcrService>(implementation as DocumentOcrService);
+      } else if (type == DocumentStorageService) {
+        _locator.registerSingleton<DocumentStorageService>(implementation as DocumentStorageService);
+      
+      } else if (type == ClaimSubmissionService) {
+        _locator.registerSingleton<ClaimSubmissionService>(implementation as ClaimSubmissionService);
+      } else if (type == LocalizationService) {
+        _locator.registerSingleton<LocalizationService>(implementation as LocalizationService);
+      } else if (type == AccessibilityService) {
+        _locator.registerSingleton<AccessibilityService>(implementation as AccessibilityService);
+        print('[ServiceInitializer] overrideForTesting: Registered AccessibilityService with ${implementation.runtimeType}.');
+      } else if (type == ManualLocalizationService) {
+        _locator.registerSingleton<ManualLocalizationService>(implementation as ManualLocalizationService);
+        print('[ServiceInitializer] overrideForTesting: Registered ManualLocalizationService with ${implementation.runtimeType}.');
+      } else if (type == AviationStackService) {
+        _locator.registerSingleton<AviationStackService>(implementation as AviationStackService);
+        print('[ServiceInitializer] overrideForTesting: Registered AviationStackService with ${implementation.runtimeType}.');
+      } else if (type == AccessibilityService) {
+        _locator.registerSingleton<AccessibilityService>(implementation as AccessibilityService);
+        print('[ServiceInitializer] overrideForTesting: Registered AccessibilityService with ${implementation.runtimeType}.');
+      } else if (type == ErrorHandler) {
+        _locator.registerSingleton<ErrorHandler>(implementation as ErrorHandler);
+        print('[ServiceInitializer] overrideForTesting: Registered ErrorHandler with ${implementation.runtimeType}.');
+      } else if (type == AuthViewModel) {
+        _locator.registerFactory<AuthViewModel>(() => implementation as AuthViewModel);
+      } else if (type == DocumentViewModel) {
+        _locator.registerFactory<DocumentViewModel>(() => implementation as DocumentViewModel);
+      } else if (type == DocumentScannerViewModel) {
+        _locator.registerFactory<DocumentScannerViewModel>(() => implementation as DocumentScannerViewModel);
+      } else if (type == ClaimDashboardViewModel) {
+        _locator.registerFactory<ClaimDashboardViewModel>(() => implementation as ClaimDashboardViewModel);
+      } else {
+        print('[ServiceInitializer] overrideForTesting: Unknown service type encountered: $type');
+        throw Exception('Attempted to mock an unknown service type: $type');
       }
     });
   }
@@ -171,14 +177,7 @@ class ServiceInitializer {
     _isTestMode = isTest;
   }
   
-  /// Asynchronously initialize services that require async initialization
-  static Future<void> initAsync() async {
-    // Initialize any services that require async initialization
-    if (!_locator.isRegistered<LocalizationService>()) {
-      final localizationService = await LocalizationService.create();
-      _locator.registerSingleton<LocalizationService>(localizationService);
-    }
-  }
+
   
   /// Get a mocked implementation in test mode
   static T getMock<T extends Object>() {

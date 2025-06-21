@@ -4,13 +4,15 @@ import 'package:intl/intl.dart';
 import '../utils/translation_helper.dart';
 import '../services/manual_localization_service.dart';
 import 'package:get_it/get_it.dart';
+import 'package:f35_flight_compensation/models/claim.dart';
+import 'package:f35_flight_compensation/screens/claim_submission_screen.dart';
 
 import '../viewmodels/claim_dashboard_viewmodel.dart';
 import '../models/claim.dart';
 import '../models/claim_status.dart';
 import '../core/services/service_initializer.dart';
 import 'claim_detail_screen.dart';
-import 'claim_submission_screen.dart';
+
 
 /// Dashboard screen to track user's compensation claims
 class ClaimDashboardScreen extends StatefulWidget {
@@ -31,12 +33,6 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
     _tabController = TabController(length: 3, vsync: this);
     _viewModel = ServiceInitializer.get<ClaimDashboardViewModel>();
     _initializeViewModel();
-    
-    // Force reload Polish translations if needed
-    final manualLocalizationService = GetIt.I<ManualLocalizationService>();
-    if (manualLocalizationService.currentLocale?.languageCode == 'pl') {
-      manualLocalizationService.forceReload(manualLocalizationService.currentLocale!);
-    }
   }
   
   Future<void> _initializeViewModel() async {
@@ -461,7 +457,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const ClaimSubmissionScreen(),
+                  builder: (context) => ClaimSubmissionScreen(),
                 ),
               ).then((_) {
                 // Refresh dashboard when returning from submission screen

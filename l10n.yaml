@@ -1,6 +1,6 @@
 arb-dir: lib/l10n
 template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
-output-class: AppLocalizations
-nullable-getter: false
-untranslated-messages-file: untranslated_messages.json
+# output-dir defaults to lib/generated for non-synthetic
+# nullable-getter defaults to false
+# untranslated-messages-file is optional

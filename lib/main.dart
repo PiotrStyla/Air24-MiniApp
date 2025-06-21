@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:f35_flight_compensation/generated/app_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
+
 import 'core/services/service_initializer.dart';
 import 'core/accessibility/accessibility_service.dart';
 import 'services/auth_service.dart';
 import 'services/document_storage_service.dart';
-import 'services/firestore_service.dart';
+
 import 'services/localization_service.dart';
 import 'utils/translation_initializer.dart';
 import 'screens/main_navigation.dart';
@@ -25,15 +27,14 @@ import 'screens/language_selection_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+
+  
   // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
-  // Initialize services
-  ServiceInitializer.init();
-  
-  // Initialize async services like localization
+
+  // Initialize services asynchronously
   await ServiceInitializer.initAsync();
   
   // Ensure all translations are properly loaded at startup
@@ -60,9 +61,7 @@ class F35FlightCompensationApp extends StatelessWidget {
         Provider<DocumentStorageService>(
           create: (_) => ServiceInitializer.get<DocumentStorageService>(),
         ),
-        Provider<FirestoreService>(
-          create: (_) => ServiceInitializer.get<FirestoreService>(),
-        ),
+
         // Provide localization service with change notifier
         ChangeNotifierProvider<LocalizationService>.value(
           value: localizationService,
@@ -133,15 +132,7 @@ class F35FlightCompensationApp extends StatelessWidget {
                   '/compensation-checker': (context) => const FlightCompensationCheckerScreen(),
                   '/accessibility-settings': (context) => const AccessibilitySettingsScreen(),
                   '/language-selection': (context) => const LanguageSelectionScreen(),
-                  '/claim-submission': (context) {
-                    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-                    return ClaimSubmissionScreen(
-                      prefillFlightNumber: args?['prefillFlightNumber'],
-                      prefillDepartureAirport: args?['prefillDepartureAirport'],
-                      prefillArrivalAirport: args?['prefillArrivalAirport'],
-                      prefillFlightDate: args?['prefillFlightDate'],
-                    );
-                  },
+                  '/claim-submission': (context) => const ClaimSubmissionScreen(),
                 },
               );
             },

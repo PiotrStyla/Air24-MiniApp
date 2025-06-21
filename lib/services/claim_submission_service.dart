@@ -1,140 +1,89 @@
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uuid/uuid.dart';
+import '../models/claim.dart';
+import '../models/flight.dart';
+import '../models/claim_status.dart';
+import 'claim_tracking_service.dart';
+import 'claim_validation_service.dart';
+import 'auth_service.dart';
 
-/// Service for submitting and managing compensation claims
+/// Service for submitting and managing compensation claims.
 class ClaimSubmissionService extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  
-  // Collection reference for claims
-  CollectionReference get _claimsCollection => 
-      _firestore.collection('compensation_claims');
-  
-  // Get current user ID
-  String? get _currentUserId => _auth.currentUser?.uid;
-  
-  /// Submit a new compensation claim
-  Future<String> submitClaim(Map<String, dynamic> claimData) async {
-    try {
-      if (_currentUserId == null) {
-        throw Exception('User not authenticated');
-      }
-      
-      // Add user ID to claim data
-      final enhancedClaimData = {
-        ...claimData,
-        'userId': _currentUserId,
-        'submissionDate': FieldValue.serverTimestamp(),
-        'status': 'pending',
-        'lastUpdated': FieldValue.serverTimestamp(),
-      };
-      
-      // Save to Firestore
-      final docRef = await _claimsCollection.add(enhancedClaimData);
-      
-      // Return the document ID
-      return docRef.id;
-    } catch (e) {
-      debugPrint('Error submitting claim: $e');
-      throw Exception('Failed to submit claim: $e');
-    }
+  final ClaimTrackingService _claimTrackingService;
+  final AuthService _authService;
+  final Uuid _uuid = const Uuid();
+
+  bool _isSubmitting = false;
+  String? _submissionError;
+
+  bool get isSubmitting => _isSubmitting;
+  String? get submissionError => _submissionError;
+
+  ClaimSubmissionService({
+    required ClaimTrackingService claimTrackingService,
+    required AuthService authService,
+  })  : _claimTrackingService = claimTrackingService,
+        _authService = authService;
+
+  void _setSubmitting(bool submitting) {
+    _isSubmitting = submitting;
+    notifyListeners();
   }
-  
-  /// Get claims for the current user
-  Future<List<Map<String, dynamic>>> getUserClaims() async {
-    try {
-      if (_currentUserId == null) {
-        throw Exception('User not authenticated');
-      }
-      
-      final querySnapshot = await _claimsCollection
-          .where('userId', isEqualTo: _currentUserId)
-          .orderBy('submissionDate', descending: true)
-          .get();
-      
-      return querySnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return {
-          'id': doc.id,
-          ...data,
-        };
-      }).toList();
-    } catch (e) {
-      debugPrint('Error fetching user claims: $e');
-      throw Exception('Failed to fetch claims: $e');
-    }
+
+  void _setSubmissionError(String? error) {
+    _submissionError = error;
+    notifyListeners();
   }
-  
-  /// Get a specific claim by ID
-  Future<Map<String, dynamic>> getClaimById(String claimId) async {
-    try {
-      if (_currentUserId == null) {
-        throw Exception('User not authenticated');
-      }
-      
-      final docSnapshot = await _claimsCollection.doc(claimId).get();
-      
-      if (!docSnapshot.exists) {
-        throw Exception('Claim not found');
-      }
-      
-      final data = docSnapshot.data() as Map<String, dynamic>;
-      
-      // Verify ownership
-      if (data['userId'] != _currentUserId) {
-        throw Exception('Claim does not belong to current user');
-      }
-      
-      return {
-        'id': docSnapshot.id,
-        ...data,
-      };
-    } catch (e) {
-      debugPrint('Error fetching claim: $e');
-      throw Exception('Failed to fetch claim: $e');
+
+  /// Submit a new compensation claim.
+  Future<Claim?> submitClaim(Flight flight, String reason) async {
+    _setSubmitting(true);
+    _setSubmissionError(null);
+
+    final userId = _authService.currentUser?.uid;
+    if (userId == null) {
+      _setSubmissionError('User not authenticated.');
+      _setSubmitting(false);
+      return null;
     }
-  }
-  
-  /// Update claim status (for admin use)
-  Future<void> updateClaimStatus(String claimId, String newStatus) async {
+
     try {
-      await _claimsCollection.doc(claimId).update({
-        'status': newStatus,
-        'lastUpdated': FieldValue.serverTimestamp(),
-      });
-    } catch (e) {
-      debugPrint('Error updating claim status: $e');
-      throw Exception('Failed to update claim status: $e');
-    }
-  }
-  
-  /// Delete a claim
-  Future<void> deleteClaim(String claimId) async {
-    try {
-      if (_currentUserId == null) {
-        throw Exception('User not authenticated');
+      final newClaim = Claim(
+        compensationAmount: 0.0, // Default value, to be updated later
+        bookingReference: '', // Placeholder for submission
+        id: _uuid.v4(),
+        userId: userId,
+        flightNumber: flight.flightNumber,
+        flightDate: flight.flightDate,
+        departureAirport: flight.departureAirport,
+        arrivalAirport: flight.arrivalAirport,
+        reason: reason,
+        status: ClaimStatus.submitted.name,
+      );
+
+      final userClaims = await _claimTrackingService.getClaimsForUser(userId);
+      final validationResult = await ClaimValidationService.validateClaim(newClaim, userClaims);
+
+      if (!validationResult.isValid) {
+        throw Exception(validationResult.errors.join('\n'));
       }
-      
-      // Verify ownership before deletion
-      final docSnapshot = await _claimsCollection.doc(claimId).get();
-      
-      if (!docSnapshot.exists) {
-        throw Exception('Claim not found');
-      }
-      
-      final data = docSnapshot.data() as Map<String, dynamic>;
-      
-      if (data['userId'] != _currentUserId) {
-        throw Exception('Claim does not belong to current user');
-      }
-      
-      // Delete the claim
-      await _claimsCollection.doc(claimId).delete();
-    } catch (e) {
-      debugPrint('Error deleting claim: $e');
-      throw Exception('Failed to delete claim: $e');
+
+      await _claimTrackingService.saveClaim(newClaim);
+
+      _setSubmitting(false);
+      return newClaim;
+    } on FirebaseException catch (e) {
+      debugPrint('Firebase error submitting claim: ${e.message}');
+      _setSubmissionError('Failed to submit claim: ${e.message}');
+      _setSubmitting(false);
+      return null;
+    } catch (e, stackTrace) {
+      debugPrint('Error submitting claim: $e\n$stackTrace');
+      _setSubmissionError('Failed to submit claim: ${e.toString()}');
+      _setSubmitting(false);
+      return null;
     }
   }
 }

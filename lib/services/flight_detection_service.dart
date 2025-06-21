@@ -76,7 +76,7 @@ class FlightDetectionService {
         if (onError != null) onError('rapidapi_key.txt not found or unreadable: $e');
         return;
       }
-      final aviationService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'YOUR_PYTHON_BACKEND_URL_HERE');
+      final aviationService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
       List<Map<String, dynamic>> arrivals = [];
       try {
         arrivals = await aviationService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
@@ -137,7 +137,7 @@ class FlightDetectionService {
         if (depAirport != null && arrAirport != null) {
           // Fetch arrivals at arrival airport
           final apiKey = await File('rapidapi_key.txt').readAsString();
-          final aviationService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'YOUR_PYTHON_BACKEND_URL_HERE');
+          final aviationService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
           final arrivals = await aviationService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
           // Find best match: closest departure airport and arrival time
           final nowUtc = DateTime.now().toUtc();

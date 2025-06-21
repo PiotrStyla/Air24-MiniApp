@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class AirlineClaimProcedure {
@@ -34,7 +35,24 @@ class AirlineClaimProcedure {
 }
 
 class AirlineProcedureService {
+  static bool isInTestMode = false;
+
+  static void setTestMode(bool isTesting) {
+    isInTestMode = isTesting;
+  }
   static Future<List<AirlineClaimProcedure>> loadProcedures() async {
+    if (isInTestMode) {
+      print('AirlineProcedureService: In test mode, returning mock procedures.');
+      return Future.value([
+        AirlineClaimProcedure(
+          iata: 'BA',
+          name: 'British Airways',
+          claimEmail: 'claims@ba.com',
+          claimFormUrl: 'https://ba.com/claims',
+          instructions: 'Fill out the form at the provided URL.',
+        )
+      ]);
+    }
     final String jsonString = await rootBundle.loadString('lib/data/airline_claim_procedures.json');
     final List<dynamic> jsonList = json.decode(jsonString);
     return jsonList.map((e) => AirlineClaimProcedure.fromJson(e)).toList();
@@ -42,12 +60,7 @@ class AirlineProcedureService {
 
   static Future<AirlineClaimProcedure?> getProcedureByIata(String iata) async {
     final procedures = await loadProcedures();
-    try {
-      return procedures.firstWhere(
-        (e) => e.iata.toUpperCase() == iata.toUpperCase(),
-      );
-    } catch (e) {
-      return null;
-    }
+    // Use firstWhereOrNull for safety, especially in tests where the list might be empty.
+    return procedures.firstWhereOrNull((p) => p.iata.toUpperCase() == iata.toUpperCase());
   }
 }

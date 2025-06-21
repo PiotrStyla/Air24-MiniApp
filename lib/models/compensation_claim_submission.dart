@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 /// Model class for tracking compensation claim submissions
 class CompensationClaimSubmission {
@@ -113,17 +113,15 @@ class CompensationClaimSubmission {
       'hasAllDocuments': hasAllDocuments,
       'completedChecklistItems': completedChecklistItems,
       'documentIds': documentIds,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
-  /// Create from Firestore document
-  factory CompensationClaimSubmission.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data()!;
+  /// Create from a map structure
+  factory CompensationClaimSubmission.fromMap(Map<String, dynamic> data, String id) {
     return CompensationClaimSubmission(
-      id: doc.id,
+      id: id,
       userId: data['userId'] ?? '',
       flightNumber: data['flightNumber'] ?? '',
       airline: data['airline'] ?? '',
@@ -140,8 +138,8 @@ class CompensationClaimSubmission {
       hasAllDocuments: data['hasAllDocuments'] ?? false,
       completedChecklistItems: List<String>.from(data['completedChecklistItems'] ?? []),
       documentIds: List<String>.from(data['documentIds'] ?? []),
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: data['updatedAt'] != null ? (data['updatedAt'] as Timestamp).toDate() : null,
+      createdAt: DateTime.parse(data['createdAt']),
+      updatedAt: data['updatedAt'] != null ? DateTime.parse(data['updatedAt']) : null,
     );
   }
 

@@ -35,7 +35,7 @@ class LocalizationUtil {
   /// Change the current locale - updated to ensure full reload
   static Future<void> changeLocale(Locale locale) async {
     debugPrint('LocalizationUtil: Changing locale to $locale');
-    await _localizationService.changeLocale(locale);
+    await _localizationService.setLocale(locale);
     debugPrint('LocalizationUtil: Locale changed to ${_localizationService.currentLocale}');
   }
 }

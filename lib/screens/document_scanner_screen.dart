@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:f35_flight_compensation/generated/app_localizations.dart';
 import '../core/services/service_initializer.dart';
 import '../models/document_ocr_result.dart';
 import '../viewmodels/document_scanner_viewmodel.dart';

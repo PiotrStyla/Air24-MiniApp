@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
 import '../models/flight_document.dart';
 import '../services/document_storage_service.dart';
 
@@ -126,7 +127,7 @@ class DocumentViewModel extends ChangeNotifier {
     notifyListeners();
     
     try {
-      final file = await _documentService.pickDocument();
+      final file = await _documentService.pickImage(ImageSource.gallery);
       _selectedFile = file;
       _isUploading = false;
       
@@ -206,8 +207,14 @@ class DocumentViewModel extends ChangeNotifier {
       _isUploading = false;
       notifyListeners();
       return true;
-    } catch (e) {
-      _errorMessage = 'Failed to upload document: $e';
+    } on FirebaseException catch (e) {
+      _errorMessage = 'Failed to upload document: ${e.message}';
+      _isUploading = false;
+      notifyListeners();
+      return false;
+    } catch (e, stackTrace) {
+      _errorMessage = 'An unexpected error occurred during upload.';
+      print('Upload document error: $e\n$stackTrace');
       _isUploading = false;
       notifyListeners();
       return false;
@@ -226,8 +233,13 @@ class DocumentViewModel extends ChangeNotifier {
       _documentsStream = Stream.value(_documents);
       _isUploading = false;
       notifyListeners();
-    } catch (e) {
-      _errorMessage = 'Failed to load documents: $e';
+    } on FirebaseException catch (e) {
+      _errorMessage = 'Failed to load documents: ${e.message}';
+      _isUploading = false;
+      notifyListeners();
+    } catch (e, stackTrace) {
+      _errorMessage = 'An unexpected error occurred while loading documents.';
+      print('Load documents for flight error: $e\n$stackTrace');
       _isUploading = false;
       notifyListeners();
     }
@@ -243,8 +255,13 @@ class DocumentViewModel extends ChangeNotifier {
       _documentsStream = Stream.value(_documents);
       _isUploading = false;
       notifyListeners();
-    } catch (e) {
-      _errorMessage = 'Failed to load documents: $e';
+    } on FirebaseException catch (e) {
+      _errorMessage = 'Failed to load documents: ${e.message}';
+      _isUploading = false;
+      notifyListeners();
+    } catch (e, stackTrace) {
+      _errorMessage = 'An unexpected error occurred while loading documents.';
+      print('Load all user documents error: $e\n$stackTrace');
       _isUploading = false;
       notifyListeners();
     }
@@ -267,8 +284,14 @@ class DocumentViewModel extends ChangeNotifier {
       _isUploading = false;
       notifyListeners();
       return success;
-    } catch (e) {
-      _errorMessage = 'Failed to delete document: $e';
+    } on FirebaseException catch (e) {
+      _errorMessage = 'Failed to delete document: ${e.message}';
+      _isUploading = false;
+      notifyListeners();
+      return false;
+    } catch (e, stackTrace) {
+      _errorMessage = 'An unexpected error occurred during deletion.';
+      print('Delete document error: $e\n$stackTrace');
       _isUploading = false;
       notifyListeners();
       return false;

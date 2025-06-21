@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:f35_flight_compensation/generated/app_localizations.dart';
 import '../services/localization_service.dart';
 import 'package:get_it/get_it.dart';
 
@@ -312,7 +312,7 @@ class _LocalizationDebugScreenState extends State<LocalizationDebugScreen> {
                         _selectedLocale = locale;
                       });
                       // Change the app language
-                      _localizationService.changeLanguage(locale);
+                      _localizationService.setLocale(locale);
                     }
                   },
                 ),

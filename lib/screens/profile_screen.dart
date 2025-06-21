@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:f35_flight_compensation/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'faq_screen.dart';
 import 'profile_edit_screen.dart';
@@ -233,15 +233,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   AccessibleCard(
                     title: localizations.languageSelection,
                                         semanticLabel: TranslationHelper.getString(context, 'changeApplicationLanguage', fallback: 'Change application language'),
-                    onTap: () {
-                      Navigator.of(context).push(
+                    onTap: () async {
+                      final targetLocale = await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const LanguageSelectionScreen(),
                         ),
-                      ).then((_) {
-                        // Force rebuild when returning from language selection
-                        setState(() {});
-                      });
+                      );
+                      if (targetLocale is Locale) {
+                        final localizationService = GetIt.I<LocalizationService>();
+                        await localizationService.setLocale(targetLocale);
+                        if (mounted) {
+                          setState(() {});
+                        }
+                      }
                     },
                     child: Row(
                       children: [

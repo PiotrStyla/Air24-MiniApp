@@ -24,7 +24,6 @@ class TranslationInitializer {
       
       // Then ensure the current locale is fully loaded and active
       final currentLocale = localizationService.currentLocale;
-      manualLocalizationService.forceReload(currentLocale);
       
       debugPrint('All translations initialized for ${LocalizationService.supportedLocales.length} languages');
       debugPrint('Current locale set to: ${currentLocale.languageCode}');

@@ -137,6 +137,7 @@
   "completed": "Ukończone",
   "profileInfoCardTitle": "Twój profil zawiera Twoje dane osobowe i kontaktowe. Są one wykorzystywane do przetwarzania Twoich roszczeń o odszkodowanie za lot i informowania Cię o postępach.",
   "accountSettings": "Ustawienia Konta",
+  "last72HoursButton": "Ostatnie 72 godziny",
   "accessibilityOptions": "Opcje Dostępności",
   "configureAccessibilityDescription": "Skonfiguruj wysoki kontrast, duży tekst i obsługę czytnika ekranu",
   "configureNotificationsDescription": "Skonfiguruj sposób otrzymywania aktualizacji dotyczących roszczeń",

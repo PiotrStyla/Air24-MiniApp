@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:f35_flight_compensation/generated/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import '../services/manual_localization_service.dart';
 import '../services/localization_service.dart';
@@ -122,14 +122,11 @@ class TranslationHelper {
       
       // Set both services to the same locale
       if (localizationService.currentLocale != targetLocale) {
-        await localizationService.changeLanguage(targetLocale);
+        await localizationService.setLocale(targetLocale);
       }
       
-      // Force reload translations for the target locale
-      await manualService.forceReload(targetLocale);
-      
-      // Trigger rebuild
-      ManualLocalizationService.forceAppRebuild();
+      // The changeLanguage call above now handles notifying listeners, so a manual
+      // reload and rebuild are no longer necessary.
       
       debugPrint('✅ TranslationHelper: Successfully synchronized to $targetLocale');
     } catch (e) {

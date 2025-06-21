@@ -177,32 +177,32 @@ class ClaimSummary {
   });
 
   /// Create from Firestore map data
-  factory ClaimSummary.fromMap(Map<String, dynamic> data) {
+    factory ClaimSummary.fromMap(Map<String, dynamic> data) {
     return ClaimSummary(
       claimId: data['claimId'] ?? '',
       flightNumber: data['flightNumber'] ?? '',
       airline: data['airline'] ?? '',
-      flightDate: data['flightDate']?.toDate() ?? DateTime.now(),
-      submissionDate: data['submissionDate']?.toDate() ?? DateTime.now(),
+      flightDate: data['flightDate'] != null ? DateTime.parse(data['flightDate']) : DateTime.now(),
+      submissionDate: data['submissionDate'] != null ? DateTime.parse(data['submissionDate']) : DateTime.now(),
       status: _parseStatus(data['status']),
       compensationAmount: data['compensationAmount'],
       requiredAction: data['requiredAction'],
-      lastUpdated: data['lastUpdated']?.toDate() ?? DateTime.now(),
+      lastUpdated: data['lastUpdated'] != null ? DateTime.parse(data['lastUpdated']) : DateTime.now(),
     );
   }
 
   /// Convert to map for Firestore
-  Map<String, dynamic> toMap() {
+    Map<String, dynamic> toMap() {
     return {
       'claimId': claimId,
       'flightNumber': flightNumber,
       'airline': airline,
-      'flightDate': flightDate,
-      'submissionDate': submissionDate,
+      'flightDate': flightDate.toIso8601String(),
+      'submissionDate': submissionDate.toIso8601String(),
       'status': status.name,
       'compensationAmount': compensationAmount,
       'requiredAction': requiredAction,
-      'lastUpdated': lastUpdated,
+      'lastUpdated': lastUpdated.toIso8601String(),
     };
   }
 

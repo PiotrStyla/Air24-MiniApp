@@ -16,103 +16,32 @@ class EUEligibleFlightsScreen extends StatefulWidget {
 class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   late Future<List<Map<String, dynamic>>> _flightsFuture;
   String _carrierFilter = '';
-  // Increased time window to find more eligible flights
-  static const int _hoursFilter = 144;
-  DateTime? _selectedDate;
+  static const int _hoursFilter = 72;
 
   @override
   void initState() {
     super.initState();
-    // Use real API data
     _flightsFuture = _loadFlights();
-    
-    // Force refresh of translations when screen loads to ensure consistency
-    Future.delayed(Duration.zero, () {
-      if (mounted) {
-        foundation.debugPrint('EUEligibleFlightsScreen: Ensuring translations are loaded correctly');
-        TranslationHelper.forceReloadTranslations(context);
-      }
-    });
   }
 
   Future<List<Map<String, dynamic>>> _loadFlights() async {
+    foundation.debugPrint('Attempting to load EU compensation eligible flights for the last $_hoursFilter hours...');
+            final service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
+
     try {
-      foundation.debugPrint('Attempting to load EU compensation eligible flights...');
-      final service = AviationStackService(
-        baseUrl: 'http://api.aviationstack.com/v1',
-        pythonBackendUrl: 'http://piotrs.pythonanywhere.com',
-        usePythonBackend: true, // Try Python backend first
-      );
-      // Add extra diagnostics
-      foundation.debugPrint('Current time: ${DateTime.now().toIso8601String()}');
-      foundation.debugPrint('Looking for flights in past $_hoursFilter hours');
-      // Enable debugging mode to see why flights aren't passing eligibility checks
-      return await service.getEUCompensationEligibleFlights(
-        hours: _hoursFilter,
-        relaxEligibilityForDebugging: true, // Show all flights including ineligible ones
-      );
-    } catch (e) {
-      foundation.debugPrint('Error loading flights: $e');
-      // This shouldn't happen anymore since the service handles errors
-      // But provide empty list just in case
-      return [];
-    }
-  }
-  
-  // Now uses external data sources only - no fallback data
-  Future<List<Map<String, dynamic>>> _loadFlightsWithFallback() async {
-    try {
-      foundation.debugPrint('========== LOADING FROM EXTERNAL SOURCES ONLY ==========');
-      foundation.debugPrint('Current time: ${DateTime.now().toIso8601String()}');
-      
-      final service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'http://piotrs.pythonanywhere.com');
-      final flights = await service.getEUCompensationEligibleFlights(
-        hours: _hoursFilter
-      );
-      
-      foundation.debugPrint('Loaded ${flights.length} flights from external sources');
+      final flights = await service.getEUCompensationEligibleFlights(hours: _hoursFilter);
+      foundation.debugPrint('Successfully loaded ${flights.length} eligible flights.');
       return flights;
     } catch (e) {
-      foundation.debugPrint('ERROR loading flights: $e');
-      return []; // Return empty list as a last resort
+      foundation.debugPrint('Error loading flights in _loadFlights: $e');
+      // Propagate the error to be handled by the FutureBuilder.
+      throw Exception('Failed to load flight data: $e');
     }
   }
 
-  Future<List<Map<String, dynamic>>> _loadFlightsWithDebug() async {
-    try {
-      foundation.debugPrint('========== FORCED DATA REFRESH ==========');
-      foundation.debugPrint('Current time: ${DateTime.now().toIso8601String()}');
-      
-      // Create service with direct HTTP client
-      final service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'http://piotrs.pythonanywhere.com');
-      // Use real API data
-      final flights = await service.getEUCompensationEligibleFlights(
-        hours: _hoursFilter
-      );
-      
-      // Check if we got results
-      if (flights.isEmpty) {
-        foundation.debugPrint('WARNING: Received empty flight list from API');
-      } else {
-        foundation.debugPrint('Received ${flights.length} flights from API:');
-        for (var i = 0; i < flights.length; i++) {
-          final flight = flights[i];
-          foundation.debugPrint('Flight $i: ${flight['flightNumber']} - ${flight['airline']} - ${flight['departureTime']}');
-        }
-      }
-      
-      foundation.debugPrint('======================================');
-      return flights;
-    } catch (e) {
-      foundation.debugPrint('ERROR in debug load flights: $e');
-      return []; // Return empty list instead of throwing
-    }
-  }
-  
-  Future<void> _retryConnection() async {
+  void _refreshFlights() {
     setState(() {
-      // Use debug version with fallback data to ensure we get results
-      _flightsFuture = _loadFlightsWithDebug();
+      _flightsFuture = _loadFlights();
     });
   }
 
@@ -244,6 +173,80 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
     );
   }
 
+  Widget _buildErrorWidget(BuildContext context, Object? error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.cloud_off, size: 60, color: Colors.redAccent),
+            const SizedBox(height: 16),
+            Text(
+              TranslationHelper.getString(context, 'apiConnectionIssue', fallback: 'API Connection Issue'),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString(),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.refresh),
+              label: Text(TranslationHelper.getString(context, 'retry', fallback: 'Retry')),
+              onPressed: _refreshFlights,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyStateWidget(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.flight_land, size: 80, color: Colors.grey),
+            const SizedBox(height: 16),
+            Text(
+              TranslationHelper.getString(context, 'noEligibleFlightsFound', fallback: 'No Eligible Flights Found'),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey[700],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                TranslationHelper.getString(
+                  context,
+                  'noEligibleFlightsDescription',
+                  fallback: 'We checked for flights in the last {hours} hours, but none met the EU261 compensation criteria.'
+                ).replaceAll('{hours}', _hoursFilter.toString()),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.refresh),
+              label: Text(TranslationHelper.getString(context, 'checkAgain', fallback: 'Check Again')),
+              onPressed: _refreshFlights,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -312,187 +315,22 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  // Show API error with option to retry or use fallback
-                  foundation.debugPrint('Error loading flights: ${snapshot.error}');
-                  
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.cloud_off, size: 48, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        Text(
-                          'API Connection Issue', 
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Colors.red[700],
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: Text(
-                            '${TranslationHelper.getString(context, 'error', fallback: 'Error')}: ${snapshot.error.toString()}',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.refresh),
-                              label: Text(TranslationHelper.getString(context, 'retry', fallback: 'Retry')),
-                              onPressed: () {
-                                setState(() {
-                                  _flightsFuture = _loadFlights();
-                                });
-                              },
-                            ),
-                            const SizedBox(width: 16),
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.offline_bolt),
-                              label: Text(TranslationHelper.getString(context, 'useDemoData', fallback: 'Use Demo Data')),
-                              onPressed: () {
-                                setState(() {
-                                  _flightsFuture = _loadFlightsWithFallback();
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                } else if (false) { // Keep the old error UI code for reference but disabled
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.cloud_off, size: 48, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        Text(
-                          'API Connection Issue', 
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Colors.red[700],
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: Text(
-                            TranslationHelper.getString(
-                              context, 
-                              'apiConnectionTrouble', 
-                              fallback: 'We are having trouble connecting to the flight data service. This may be a temporary issue with the AviationStack API.'
-                            ),
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        if (snapshot.error != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                            child: Text(
-                              'Error details: ${snapshot.error}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                            ),
-                          ),
-                        const SizedBox(height: 20),
-                        ElevatedButton.icon(
-                          icon: const Icon(Icons.refresh),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _flightsFuture = _loadFlights();
-                            });
-                          },
-                          label: const Text('Retry Connection'),
-                        ),
-                        const SizedBox(height: 12),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(TranslationHelper.getString(context, 'returnToHome', fallback: 'Return to Home')),
-                        ),
-                      ],
-                    ),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.flight_land, size: 80, color: Colors.grey),
-                        const SizedBox(height: 16),
-                        Text(
-                          TranslationHelper.getString(context, 'noEligibleFlightsFound', fallback: 'No Eligible Flights Found'),
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey[700],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: Text(
-                            TranslationHelper.getString(
-                              context,
-                              'noEligibleFlightsDescription',
-                              fallback: 'We have checked flights across major EU airports in the last {hours} hours, but no flights meet EU261 compensation criteria at the moment.'
-                            ).replaceAll('{hours}', _hoursFilter.toString()),
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        ElevatedButton.icon(
-                          icon: const Icon(Icons.update),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _flightsFuture = _loadFlights();
-                            });
-                          },
-                          label: Text(TranslationHelper.getString(context, 'checkAgain', fallback: 'Check Again')),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          TranslationHelper.getString(context, 'tryFilteringOrCheckLater', fallback: 'Try filtering for specific airlines or checking later'), 
-                          style: TextStyle(fontSize: 13, color: Colors.grey[500]),
-                        ),
-                      ],
-                    ),
-                  );
+                } 
+
+                if (snapshot.hasError) {
+                  return _buildErrorWidget(context, snapshot.error);
+                }
+
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return _buildEmptyStateWidget(context);
                 }
 
                 final allFlights = snapshot.data!;
                 
                 // Apply filters
                 final List<Map<String, dynamic>> filteredFlights = allFlights.where((flight) {
-                  final airlineName = flight['airline'] is Map ? 
-                    flight['airline']['name']?.toString().toLowerCase() ?? '' : 
-                    flight['airline']?.toString().toLowerCase() ?? '';
-                    
-                  final passesCarrierFilter = _carrierFilter.isEmpty || 
-                    airlineName.contains(_carrierFilter.toLowerCase());
-                  
+                  final airlineName = flight['airline_name']?.toString().toLowerCase() ?? '';
+                  final passesCarrierFilter = _carrierFilter.isEmpty || airlineName.contains(_carrierFilter.toLowerCase());
                   return passesCarrierFilter;
                 }).toList();
 

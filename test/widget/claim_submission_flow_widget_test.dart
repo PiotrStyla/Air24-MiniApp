@@ -68,6 +68,9 @@ class MockLocalizationService extends Mock implements LocalizationService {
 
   @override
   Future<void> changeLanguage(Locale locale) => Future.value();
+
+  @override
+  Future<void> setLocale(Locale locale) => Future.value();
 }
 
 class MockAccessibilityService extends Mock implements AccessibilityService {
@@ -124,8 +127,9 @@ class MockManualLocalizationService extends Mock implements ManualLocalizationSe
   Future<void> initialize() => Future.value();
 
   @override
-  String getString(String key, {Map<String, String> placeholders = const {}}) {
-    return key; // Return the key as a default for testing
+  String getString(String key, {String fallback = ''}) {
+    // Return the key as a default for testing, ignoring the fallback for simplicity in this mock.
+    return key;
   }
 
   @override

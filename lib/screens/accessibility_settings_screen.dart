@@ -16,11 +16,7 @@ class AccessibilitySettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Force reload Polish translations if needed
-    final manualLocalizationService = GetIt.I<ManualLocalizationService>();
-    if (manualLocalizationService.currentLocale?.languageCode == 'pl') {
-      manualLocalizationService.forceReload(manualLocalizationService.currentLocale!);
-    }
+
     return Consumer<AccessibilityService>(
       builder: (context, accessibilityService, _) {
         return Scaffold(

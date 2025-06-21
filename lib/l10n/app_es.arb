@@ -101,6 +101,7 @@
   "completed": "Completada",
   "profileInfoCardTitle": "Su perfil contiene su información personal y de contacto. Esto se utiliza para procesar sus reclamaciones de compensación de vuelo y mantenerlo informado.",
   "accountSettings": "Configuración de la Cuenta",
+  "last72HoursButton": "Últimas 72 horas",
   "accessibilityOptions": "Opciones de Accesibilidad",
   "configureAccessibilityDescription": "Configurar alto contraste, texto grande y soporte para lector de pantalla",
   "configureNotificationsDescription": "Configurar cómo recibe las actualizaciones de las reclamaciones",

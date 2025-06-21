@@ -7,12 +7,10 @@ class Claim {
   final DateTime flightDate;
   final String departureAirport;
   final String arrivalAirport;
-  final String reason; // delay, cancellation, etc.
-  final double? compensationAmount;
-  final String status; // pending, approved, rejected
-  final String bookingReference; // booking reference number
-  final String additionalInfo; // any additional information
-  final List<String> documentPaths; // paths to supporting documents
+  final String reason;
+  final double compensationAmount;
+  final String status;
+  final String bookingReference;
 
   Claim({
     required this.id,
@@ -22,66 +20,27 @@ class Claim {
     required this.departureAirport,
     required this.arrivalAirport,
     required this.reason,
-    this.compensationAmount,
+    required this.compensationAmount,
     required this.status,
-    this.bookingReference = '',
-    this.additionalInfo = '',
-    this.documentPaths = const [],
+    required this.bookingReference,
   });
 
-  Claim copyWith({
-    String? id,
-    String? userId,
-    String? flightNumber,
-    DateTime? flightDate,
-    String? departureAirport,
-    String? arrivalAirport,
-    String? reason,
-    double? compensationAmount,
-    String? status,
-    String? bookingReference,
-    String? additionalInfo,
-    List<String>? documentPaths,
-  }) {
-    return Claim(
-      id: id ?? this.id,
-      userId: userId ?? this.userId,
-      flightNumber: flightNumber ?? this.flightNumber,
-      flightDate: flightDate ?? this.flightDate,
-      departureAirport: departureAirport ?? this.departureAirport,
-      arrivalAirport: arrivalAirport ?? this.arrivalAirport,
-      reason: reason ?? this.reason,
-      compensationAmount: compensationAmount ?? this.compensationAmount,
-      status: status ?? this.status,
-      bookingReference: bookingReference ?? this.bookingReference,
-      additionalInfo: additionalInfo ?? this.additionalInfo,
-      documentPaths: documentPaths ?? this.documentPaths,
-    );
-  }
-
-
-  factory Claim.fromMap(Map<String, dynamic> data, String documentId) {
+  factory Claim.fromFirestore(Map<String, dynamic> data, String documentId) {
     return Claim(
       id: documentId,
-      userId: data['userId'] ?? '',
-      flightNumber: data['flightNumber'] ?? '',
+      userId: data['userId'] as String,
+      flightNumber: data['flightNumber'] as String,
       flightDate: (data['flightDate'] as Timestamp).toDate(),
-      departureAirport: data['departureAirport'] ?? '',
-      arrivalAirport: data['arrivalAirport'] ?? '',
-      reason: data['reason'] ?? '',
-      compensationAmount: data['compensationAmount'] != null
-          ? (data['compensationAmount'] as num).toDouble()
-          : null,
-      status: data['status'] ?? 'pending',
-      bookingReference: data['bookingReference'] ?? '',
-      additionalInfo: data['additionalInfo'] ?? '',
-      documentPaths: data['documentPaths'] != null
-          ? List<String>.from(data['documentPaths'])
-          : [],
+      departureAirport: data['departureAirport'] as String,
+      arrivalAirport: data['arrivalAirport'] as String,
+      reason: data['reason'] as String,
+      compensationAmount: (data['compensationAmount'] as num).toDouble(),
+      status: data['status'] as String,
+      bookingReference: data['bookingReference'] as String,
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestore() {
     return {
       'userId': userId,
       'flightNumber': flightNumber,
@@ -92,8 +51,6 @@ class Claim {
       'compensationAmount': compensationAmount,
       'status': status,
       'bookingReference': bookingReference,
-      'additionalInfo': additionalInfo,
-      'documentPaths': documentPaths,
     };
   }
 }

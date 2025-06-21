@@ -12,10 +12,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.15.3
-  cloud_firestore: ^4.13.6
-  firebase_storage: ^11.6.7
+
   provider: ^6.1.1
   geolocator: ^10.1.0
   sensors_plus: ^4.0.2
@@ -30,7 +27,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   uuid: ^4.2.2
   shared_preferences: ^2.2.2
-  google_sign_in: ^6.1.5
+
   # Added for dependency injection - MVVM architecture
   get_it: ^7.6.7
   # Document scanning and OCR
@@ -40,7 +37,13 @@ dependencies:
   camera: ^0.10.5+9
   crop_image: ^1.0.11
   # Push notifications
-  firebase_messaging: ^14.7.6
+  firebase_core: ^2.30.0
+  firebase_auth: ^4.19.0
+  firebase_messaging: ^14.9.0
+  google_sign_in: ^6.2.1
+  cloud_firestore: ^4.17.0
+  firebase_storage: ^11.7.0
+
   # Charts for dashboard
   fl_chart: ^0.64.0
   # Improved error handling
@@ -49,6 +52,7 @@ dependencies:
   flutter_animate: ^4.2.0
   # Enhanced UI
   shimmer: ^3.0.0
+  collection: ^1.19.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -58,14 +62,14 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.1
   test: ^1.24.9
-  firebase_auth_mocks: ^0.13.0
+
 flutter:
   uses-material-design: true
 
   # Enable generation of localized strings
   generate: true
   assets:
-    - assets/lib/data/airline_claim_procedures.json
+    - lib/data/airline_claim_procedures.json
     - assets/lib/data/iata_codes.json
     - assets/rapidapi_key.txt
     - assets/data/eu_airports.json

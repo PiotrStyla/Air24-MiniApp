@@ -34,7 +34,7 @@ class _MainNavigationState extends State<MainNavigation> {
     super.initState();
     
     // Force reload Polish translations if needed
-    TranslationInitializer.ensurePolishTranslations();
+    TranslationInitializer.ensureAllTranslations();
     
     // Initialize services (minimal version)
     _initializeServices();

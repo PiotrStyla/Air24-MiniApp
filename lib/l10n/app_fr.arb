@@ -102,6 +102,7 @@
   "completed": "Terminée",
   "profileInfoCardTitle": "Votre profil contient vos informations personnelles et de contact. Celles-ci sont utilisées pour traiter vos demandes d'indemnisation de vol et vous tenir informé.",
   "accountSettings": "Paramètres du Compte",
+  "last72HoursButton": "Dernières 72 heures",
   "accessibilityOptions": "Options d'Accessibilité",
   "configureAccessibilityDescription": "Configurer le contraste élevé, le grand texte et le support du lecteur d'écran",
   "configureNotificationsDescription": "Configurer la manière dont vous recevez les mises à jour des réclamations",

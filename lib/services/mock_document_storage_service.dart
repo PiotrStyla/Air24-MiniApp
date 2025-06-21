@@ -1,0 +1,115 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
+
+import '../models/flight_document.dart';
+import 'document_storage_service.dart';
+
+/// Mock service for managing flight document storage and retrieval using in-memory storage.
+class MockDocumentStorageService implements DocumentStorageService {
+  final List<FlightDocument> _documents = [];
+  final ImagePicker _picker = ImagePicker();
+  final Uuid _uuid = const Uuid();
+
+  String? get _currentUserId => 'mock_user_id'; // Mock user ID
+
+  MockDocumentStorageService() {
+    // Seed with some mock data
+    _documents.addAll([
+      FlightDocument(
+        id: _uuid.v4(),
+        userId: _currentUserId!,
+        flightNumber: 'BA2490',
+        flightDate: DateTime.now().subtract(const Duration(days: 10)),
+        documentType: FlightDocumentType.boardingPass,
+        documentName: 'boarding_pass.jpg',
+        storageUrl: 'https://example.com/mock/boarding_pass.jpg',
+        uploadDate: DateTime.now().subtract(const Duration(days: 10)),
+      ),
+      FlightDocument(
+        id: _uuid.v4(),
+        userId: _currentUserId!,
+        flightNumber: 'VS100',
+        flightDate: DateTime.now().subtract(const Duration(days: 20)),
+        documentType: FlightDocumentType.bookingConfirmation,
+        documentName: 'booking_confirmation.pdf',
+        storageUrl: 'https://example.com/mock/booking_confirmation.pdf',
+        uploadDate: DateTime.now().subtract(const Duration(days: 20)),
+      ),
+    ]);
+  }
+
+  @override
+  Future<File?> pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        imageQuality: 70,
+      );
+      return pickedFile != null ? File(pickedFile.path) : null;
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> uploadFile(File file, String flightNumber, FlightDocumentType type) async {
+    await Future.delayed(const Duration(seconds: 1)); // Simulate upload
+    return 'https://example.com/mock/${_uuid.v4()}.jpg';
+  }
+
+  @override
+  Future<FlightDocument?> saveDocument({
+    required String flightNumber,
+    required DateTime flightDate,
+    required FlightDocumentType documentType,
+    required String documentName,
+    required String storageUrl,
+    String? description,
+    String? thumbnailUrl,
+    Map<String, dynamic>? metadata,
+  }) async {
+    if (_currentUserId == null) {
+      throw Exception('User not authenticated');
+    }
+    final document = FlightDocument(
+      id: _uuid.v4(),
+      userId: _currentUserId!,
+      flightNumber: flightNumber,
+      flightDate: flightDate,
+      documentType: documentType,
+      documentName: documentName,
+      storageUrl: storageUrl,
+      description: description,
+      uploadDate: DateTime.now(),
+      thumbnailUrl: thumbnailUrl,
+      metadata: metadata,
+    );
+    _documents.add(document);
+    return document;
+  }
+
+  @override
+  Future<List<FlightDocument>> getFlightDocuments(String flightNumber) async {
+    return _documents
+        .where((doc) => doc.userId == _currentUserId && doc.flightNumber == flightNumber)
+        .toList();
+  }
+
+  @override
+  Future<List<FlightDocument>> getAllUserDocuments() async {
+    return _documents.where((doc) => doc.userId == _currentUserId).toList();
+  }
+
+  @override
+  Future<bool> deleteDocument(FlightDocument document) async {
+    if (document.userId != _currentUserId) {
+      throw Exception('Document does not belong to current user');
+    }
+    _documents.removeWhere((doc) => doc.id == document.id);
+    return true;
+  }
+}

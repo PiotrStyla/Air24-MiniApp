@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/aviation_stack_service.dart';
-import 'claim_submission_screen.dart';
+import 'claim_submission_screen.dart' as claim_submission;
 import 'dart:io';
 
 class CompensationEligibleFlightsScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _CompensationEligibleFlightsScreenState extends State<CompensationEligible
     try {
       // Initialize AviationStackService to get flight data
       // Using only AviationStack as the source for all flight data
-      _service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'YOUR_PYTHON_BACKEND_URL_HERE');
+            _service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
       return await _service.getRecentArrivals(airportIcao: widget.airportIcao, minutesBeforeNow: 720);
     } catch (e) {
       print('Error loading arrivals: $e');
@@ -283,19 +283,17 @@ class _CompensationEligibleFlightsScreenState extends State<CompensationEligible
                               }
                               print('DEBUG: Flight object: ' + a.toString());
                               print('Prefill: flightNumber=$flightNumber, depIcao=$depIcao, arrIcao=$arrIcao, schedDate=$schedDate');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ClaimSubmissionScreen(
-                                    key: ValueKey('${flightNumber ?? ''}_${schedDate?.toIso8601String() ?? ''}'),
-                                    prefillFlightNumber: flightNumber,
-                                    prefillDepartureAirport: depIcao,
-                                    prefillArrivalAirport: arrIcao,
-                                    prefillFlightDate: schedDate,
-                                    prefillReason: 'delay',
-                                  ),
-                                ),
-                              );
+                              Navigator.pushNamed(
+                                  context,
+                                  '/claim-submission',
+                                  arguments: {
+                                    'prefillFlightNumber': flightNumber,
+                                    'prefillDepartureAirport': depIcao,
+                                    'prefillArrivalAirport': arrIcao,
+                                    'prefillFlightDate': schedDate,
+                                    'prefillReason': 'delay',
+                                  },
+                                );
                             },
                             leading: Icon(Icons.flight_land, size: 32, color: Colors.blueGrey),
                             title: Row(

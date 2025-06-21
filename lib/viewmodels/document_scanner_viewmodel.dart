@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:camera/camera.dart';
-import 'package:crop_image/crop_image.dart';
 import '../services/auth_service.dart';
 import '../models/document_ocr_result.dart';
 import '../services/document_ocr_service.dart';
@@ -56,7 +54,6 @@ class DocumentScannerViewModel extends ChangeNotifier {
       final ImagePicker picker = ImagePicker();
       final XFile? photo = await picker.pickImage(
         source: ImageSource.camera,
-        preferredCameraDevice: CameraDevice.rear,
         imageQuality: 90,
         maxWidth: 1600,
       );
@@ -136,21 +133,14 @@ class DocumentScannerViewModel extends ChangeNotifier {
       _errorMessage = '';
       notifyListeners();
       
-      // Get current user ID if logged in
-      String userId = '';
-      if (_authService.currentUser != null) {
-        userId = _authService.currentUser!.uid;
-      }
-      
       // Process the document with OCR
       _ocrResult = await _ocrService.scanDocument(
         imageFile: _croppedImage!,
         documentType: _selectedDocumentType,
-        userId: userId,
       );
       
       // Reload saved documents if user is logged in
-      if (userId.isNotEmpty) {
+      if (_authService.currentUser != null) {
         await loadSavedDocuments();
       }
     } catch (e) {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 import 'package:provider/provider.dart';
-import '../services/firestore_service.dart';
+import '../models/flight.dart';
+import '../services/claim_submission_service.dart';
 import '../services/document_storage_service.dart';
 import '../services/document_ocr_service.dart';
 import '../utils/localization_util.dart';
@@ -127,25 +128,22 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
     _loadFlightDocuments();
   }
 
-  /// Load the user profile from Firebase and prefill form fields
+  /// Load the user profile from AuthService and prefill form fields
   Future<void> _loadUserProfile() async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return;
-      
-      final firestoreService = Provider.of<FirestoreService>(context, listen: false);
-      final userProfile = await firestoreService.getUserProfile(user.uid);
-      
-      if (userProfile != null && mounted) {
+      final authService = ServiceInitializer.get<AuthService>();
+      final user = authService.currentUser;
+
+      if (user != null && mounted) {
         setState(() {
           // Prefill name if available
-          if (userProfile.fullName.isNotEmpty) {
-            _setAndTrackPrefill('passengerName', _passengerNameController, userProfile.fullName);
+          if (user.displayName != null && user.displayName!.isNotEmpty) {
+            _setAndTrackPrefill('passengerName', _passengerNameController, user.displayName!);
           }
-          
+
           // Prefill email if available
-          if (userProfile.email.isNotEmpty) {
-            _setAndTrackPrefill('passengerEmail', _passengerEmailController, userProfile.email);
+          if (user.email != null && user.email!.isNotEmpty) {
+            _setAndTrackPrefill('passengerEmail', _passengerEmailController, user.email!);
           }
         });
       }
@@ -225,6 +223,10 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
         return localizations.boardingPass;
       case FlightDocumentType.ticket:
         return localizations.ticket;
+      case FlightDocumentType.bookingConfirmation:
+        return 'Booking Confirmation'; // TODO: Add localization
+      case FlightDocumentType.eTicket:
+        return 'eTicket'; // TODO: Add localization
       case FlightDocumentType.luggageTag:
         return localizations.luggageTag;
       case FlightDocumentType.delayConfirmation:
@@ -679,7 +681,8 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
     });
     
     try {
-      final user = FirebaseAuth.instance.currentUser;
+      final authService = ServiceInitializer.get<AuthService>();
+      final user = authService.currentUser;
       if (user == null) {
         // Use centralized LocalizationUtil instead of AppLocalizations
         setState(() {
@@ -705,22 +708,20 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
       // Get document IDs to include with submission
       final List<String> documentIds = _attachedDocuments.map((doc) => doc.id).toList();
       
-      // Create claim submission
-      final claimSubmission = CompensationClaimSubmission.fromFormData(
-        userId: user.uid,
-        formData: formData,
-        flightData: widget.flightData,
-        completedChecklistItems: _checklistItems.entries
-            .where((entry) => entry.value)
-            .map((entry) => entry.key)
-            .toList(),
-        documentIds: documentIds,
-        hasAllDocuments: _checklistItems['documents'] ?? false,
+      // Create Flight object from form data
+      final flight = Flight(
+        flightNumber: _flightNumberController.text,
+        departureAirport: _departureAirportController.text,
+        arrivalAirport: _arrivalAirportController.text,
+        flightDate: DateTime.parse(_departureDateController.text),
       );
+
+      // TODO: Add a form field to select the reason for the claim.
+      const String reason = 'delay';
       
-      // Save to Firestore
-      final firestoreService = FirestoreService();
-      await firestoreService.submitCompensationClaim(claimSubmission);
+      // Submit the claim using the new service
+      final claimSubmissionService = ServiceInitializer.get<ClaimSubmissionService>();
+      await claimSubmissionService.submitClaim(flight, reason);
       
       // Show success message
       if (mounted) {

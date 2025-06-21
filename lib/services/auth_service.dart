@@ -21,12 +21,28 @@ class AuthService with ChangeNotifier {
 
   User? _currentUser;
 
-  // Allow injecting FirebaseAuth and GoogleSignIn for testing
-  AuthService({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn})
+  // Private constructor
+  AuthService._({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn})
       : _auth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn() {
+        _googleSignIn = googleSignIn ?? GoogleSignIn();
+
+  /// Public factory method for safe asynchronous creation
+  static Future<AuthService> create({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn}) async {
+    final authService = AuthService._(firebaseAuth: firebaseAuth, googleSignIn: googleSignIn);
+    await authService._init();
+    return authService;
+  }
+
+  /// Private method to handle asynchronous initialization
+  Future<void> _init() async {
     _auth.authStateChanges().listen(_onAuthStateChanged);
-    _currentUser = _auth.currentUser;
+    try {
+      _currentUser = _auth.currentUser;
+    } catch (e) {
+      // This can fail on web during initial load, so we catch it gracefully
+      debugPrint('Error getting initial currentUser: $e');
+      _currentUser = null;
+    }
   }
 
   // Current user getter
@@ -51,8 +67,8 @@ class AuthService with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       debugPrint('Email sign-in error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);
-    } catch (e) {
-      debugPrint('Unexpected sign-in error: $e');
+    } catch (e, stackTrace) {
+      debugPrint('Unexpected sign-in error: $e\n$stackTrace');
       throw AuthException('unknown', 'An unexpected error occurred. Please try again.');
     }
   }
@@ -67,8 +83,8 @@ class AuthService with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       debugPrint('Email sign-up error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);
-    } catch (e) {
-      debugPrint('Unexpected sign-up error: $e');
+    } catch (e, stackTrace) {
+      debugPrint('Unexpected sign-up error: $e\n$stackTrace');
       throw AuthException('unknown', 'An unexpected error occurred. Please try again.');
     }
   }
@@ -89,8 +105,8 @@ class AuthService with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       debugPrint('Google sign-in error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);
-    } catch (e) {
-      debugPrint('Unexpected Google sign-in error: $e');
+    } catch (e, stackTrace) {
+      debugPrint('Unexpected Google sign-in error: $e\n$stackTrace');
       throw AuthException('google_sign_in_failed', 'Google sign-in failed. Please try again.');
     }
   }
@@ -102,8 +118,8 @@ class AuthService with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       debugPrint('Anonymous sign-in error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);
-    } catch (e) {
-      debugPrint('Unexpected anonymous sign-in error: $e');
+    } catch (e, stackTrace) {
+      debugPrint('Unexpected anonymous sign-in error: $e\n$stackTrace');
       throw AuthException('unknown', 'An unexpected error occurred. Please try again.');
     }
   }
@@ -115,8 +131,8 @@ class AuthService with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       debugPrint('Password reset error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);
-    } catch (e) {
-      debugPrint('Unexpected password reset error: $e');
+    } catch (e, stackTrace) {
+      debugPrint('Unexpected password reset error: $e\n$stackTrace');
       throw AuthException('unknown', 'An unexpected error occurred. Please try again.');
     }
   }
@@ -131,8 +147,11 @@ class AuthService with ChangeNotifier {
     try {
       await _googleSignIn.signOut(); // Sign out from Google if signed in
       await _auth.signOut();
-    } catch (e) {
-      debugPrint('Sign out error: $e');
+    } on FirebaseAuthException catch (e) {
+      debugPrint('Sign out error: ${e.code} - ${e.message}');
+      throw _handleAuthError(e);
+    } catch (e, stackTrace) {
+      debugPrint('Unexpected sign out error: $e\n$stackTrace');
       throw AuthException('sign_out_failed', 'Failed to sign out. Please try again.');
     }
   }

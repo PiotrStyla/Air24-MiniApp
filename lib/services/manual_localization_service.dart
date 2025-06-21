@@ -2,310 +2,141 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../main.dart' as app;
-import 'localization_service.dart';
+import 'package:f35_flight_compensation/services/localization_service.dart';
 
 /// A manual localization service that loads strings directly from ARB files
 /// without relying on Flutter's code generation.
-/// 
-/// This is a workaround for cases where Flutter's localization generation fails.
-class ManualLocalizationService extends ChangeNotifier {
+class ManualLocalizationService extends LocalizationService {
   static const String LANGUAGE_CODE = 'languageCode';
   static const String COUNTRY_CODE = 'countryCode';
-  
+
   // Global key to force app rebuilds on locale changes
   static final ValueNotifier<int> rebuildNotifier = ValueNotifier<int>(0);
-  
+
   /// Force global rebuild of all widgets listening to this notifier
   static void forceAppRebuild() {
     debugPrint('ManualLocalizationService: Forcing global app rebuild');
     rebuildNotifier.value++;
   }
-  
-  /// Ensure language is loaded without changing the current locale
-  /// This is useful for preloading languages before they're needed
-  Future<void> ensureLanguageLoaded(String languageCode) async {
-    try {
-      debugPrint('Ensuring language is loaded: $languageCode');
-      
-      // Skip if we've already loaded this language
-      if (_allStrings.containsKey(languageCode) && 
-          (_allStrings[languageCode]?.isNotEmpty ?? false)) {
-        debugPrint('Language $languageCode already loaded with ${_allStrings[languageCode]?.length} keys');
-        return;
-      }
-      
-      // Load the language without changing the current locale
-      await _loadStrings(languageCode);
-      
-      debugPrint('Successfully loaded language: $languageCode');
-    } catch (e) {
-      debugPrint('Error ensuring language loaded for $languageCode: $e');
-    }
-  }
-  
-  // All supported languages
-  static final List<Locale> supportedLocales = [
-    const Locale('en', 'US'),
-    const Locale('es', 'ES'),
-    const Locale('fr', 'FR'),
-    const Locale('de', 'DE'),
-    const Locale('pt', 'BR'),
-    const Locale('pl', 'PL'),
-  ];
-  
-  /// Language names for the UI
-  static final Map<String, String> languageNames = {
-    'en': 'English',
-    'es': 'Español',
-    'fr': 'Français',
-    'de': 'Deutsch',
-    'pt': 'Português',
-    'pl': 'Polski',
-  };
-  
+
+
+
   /// Maps to store localized strings for each supported locale
-  // Initialize _allStrings with all supported locales
-  final Map<String, Map<String, dynamic>> _allStrings = {
-    for (var locale in LocalizationService.supportedLocales) locale.languageCode: {}
-  };
-  
+  final Map<String, Map<String, dynamic>> _allStrings = {};
+
   /// Current active localization strings
   Map<String, dynamic> _strings = {};
-  
-  /// For placeholder replacements
-  Map<String, String> _replacements = {};
-  
+
   /// Default locale
   Locale _currentLocale = const Locale('en');
-  
-  /// Flag to track if we've loaded English and Portuguese
-  bool _hasLoadedAllLanguages = false;
-  
+
   /// Keep track of initialization state
   bool _isInitialized = false;
-  
-  /// Private constructor for singleton pattern
-  ManualLocalizationService._() {
-    // Initialize asynchronously
-    _init();
-  }
-  
-  /// Singleton instance
-  static final ManualLocalizationService _instance = ManualLocalizationService._();
-  
-  /// Factory constructor to return the same instance
-  factory ManualLocalizationService() => _instance;
-  
+
+  /// Public constructor
+  ManualLocalizationService();
+
   /// Check if service is ready to use
+  @override
   bool get isReady => _isInitialized;
-  
-  /// Get the current locale for debugging
-  Locale getCurrentLocale() => _currentLocale;
-  
+
   /// Get the current locale
+  @override
   Locale get currentLocale => _currentLocale;
-  
-  /// Get localized string for the given key
-  String? getString(String key) {
-    String? value = _strings[key] as String?;
-    
-    // If not found in current locale and it's not English, try English fallback
-    if (value == null && _currentLocale.languageCode != 'en') {
-      value = _allStrings['en']?[key] as String?;
+
+  /// Initialize the service by loading stored preferences and strings.
+  @override
+  Future<void> init() async {
+    if (_isInitialized) return; // Prevent re-initialization
+
+    // Populate the _allStrings map with empty maps for each supported locale
+    for (var locale in LocalizationService.supportedLocales) {
+      _allStrings[locale.languageCode] = {};
     }
-    
-    return value;
-  }
-  
-  /// Initialize the service by loading stored preferences and strings for both English and Portuguese
-  Future<void> _init() async {
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final languageCode = prefs.getString(LANGUAGE_CODE);
       final countryCode = prefs.getString(COUNTRY_CODE);
-      
-      // Set the current locale based on stored preferences
-      if (languageCode != null) {
-        _currentLocale = Locale(languageCode, countryCode);
-      }
-      
-      // Determine the initial locale to load
-      // prefs, languageCode, and countryCode are already declared earlier in the original _init method
+
       if (languageCode != null) {
         _currentLocale = Locale(languageCode, countryCode);
       } else {
-        // Default to English or try to match platform locale if not set
-        // This part can be enhanced based on LocalizationService's _init logic if needed
-        _currentLocale = const Locale('en', 'US'); 
+        _currentLocale = const Locale('en', 'US');
       }
 
-      // Ensure English is loaded as a fallback
-      if (!_allStrings.containsKey('en') || _allStrings['en']!.isEmpty) {
-        await _loadStrings('en');
-      }
+      await _loadStrings('en');
 
-      // Load the current/persisted locale's strings if it's not English (which is already loaded or will be)
       if (_currentLocale.languageCode != 'en') {
-         if (!_allStrings.containsKey(_currentLocale.languageCode) || _allStrings[_currentLocale.languageCode]!.isEmpty) {
-            await _loadStrings(_currentLocale.languageCode);
-         }
+        await _loadStrings(_currentLocale.languageCode);
       }
-      // Set active strings to the current locale, falling back to English if necessary
+      
       _strings = _allStrings[_currentLocale.languageCode] ?? _allStrings['en'] ?? {};
-      
-      _hasLoadedAllLanguages = true;
+
       _isInitialized = true;
-      
-      // Set active strings to the current locale
-      _strings = _allStrings[_currentLocale.languageCode] ?? _allStrings['en']!;
-      
+
       notifyListeners();
       debugPrint('ManualLocalizationService initialized with locale: ${_currentLocale.languageCode}');
     } catch (e) {
       debugPrint('Error initializing ManualLocalizationService: $e');
-      // Ensure we have at least empty maps to prevent null errors
       _allStrings['en'] ??= {};
-      _allStrings['pt'] ??= {};
       _strings = _allStrings['en']!;
     }
   }
-  
-  /// Load localization strings from ARB file for a specific language
-  /// Stores the strings in _allStrings[languageCode]
+
+  @override
+  String getString(String key, {String fallback = ''}) {
+    // Try to get the string from the current locale
+    String? value = _strings[key] as String?;
+
+    // If not found and the current locale is not English, try the English fallback
+    if (value == null && _currentLocale.languageCode != 'en') {
+      value = _allStrings['en']?[key] as String?;
+    }
+
+    // Return the found value or the provided fallback
+    return value ?? fallback;
+  }
+
   Future<void> _loadStrings(String languageCode) async {
     try {
-      debugPrint('Loading translation strings for language: $languageCode');
-      
-      // First try loading from ARB files
-      try {
-        // Load the ARB file for the requested language
-        final String arbPath = 'lib/l10n/app_$languageCode.arb';
-        debugPrint('Attempting to load ARB file: $arbPath');
-        final String data = await rootBundle.loadString(arbPath);
-        final parsedData = json.decode(data) as Map<String, dynamic>;
-        
-        // Store in our all strings map
-        _allStrings[languageCode] = parsedData;
-        
-        // If this is the current language, update the active strings
-        if (languageCode == _currentLocale.languageCode) {
-          _strings = parsedData;
-        }
-        
-        debugPrint('Successfully loaded ${parsedData.length} strings from ARB for $languageCode');
-      } catch (e) {
-        // ARB file loading failed, use hardcoded translations for testing
-        debugPrint('Error loading ARB file for $languageCode: $e');
-        debugPrint('Using hardcoded translations instead for $languageCode');
-        
-        // Use a hardcoded set of strings for each language for testing purposes
-        final Map<String, dynamic> hardcodedStrings = _getHardcodedStrings(languageCode);
-        
-        // Store the hardcoded strings
-        _allStrings[languageCode] = hardcodedStrings;
-        
-        // If this is the current language, update the active strings
-        if (languageCode == _currentLocale.languageCode) {
-          _strings = hardcodedStrings;
-        }
-        
-        debugPrint('Successfully loaded ${hardcodedStrings.length} hardcoded strings for $languageCode');
-      }
-      
-      // Diagnostic: Log some sample keys to verify content
       if (_allStrings[languageCode]?.isNotEmpty ?? false) {
-        final sampleKeys = _allStrings[languageCode]!.keys.take(5).toList();
-        debugPrint('Sample keys for $languageCode: $sampleKeys');
-      }
-      
-      // Add some critical fallback translations if we're loading a non-English language
-      // This ensures core functionality will work even if some translations are missing
-      if (languageCode != 'en') {
-        Map<String, dynamic>? englishStrings = _allStrings['en'];
-        
-        // Make sure we have English loaded as a fallback
-        if (englishStrings == null || englishStrings.isEmpty) {
-          debugPrint('Loading English as fallback for $languageCode');
-          await _loadStrings('en'); // Recursively load English if needed
-          englishStrings = _allStrings['en']; // Get the loaded English strings
-        }
-        
-        // List of critical keys that must be present for the app to function
-        final List<String> criticalKeys = [
-          'euWideCompensation',
-          'filterByAirline',
-          'last72Hours', 
-          'apiConnectionIssue',
-          'returnToHome',
-          'viewDetails',
-          'euCompensationEligible'
-        ];
-        
-        // Ensure all critical keys exist
-        int missingCount = 0;
-        for (final key in criticalKeys) {
-          if (!_allStrings[languageCode]!.containsKey(key) && englishStrings!.containsKey(key)) {
-            _allStrings[languageCode]![key] = englishStrings[key];
-            missingCount++;
-          }
-        }
-        
-        if (missingCount > 0) {
-          debugPrint('Added $missingCount missing critical keys to $languageCode using English fallbacks');
-        }
-      }
-      
-      // For Portuguese specifically, ensure we have all needed keys from hardcoded values
-      if (languageCode == 'pt') {
-        _addCriticalPortugueseStrings();
-      }
-      
-      // Update active strings if this is the current language
-      if (languageCode == _currentLocale.languageCode) {
-        _strings = _allStrings[languageCode]!;
+        debugPrint('Language $languageCode already loaded.');
+        return;
       }
 
-      _isInitialized = true;
+      debugPrint('Loading translation strings for language: $languageCode');
+      final String arbPath = 'lib/l10n/app_$languageCode.arb';
+      final String data = await rootBundle.loadString(arbPath);
+      final parsedData = json.decode(data) as Map<String, dynamic>;
+      
+      _allStrings[languageCode] = parsedData;
+      
+      if (languageCode == _currentLocale.languageCode) {
+        _strings = parsedData;
+      }
+      
+      debugPrint('Successfully loaded ${parsedData.length} strings from ARB for $languageCode');
     } catch (e) {
-      debugPrint('Error loading strings for $languageCode: $e');
-      // Fall back to English if we can't load the requested language
-      if (languageCode != 'en') {
-        await _loadStrings('en');
-      } else {
-        // Create empty map to avoid null errors
-        _strings = {};
-        _allStrings[languageCode] = {};
+      debugPrint('Error loading ARB file for $languageCode: $e. Using hardcoded fallbacks.');
+      final Map<String, dynamic> hardcodedStrings = _getHardcodedStrings(languageCode);
+      _allStrings[languageCode] = hardcodedStrings;
+      if (languageCode == _currentLocale.languageCode) {
+        _strings = hardcodedStrings;
       }
     }
   }
-  
-  /// Change the app locale and load strings for that locale
-  Future<void> changeLocale(Locale locale) async {
+
+  @override
+  Future<void> setLocale(Locale locale) async {
     debugPrint('ManualLocalizationService.changeLocale called with locale: $locale');
     
-    // Always proceed with loading, even if language codes match
-    // This ensures translations are refreshed
     _currentLocale = locale;
     
-    // Always force a reload of strings to ensure we have the most up-to-date translations
-    debugPrint('Force loading strings for ${locale.languageCode}');
     await _loadStrings(locale.languageCode);
     
-    // Make sure our active strings are updated
     _strings = _allStrings[locale.languageCode] ?? _allStrings['en'] ?? {};
     
-    // Log some diagnostic info about loaded translations
-    debugPrint('Loaded ${_strings.length} strings for ${locale.languageCode}');
-    if (_strings.isNotEmpty) {
-      // Log a sample of keys to verify content
-      final sampleKeys = _strings.keys.take(5).join(', ');
-      debugPrint('Sample keys: $sampleKeys');
-    } else {
-      debugPrint('WARNING: No strings loaded for ${locale.languageCode}');
-    }
-    
-    // Persist the locale preference
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(LANGUAGE_CODE, locale.languageCode);
     if (locale.countryCode != null) {
@@ -314,163 +145,20 @@ class ManualLocalizationService extends ChangeNotifier {
       await prefs.remove(COUNTRY_CODE);
     }
     
-    // Notify listeners to trigger UI updates
     notifyListeners();
     debugPrint('ManualLocalizationService locale changed to: ${locale.languageCode}');
   }
-  
-  /// Force a complete reload of all translations for the given locale
-  /// This is more aggressive than changeLocale and ensures everything is reset
-  Future<void> forceReload(Locale locale) async {
-    debugPrint('ManualLocalizationService: FORCE RELOADING translations for $locale');
-    
-    // Clear existing translations to force a complete reload
-    _strings.clear();
-    if (_allStrings.containsKey(locale.languageCode)) {
-      _allStrings[locale.languageCode]?.clear();
-    }
-    
-    // Update the locale
-    _currentLocale = locale;
-    
-    // Save to preferences
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(LANGUAGE_CODE, locale.languageCode);
-    if (locale.countryCode != null) {
-      await prefs.setString(COUNTRY_CODE, locale.countryCode!);
-    } else {
-      await prefs.remove(COUNTRY_CODE);
-    }
-    
-    // Force reload of English (fallback)
-    await _loadStrings('en');
-    
-    // Then load the requested language
-    if (locale.languageCode != 'en') {
-      await _loadStrings(locale.languageCode);
-    }
-    
-    // Always ensure critical Portuguese strings are available
-    if (locale.languageCode == 'pt') {
-      _addCriticalPortugueseStrings();
-    }
-    
-    // Print diagnostic information about loaded strings
-    _printSampleStrings();
-    
-    // Directly trigger the app-wide rebuild to ensure all UI updates
-    debugPrint('==== TRIGGERING GLOBAL APP REBUILD FROM MANUAL LOCALIZATION SERVICE ====');
-    // Small delay to ensure all async operations complete before rebuild
-    await Future.delayed(const Duration(milliseconds: 100));
-    // Trigger rebuild using our own method instead of non-existent app method
-    forceAppRebuild();
-    
-    // Debug output to verify the reload was successful
-    debugPrint('ManualLocalizationService: Force reload completed for $locale');
-    debugPrint('ManualLocalizationService: Loaded ${_strings.length} strings');
-    debugPrint('ManualLocalizationService: Sample of loaded strings:');
-    _printSampleStrings();
-    
-    // Trigger global app rebuild via the notifier
-    forceAppRebuild();
-    
-    // Notify any listeners to this service
-    notifyListeners();
+
+  Future<void> ensureLanguageLoaded(String languageCode) async {
+    await _loadStrings(languageCode);
   }
-  
-  /// Print a sample of loaded strings for debugging
-  void _printSampleStrings() {
-    // Print a few sample strings to verify content
-    final keys = _strings.keys.take(5).toList();
-    if (keys.isNotEmpty) {
-      debugPrint('===== SAMPLE TRANSLATION STRINGS =====');
-      for (var key in keys) {
-        debugPrint('  $key: ${_strings[key]}');
-      }
-      debugPrint('====================================');
-    } else {
-      debugPrint('WARNING: No translation strings loaded');
-    }
-  }
+
   Map<String, dynamic> _getHardcodedStrings(String languageCode) {
     // Basic set of translations for testing in different languages
     switch (languageCode) {
       case 'pt':
         return {
           'appTitle': 'Compensação de Voo',
-          'home': 'Início',
-          'claims': 'Reclamações',
-          'settings': 'Configurações',
-          'myFlights': 'Meus Voos',
-          'profile': 'Perfil',
-          'checkCompensationEligibility': 'Verificar elegibilidade para compensação',
-          'euWideEligibleFlights': 'Voos elegíveis em toda a UE',
-          'euWideCompensation': 'Compensação em toda a UE',
-          'filterByAirline': 'Filtrar por companhia aérea',
-          'last72Hours': 'Últimas 72 horas',
-          'apiConnectionIssue': 'Problema de conexão com a API',
-          'returnToHome': 'Voltar para o início',
-          'viewDetails': 'Ver detalhes',
-          'euCompensationEligible': 'Elegível para compensação UE',
-          'flightNumber': 'Número do voo',
-          'airline': 'Companhia aérea',
-          'flightDate': 'Data do Voo',
-          'departureAirport': 'Aeroporto de Partida',
-          'arrivalAirport': 'Aeroporto de Chegada',
-          'compensationClaimForm': 'Formulário de Pedido de Indenização',
-          'flightDetails': 'Detalhes do Voo',
-          'delayDuration': 'Duração do atraso',
-          'compensationAmount': 'Valor da compensação',
-          'languageSelection': 'Seleção de idioma',
-          'back': 'Voltar',
-          
-          // Claims dashboard strings
-          'myClaims': 'Minhas Reclamações',
-          'active': 'Ativas',
-          'actionRequired': 'Ação Necessária',
-          'completed': 'Concluídas',
-          'refreshDashboard': 'Atualizar Painel',
-          'claimStats': 'Estatísticas de Reclamações',
-          'totalClaims': 'Total de Reclamações',
-          'pendingClaims': 'Reclamações Pendentes',
-          'successfulClaims': 'Reclamações Bem-sucedidas',
-          'totalCompensation': 'Compensação Total',
-          'noClaims': 'Sem Reclamações',
-          'startNewClaim': 'Iniciar Nova Reclamação',
-          'boardingPass': 'Cartão de Embarque',
-          'ticket': 'Bilhete',
-          'luggageTag': 'Etiqueta de Bagagem',
-          'delayConfirmation': 'Confirmação de Atraso',
-          'hotelReceipt': 'Recibo de Hotel',
-          'mealReceipt': 'Recibo de Refeição',
-          'transportReceipt': 'Recibo de Transporte',
-          'otherDocument': 'Outro Documento',
-          'supportingDocuments': 'Documentos de Apoio',
-          'supportingDocumentsHint': 'Adicione bilhetes, cartões de embarque ou outros documentos relevantes',
-          'noDocumentsYet': 'Nenhum documento adicionado ainda',
-          'submissionChecklist': 'Lista de Verificação de Envio',
-          'submissionChecklistTitle': 'Lista de Verificação de Envio',
-          'claimDetails': 'Detalhes da Reclamação',
-          'status': 'Status',
-          'submitted': 'Enviada',
-          'inReview': 'Em Revisão',
-          'additionalInfoNeeded': 'Informações Adicionais Necessárias',
-          'rejected': 'Rejeitada',
-          'successful': 'Bem-sucedida',
-          'paid': 'Paga',
-          'dateSubmitted': 'Data de Envio',
-          'submitClaim': 'Enviar Reclamação',
-          'accountSettings': 'Configurações da Conta',
-          'profileInformation': 'Informações de Perfil',
-          'editPersonalInfo': 'Edite suas informações pessoais',
-          'editPersonalInfoDesc': 'Edite suas informações pessoais e de contato',
-          'myDocuments': 'Meus Documentos',
-          'accessibility': 'Acessibilidade',
-          'accessibilityOptions': 'Opções de Acessibilidade',
-          'accessibilityOptionsDesc': 'Configure alto contraste, texto grande e suporte a leitores de tela',
-          'configureAccessibility': 'Configure opções de acessibilidade para o aplicativo',
-          'notificationSettings': 'Configurações de Notificação',
-          'configureNotifications': 'Configure preferências de notificação',
           'configureUpdatePreferences': 'Configure como você recebe atualizações de reclamações',
           'notificationSettingsComingSoon': 'Configurações de notificação em breve',
           'selectPreferredLanguage': 'Selecione seu idioma preferido',
@@ -645,7 +333,7 @@ class ManualLocalizationService extends ChangeNotifier {
           'tipProfileUpToDate': 'Mantenga su perfil actualizado para un procesamiento fluido de reclamos.',
           'tipDataPrivacy': 'Su información es privada y solo se utiliza para reclamaciones de compensación.',
           'tipContactDetails': 'Asegúrese de que sus datos de contacto sean correctos para que podamos comunicarnos sobre su reclamo.',
-          'tipAccessibilitySettings': 'Consulte las Opciones de Accesibilidad para personalizar la aplicación según sus necesidades.',
+          'tipAccessibilitySettings': 'Verifique las Opciones de Accesibilidad para personalizar la aplicación según sus necesidades.',
           
           // Flight details strings
           'flightInfo': 'Información del Vuelo',
@@ -781,7 +469,7 @@ class ManualLocalizationService extends ChangeNotifier {
           'tipsAndReminders': 'Conseils et Rappels',
           'tipProfileUpToDate': 'Gardez votre profil à jour pour un traitement fluide des réclamations.',
           'tipDataPrivacy': 'Vos informations sont privées et uniquement utilisées pour les réclamations de compensation.',
-          'tipContactDetails': 'Assurez-vous que vos coordonnées sont correctes pour que nous puissions vous contacter au sujet de votre réclamation.',
+          'tipContactDetails': 'Assurez-vous que vos coordonnées sont correctes afin que nous puissions vous contacter au sujet de votre réclamation.',
           'tipAccessibilitySettings': 'Consultez les Paramètres d\'Accessibilité pour personnaliser l\'application selon vos besoins.',
           
           // Flight details strings
@@ -824,8 +512,6 @@ class ManualLocalizationService extends ChangeNotifier {
           'flightDate': 'Flugdatum',
           'departureAirport': 'Abflughafen',
           'arrivalAirport': 'Ankunftsflughafen',
-          'compensationClaimForm': 'Entschädigungsantragsformular',
-          'flightDetails': 'Flugdetails',
           'delayDuration': 'Verzögerungsdauer',
           'compensationAmount': 'Entschädigungsbetrag',
           'languageSelection': 'Sprachauswahl',
@@ -1131,6 +817,7 @@ class ManualLocalizationService extends ChangeNotifier {
   /// Primary method to get a localized string with placeholder replacements
   /// Usage: getLocalizedString('welcomeMessage', {'name': 'John'}) 
   /// where welcomeMessage is "Hello {name}!"
+  @override
   String getLocalizedString(String key, [Map<String, String>? replacements, String? fallback]) {
     // Get the raw string or fall back to English
     String? value = _strings[key] as String?;
@@ -1156,8 +843,9 @@ class ManualLocalizationService extends ChangeNotifier {
   }
   
   /// Get display name for a language
+  @override
   String getDisplayLanguage(String languageCode) {
-    return languageNames[languageCode] ?? languageCode;
+    return LocalizationService.languageNames[languageCode] ?? languageCode;
   }
   
   // This method has been consolidated into the primary getLocalizedString method

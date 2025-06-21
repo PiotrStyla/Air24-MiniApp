@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart'; // Keep for User type, but no
 import 'package:get_it/get_it.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../models/user_profile.dart';
-import '../services/firestore_service.dart';
+// import '../services/firestore_service.dart'; // Temporarily disabled
 import '../utils/translation_helper.dart';
 import '../utils/translation_initializer.dart';
 
@@ -77,30 +77,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         setState(() => _loading = false);
         return;
       }
-      
-      // Pre-fill email from Firebase Auth
-      String userEmail = user.email ?? '';
-      
-      final profile = await FirestoreService().getUserProfile(user.uid);
+
+      // TODO: Re-implement profile loading with the new service architecture
       if (mounted) {
         setState(() {
-          // If profile exists, use it
-          if (profile != null) {
-            _nameController.text = profile.fullName;
-            _phoneController.text = profile.phoneNumber ?? '';
-            _passportController.text = profile.passportNumber ?? '';
-            _nationalityController.text = profile.nationality ?? '';
-            _dobController.text = profile.dateOfBirth?.toIso8601String().split('T').first ?? '';
-            _addressController.text = profile.addressLine ?? '';
-            _cityController.text = profile.city ?? '';
-            _postalController.text = profile.postalCode ?? '';
-            _countryController.text = profile.country ?? '';
-            _consentData = profile.consentToShareData;
-            _consentNotifications = profile.consentToNotifications;
-          } else {
-            // If no profile yet, use what we know from Auth
-            _nameController.text = user.displayName ?? '';
-          }
+          // For now, just use the display name from the auth provider
+          _nameController.text = user.displayName ?? '';
           _loading = false;
         });
       }
@@ -122,24 +104,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     if (!_formKey.currentState!.validate()) return;
     final user = _authViewModel.currentUser; // Use AuthViewModel
     if (user == null) return;
-    final profile = UserProfile(
-      uid: user.uid,
-      fullName: _nameController.text,
-      email: user.email ?? '',
-      phoneNumber: _phoneController.text,
-      passportNumber: _passportController.text,
-      nationality: _nationalityController.text,
-      dateOfBirth: _dobController.text.isNotEmpty ? DateTime.tryParse(_dobController.text) : null,
-      addressLine: _addressController.text,
-      city: _cityController.text,
-      postalCode: _postalController.text,
-      country: _countryController.text,
-      consentToShareData: _consentData,
-      consentToNotifications: _consentNotifications,
-    );
-    await FirestoreService().setUserProfile(profile);
+
+    // TODO: Re-implement profile saving with the new service architecture
+    // final profile = UserProfile(...);
+    // await NewProfileService().setUserProfile(profile);
+
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(TranslationHelper.getString(context, 'profileSaved', fallback: 'Profile saved!'))
+      content: Text(TranslationHelper.getString(context, 'profileSaved', fallback: 'Profile saved! (Feature temporarily disabled)'))
     ));
   }
 

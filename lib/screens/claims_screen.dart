@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../models/claim.dart';
-import '../services/firestore_service.dart';
-import 'claim_submission_screen.dart';
+import '../core/services/service_initializer.dart';
+import '../services/auth_service.dart';
+import '../services/claim_tracking_service.dart';
+import 'claim_submission_screen.dart' hide Colors, SizedBox, Container, Text, EdgeInsets, Column, TextStyle;
 import 'claim_detail_screen.dart';
 import 'faq_screen.dart';
 
@@ -93,7 +94,8 @@ class ClaimsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    final authService = ServiceInitializer.get<AuthService>();
+    final user = authService.currentUser;
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Claims'),
@@ -166,7 +168,7 @@ class ClaimsScreen extends StatelessWidget {
             child: user == null
                 ? const Center(child: Text('You must be logged in to view your claims.'))
                 : StreamBuilder<List<Claim>>(
-                    stream: FirestoreService().streamClaimsForUser(user.uid),
+                    stream: ServiceInitializer.get<ClaimTrackingService>().getUserClaimsStream(user.uid),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());

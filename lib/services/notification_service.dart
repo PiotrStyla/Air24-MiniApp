@@ -42,8 +42,10 @@ class NotificationService {
       );
       
       debugPrint('Notification authorization status: ${settings.authorizationStatus}');
-    } catch (e) {
-      debugPrint('Error requesting notification permissions: $e');
+    } on FirebaseException catch (e) {
+      debugPrint('Firebase error requesting notification permissions: ${e.message}');
+    } catch (e, stackTrace) {
+      debugPrint('Error requesting notification permissions: $e\n$stackTrace');
     }
   }
   
@@ -219,8 +221,10 @@ class NotificationService {
       // Save token to Firestore
       // This would typically be implemented in a user service or profile service
       debugPrint('Device token saved: $token');
-    } catch (e) {
-      debugPrint('Error saving device token: $e');
+    } on FirebaseException catch (e) {
+      debugPrint('Firebase error saving device token: ${e.message}');
+    } catch (e, stackTrace) {
+      debugPrint('Error saving device token: $e\n$stackTrace');
     }
   }
   

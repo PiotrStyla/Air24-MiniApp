@@ -13,7 +13,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
   final _flightNumberController = TextEditingController();
   final _dateController = TextEditingController();
   // Initialize service with real API data only
-  final _aviationStackService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'http://piotrs.pythonanywhere.com');
+    final _aviationStackService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
   
   bool _isLoading = false;
   Map<String, dynamic>? _compensationResult;
