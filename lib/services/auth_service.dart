@@ -35,14 +35,16 @@ class AuthService with ChangeNotifier {
 
   /// Private method to handle asynchronous initialization
   Future<void> _init() async {
+    // By awaiting the first event from the `authStateChanges` stream, we ensure
+    // that the `AuthService` has a definitive initial state (either a user or null)
+    // before its creation is considered complete. This resolves race conditions
+    // during app startup without causing a deadlock.
+    final initialUser = await _auth.authStateChanges().first;
+    _currentUser = initialUser;
+
+    // After handling the initial state, we set up a listener for any subsequent
+    // changes to keep the user state up-to-date.
     _auth.authStateChanges().listen(_onAuthStateChanged);
-    try {
-      _currentUser = _auth.currentUser;
-    } catch (e) {
-      // This can fail on web during initial load, so we catch it gracefully
-      debugPrint('Error getting initial currentUser: $e');
-      _currentUser = null;
-    }
   }
 
   // Current user getter

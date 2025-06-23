@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:f35_flight_compensation/services/auth_service.dart';
 import 'package:f35_flight_compensation/services/document_storage_service.dart';
-import 'package:f35_flight_compensation/services/firebase_document_storage_service.dart';
+import 'package:f35_flight_compensation/services/local_document_storage_service.dart';
 
 import 'package:f35_flight_compensation/services/aviation_stack_service.dart';
 import 'package:f35_flight_compensation/services/document_ocr_service.dart';
@@ -36,7 +36,6 @@ class ServiceInitializer {
     _locator.registerSingletonAsync<AuthService>(() => AuthService.create());
 
     // Register other services as lazy singletons
-    _locator.registerLazySingleton<DocumentStorageService>(() => FirebaseDocumentStorageService());
         _locator.registerLazySingleton<AviationStackService>(() => AviationStackService(baseUrl: 'http://api.aviationstack.com/v1'));
     _locator.registerLazySingleton<DocumentOcrService>(() => DocumentOcrService());
     _locator.registerLazySingleton<NotificationService>(() => NotificationService());
@@ -61,6 +60,11 @@ class ServiceInitializer {
     await _locator.isReady<AuthService>();
     print('[ServiceInitializer] AuthService initialized.');
 
+    // Register services that depend on AuthService
+    // Register the new LocalDocumentStorageService
+    _locator.registerLazySingleton<LocalDocumentStorageService>(() => LocalDocumentStorageService(_locator<AuthService>()));
+    _locator.registerLazySingleton<DocumentStorageService>(() => _locator<LocalDocumentStorageService>());
+
     // Register services that depend on other services
     _locator.registerLazySingleton<ClaimSubmissionService>(() => ClaimSubmissionService(
         claimTrackingService: _locator<ClaimTrackingService>(),
@@ -78,16 +82,21 @@ class ServiceInitializer {
       trackingService: _locator<ClaimTrackingService>(),
       authService: _locator<AuthService>(),
     ));
-    print('[ServiceInitializer] All services and viewmodels registered.');
+
+    // Ensure all async and lazy singletons are ready before finishing.
+    print('[ServiceInitializer] Waiting for all services to be ready...');
+    await _locator.allReady();
+    print('[ServiceInitializer] All services and viewmodels registered and ready.');
   }
 
   /// Deprecated synchronous initializer. Use initAsync() instead.
   @Deprecated('Use initAsync() instead for safe asynchronous initialization.')
   static void init() {
-    print('[ServiceInitializer] init() called. _isTestMode: $_isTestMode');
-    // This is now a wrapper for the async initializer for backward compatibility.
-    // In a real app, you would migrate all calls to initAsync().
-    initAsync();
+    // This method is deprecated and should not be used.
+    // Calling the async init from here without awaiting it is a critical error.
+    print('CRITICAL ERROR: Synchronous ServiceInitializer.init() was called. Use await ServiceInitializer.initAsync() instead.');
+    // To prevent a crash, we do nothing. The app will likely fail later
+    // if services are not initialized, but it won't be an immediate silent crash.
   }
   
   /// Get instance of registered service or viewmodel

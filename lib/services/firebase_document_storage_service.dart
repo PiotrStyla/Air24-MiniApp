@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:f35_flight_compensation/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
@@ -38,46 +38,65 @@ Future<T> safeFirebaseOperation<T>(Future<T> Function() operation, T fallbackVal
 
 /// Service for managing flight document storage and retrieval using Firebase.
 class FirebaseDocumentStorageService implements DocumentStorageService {
+  final AuthService _authService;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _picker = ImagePicker();
   final Uuid _uuid = const Uuid();
 
-  String? get _currentUserId => _auth.currentUser?.uid;
+  FirebaseDocumentStorageService(this._authService);
 
-  CollectionReference<FlightDocument> get _documentsCollection =>
-      _firestore.collection('documents').withConverter<FlightDocument>(
-            fromFirestore: (snapshot, _) => FlightDocument.fromFirestore(snapshot.data()!, snapshot.id),
-            toFirestore: (document, _) => document.toFirestore(),
-          );
+  String? get _currentUserId => _authService.currentUser?.uid;
 
-  Future<File?> pickImage(ImageSource source) async {
+  CollectionReference<Map<String, dynamic>> get _documentsCollection =>
+      _firestore.collection('documents');
+
+  Future<XFile?> pickImage(ImageSource source) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: source,
         imageQuality: 70,
       );
-      return pickedFile != null ? File(pickedFile.path) : null;
+      return pickedFile;
     } catch (e, stackTrace) {
       debugPrint('Error picking image: $e\n$stackTrace');
       return null;
     }
   }
 
-  Future<String?> uploadFile(File file, String flightNumber, FlightDocumentType type) async {
-    if (_currentUserId == null) throw Exception('User not authenticated');
+  Future<String?> uploadFile(XFile file, String flightNumber, FlightDocumentType type) async {
+    print('[FirebaseDocumentStorageService] Starting upload for file: ${file.name}, flight: $flightNumber');
+    if (_currentUserId == null) {
+      print('[FirebaseDocumentStorageService] Error: User not authenticated.');
+      throw Exception('User not authenticated');
+    }
 
-    return safeFirebaseOperation<String?>(
-      () async {
-        final fileName = '${_uuid.v4()}_${file.path.split('/').last}';
-        final ref = _storage.ref().child('user_documents').child(_currentUserId!).child(fileName);
-        final uploadTask = await ref.putFile(file);
-        return await uploadTask.ref.getDownloadURL();
-      },
-      null,
-      operationName: 'Upload file'
-    );
+    try {
+      final fileName = '${_uuid.v4()}_${file.name}';
+      final ref = _storage.ref().child('user_documents').child(_currentUserId!).child(fileName);
+      print('[FirebaseDocumentStorageService] Uploading to path: ${ref.fullPath}');
+
+      final UploadTask uploadTask;
+      if (kIsWeb) {
+        print('[FirebaseDocumentStorageService] Using putData for web with MIME type: ${file.mimeType}');
+        final metadata = SettableMetadata(contentType: file.mimeType);
+        uploadTask = ref.putData(await file.readAsBytes(), metadata);
+      } else {
+        print('[FirebaseDocumentStorageService] Using putFile for native');
+        uploadTask = ref.putFile(File(file.path));
+      }
+
+      final TaskSnapshot snapshot = await uploadTask;
+      print('[FirebaseDocumentStorageService] Upload complete, getting URL...');
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      print('[FirebaseDocumentStorageService] Got download URL: $downloadUrl');
+
+      return downloadUrl;
+    } catch (e, stackTrace) {
+      print('[FirebaseDocumentStorageService] An exception occurred in uploadFile: $e');
+      print(stackTrace);
+      return null;
+    }
   }
 
   @override
@@ -111,7 +130,7 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
 
     return safeFirebaseOperation<FlightDocument?>(
       () async {
-        await _documentsCollection.doc(document.id).set(document);
+        await _documentsCollection.doc(document.id).set(document.toFirestore());
         return document;
       },
       null,
@@ -127,7 +146,7 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
             .where('userId', isEqualTo: _currentUserId)
             .where('flightNumber', isEqualTo: flightNumber)
             .get();
-        return querySnapshot.docs.map((doc) => doc.data()).toList();
+        return querySnapshot.docs.map((doc) => FlightDocument.fromFirestore(doc.data(), doc.id)).toList();
       },
       [],
       operationName: 'Get flight documents'
@@ -140,9 +159,11 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
       () async {
         final querySnapshot = await _documentsCollection
             .where('userId', isEqualTo: _currentUserId)
-            .orderBy('uploadDate', descending: true)
             .get();
-        return querySnapshot.docs.map((doc) => doc.data()).toList();
+        final documents = querySnapshot.docs.map((doc) => FlightDocument.fromFirestore(doc.data(), doc.id)).toList();
+        // Sort on the client to avoid needing a composite index in Firestore.
+        documents.sort((a, b) => b.uploadDate.compareTo(a.uploadDate));
+        return documents;
       },
       [],
       operationName: 'Get all user documents'

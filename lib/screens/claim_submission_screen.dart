@@ -1,54 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../viewmodels/claim_submission_viewmodel.dart';
-import '../models/flight.dart';
+import '../models/claim.dart';
+import 'claim_attachment_screen.dart';
 
-class ClaimSubmissionScreen extends StatelessWidget {
-  const ClaimSubmissionScreen({super.key});
+class ClaimSubmissionScreen extends StatefulWidget {
+  final Claim? initialClaim;
 
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ClaimSubmissionViewModel(),
-      child: const _ClaimSubmissionForm(),
-    );
-  }
-}
-
-class _ClaimSubmissionForm extends StatefulWidget {
-  const _ClaimSubmissionForm();
+  const ClaimSubmissionScreen({super.key, this.initialClaim});
 
   @override
-  State<_ClaimSubmissionForm> createState() => _ClaimSubmissionFormState();
+  State<ClaimSubmissionScreen> createState() => _ClaimSubmissionScreenState();
 }
 
-class _ClaimSubmissionFormState extends State<_ClaimSubmissionForm> {
+class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _flightNumberController = TextEditingController();
-  final _departureAirportController = TextEditingController();
-  final _arrivalAirportController = TextEditingController();
-  final _reasonController = TextEditingController(); // For simplicity
+  late final TextEditingController _airlineNameController;
+  late final TextEditingController _flightNumberController;
+  late final TextEditingController _departureAirportController;
+  late final TextEditingController _arrivalAirportController;
+    late final TextEditingController _reasonController;
+  late final TextEditingController _dateController;
   DateTime? _selectedDate;
 
+
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (arguments != null) {
-      _flightNumberController.text = arguments['prefillFlightNumber'] ?? '';
-      _departureAirportController.text = arguments['prefillDepartureAirport'] ?? '';
-      _arrivalAirportController.text = arguments['prefillArrivalAirport'] ?? '';
-      _selectedDate = arguments['prefillFlightDate'];
-    }
+  void initState() {
+    super.initState();
+    final claim = widget.initialClaim;
+    _airlineNameController = TextEditingController(text: claim?.airlineName ?? '');
+    _flightNumberController = TextEditingController(text: claim?.flightNumber ?? '');
+    _departureAirportController = TextEditingController(text: claim?.departureAirport ?? '');
+    _arrivalAirportController = TextEditingController(text: claim?.arrivalAirport ?? '');
+    _reasonController = TextEditingController(text: claim?.reason ?? '');
+    _selectedDate = claim?.flightDate;
+    _dateController = TextEditingController(
+      text: _selectedDate == null ? '' : DateFormat.yMd().format(_selectedDate!)
+    );
   }
 
   @override
   void dispose() {
+    _airlineNameController.dispose();
     _flightNumberController.dispose();
     _departureAirportController.dispose();
     _arrivalAirportController.dispose();
     _reasonController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
@@ -62,11 +60,12 @@ class _ClaimSubmissionFormState extends State<_ClaimSubmissionForm> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
+        _dateController.text = DateFormat.yMd().format(_selectedDate!); 
       });
     }
   }
 
-  void _submitClaim(ClaimSubmissionViewModel viewModel) {
+  void _submitClaim() {
     if (_formKey.currentState!.validate()) {
       if (_selectedDate == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -75,32 +74,40 @@ class _ClaimSubmissionFormState extends State<_ClaimSubmissionForm> {
         return;
       }
 
-      final flight = Flight(
-        flightNumber: _flightNumberController.text,
-        flightDate: _selectedDate!,
-        departureAirport: _departureAirportController.text,
-        arrivalAirport: _arrivalAirportController.text,
+      // Use copyWith on the initial claim if it exists, otherwise create a new one.
+      // This preserves fields that aren't on this form, like passenger details.
+      final newClaim = (widget.initialClaim ?? Claim(
+              id: '', // Will be generated
+              userId: '', // Will be set from auth
+              flightNumber: '',
+              airlineName: '',
+              flightDate: _selectedDate!,
+              departureAirport: '',
+              arrivalAirport: '',
+              reason: '',
+              compensationAmount: 0,
+              status: 'Draft',
+              bookingReference: '',
+            )).copyWith(
+              flightNumber: _flightNumberController.text,
+              airlineName: _airlineNameController.text,
+              flightDate: _selectedDate!,
+              departureAirport: _departureAirportController.text,
+              arrivalAirport: _arrivalAirportController.text,
+              reason: _reasonController.text,
+            );
 
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ClaimAttachmentScreen(claim: newClaim),
+        ),
       );
-
-      viewModel.submitClaim(flight, _reasonController.text).then((_) {
-        if (viewModel.errorMessage.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Claim submitted successfully!')),
-          );
-          Navigator.of(context).pop();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Submission Failed: ${viewModel.errorMessage}')),
-          );
-        }
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<ClaimSubmissionViewModel>();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -110,9 +117,16 @@ class _ClaimSubmissionFormState extends State<_ClaimSubmissionForm> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              TextFormField(
+                controller: _airlineNameController,
+                decoration: const InputDecoration(labelText: 'Airline'),
+                readOnly: true, // This field is pre-filled and not editable
+              ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _flightNumberController,
                 decoration: const InputDecoration(labelText: 'Flight Number'),
@@ -137,26 +151,27 @@ class _ClaimSubmissionFormState extends State<_ClaimSubmissionForm> {
                 validator: (value) => value!.isEmpty ? 'Please enter a reason' : null,
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(_selectedDate == null
-                        ? 'No date chosen!'
-                        : 'Flight Date: ${DateFormat.yMd().format(_selectedDate!)}'),
-                  ),
-                  TextButton(
-                    onPressed: () => _selectDate(context),
-                    child: const Text('Choose Date'),
-                  ),
-                ],
+              TextFormField(
+                controller: _dateController,
+                decoration: const InputDecoration(
+                  labelText: 'Flight Date',
+                  hintText: 'Select the date of your flight',
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+                readOnly: true,
+                onTap: () => _selectDate(context),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a flight date';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: viewModel.isLoading ? null : () => _submitClaim(viewModel),
+                onPressed: () => _submitClaim(),
                 style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: viewModel.isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Submit Claim'),
+                child: const Text('Continue to Attachments'),
               ),
             ],
           ),

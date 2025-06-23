@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,8 +9,9 @@ class DocumentViewModel extends ChangeNotifier {
   final DocumentStorageService _documentService;
   
   List<FlightDocument> _documents = [];
-  File? _selectedFile;
+  XFile? _selectedFile;
   bool _isUploading = false;
+  bool _isLoadingInitialData = false;
   String? _errorMessage;
   FlightDocumentType _selectedDocumentType = FlightDocumentType.boardingPass;
   String _documentName = '';
@@ -22,7 +22,9 @@ class DocumentViewModel extends ChangeNotifier {
   
   // Getters
   Stream<List<FlightDocument>> get documentsStream => _documentsStream;
-  File? get selectedFile => _selectedFile;
+  List<FlightDocument> get documents => _documents;
+  bool get isLoadingInitialData => _isLoadingInitialData;
+  XFile? get selectedFile => _selectedFile;
   bool get isUploading => _isUploading;
   String? get errorMessage => _errorMessage;
   FlightDocumentType get selectedDocumentType => _selectedDocumentType;
@@ -147,43 +149,74 @@ class DocumentViewModel extends ChangeNotifier {
     }
   }
   
-  Future<bool> uploadSelectedFile() async {
-    if (_selectedFile == null) {
-      _errorMessage = 'No file selected';
+  /// Orchestrates the picking and uploading of a single document.
+  /// Returns the new FlightDocument on success, null on failure.
+  Future<FlightDocument?> pickAndUploadDocument({
+    required String flightNumber,
+    required DateTime flightDate,
+    required FlightDocumentType documentType,
+    String documentName = 'Claim Attachment',
+  }) async {
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final XFile? pickedFile = await _documentService.pickImage(ImageSource.gallery);
+      if (pickedFile == null) {
+        print('[DocumentViewModel] File picking cancelled by user.');
+        return null;
+      }
+
+      _selectedFile = pickedFile;
+      setFlightNumber(flightNumber);
+      setFlightDate(flightDate);
+      setDocumentType(documentType);
+      setDocumentName(documentName);
+
+      print('[DocumentViewModel] File picked: ${_selectedFile?.name}, initiating upload.');
+      return await uploadSelectedFile();
+    } catch (e) {
+      _errorMessage = 'Failed to pick and upload document: $e';
+      print('[DocumentViewModel] Error in pickAndUploadDocument: $_errorMessage');
       notifyListeners();
-      return false;
+      return null;
     }
-    
+  }
+
+  Future<FlightDocument?> uploadSelectedFile() async {
+    if (_selectedFile == null) {
+      _errorMessage = 'No file was selected.';
+      notifyListeners();
+      return null;
+    }
     if (_flightNumber.isEmpty) {
       _errorMessage = 'Flight number is required';
       notifyListeners();
-      return false;
+      return null;
     }
-    
     if (_documentName.isEmpty) {
       _errorMessage = 'Document name is required';
       notifyListeners();
-      return false;
+      return null;
     }
-    
+
     _isUploading = true;
     _errorMessage = null;
     notifyListeners();
-    
+
     try {
-      // Upload file to Firebase Storage
+      print('[DocumentViewModel] Attempting to upload file: ${_selectedFile?.name}');
       final storageUrl = await _documentService.uploadFile(
         _selectedFile!,
         _flightNumber,
         _selectedDocumentType,
       );
-      
+
       if (storageUrl == null) {
         throw Exception('Failed to upload file');
       }
-      
-      // Save document metadata to Firestore
-      final document = await _documentService.saveDocument(
+
+      final newDocument = await _documentService.saveDocument(
         flightNumber: _flightNumber,
         flightDate: _flightDate,
         documentType: _selectedDocumentType,
@@ -191,33 +224,32 @@ class DocumentViewModel extends ChangeNotifier {
         storageUrl: storageUrl,
         description: _description.isNotEmpty ? _description : null,
       );
-      
-      if (document == null) {
+
+      if (newDocument == null) {
         throw Exception('Failed to save document metadata');
       }
-      
-      // Reset form
+
+      print('[DocumentViewModel] Document uploaded and saved successfully.');
+      _documents.add(newDocument);
       _selectedFile = null;
       _documentName = '';
       _description = '';
-      
-      // Refresh documents list
-      await loadDocumentsForFlight(_flightNumber);
-      
-      _isUploading = false;
-      notifyListeners();
-      return true;
+
+      return newDocument;
     } on FirebaseException catch (e) {
-      _errorMessage = 'Failed to upload document: ${e.message}';
+      print('[DocumentViewModel] Caught FirebaseException: ${e.code} - ${e.message}');
+      _errorMessage = 'Failed to save document metadata.';
+      notifyListeners();
+      return null;
+    } catch (e) {
+      print('[DocumentViewModel] Caught generic Exception: $e');
+      _errorMessage = 'An unexpected error occurred: $e';
+      notifyListeners();
+      return null;
+    } finally {
       _isUploading = false;
       notifyListeners();
-      return false;
-    } catch (e, stackTrace) {
-      _errorMessage = 'An unexpected error occurred during upload.';
-      print('Upload document error: $e\n$stackTrace');
-      _isUploading = false;
-      notifyListeners();
-      return false;
+      print('[DocumentViewModel] Exiting uploadSelectedFile method, isUploading is now false.');
     }
   }
   
@@ -246,23 +278,20 @@ class DocumentViewModel extends ChangeNotifier {
   }
   
   Future<void> loadAllUserDocuments() async {
-    _isUploading = true;
+    _isLoadingInitialData = true;
     _errorMessage = null;
     notifyListeners();
-    
+
     try {
       _documents = await _documentService.getAllUserDocuments();
       _documentsStream = Stream.value(_documents);
-      _isUploading = false;
-      notifyListeners();
     } on FirebaseException catch (e) {
       _errorMessage = 'Failed to load documents: ${e.message}';
-      _isUploading = false;
-      notifyListeners();
     } catch (e, stackTrace) {
       _errorMessage = 'An unexpected error occurred while loading documents.';
       print('Load all user documents error: $e\n$stackTrace');
-      _isUploading = false;
+    } finally {
+      _isLoadingInitialData = false;
       notifyListeners();
     }
   }

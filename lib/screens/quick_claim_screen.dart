@@ -80,6 +80,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
         bookingReference: '', // Placeholder for quick claim
         id: const Uuid().v4(),
         userId: user.uid,
+        airlineName: 'Not specified',
         flightNumber: _flightNumberController.text.trim(),
         flightDate: _flightDate,
         departureAirport: _departureAirportController.text.trim(),

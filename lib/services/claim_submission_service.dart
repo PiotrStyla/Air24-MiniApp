@@ -38,7 +38,44 @@ class ClaimSubmissionService extends ChangeNotifier {
   }
 
   /// Submit a new compensation claim.
-  Future<Claim?> submitClaim(Flight flight, String reason) async {
+  Uri constructClaimMailtoUri({
+    required Claim claim,
+    required String airlineEmail,
+    required String userEmail,
+  }) {
+    final subject = 'Flight Compensation Claim - Flight ${claim.flightNumber}';
+    final attachmentsSection = claim.attachmentUrls.isNotEmpty
+        ? '\n\nSupporting Documents:\n${claim.attachmentUrls.map((url) => '- $url').join('\n')}'
+        : '';
+
+    final body = '''
+Dear Sir or Madam,
+
+I am writing to claim compensation under EC Regulation 261/2004 for the flight detailed below:
+
+- Flight Number: ${claim.flightNumber}
+- Flight Date: ${claim.flightDate.toIso8601String().split('T').first}
+- Departure Airport: ${claim.departureAirport}
+- Arrival Airport: ${claim.arrivalAirport}
+- Reason for Claim: ${claim.reason}
+
+Please find my details and the flight information above for your processing.$attachmentsSection
+
+Sincerely,
+${_authService.currentUser?.displayName ?? 'Awaiting your reply'}
+''';
+
+    final Uri mailtoUri = Uri(
+      scheme: 'mailto',
+      path: airlineEmail,
+      query: 'subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}&cc=${Uri.encodeComponent(userEmail)}',
+    );
+
+    return mailtoUri;
+  }
+
+  /// Submit a new compensation claim.
+  Future<Claim?> submitClaim(Claim claim) async {
     _setSubmitting(true);
     _setSubmissionError(null);
 
@@ -50,16 +87,9 @@ class ClaimSubmissionService extends ChangeNotifier {
     }
 
     try {
-      final newClaim = Claim(
-        compensationAmount: 0.0, // Default value, to be updated later
-        bookingReference: '', // Placeholder for submission
+      final newClaim = claim.copyWith(
         id: _uuid.v4(),
         userId: userId,
-        flightNumber: flight.flightNumber,
-        flightDate: flight.flightDate,
-        departureAirport: flight.departureAirport,
-        arrivalAirport: flight.arrivalAirport,
-        reason: reason,
         status: ClaimStatus.submitted.name,
       );
 

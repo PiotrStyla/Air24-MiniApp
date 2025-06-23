@@ -4,6 +4,7 @@ class Claim {
   final String id;
   final String userId;
   final String flightNumber;
+  final String airlineName;
   final DateTime flightDate;
   final String departureAirport;
   final String arrivalAirport;
@@ -11,10 +12,12 @@ class Claim {
   final double compensationAmount;
   final String status;
   final String bookingReference;
+  final List<String> attachmentUrls;
 
   Claim({
     required this.id,
     required this.userId,
+    required this.airlineName,
     required this.flightNumber,
     required this.flightDate,
     required this.departureAirport,
@@ -23,6 +26,7 @@ class Claim {
     required this.compensationAmount,
     required this.status,
     required this.bookingReference,
+    this.attachmentUrls = const [],
   });
 
   factory Claim.fromFirestore(Map<String, dynamic> data, String documentId) {
@@ -30,6 +34,7 @@ class Claim {
       id: documentId,
       userId: data['userId'] as String,
       flightNumber: data['flightNumber'] as String,
+      airlineName: data['airlineName'] as String? ?? '',
       flightDate: (data['flightDate'] as Timestamp).toDate(),
       departureAirport: data['departureAirport'] as String,
       arrivalAirport: data['arrivalAirport'] as String,
@@ -37,6 +42,37 @@ class Claim {
       compensationAmount: (data['compensationAmount'] as num).toDouble(),
       status: data['status'] as String,
       bookingReference: data['bookingReference'] as String,
+      attachmentUrls: List<String>.from(data['attachmentUrls'] ?? []),
+    );
+  }
+
+  Claim copyWith({
+    String? id,
+    String? userId,
+    String? flightNumber,
+    String? airlineName,
+    DateTime? flightDate,
+    String? departureAirport,
+    String? arrivalAirport,
+    String? reason,
+    double? compensationAmount,
+    String? status,
+    String? bookingReference,
+    List<String>? attachmentUrls,
+  }) {
+    return Claim(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      flightNumber: flightNumber ?? this.flightNumber,
+      airlineName: airlineName ?? this.airlineName,
+      flightDate: flightDate ?? this.flightDate,
+      departureAirport: departureAirport ?? this.departureAirport,
+      arrivalAirport: arrivalAirport ?? this.arrivalAirport,
+      reason: reason ?? this.reason,
+      compensationAmount: compensationAmount ?? this.compensationAmount,
+      status: status ?? this.status,
+      bookingReference: bookingReference ?? this.bookingReference,
+      attachmentUrls: attachmentUrls ?? this.attachmentUrls,
     );
   }
 
@@ -44,6 +80,7 @@ class Claim {
     return {
       'userId': userId,
       'flightNumber': flightNumber,
+      'airlineName': airlineName,
       'flightDate': Timestamp.fromDate(flightDate),
       'departureAirport': departureAirport,
       'arrivalAirport': arrivalAirport,
@@ -51,6 +88,7 @@ class Claim {
       'compensationAmount': compensationAmount,
       'status': status,
       'bookingReference': bookingReference,
+      'attachmentUrls': attachmentUrls,
     };
   }
 }

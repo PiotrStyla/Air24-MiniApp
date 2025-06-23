@@ -1,12 +1,11 @@
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import '../models/flight_document.dart';
 
 /// Abstract interface for a service that manages flight document storage.
 abstract class DocumentStorageService {
-  Future<File?> pickImage(ImageSource source);
+  Future<XFile?> pickImage(ImageSource source);
 
-  Future<String?> uploadFile(File file, String flightNumber, FlightDocumentType type);
+  Future<String?> uploadFile(XFile file, String flightNumber, FlightDocumentType type);
 
   Future<FlightDocument?> saveDocument({
     required String flightNumber,
