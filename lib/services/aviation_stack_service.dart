@@ -13,7 +13,7 @@ class AviationStackService {
   final String? pythonBackendUrl = 'http://PiotrS.pythonanywhere.com';
 
   /// Whether to use the Python backend first
-  final bool usePythonBackend = true;
+  final bool usePythonBackend = false;
 
   // Caching for airport and airline data to avoid repeated API calls.
   Map<String, String> _airportCountryCache = {};
@@ -464,7 +464,7 @@ class AviationStackService {
     try {
       foundation.debugPrint('AviationStackService: Attempting to fetch flights from AviationStack API for multiple statuses.');
       final apiKey = await _getApiKey();
-      final statusesToFetch = ['cancelled', 'diverted', 'landed'];
+      final statusesToFetch = ['cancelled', 'diverted', 'delayed', 'landed'];
       
       for (final status in statusesToFetch) {
         foundation.debugPrint('AviationStackService: Fetching flights with status: $status');
