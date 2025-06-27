@@ -44,6 +44,7 @@ def eu_compensation_eligible():
                     airport_data = aviationstack_client.get_airport_flights(
                         airport_code=airport,
                         flight_type='arrival',
+                        flight_status='scheduled,cancelled,diverted,delayed',
                         limit=100
                     )
                     
@@ -55,9 +56,19 @@ def eu_compensation_eligible():
                             # Process flight data
                             formatted_flight = aviationstack_client.format_flight_for_storage(flight)
                             
-                            # Check if eligible for compensation (3+ hour delay)
+                            # Check if eligible for compensation (cancelled, diverted, or 3+ hour delay)
                             delay_minutes = formatted_flight.get('delay_minutes', 0)
-                            if delay_minutes >= 180:  # 3 hours or more
+                            status = formatted_flight.get('status', '')
+                            
+                            is_eligible = False
+                            if 'cancel' in status:
+                                is_eligible = True
+                            elif 'diverted' in status:
+                                is_eligible = True
+                            elif delay_minutes >= 180:
+                                is_eligible = True
+
+                            if is_eligible:
                                 formatted_flight['eligible_for_compensation'] = True
                                 # Calculate compensation amount based on flight distance
                                 distance = formatted_flight.get('distance_km', 0)
@@ -143,3 +154,4 @@ def test_aviationstack():
             'error': str(e),
             'success': False
         }), 500
+                                                                                                                                                                                                                                                                                                                                                                                                                            

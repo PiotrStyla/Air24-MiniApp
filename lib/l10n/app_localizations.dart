@@ -22,7 +22,7 @@ import 'app_localizations_pt.dart';
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
-/// import 'generated/app_localizations.dart';
+/// import 'gen_l10n/app_localizations.dart';
 ///
 /// return MaterialApp(
 ///   localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -70,8 +70,8 @@ abstract class AppLocalizations {
 
   final String localeName;
 
-  static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
   static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
@@ -246,6 +246,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please complete all fields.'**
   String get completeAllFields;
+
+  /// Validation message when form fields are missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete all required fields.'**
+  String get pleaseCompleteAllFields;
+
+  /// Validation message when documents are missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Please attach required documents.'**
+  String get pleaseAttachDocuments;
+
+  /// Status message indicating form completion.
+  ///
+  /// In en, this message translates to:
+  /// **'All fields completed.'**
+  String get allFieldsCompleted;
+
+  /// Loading indicator text for document processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing document...'**
+  String get processingDocument;
 
   /// No description provided for @supportingDocuments.
   ///
@@ -943,7 +967,7 @@ abstract class AppLocalizations {
   /// **'• Ensure your flight is eligible for compensation (e.g., delay >3h, cancellation, denied boarding).'**
   String get tipCheckEligibility;
 
-  /// Tip about double-checking details
+  /// No description provided for @tipDoubleCheckDetails.
   ///
   /// In en, this message translates to:
   /// **'• Double-check all details before submitting to avoid delays.'**
@@ -1039,11 +1063,11 @@ abstract class AppLocalizations {
   /// **'EU-wide Compensation'**
   String get euWideCompensationTitle;
 
-  /// Button to filter flights from the last 144 hours
+  /// Button to filter flights from the last 72 hours
   ///
   /// In en, this message translates to:
-  /// **'Last 144 hours'**
-  String get last144HoursButton;
+  /// **'Last 72 hours'**
+  String get last72HoursButton;
 
   /// Label for scheduled time in flight lists
   ///
@@ -1110,6 +1134,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Document Management'**
   String get documentManagementTitle;
+
+  /// Title for the attach documents screen
+  ///
+  /// In en, this message translates to:
+  /// **'Attach Documents'**
+  String get attachDocumentsTitle;
+
+  /// Button to upload a new document
+  ///
+  /// In en, this message translates to:
+  /// **'Upload New'**
+  String get uploadNewButton;
+
+  /// Generic continue button text
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// Message displayed when the user has no documents
+  ///
+  /// In en, this message translates to:
+  /// **'You have no documents.'**
+  String get noDocumentsMessage;
+
+  /// Button to upload the first document
+  ///
+  /// In en, this message translates to:
+  /// **'Upload First Document'**
+  String get uploadFirstDocumentButton;
+
+  /// Message displayed while a document is uploading
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading document...'**
+  String get uploadingMessage;
+
+  /// Success message when a document is uploaded
+  ///
+  /// In en, this message translates to:
+  /// **'Document uploaded successfully!'**
+  String get uploadSuccessMessage;
+
+  /// Error message when a document upload fails
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed. Please try again.'**
+  String get uploadFailedMessage;
+
+  /// Label for the claim attachment section
+  ///
+  /// In en, this message translates to:
+  /// **'Claim Attachment'**
+  String get claimAttachment;
 
   /// Title for the document management screen when a flight is specified
   ///
@@ -1189,6 +1267,48 @@ abstract class AppLocalizations {
   /// **'Departure airport is required.'**
   String get validatorDepartureAirportRequired;
 
+  /// Title for the EU eligible flights screen
+  ///
+  /// In en, this message translates to:
+  /// **'EU Eligible Flights'**
+  String get euEligibleFlightsTitle;
+
+  /// Label for the airline name filter input
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Airline Name'**
+  String get filterByAirlineName;
+
+  /// Message shown while loading flight data
+  ///
+  /// In en, this message translates to:
+  /// **'Loading eligible flights...'**
+  String get loadingFlights;
+
+  /// Error message shown when flight data fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading flights'**
+  String get errorLoadingFlights;
+
+  /// Message shown when no eligible flights are found
+  ///
+  /// In en, this message translates to:
+  /// **'No eligible flights found.'**
+  String get noEligibleFlightsFound;
+
+  /// Message shown when no flights match the applied filter
+  ///
+  /// In en, this message translates to:
+  /// **'No flights match your filter.'**
+  String get noFlightsMatchFilter;
+
+  /// Button label to check compensation eligibility for a flight
+  ///
+  /// In en, this message translates to:
+  /// **'Check Compensation'**
+  String get checkCompensation;
+
   /// Tooltip for departure airport input on Quick Claim screen
   ///
   /// In en, this message translates to:
@@ -1243,23 +1363,299 @@ abstract class AppLocalizations {
   /// **'• Your data is stored securely and used only for claim processing.'**
   String get tipSecureData;
 
-  /// Message shown while a document is being processed by OCR
+  /// No description provided for @compensationEligibleArrivalsAt.
   ///
   /// In en, this message translates to:
-  /// **'Processing document...'**
-  String get processingDocument;
+  /// **'Eligible Arrivals at {airportIcao}'**
+  String compensationEligibleArrivalsAt(String airportIcao);
 
-  /// Label for a generic field value in debugging or display
+  /// No description provided for @errorWithDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String errorWithDetails(String error);
+
+  /// Label for a button that dismisses a dialog or view.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
+
+  /// A message prompting non-authenticated users to sign in.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to track your claims'**
+  String get signInToTrackClaims;
+
+  /// A descriptive text for the sign-in/sign-up section.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account or sign in to manage your compensation claims.'**
+  String get createAccountDescription;
+
+  /// Label for a button that leads to the authentication screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In / Sign Up'**
+  String get signInOrSignUp;
+
+  /// A generic fallback name for a user when their display name or email is not available.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get genericUser;
+
+  /// Error message displayed when a user fails to sign out.
+  ///
+  /// In en, this message translates to:
+  /// **'Error signing out: {error}'**
+  String errorSigningOut(String error);
+
+  /// Label for a button that retries an action.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Label for a text field to filter by carrier name.
+  ///
+  /// In en, this message translates to:
+  /// **'Carrier Name'**
+  String get carrierName;
+
+  /// Label for a button to open a date picker.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Date'**
+  String get pickDate;
+
+  /// Tooltip for a button to clear the selected date.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Date'**
+  String get clearDate;
+
+  /// Message displayed when no eligible flights are found.
+  ///
+  /// In en, this message translates to:
+  /// **'No compensation-eligible arrivals found for the selected filters.'**
+  String get noEligibleArrivalsFound;
+
+  /// No description provided for @flightAndAirline.
+  ///
+  /// In en, this message translates to:
+  /// **'{flightNumber} - {airlineName}'**
+  String flightAndAirline(String flightNumber, String airlineName);
+
+  /// No description provided for @scheduledTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled: {time}'**
+  String scheduledTime(String time);
+
+  /// No description provided for @fromAirportName.
+  ///
+  /// In en, this message translates to:
+  /// **'From: {airportName}'**
+  String fromAirportName(String airportName);
+
+  /// No description provided for @revisedTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Revised: {time}'**
+  String revisedTime(String time);
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}'**
+  String status(String status);
+
+  /// A label indicating the flight is eligible for EU compensation.
+  ///
+  /// In en, this message translates to:
+  /// **'EU Compensation Eligible'**
+  String get euCompensationEligible;
+
+  /// No description provided for @actualTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Actual: {time}'**
+  String actualTime(String time);
+
+  /// No description provided for @delayAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delay: {delay}'**
+  String delayAmount(String delay);
+
+  /// No description provided for @aircraftModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Aircraft: {model}'**
+  String aircraftModel(String model);
+
+  /// No description provided for @compensationAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Compensation: {amount}'**
+  String compensationAmount(String amount);
+
+  /// Label for the flight number input field
+  ///
+  /// In en, this message translates to:
+  /// **'Flight Number'**
+  String get flightNumberLabel;
+
+  /// Hint text for the flight number input field
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., BA2490'**
+  String get flightNumberHint;
+
+  /// Label for the departure airport input field
+  ///
+  /// In en, this message translates to:
+  /// **'Departure Airport'**
+  String get departureAirportLabel;
+
+  /// Hint text for the departure airport input field
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., LHR'**
+  String get departureAirportHint;
+
+  /// Label for the arrival airport input field
+  ///
+  /// In en, this message translates to:
+  /// **'Arrival Airport'**
+  String get arrivalAirportLabel;
+
+  /// Hint text for the arrival airport input field
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., JFK'**
+  String get arrivalAirportHint;
+
+  /// Label for the flight date input field
+  ///
+  /// In en, this message translates to:
+  /// **'Flight Date'**
+  String get flightDateLabel;
+
+  /// Hint text for the flight date input field
+  ///
+  /// In en, this message translates to:
+  /// **'Select the date of your flight'**
+  String get flightDateHint;
+
+  /// Error message for the flight date input field
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a flight date'**
+  String get flightDateError;
+
+  /// Button text to proceed to the attachments screen
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to Attachments'**
+  String get continueToAttachmentsButton;
+
+  /// Label for a field value in the debug screen
   ///
   /// In en, this message translates to:
   /// **'Field Value'**
   String get fieldValue;
 
-  /// Error message when a network connection fails
+  /// Error message for connection failure in the debug screen
   ///
   /// In en, this message translates to:
-  /// **'Connection failed. Please check your network.'**
+  /// **'Connection failed'**
   String get errorConnectionFailed;
+
+  /// Title for the new claim submission screen
+  ///
+  /// In en, this message translates to:
+  /// **'Submit New Claim'**
+  String get submitNewClaimTitle;
+
+  /// Label for the airline input field
+  ///
+  /// In en, this message translates to:
+  /// **'Airline'**
+  String get airlineLabel;
+
+  /// Label for the 'Other' option in a list
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// Document type for Boarding Pass
+  ///
+  /// In en, this message translates to:
+  /// **'Boarding Pass'**
+  String get documentTypeBoardingPass;
+
+  /// Document type for ID Document
+  ///
+  /// In en, this message translates to:
+  /// **'ID Document'**
+  String get documentTypeId;
+
+  /// Document type for Ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Ticket'**
+  String get documentTypeTicket;
+
+  /// Document type for Booking Confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Confirmation'**
+  String get documentTypeBookingConfirmation;
+
+  /// Document type for E-Ticket
+  ///
+  /// In en, this message translates to:
+  /// **'E-Ticket'**
+  String get documentTypeETicket;
+
+  /// Document type for Luggage Tag
+  ///
+  /// In en, this message translates to:
+  /// **'Luggage Tag'**
+  String get documentTypeLuggageTag;
+
+  /// Document type for Delay Confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Delay Confirmation'**
+  String get documentTypeDelayConfirmation;
+
+  /// Document type for Hotel Receipt
+  ///
+  /// In en, this message translates to:
+  /// **'Hotel Receipt'**
+  String get documentTypeHotelReceipt;
+
+  /// Document type for Meal Receipt
+  ///
+  /// In en, this message translates to:
+  /// **'Meal Receipt'**
+  String get documentTypeMealReceipt;
+
+  /// Document type for Transport Receipt
+  ///
+  /// In en, this message translates to:
+  /// **'Transport Receipt'**
+  String get documentTypeTransportReceipt;
+
+  /// Label for other document type
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get documentTypeOther;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

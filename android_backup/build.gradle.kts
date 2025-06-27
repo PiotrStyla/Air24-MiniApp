@@ -19,3 +19,15 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.google.gms:google-services:4.3.15")
+    }
+}
+
+// For Kotlin DSL, use the plugins block in app/build.gradle.kts instead of apply plugin here.
