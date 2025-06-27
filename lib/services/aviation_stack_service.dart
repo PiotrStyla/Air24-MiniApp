@@ -13,7 +13,7 @@ class AviationStackService {
   final String? pythonBackendUrl = 'http://PiotrS.pythonanywhere.com';
 
   /// Whether to use the Python backend first
-  final bool usePythonBackend = true;
+  final bool usePythonBackend = false;
 
   // Caching for airport and airline data to avoid repeated API calls.
   Map<String, String> _airportCountryCache = {};
