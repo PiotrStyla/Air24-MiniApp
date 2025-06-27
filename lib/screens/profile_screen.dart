@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:f35_flight_compensation/generated/app_localizations.dart';
+import 'package:f35_flight_compensation/l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'faq_screen.dart';
 import 'profile_edit_screen.dart';

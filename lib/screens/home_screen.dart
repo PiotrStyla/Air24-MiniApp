@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:f35_flight_compensation/generated/app_localizations.dart';
+import 'package:f35_flight_compensation/l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import '../services/auth_service.dart';
 import '../core/services/service_initializer.dart';
