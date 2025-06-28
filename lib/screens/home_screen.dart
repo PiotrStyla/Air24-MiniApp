@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:f35_flight_compensation/l10n/app_localizations.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import '../services/auth_service.dart';
 import '../core/services/service_initializer.dart';
@@ -78,26 +78,26 @@ class _HomeScreenState extends State<HomeScreen> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text(TranslationHelper.getString(context, 'delayedFlightDetected', fallback: 'Delayed Flight Detected!')),
+          title: Text(AppLocalizations.of(context)!.delayedFlightDetected),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(TranslationHelper.getString(context, 'flightLabel', fallback: 'Flight: {number}').replaceAll('{number}', flight.flightData['number'] ?? '')),
-              Text(TranslationHelper.getString(context, 'fromAirport', fallback: 'From: {airport}').replaceAll('{airport}', flight.departureAirport.name)),
-              Text(TranslationHelper.getString(context, 'toAirport', fallback: 'To: {airport}').replaceAll('{airport}', flight.arrivalAirport.name)),
-              Text(TranslationHelper.getString(context, 'statusLabel', fallback: 'Status: {status}').replaceAll('{status}', flight.flightData['status'] ?? '')),
+              Text(AppLocalizations.of(context)!.flightLabel.replaceAll('{number}', flight.flightData['number'] ?? '')),
+              Text(AppLocalizations.of(context)!.fromAirport.replaceAll('{airport}', flight.departureAirport.name)),
+              Text(AppLocalizations.of(context)!.toAirport.replaceAll('{airport}', flight.arrivalAirport.name)),
+              Text(AppLocalizations.of(context)!.statusLabel.replaceAll('{status}', flight.flightData['status'] ?? '')),
               const SizedBox(height: 12),
-              Text(TranslationHelper.getString(context, 'delayedEligible', fallback: 'This flight may be eligible for compensation!')),
+              Text(AppLocalizations.of(context)!.delayedEligible),
             ],
           ),
           actions: [
             TextButton(
-              child: Text(TranslationHelper.getString(context, 'dismiss', fallback: 'Dismiss')),
+              child: Text(AppLocalizations.of(context)!.dismiss),
               onPressed: () => Navigator.of(ctx).pop(),
             ),
             ElevatedButton(
-              child: Text(TranslationHelper.getString(context, 'startClaim', fallback: 'Start Claim')),
+              child: Text(AppLocalizations.of(context)!.startClaim),
               onPressed: () {
                 Navigator.of(ctx).pop();
                 Navigator.of(context).pushNamed(
@@ -121,24 +121,24 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(TranslationHelper.getString(context, 'flightDetected', fallback: 'Flight Detected')),
+        title: Text(AppLocalizations.of(context)!.flightDetected),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(TranslationHelper.getString(context, 'flightLabel', fallback: 'Flight: {number}').replaceAll('{number}', flight.flightData['number'] ?? '')),
-            Text(TranslationHelper.getString(context, 'fromAirport', fallback: 'From: {airport}').replaceAll('{airport}', flight.departureAirport.name)),
-            Text(TranslationHelper.getString(context, 'toAirport', fallback: 'To: {airport}').replaceAll('{airport}', flight.arrivalAirport.name)),
-            Text(TranslationHelper.getString(context, 'statusLabel', fallback: 'Status: {status}').replaceAll('{status}', flight.flightData['status'] ?? '')),
+            Text(AppLocalizations.of(context)!.flightLabel.replaceAll('{number}', flight.flightData['number'] ?? '')),
+            Text(AppLocalizations.of(context)!.fromAirport.replaceAll('{airport}', flight.departureAirport.name)),
+            Text(AppLocalizations.of(context)!.toAirport.replaceAll('{airport}', flight.arrivalAirport.name)),
+            Text(AppLocalizations.of(context)!.statusLabel.replaceAll('{status}', flight.flightData['status'] ?? '')),
           ],
         ),
         actions: [
           TextButton(
-            child: Text(TranslationHelper.getString(context, 'dismiss', fallback: 'Dismiss')),
+            child: Text(AppLocalizations.of(context)!.dismiss),
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           ElevatedButton(
-            child: Text(TranslationHelper.getString(context, 'startClaim', fallback: 'Start Claim')),
+            child: Text(AppLocalizations.of(context)!.startClaim),
             onPressed: () {
               Navigator.of(ctx).pop();
               // Navigate to claim submission with prefilled details
@@ -167,14 +167,14 @@ class _HomeScreenState extends State<HomeScreen> {
     // Use TranslationHelper instead of direct AppLocalizations
     // to ensure consistent Polish translations
     return Scaffold(
-      appBar: AppBar(title: Text(TranslationHelper.getString(context, 'home', fallback: 'Home'))),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.home)),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton.icon(
               icon: const Icon(Icons.calculate, color: Colors.blue),
-              label: Text(TranslationHelper.getString(context, 'checkCompensationEligibility', fallback: 'Check Compensation Eligibility')),
+              label: Text(AppLocalizations.of(context)!.checkCompensationEligibility),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.blue,
@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 foregroundColor: Colors.green[800],
                 side: BorderSide(color: Colors.green[800]!),
               ),
-              label: Text(TranslationHelper.getString(context, 'euWideEligibleFlights', fallback: 'EU-Wide Eligible Flights')),
+              label: Text(AppLocalizations.of(context)!.euWideEligibleFlights),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              TranslationHelper.getString(context, 'signInToTrackClaims', fallback: 'Sign in to track your claims'),
+                              AppLocalizations.of(context)!.signInToTrackClaims,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -234,14 +234,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              TranslationHelper.getString(context, 'createAccountDescription', fallback: 'Create an account to save your flight data\nand manage your compensation claims'),
+                              AppLocalizations.of(context)!.createAccountDescription,
                               textAlign: TextAlign.center,
                               style: const TextStyle(color: Colors.grey),
                             ),
                             const SizedBox(height: 24),
                             ElevatedButton.icon(
                               icon: const Icon(Icons.login),
-                              label: Text(TranslationHelper.getString(context, 'signInOrSignUp', fallback: 'Sign In / Sign Up')),
+                              label: Text(AppLocalizations.of(context)!.signInOrSignUp),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context).colorScheme.primary,
                                 foregroundColor: Colors.white,
@@ -289,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           const SizedBox(height: 16),
                           Text(
-                            TranslationHelper.getString(context, 'welcomeUser', fallback: 'Welcome, {userName}!').replaceAll('{userName}', user.displayName ?? user.email ?? TranslationHelper.getString(context, 'genericUser', fallback: 'User')),
+                            AppLocalizations.of(context)!.welcomeUser(user.displayName ?? user.email ?? AppLocalizations.of(context)!.genericUser),
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -298,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 24),
                           OutlinedButton.icon(
                             icon: const Icon(Icons.logout),
-                            label: Text(TranslationHelper.getString(context, 'signOut', fallback: 'Sign Out')),
+                            label: Text(AppLocalizations.of(context)!.signOut),
                             onPressed: () async {
                               try {
                                 await authService.signOut();
@@ -306,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(TranslationHelper.getString(context, 'errorSigningOut', fallback: 'Error signing out: {error}').replaceAll('{error}', e.toString())),
+                                      content: Text(AppLocalizations.of(context)!.errorSigningOut(e.toString())),
                                       backgroundColor: Colors.red,
                                     ),
                                   );

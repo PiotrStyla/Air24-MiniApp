@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 
 import '../models/claim.dart';
 import '../models/claim_status.dart';
@@ -55,11 +56,11 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Claim Details'),
+        title: Text(AppLocalizations.of(context)!.claimDetails),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh',
+            tooltip: AppLocalizations.of(context)!.refresh,
             onPressed: _isLoading ? null : _loadClaimDetails,
           ),
         ],
@@ -84,12 +85,12 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 16),
             Text(
-              'Error loading claim',
+              AppLocalizations.of(context)!.errorLoadingClaim,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              _errorMessage ?? 'Unknown error',
+              _errorMessage ?? AppLocalizations.of(context)!.unknownError,
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.red),
             ),
@@ -97,7 +98,7 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             ElevatedButton.icon(
               onPressed: _loadClaimDetails,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(AppLocalizations.of(context)!.retry),
             ),
           ],
         ),
@@ -119,20 +120,20 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Claim Not Found',
+              AppLocalizations.of(context)!.claimNotFound,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'The requested claim could not be found. It may have been deleted.',
+            Text(
+              AppLocalizations.of(context)!.claimNotFoundDesc,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_back),
-              label: const Text('Back to Dashboard'),
+              label: Text(AppLocalizations.of(context)!.backToDashboard),
             ),
           ],
         ),

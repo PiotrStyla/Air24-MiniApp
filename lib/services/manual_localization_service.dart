@@ -106,7 +106,7 @@ class ManualLocalizationService extends LocalizationService {
       }
 
       debugPrint('Loading translation strings for language: $languageCode');
-      final String arbPath = 'lib/l10n/app_$languageCode.arb';
+      final String arbPath = 'lib/l10n2/app_$languageCode.arb';
       final String data = await rootBundle.loadString(arbPath);
       final parsedData = json.decode(data) as Map<String, dynamic>;
       

@@ -6,6 +6,7 @@ import '../utils/translation_helper.dart';
 import '../services/manual_localization_service.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:intl/intl.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 
 class EUEligibleFlightsScreen extends StatefulWidget {
   const EUEligibleFlightsScreen({super.key});
@@ -184,7 +185,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             const Icon(Icons.cloud_off, size: 60, color: Colors.redAccent),
             const SizedBox(height: 16),
             Text(
-              TranslationHelper.getString(context, 'apiConnectionIssue', fallback: 'API Connection Issue'),
+              AppLocalizations.of(context)!.apiConnectionIssue,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -197,7 +198,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               icon: const Icon(Icons.refresh),
-              label: Text(TranslationHelper.getString(context, 'retry', fallback: 'Retry')),
+              label: Text(AppLocalizations.of(context)!.retry),
               onPressed: _refreshFlights,
             ),
           ],
@@ -216,7 +217,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             const Icon(Icons.flight_land, size: 80, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              TranslationHelper.getString(context, 'noEligibleFlightsFound', fallback: 'No Eligible Flights Found'),
+              AppLocalizations.of(context)!.noEligibleFlightsFound,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.blueGrey[700],
@@ -227,11 +228,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
-                TranslationHelper.getString(
-                  context,
-                  'noEligibleFlightsDescription',
-                  fallback: 'We checked for flights in the last {hours} hours, but none met the EU261 compensation criteria.'
-                ).replaceAll('{hours}', _hoursFilter.toString()),
+                AppLocalizations.of(context)!.noEligibleFlightsDescription(_hoursFilter),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
               ),
@@ -239,7 +236,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               icon: const Icon(Icons.refresh),
-              label: Text(TranslationHelper.getString(context, 'checkAgain', fallback: 'Check Again')),
+              label: Text(AppLocalizations.of(context)!.checkAgain),
               onPressed: _refreshFlights,
             ),
           ],
@@ -252,15 +249,15 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(TranslationHelper.getString(context, 'euWideCompensationEligibleFlights', fallback: 'EU-wide Compensation Eligible Flights')),
+        title: Text(AppLocalizations.of(context)!.euWideCompensationEligibleFlights),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: TranslationHelper.getString(context, 'forceRefreshData', fallback: 'Force refresh data'),
+            tooltip: AppLocalizations.of(context)!.forceRefreshData,
             onPressed: () {
               // Show a snackbar to indicate refresh is happening
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(TranslationHelper.getString(context, 'forcingFreshDataLoad', fallback: 'Forcing fresh data load...'))),
+                SnackBar(content: Text(AppLocalizations.of(context)!.forcingFreshDataLoad)),
               );
               // Re-fetch flights using the primary load function
               setState(() {
@@ -279,7 +276,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: TranslationHelper.getString(context, 'filterByAirline', fallback: 'Filter by airline'),
+                      labelText: AppLocalizations.of(context)!.filterByAirline,
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.search),
                     ),
@@ -302,8 +299,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                       const Icon(Icons.schedule),
                       const SizedBox(width: 4),
                       Text(
-                        TranslationHelper.getString(context, 'lastHours', fallback: 'Last {hours} hours')
-                          .replaceAll('{hours}', _hoursFilter.toString()), style: TextStyle(fontWeight: FontWeight.bold)),
+                        AppLocalizations.of(context)!.lastHours(_hoursFilter), style: TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -337,11 +333,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
 
                 if (filteredFlights.isEmpty) {
                   return Center(
-                    child: Text(TranslationHelper.getString(
-                      context, 
-                      'noFlightsMatchingFilter', 
-                      fallback: 'No flights found matching "{filter}" filter.'
-                    ).replaceAll('{filter}', _carrierFilter)),
+                    child: Text(AppLocalizations.of(context)!.noFlightsMatchingFilter(_carrierFilter)),
                   );
                 }
 

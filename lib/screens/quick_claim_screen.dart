@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import 'faq_screen.dart';
 import '../services/auth_service.dart';
 import 'package:uuid/uuid.dart';
@@ -32,6 +33,7 @@ class QuickClaimScreen extends StatefulWidget {
 
 class _QuickClaimScreenState extends State<QuickClaimScreen> {
   bool _isSubmitting = false;
+  bool _isConfirmationStep = false;
   String? _errorMessage;
   late TextEditingController _flightNumberController;
   late TextEditingController _departureAirportController;
@@ -39,6 +41,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
   late TextEditingController _reasonController;
   late TextEditingController _compensationAmountController;
   late DateTime _flightDate;
+  late Claim _preparedClaim;
 
   @override
   void initState() {
@@ -61,22 +64,32 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
     super.dispose();
   }
 
-  Future<void> _submitClaim() async {
-    setState(() {
-      _isSubmitting = true;
-      _errorMessage = null;
-    });
-    try {
+  void _prepareClaimForVerification() {
+    if (_formKey.currentState!.validate()) {
       final authService = ServiceInitializer.get<AuthService>();
       final user = authService.currentUser;
       if (user == null) {
         setState(() {
-          _errorMessage = TranslationHelper.getString(context, 'errorMustBeLoggedIn', fallback: 'You must be logged in to submit a claim.');
-          _isSubmitting = false;
+          _errorMessage = AppLocalizations.of(context)!.errorMustBeLoggedIn;
         });
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context)!.dialogTitleError),
+            content: Text(_errorMessage!),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(AppLocalizations.of(context)!.dialogButtonOK),
+              ),
+            ],
+          ),
+        );
         return;
       }
-      final claim = Claim(
+
+      // Prepare claim object
+      _preparedClaim = Claim(
         bookingReference: '', // Placeholder for quick claim
         id: const Uuid().v4(),
         userId: user.uid,
@@ -89,21 +102,41 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
         compensationAmount: double.tryParse(_compensationAmountController.text) ?? 0.0,
         status: 'pending',
       );
+
+      // Show verification step
+      setState(() {
+        _isConfirmationStep = true;
+      });
+    }
+  }
+
+  void _goBackToEditStep() {
+    setState(() {
+      _isConfirmationStep = false;
+    });
+  }
+
+  Future<void> _submitClaim() async {
+    setState(() {
+      _isSubmitting = true;
+      _errorMessage = null;
+    });
+    try {
       final claimTrackingService = ServiceInitializer.get<ClaimTrackingService>();
-      await claimTrackingService.saveClaim(claim);
+      await claimTrackingService.saveClaim(_preparedClaim);
       if (mounted) {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(TranslationHelper.getString(context, 'dialogTitleSuccess', fallback: 'Success')),
-            content: Text(TranslationHelper.getString(context, 'dialogContentClaimSubmitted', fallback: 'Your claim has been submitted!')),
+            title: Text(AppLocalizations.of(context)!.dialogTitleSuccess),
+            content: Text(AppLocalizations.of(context)!.dialogContentClaimSubmitted),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop(true);
                 },
-                child: Text(TranslationHelper.getString(context, 'dialogButtonOK', fallback: 'OK')),
+                child: Text(AppLocalizations.of(context)!.dialogButtonOK),
               ),
             ],
           ),
@@ -111,18 +144,18 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
       }
     } catch (e) {
       setState(() {
-        _errorMessage = TranslationHelper.getString(context, 'errorFailedToSubmitClaim', fallback: 'Failed to submit claim. Please try again.');
+        _errorMessage = AppLocalizations.of(context)!.errorFailedToSubmitClaim;
         _isSubmitting = false;
       });
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(TranslationHelper.getString(context, 'dialogTitleError', fallback: 'Error')),
+          title: Text(AppLocalizations.of(context)!.dialogTitleError),
           content: Text(_errorMessage!),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(TranslationHelper.getString(context, 'dialogButtonOK', fallback: 'OK')),
+              child: Text(AppLocalizations.of(context)!.dialogButtonOK),
             ),
           ],
         ),
@@ -131,15 +164,28 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
   }
 
   final _formKey = GlobalKey<FormState>();
+  
+  Widget _buildConfirmationRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: Text(value)),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(TranslationHelper.getString(context, 'quickClaimTitle', fallback: 'Quick Claim')),
+        title: Text(AppLocalizations.of(context)!.quickClaimTitle),
         actions: [
           Tooltip(
-            message: TranslationHelper.getString(context, 'tooltipFaqHelp', fallback: 'FAQ & Help'),
+            message: AppLocalizations.of(context)!.tooltipFaqHelp,
             child: IconButton(
               icon: const Icon(Icons.help_outline, color: Colors.blue),
               onPressed: () {
@@ -174,7 +220,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        TranslationHelper.getString(context, 'quickClaimInfoBanner', fallback: 'Review and edit your flight claim details below. All required fields must be filled. Tap the info icons for help.'),
+                        AppLocalizations.of(context)!.quickClaimInfoBanner,
                         style: TextStyle(color: Colors.blue[900]),
                       ),
                     ),
@@ -188,14 +234,14 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _flightNumberController,
                       decoration: InputDecoration(
-                        labelText: '${TranslationHelper.getString(context, 'flightNumber', fallback: 'Flight Number')} *',
-                        helperText: TranslationHelper.getString(context, 'flightNumberHintQuickClaim', fallback: 'Usually a 2-letter airline code and digits, e.g. LH1234'),
+                        labelText: '${AppLocalizations.of(context)!.flightNumber} *',
+                        helperText: AppLocalizations.of(context)!.flightNumberHintQuickClaim,
                       ),
-                      validator: (value) => value == null || value.isEmpty ? TranslationHelper.getString(context, 'validatorFlightNumberRequired', fallback: 'Flight number is required') : null,
+                      validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.validatorFlightNumberRequired : null,
                     ),
                   ),
                   Tooltip(
-                    message: TranslationHelper.getString(context, 'tooltipFlightNumberQuickClaim', fallback: 'Enter your flight number as shown on your ticket or boarding pass.'),
+                    message: AppLocalizations.of(context)!.tooltipFlightNumberQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -209,12 +255,12 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                 children: [
                   Expanded(
                     child: InputDecorator(
-                      decoration: InputDecoration(labelText: '${TranslationHelper.getString(context, 'flightDate', fallback: 'Flight Date')} *'),
+                      decoration: InputDecoration(labelText: '${AppLocalizations.of(context)!.flightDate} *'),
                       child: Text(DateFormat.yMMMd().format(_flightDate)),
                     ),
                   ),
                   Tooltip(
-                    message: TranslationHelper.getString(context, 'tooltipFlightDateQuickClaim', fallback: 'The date your flight departed or was scheduled to depart.'),
+                    message: AppLocalizations.of(context)!.tooltipFlightDateQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -230,14 +276,14 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _departureAirportController,
                       decoration: InputDecoration(
-                        labelText: '${TranslationHelper.getString(context, 'departureAirport', fallback: 'Departure Airport')} *',
-                        helperText: TranslationHelper.getString(context, 'departureAirportHintQuickClaim', fallback: 'e.g. FRA for Frankfurt, LHR for London Heathrow'),
+                        labelText: '${AppLocalizations.of(context)!.departureAirport} *',
+                        helperText: AppLocalizations.of(context)!.departureAirportHintQuickClaim,
                       ),
-                      validator: (value) => value == null || value.isEmpty ? TranslationHelper.getString(context, 'validatorDepartureAirportRequired', fallback: 'Departure airport is required') : null,
+                      validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.validatorDepartureAirportRequired : null,
                     ),
                   ),
                   Tooltip(
-                    message: TranslationHelper.getString(context, 'tooltipDepartureAirportQuickClaim', fallback: 'Enter the IATA code of the airport where your flight started.'),
+                    message: AppLocalizations.of(context)!.tooltipDepartureAirportQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -253,14 +299,14 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _arrivalAirportController,
                       decoration: InputDecoration(
-                        labelText: '${TranslationHelper.getString(context, 'arrivalAirport', fallback: 'Arrival Airport')} *',
-                        helperText: TranslationHelper.getString(context, 'arrivalAirportHintQuickClaim', fallback: 'e.g. JFK for New York, CDG for Paris'),
+                        labelText: '${AppLocalizations.of(context)!.arrivalAirport} *',
+                        helperText: AppLocalizations.of(context)!.arrivalAirportHintQuickClaim,
                       ),
-                      validator: (value) => value == null || value.isEmpty ? TranslationHelper.getString(context, 'validatorArrivalAirportRequired', fallback: 'Arrival airport is required') : null,
+                      validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.validatorArrivalAirportRequired : null,
                     ),
                   ),
                   Tooltip(
-                    message: TranslationHelper.getString(context, 'tooltipArrivalAirportQuickClaim', fallback: 'Enter the IATA code of the airport where your flight landed.'),
+                    message: AppLocalizations.of(context)!.tooltipArrivalAirportQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -276,15 +322,15 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _reasonController,
                       decoration: InputDecoration(
-                        labelText: TranslationHelper.getString(context, 'reasonForClaimLabel', fallback: 'Reason *'),
-                        hintText: TranslationHelper.getString(context, 'hintTextReasonQuickClaim', fallback: 'Reason (delay, cancellation, etc.)'),
-                        helperText: TranslationHelper.getString(context, 'reasonForClaimHint', fallback: 'State why you are claiming: delay, cancellation, denied boarding, etc.'),
+                        labelText: AppLocalizations.of(context)!.reasonForClaimLabel,
+                        hintText: AppLocalizations.of(context)!.hintTextReasonQuickClaim,
+                        helperText: AppLocalizations.of(context)!.reasonForClaimHint,
                       ),
-                      validator: (value) => value == null || value.isEmpty ? TranslationHelper.getString(context, 'validatorReasonRequired', fallback: 'Reason is required') : null,
+                      validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.validatorReasonRequired : null,
                     ),
                   ),
                   Tooltip(
-                    message: TranslationHelper.getString(context, 'tooltipReasonQuickClaim', fallback: 'Describe the issue: e.g. delayed more than 3 hours, cancelled, overbooked.'),
+                    message: AppLocalizations.of(context)!.tooltipReasonQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -300,14 +346,14 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _compensationAmountController,
                       decoration: InputDecoration(
-                        labelText: TranslationHelper.getString(context, 'compensationAmountOptionalLabel', fallback: 'Compensation Amount (optional)'),
-                        helperText: TranslationHelper.getString(context, 'compensationAmountHint', fallback: 'If you know the amount you are eligible for, enter it here.'),
+                        labelText: AppLocalizations.of(context)!.compensationAmountOptionalLabel,
+                        helperText: AppLocalizations.of(context)!.compensationAmountHint,
                       ),
                       keyboardType: TextInputType.number,
                     ),
                   ),
                   Tooltip(
-                    message: TranslationHelper.getString(context, 'tooltipCompensationAmountQuickClaim', fallback: 'Leave blank if unsure. Typical EU compensation: €250-€600 depending on distance.'),
+                    message: AppLocalizations.of(context)!.tooltipCompensationAmountQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -321,24 +367,81 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
                 ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _isSubmitting
-                      ? null
-                      : () {
-                          if (_formKey.currentState!.validate()) {
-                            _submitClaim();
-                          }
-                        },
-                  child: _isSubmitting
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                        )
-                      : Text(TranslationHelper.getString(context, 'submitClaim', fallback: 'Submit Claim')),
+              if (!_isConfirmationStep)
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _isSubmitting ? null : _prepareClaimForVerification,
+                    child: Text(AppLocalizations.of(context)!.reviewAndConfirm),
+                  ),
                 ),
-              ),
+              if (_isConfirmationStep)
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.green.shade300),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.pleaseConfirmDetails,
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade800),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildConfirmationRow(
+                            AppLocalizations.of(context)!.flightNumber, 
+                            _preparedClaim.flightNumber
+                          ),
+                          _buildConfirmationRow(
+                            AppLocalizations.of(context)!.flightDate, 
+                            DateFormat.yMMMd().format(_preparedClaim.flightDate)
+                          ),
+                          _buildConfirmationRow(
+                            AppLocalizations.of(context)!.departureAirport, 
+                            _preparedClaim.departureAirport
+                          ),
+                          _buildConfirmationRow(
+                            AppLocalizations.of(context)!.arrivalAirport, 
+                            _preparedClaim.arrivalAirport
+                          ),
+                          _buildConfirmationRow(
+                            AppLocalizations.of(context)!.reasonForClaimLabel, 
+                            _preparedClaim.reason
+                          ),
+                          if (_preparedClaim.compensationAmount > 0)
+                            _buildConfirmationRow(
+                              AppLocalizations.of(context)!.compensationAmountOptionalLabel, 
+                              '${_preparedClaim.compensationAmount}'
+                            ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        OutlinedButton(
+                          onPressed: _goBackToEditStep,
+                          child: Text(AppLocalizations.of(context)!.back),
+                        ),
+                        ElevatedButton(
+                          onPressed: _isSubmitting ? null : _submitClaim,
+                          child: _isSubmitting
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              )
+                            : Text(AppLocalizations.of(context)!.submitClaim),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               const SizedBox(height: 24),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -352,13 +455,13 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      TranslationHelper.getString(context, 'tipsAndRemindersTitle', fallback: 'Tips & Reminders'),
+                      AppLocalizations.of(context)!.tipsAndRemindersTitle,
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
                     ),
                     SizedBox(height: 6),
-                    Text(TranslationHelper.getString(context, 'tipSecureData', fallback: '• Your data is securely processed and only used for compensation claims.')),
-                    Text(TranslationHelper.getString(context, 'tipCheckEligibility', fallback: '• Make sure your flight is eligible for compensation (e.g., delay >3h, cancellation, denied boarding).')),
-                    Text(TranslationHelper.getString(context, 'tipDoubleCheckDetails', fallback: '• Double-check all details before submitting to avoid delays.')),
+                    Text(AppLocalizations.of(context)!.tipSecureData),
+                    Text(AppLocalizations.of(context)!.tipCheckEligibility),
+                    Text(AppLocalizations.of(context)!.tipDoubleCheckDetails),
                   ],
                 ),
               ),

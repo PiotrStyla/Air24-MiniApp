@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n2/app_localizations.dart';
 import 'package:intl/intl.dart';
 import '../models/claim.dart';
 import 'claim_confirmation_screen.dart'; // Will be created next
@@ -12,7 +13,7 @@ class ClaimReviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Step 1: Review Your Claim'),
+        title: Text(AppLocalizations.of(context)!.reviewYourClaim),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -25,20 +26,20 @@ class ClaimReviewScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Please review the details of your claim before proceeding.', style: Theme.of(context).textTheme.titleMedium),
+                    Text(AppLocalizations.of(context)!.reviewClaimDetails, style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 24),
-                    _buildReviewRow('Flight Number:', claim.flightNumber),
-                    _buildReviewRow('Flight Date:', DateFormat.yMd().format(claim.flightDate)),
-                    _buildReviewRow('Departure Airport:', claim.departureAirport),
-                    _buildReviewRow('Arrival Airport:', claim.arrivalAirport),
-                    _buildReviewRow('Reason for Claim:', claim.reason),
+                    _buildReviewRow(AppLocalizations.of(context)!.flightNumber, claim.flightNumber),
+                    _buildReviewRow(AppLocalizations.of(context)!.flightDate, DateFormat.yMd().format(claim.flightDate)),
+                    _buildReviewRow(AppLocalizations.of(context)!.departureAirport, claim.departureAirport),
+                    _buildReviewRow(AppLocalizations.of(context)!.arrivalAirport, claim.arrivalAirport),
+                    _buildReviewRow(AppLocalizations.of(context)!.reasonForClaim, claim.reason),
                     if (claim.attachmentUrls.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Attachments:', style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text(AppLocalizations.of(context)!.attachments, style: const TextStyle(fontWeight: FontWeight.bold)),
                             const SizedBox(height: 8),
                             ...claim.attachmentUrls.map((url) => Padding(
                                   padding: const EdgeInsets.only(bottom: 4.0),
@@ -65,7 +66,7 @@ class ClaimReviewScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-              child: const Text('Proceed to Confirmation'),
+              child: Text(AppLocalizations.of(context)!.proceedToConfirmation),
             ),
             const SizedBox(height: 16),
           ],

@@ -73,7 +73,10 @@ class ServiceInitializer {
 
     // Register viewmodels as factories
     _locator.registerFactory<AuthViewModel>(() => AuthViewModel(_locator<AuthService>()));
-    _locator.registerFactory<DocumentViewModel>(() => DocumentViewModel(_locator<DocumentStorageService>()));
+    _locator.registerFactory<DocumentViewModel>(() => DocumentViewModel(
+      _locator<DocumentStorageService>(),
+      _locator<LocalizationService>()
+    ));
     _locator.registerFactory<DocumentScannerViewModel>(() => DocumentScannerViewModel(
       ocrService: _locator<DocumentOcrService>(),
       authService: _locator<AuthService>(),

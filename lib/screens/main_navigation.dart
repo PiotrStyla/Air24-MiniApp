@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../utils/translation_helper.dart';
+import '../l10n2/app_localizations.dart';
 
 // Screens
 import 'home_screen.dart';
@@ -82,15 +83,15 @@ class _MainNavigationState extends State<MainNavigation> {
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
-            label: TranslationHelper.getString(context, 'home', fallback: 'Home'),
+            label: AppLocalizations.of(context)!.home,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.description),
-            label: TranslationHelper.getString(context, 'claims', fallback: 'Claims'),
+            label: AppLocalizations.of(context)!.claims,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.person),
-            label: TranslationHelper.getString(context, 'settings', fallback: 'Settings'),
+            label: AppLocalizations.of(context)!.settings,
           ),
         ],
       ),
@@ -108,7 +109,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 ),
               );
             },
-            label: Text(TranslationHelper.getString(context, 'newClaim', fallback: 'New Claim')),
+            label: Text(AppLocalizations.of(context)!.newClaim),
             icon: const Icon(Icons.add),
           )
         : null,

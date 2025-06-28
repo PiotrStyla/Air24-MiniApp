@@ -3,10 +3,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../models/flight_document.dart';
 import '../services/document_storage_service.dart';
+import '../services/localization_service.dart';
 
 /// ViewModel for flight document management following MVVM pattern
 class DocumentViewModel extends ChangeNotifier {
   final DocumentStorageService _documentService;
+  final LocalizationService _localizationService;
   
   List<FlightDocument> _documents = [];
   XFile? _selectedFile;
@@ -35,7 +37,7 @@ class DocumentViewModel extends ChangeNotifier {
   DateTime get flightDate => _flightDate;
   
   // Constructor
-  DocumentViewModel(this._documentService);
+  DocumentViewModel(this._documentService, this._localizationService);
   
   // Document type options for dropdown
   List<Map<String, dynamic>> get documentTypeOptions {
@@ -155,8 +157,10 @@ class DocumentViewModel extends ChangeNotifier {
     required String flightNumber,
     required DateTime flightDate,
     required FlightDocumentType documentType,
-    String documentName = 'Claim Attachment',
+    String? documentName,
   }) async {
+    // Use localized string for claim attachment name if none provided
+    documentName = documentName ?? _localizationService.getString('claimAttachment', fallback: 'Claim Attachment');
     _errorMessage = null;
     notifyListeners();
 

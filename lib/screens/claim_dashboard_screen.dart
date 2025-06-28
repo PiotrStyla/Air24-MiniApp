@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../utils/translation_helper.dart';
-import '../services/manual_localization_service.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:f35_flight_compensation/models/claim.dart';
 import 'package:f35_flight_compensation/screens/claim_submission_screen.dart';
@@ -53,13 +52,13 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
         builder: (context, viewModel, _) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(TranslationHelper.getString(context, 'claimsDashboard', fallback: 'Claims Dashboard')),
+              title: Text(AppLocalizations.of(context)!.claimsDashboard),
               bottom: TabBar(
                 controller: _tabController,
                 tabs: [
-                  Tab(text: TranslationHelper.getString(context, 'active', fallback: 'Active')),
-                  Tab(text: TranslationHelper.getString(context, 'actionRequired', fallback: 'Action Required')),
-                  Tab(text: TranslationHelper.getString(context, 'completed', fallback: 'Completed')),
+                  Tab(text: AppLocalizations.of(context)!.active),
+                  Tab(text: AppLocalizations.of(context)!.actionRequired),
+                  Tab(text: AppLocalizations.of(context)!.completed),
                 ],
               ),
               actions: [
@@ -68,7 +67,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                   onPressed: viewModel.isLoading 
                     ? null 
                     : () => viewModel.refreshDashboard(),
-                  tooltip: TranslationHelper.getString(context, 'refreshDashboard', fallback: 'Refresh Dashboard'),
+                  tooltip: AppLocalizations.of(context)!.refreshDashboard,
                 ),
               ],
             ),
@@ -124,7 +123,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
             Semantics(
               header: true,
               child: Text(
-                TranslationHelper.getString(context, 'claimsSummary', fallback: 'Claims Summary'),
+                AppLocalizations.of(context)!.claimsSummary,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -148,18 +147,18 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildAnalyticItem(
-                          TranslationHelper.getString(context, 'totalClaims', fallback: 'Total Claims'), 
+                          AppLocalizations.of(context)!.totalClaims, 
                           '${stats.totalClaims}',
                           Icons.summarize,
                         ),
                         _buildAnalyticItem(
-                          TranslationHelper.getString(context, 'active', fallback: 'Active'), 
+                          AppLocalizations.of(context)!.active, 
                           '${stats.activeClaims}',
                           Icons.pending_actions,
                           color: Colors.amber,
                         ),
                         _buildAnalyticItem(
-                          TranslationHelper.getString(context, 'completed', fallback: 'Completed'), 
+                          AppLocalizations.of(context)!.completed, 
                           '${stats.completedClaims}',
                           Icons.check_circle,
                           color: Colors.green,
@@ -173,13 +172,13 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildAnalyticItem(
-                          TranslationHelper.getString(context, 'totalCompensation', fallback: 'Total Compensation'), 
+                          AppLocalizations.of(context)!.totalCompensation, 
                           _currencyFormat.format(stats.totalCompensation),
                           Icons.euro,
                           isWide: true,
                         ),
                         _buildAnalyticItem(
-                          TranslationHelper.getString(context, 'pendingAmount', fallback: 'Pending Amount'), 
+                          AppLocalizations.of(context)!.pendingAmount, 
                           _currencyFormat.format(stats.pendingCompensation),
                           Icons.account_balance_wallet,
                           isWide: true,
@@ -235,14 +234,14 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
     if (claims.isEmpty) {
       return Center(
         child: Semantics(
-          label: TranslationHelper.getString(context, 'noClaimsInCategory', fallback: 'No claims in this category'),
+          label: AppLocalizations.of(context)!.noClaimsYetTitle,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.description_outlined, size: 48, color: Colors.grey[400]),
               const SizedBox(height: 16),
               Text(
-                TranslationHelper.getString(context, 'noClaimsInCategory', fallback: 'No claims in this category'),
+                AppLocalizations.of(context)!.noClaimsYetTitle,
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
             ],
@@ -267,13 +266,13 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
           // Get compensation amount as string
           final compensationText = claim.compensationAmount != null
               ? _currencyFormat.format(claim.compensationAmount)
-              : TranslationHelper.getString(context, 'pending', fallback: 'Pending');
+              : AppLocalizations.of(context)!.pending;
           
           return Semantics(
             button: true,
             enabled: true,
-            onTapHint: TranslationHelper.getString(context, 'viewClaimDetails', fallback: 'View claim details'),
-            value: TranslationHelper.getString(context, 'claimForFlight', fallback: 'Claim for flight {number} with status {status}').replaceAll('{number}', claim.flightNumber).replaceAll('{status}', claim.status.toString()),
+            onTapHint: AppLocalizations.of(context)!.viewClaimDetails,
+            value: AppLocalizations.of(context)!.claimForFlight(claim.flightNumber, claim.status.toString()),
             child: Card(
               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               elevation: 2,
@@ -293,10 +292,10 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              TranslationHelper.getString(context, 'flightRouteDetails', fallback: 'Flight {number} · {departure} to {arrival}')
-                                .replaceAll('{number}', claim.flightNumber)
-                                .replaceAll('{departure}', claim.departureAirport)
-                                .replaceAll('{arrival}', claim.arrivalAirport),
+                              AppLocalizations.of(context)!.flightRouteDetails(
+                                claim.flightNumber,
+                                claim.departureAirport,
+                                claim.arrivalAirport),
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -324,7 +323,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            TranslationHelper.getString(context, 'flightDate', fallback: 'Flight Date: {date}')
+                            AppLocalizations.of(context)!.flightDate
                               .replaceAll('{date}', flightDate),
                             style: TextStyle(color: Colors.grey[600], fontSize: 14),
                           ),
@@ -344,7 +343,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                           child: OutlinedButton.icon(
                             onPressed: () => _navigateToClaimDetail(claim.id),
                             icon: const Icon(Icons.warning, size: 16),
-                            label: Text(TranslationHelper.getString(context, 'actionRequired', fallback: 'Action Required')),
+                            label: Text(AppLocalizations.of(context)!.actionRequired),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.red,
                               side: const BorderSide(color: Colors.red),
@@ -381,14 +380,14 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
             const SizedBox(height: 16),
             Text(
               isAuthError 
-                ? TranslationHelper.getString(context, 'authenticationRequired', fallback: 'Authentication Required') 
-                : TranslationHelper.getString(context, 'errorLoadingClaims', fallback: 'Error Loading Claims'),
+                ? AppLocalizations.of(context)!.authenticationRequired 
+                : AppLocalizations.of(context)!.errorLoadingClaims,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
               isAuthError 
-                ? TranslationHelper.getString(context, 'loginToViewClaimsDashboard', fallback: 'Please log in to view your claims dashboard. Your compensation claims are tied to your account.')
+                ? AppLocalizations.of(context)!.loginToViewClaimsDashboard
                 : viewModel.errorMessage,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -403,7 +402,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                   Navigator.of(context).pushNamed('/auth');
                 },
                 icon: const Icon(Icons.login),
-                label: Text(TranslationHelper.getString(context, 'logIn', fallback: 'Log In')),
+                label: Text(AppLocalizations.of(context)!.logIn),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
@@ -415,7 +414,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
               ElevatedButton.icon(
                 onPressed: () => viewModel.refreshDashboard(),
                 icon: const Icon(Icons.refresh),
-                label: Text(TranslationHelper.getString(context, 'retry', fallback: 'Retry')),
+                label: Text(AppLocalizations.of(context)!.retry),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -439,15 +438,14 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
           ),
           const SizedBox(height: 16),
           Text(
-            TranslationHelper.getString(context, 'noClaimsYet', fallback: 'No Claims Yet'),
+            AppLocalizations.of(context)!.noClaimsYet,
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
-              TranslationHelper.getString(context, 'startCompensationClaimInstructions', 
-                fallback: 'Start your compensation claim by selecting a flight from the EU Eligible Flights section'),
+              AppLocalizations.of(context)!.startCompensationClaimInstructions,
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey),
             ),
@@ -465,7 +463,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
               });
             },
             icon: const Icon(Icons.add),
-            label: Text(TranslationHelper.getString(context, 'createClaim', fallback: 'Create a Claim')),
+            label: Text(AppLocalizations.of(context)!.createClaim),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
@@ -559,23 +557,23 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
   String _getStatusText(String? status) {
     switch (status) {
       case 'submitted':
-        return TranslationHelper.getString(context, 'submitted', fallback: 'Submitted');
+        return AppLocalizations.of(context)!.submitted;
       case 'reviewing':
-        return TranslationHelper.getString(context, 'inReview', fallback: 'Under Review');
+        return AppLocalizations.of(context)!.inReview;
       case 'action_required':
-        return TranslationHelper.getString(context, 'actionRequired', fallback: 'Action Required');
+        return AppLocalizations.of(context)!.actionRequired;
       case 'processing':
-        return TranslationHelper.getString(context, 'processing', fallback: 'Processing');
+        return AppLocalizations.of(context)!.processing;
       case 'approved':
-        return TranslationHelper.getString(context, 'approved', fallback: 'Approved');
+        return AppLocalizations.of(context)!.approved;
       case 'rejected':
-        return TranslationHelper.getString(context, 'rejected', fallback: 'Rejected');
+        return AppLocalizations.of(context)!.rejected;
       case 'paid':
-        return TranslationHelper.getString(context, 'paid', fallback: 'Paid');
+        return AppLocalizations.of(context)!.paid;
       case 'appealing':
-        return TranslationHelper.getString(context, 'underAppeal', fallback: 'Under Appeal');
+        return AppLocalizations.of(context)!.underAppeal;
       default:
-        return TranslationHelper.getString(context, 'unknown', fallback: 'Unknown');
+        return AppLocalizations.of(context)!.unknown;
     }
   }
 }

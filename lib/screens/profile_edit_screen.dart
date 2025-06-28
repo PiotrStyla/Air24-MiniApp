@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Keep for User type, but not for instance
 import 'package:get_it/get_it.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../models/user_profile.dart';
 // import '../services/firestore_service.dart'; // Temporarily disabled
@@ -90,11 +91,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       if (mounted) {
         setState(() => _loading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(TranslationHelper.getString(
-            context, 
-            'errorLoadingProfile', 
-            fallback: 'Error loading profile: $e'
-          )))
+          SnackBar(content: Text(AppLocalizations.of(context)!.errorLoadingProfile))
         );
       }
     }
@@ -110,7 +107,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     // await NewProfileService().setUserProfile(profile);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(TranslationHelper.getString(context, 'profileSaved', fallback: 'Profile saved! (Feature temporarily disabled)'))
+      content: Text(AppLocalizations.of(context)!.profileSaved)
     ));
   }
 
@@ -120,7 +117,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: AppBar(title: Text(TranslationHelper.getString(context, 'editProfile', fallback: 'Edit Profile'))),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.editProfile)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -139,11 +136,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      TranslationHelper.getString(
-                        context, 
-                        'profileAccuracyInfo', 
-                        fallback: 'Please ensure your profile information is accurate. This is needed for claim processing and to contact you about your compensation.'
-                      ),
+                      AppLocalizations.of(context)!.profileAccuracyInfo,
                       style: TextStyle(color: Colors.blue[900]),
                     ),
                   ),
@@ -162,13 +155,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    TranslationHelper.getString(context, 'tipsAndReminders', fallback: 'Tips & Reminders'),
+                    AppLocalizations.of(context)!.tipsAndReminders,
                     style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
                   ),
                   const SizedBox(height: 6),
-                  Text('• ${TranslationHelper.getString(context, 'keepProfileUpToDate', fallback: 'Keep your profile up to date for smooth claim processing.')}'),
-                  Text('• ${TranslationHelper.getString(context, 'profilePrivacy', fallback: 'Your information is private and only used for compensation claims.')}'),
-                  Text('• ${TranslationHelper.getString(context, 'correctContactDetails', fallback: 'Make sure your contact details are correct so we can reach you about your claim.')}'),
+                  Text('• ${AppLocalizations.of(context)!.keepProfileUpToDate}'),
+                  Text('• ${AppLocalizations.of(context)!.profilePrivacy}'),
+                  Text('• ${AppLocalizations.of(context)!.correctContactDetails}'),
                 ],
               ),
             ),
@@ -179,29 +172,29 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 children: [
                   TextFormField(
                     controller: _nameController,
-                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'fullName', fallback: 'Full Name')),
-                    validator: (v) => v == null || v.isEmpty ? TranslationHelper.getString(context, 'required', fallback: 'Required') : null,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fullName),
+                    validator: (v) => v == null || v.isEmpty ? AppLocalizations.of(context)!.required : null,
                   ),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'phoneNumber', fallback: 'Phone Number')),
-                    validator: (v) => v == null || v.isEmpty ? TranslationHelper.getString(context, 'required', fallback: 'Required') : null,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.phoneNumber),
+                    validator: (v) => v == null || v.isEmpty ? AppLocalizations.of(context)!.required : null,
                   ),
                   TextFormField(
                     controller: _passportController,
-                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'passportNumber', fallback: 'Passport Number')),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.passportNumber),
                   ),
                   TextFormField(
                     controller: _nationalityController,
-                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'nationality', fallback: 'Nationality')),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.nationality),
                   ),
                   // Date of Birth with date picker
                   TextFormField(
                     controller: _dobController,
                     decoration: InputDecoration(
-                      labelText: TranslationHelper.getString(context, 'dateOfBirth', fallback: 'Date of Birth'),
+                      labelText: AppLocalizations.of(context)!.dateOfBirth,
                       prefixIcon: const Icon(Icons.calendar_today),
-                      hintText: TranslationHelper.getString(context, 'dateFormat', fallback: 'YYYY-MM-DD'),
+                      hintText: AppLocalizations.of(context)!.dateFormat,
                     ),
                     readOnly: true, // Prevent keyboard from appearing
                     onTap: () async {
@@ -223,19 +216,19 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   ),
                   TextFormField(
                     controller: _addressController,
-                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'address', fallback: 'Address')),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.address),
                   ),
                   TextFormField(
                     controller: _cityController,
-                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'city', fallback: 'City')),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.city),
                   ),
                   TextFormField(
                     controller: _postalController,
-                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'postalCode', fallback: 'Postal Code')),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.postalCode),
                   ),
                   TextFormField(
                     controller: _countryController,
-                    decoration: InputDecoration(labelText: TranslationHelper.getString(context, 'country', fallback: 'Country')),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.country),
                   ),
                   const SizedBox(height: 16),
                   
@@ -252,19 +245,19 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 16, top: 12),
                           child: Text(
-                            TranslationHelper.getString(context, 'privacySettings', fallback: 'Privacy Settings'),
+                            AppLocalizations.of(context)!.privacySettings,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         SwitchListTile(
-                          title: Text(TranslationHelper.getString(context, 'consentToShareData', fallback: 'Consent to Share Data')),
-                          subtitle: Text(TranslationHelper.getString(context, 'requiredForProcessing', fallback: 'Required for processing compensation claims')),
+                          title: Text(AppLocalizations.of(context)!.consentToShareData),
+                          subtitle: Text(AppLocalizations.of(context)!.requiredForProcessing),
                           value: _consentData,
                           onChanged: (v) => setState(() => _consentData = v),
                         ),
                         SwitchListTile(
-                          title: Text(TranslationHelper.getString(context, 'receiveNotifications', fallback: 'Receive Notifications')),
-                          subtitle: Text(TranslationHelper.getString(context, 'getClaimUpdates', fallback: 'Get updates about your compensation claims')),
+                          title: Text(AppLocalizations.of(context)!.receiveNotifications),
+                          subtitle: Text(AppLocalizations.of(context)!.getClaimUpdates),
                           value: _consentNotifications,
                           onChanged: (v) => setState(() => _consentNotifications = v),
                         ),
@@ -283,7 +276,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         foregroundColor: Colors.white,
                       ),
                       label: Text(
-                        TranslationHelper.getString(context, 'saveProfile', fallback: 'SAVE PROFILE'),
+                        AppLocalizations.of(context)!.saveProfile,
                         style: const TextStyle(fontWeight: FontWeight.bold)
                       ),
                     ),

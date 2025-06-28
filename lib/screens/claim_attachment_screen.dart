@@ -6,6 +6,7 @@ import '../models/claim.dart';
 import '../models/flight_document.dart';
 import '../viewmodels/document_viewmodel.dart';
 import 'claim_review_screen.dart';
+import '../l10n2/app_localizations.dart';
 
 /// A wrapper that provides the DocumentViewModel to the attachment view.
 class ClaimAttachmentScreen extends StatelessWidget {
@@ -46,19 +47,19 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
 
   /// Handles the entire process of picking and uploading a new document.
   Future<void> _uploadNewDocument(BuildContext context) async {
-    final viewModel = context.read<DocumentViewModel>();
-
-    // The view model now returns the document object on success.
+    final viewModel = Provider.of<DocumentViewModel>(context, listen: false);
+    
     final newDocument = await viewModel.pickAndUploadDocument(
       flightNumber: widget.claim.flightNumber,
       flightDate: widget.claim.flightDate,
-      documentType: FlightDocumentType.other, // Default type for new uploads
+      documentType: FlightDocumentType.other,
+      documentName: AppLocalizations.of(context)!.claimAttachment,
     );
 
     if (mounted) {
       if (newDocument != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Document uploaded successfully!'), backgroundColor: Colors.green),
+          SnackBar(content: Text(AppLocalizations.of(context)!.documentUploadSuccess), backgroundColor: Colors.green),
         );
         // Automatically select the newly uploaded document, avoiding race conditions.
         setState(() {
@@ -66,7 +67,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(viewModel.errorMessage ?? 'Upload failed. Please try again.'), backgroundColor: Colors.red),
+          SnackBar(content: Text(viewModel.errorMessage ?? AppLocalizations.of(context)!.uploadFailed), backgroundColor: Colors.red),
         );
       }
     }
@@ -76,7 +77,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Attach Documents'),
+        title: Text(AppLocalizations.of(context)!.attachDocuments),
       ),
       body: Consumer<DocumentViewModel>(
         builder: (context, viewModel, child) {
@@ -93,13 +94,13 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
               if (viewModel.isUploading)
                 Container(
                   color: Colors.black.withOpacity(0.5),
-                  child: const Center(
+                  child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 16),
-                        Text('Uploading document...', style: TextStyle(color: Colors.white, fontSize: 16)),
+                      children: <Widget>[
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        Text(AppLocalizations.of(context)!.uploadingDocument, style: const TextStyle(color: Colors.white, fontSize: 16)),
                       ],
                     ),
                   ),
@@ -117,12 +118,12 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('You have no documents.'),
+          Text(AppLocalizations.of(context)!.noDocuments),
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () => _uploadNewDocument(context),
             icon: const Icon(Icons.upload_file),
-            label: const Text('Upload First Document'),
+            label: Text(AppLocalizations.of(context)!.uploadFirstDocument),
           ),
         ],
       ),
@@ -140,8 +141,8 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
               final doc = documents[index];
               final isSelected = _selectedAttachmentUrls.contains(doc.storageUrl);
               return CheckboxListTile(
-                title: Text(doc.documentName),
-                subtitle: Text(doc.documentType.name),
+                title: Text(doc.documentName == 'Claim Attachment' ? AppLocalizations.of(context)!.claimAttachment : doc.documentName),
+                subtitle: Text(doc.documentType == FlightDocumentType.other ? AppLocalizations.of(context)!.other : doc.documentType.name),
                 value: isSelected,
                 onChanged: (bool? value) {
                   setState(() {
@@ -171,7 +172,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
           TextButton.icon(
             onPressed: () => _uploadNewDocument(context),
             icon: const Icon(Icons.add_circle_outline),
-            label: const Text('Upload New'),
+            label: Text(AppLocalizations.of(context)!.uploadNew),
           ),
           ElevatedButton(
             onPressed: () {
@@ -182,7 +183,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                 ),
               );
             },
-            child: const Text('Continue'),
+            child: Text(AppLocalizations.of(context)!.continueAction),
           ),
         ],
       ),

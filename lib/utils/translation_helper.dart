@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:f35_flight_compensation/l10n/app_localizations.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import '../services/manual_localization_service.dart';
 import '../services/localization_service.dart';
@@ -23,7 +23,7 @@ class TranslationHelper {
     final currentLocale = Localizations.localeOf(context);
     
     // Check if we need to synchronize locales
-    _checkAndSynchronizeLocales(context, currentLocale);
+    _ensureLocalesAreSynchronized(context, currentLocale);
     
     // First try manual service
     try {
@@ -93,19 +93,6 @@ class TranslationHelper {
                 'may be Polish but locale is ${locale.languageCode}');
     }
   }
-  
-  /// Check if the locale changed and needs synchronization
-  static void _checkAndSynchronizeLocales(BuildContext context, Locale currentLocale) {
-    // If this is a different locale than last time, or first run
-    if (_lastSynchronizedLocale == null || 
-        _lastSynchronizedLocale!.languageCode != currentLocale.languageCode) {
-      debugPrint('🔄 TranslationHelper: Detected locale change to $currentLocale');
-      synchronizeAllLocalizationSystems(context, currentLocale);
-      _lastSynchronizedLocale = currentLocale;
-    }
-  }
-  
-  /// Explicitly synchronize all localization systems to use the same locale
   static Future<void> synchronizeAllLocalizationSystems(
     BuildContext context, 
     Locale targetLocale
@@ -137,16 +124,41 @@ class TranslationHelper {
   /// Force reload translations for the current locale
   /// This ensures both localization systems are updated
   static Future<void> forceReloadTranslations(BuildContext context) async {
+    final currentLocale = Localizations.localeOf(context);
+    _ensureLocalesAreSynchronized(context, currentLocale);
+    _lastSynchronizedLocale = currentLocale;
+    debugPrint('TranslationHelper: Force reloaded translations for $currentLocale');
+    return Future.value(); // Return a completed Future<void>
+  }
+  
+  // Ensure that the locale is synchronized across all services
+  static void _ensureLocalesAreSynchronized(BuildContext context, Locale currentLocale) {
     try {
-      // Get the current locale
-      final locale = Localizations.localeOf(context);
-      
-      debugPrint('🔄 TranslationHelper: Forcing reload for $locale');
-      await synchronizeAllLocalizationSystems(context, locale);
-      
-      debugPrint('✅ TranslationHelper: Forced reload completed for $locale');
+      // Check if locale has changed
+      if (_lastSynchronizedLocale == null || _lastSynchronizedLocale != currentLocale) {
+        // Update locale in manual service
+        try {
+          final manualService = GetIt.instance<ManualLocalizationService>();
+          manualService.setLocale(currentLocale); // Pass the Locale directly
+        } catch (e) {
+          debugPrint('Error updating manual service locale: $e');
+        }
+        
+        // Also try to update any other localization services
+        try {
+          if (GetIt.instance.isRegistered<LocalizationService>()) {
+            final localizationService = GetIt.instance<LocalizationService>();
+            localizationService.setLocale(currentLocale); // Pass the Locale directly
+          }
+        } catch (e) {
+          debugPrint('Error updating localization service: $e');
+        }
+        
+        _lastSynchronizedLocale = currentLocale;
+        debugPrint('TranslationHelper: Synchronized locale to ${currentLocale.languageCode}');
+      }
     } catch (e) {
-      debugPrint('❌ Error reloading translations: $e');
+      debugPrint('Error synchronizing locales: $e');
     }
   }
   

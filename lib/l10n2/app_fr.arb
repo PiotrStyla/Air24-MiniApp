@@ -179,6 +179,18 @@
   "delayedEligible": "Retardé et potentiellement éligible",
   "startClaim": "Commencer la Réclamation",
   "euWideEligibleFlights": "Vols Éligibles à l'Indemnisation à l'échelle de l'UE",
+  "claimNotFound": "Réclamation introuvable",
+  "@claimNotFound": {
+    "description": "Titre affiché lorsqu'une réclamation est introuvable."
+  },
+  "claimNotFoundDesc": "La réclamation demandée est introuvable. Elle a peut-être été supprimée.",
+  "@claimNotFoundDesc": {
+    "description": "Description affichée lorsqu'une réclamation est introuvable."
+  },
+  "backToDashboard": "Retour au tableau de bord",
+  "@backToDashboard": {
+    "description": "Libellé du bouton pour revenir au tableau de bord."
+  },
   "requiredFieldsCompleted": "Tous les champs requis sont remplis.",
   "scanningDocumentsNote": "La numérisation de documents peut pré-remplir certains champs.",
   "tipCheckEligibility": "• Assurez-vous que votre vol est éligible à une indemnisation (par ex. retard >3h, annulation, refus d'embarquement).",
@@ -205,5 +217,16 @@
   "errorConnectionFailed": "Échec de la connexion. Veuillez vérifier votre réseau.",
   "@errorConnectionFailed": {
     "description": "Message d'erreur lorsqu'une connexion réseau échoue"
+  },
+  "@forcingFreshDataLoad": {
+    "description": "Message de snackbar lorsqu'une nouvelle mise à jour des données est forcée"
+  },
+  "checkAgain": "Vérifier à nouveau",
+  "@checkAgain": {
+    "description": "Libellé du bouton pour revérifier ou récupérer les vols"
+  },
+  "euWideCompensationEligibleFlights": "Vols éligibles à la compensation européenne",
+  "@euWideCompensationEligibleFlights": {
+    "description": "Titre de l'écran/section listant les vols éligibles à la compensation européenne"
   }
 }

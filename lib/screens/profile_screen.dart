@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:f35_flight_compensation/l10n/app_localizations.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'faq_screen.dart';
 import 'profile_edit_screen.dart';
@@ -78,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Semantics(
                 label: accessibilityService.semanticLabel(
-                  TranslationHelper.getString(context, 'profileInformation', fallback: 'Profile Information'), 
+                  AppLocalizations.of(context)!.profileInformation, 
                   'Information about your profile data usage'
                 ),
                 child: Container(
@@ -95,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          TranslationHelper.getString(context, 'profileInfoCardTitle', fallback: 'Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.'),
+                          AppLocalizations.of(context)!.profileInfoCardTitle,
                           style: TextStyle(color: Colors.blue[900]),
                         ),
                       ),
@@ -115,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Semantics(
                     header: true,
                     child: Text(
-                      TranslationHelper.getString(context, 'accountSettings', fallback: 'Account Settings'),
+                      AppLocalizations.of(context)!.accountSettings,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -123,8 +123,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Profile Information Card
                   AccessibleCard(
-                    title: TranslationHelper.getString(context, 'profileInformation', fallback: 'Profile Information'),
-                    semanticLabel: TranslationHelper.getString(context, 'editPersonalInfo', fallback: 'Edit your personal information'),
+                    title: AppLocalizations.of(context)!.profileInformation,
+                    semanticLabel: AppLocalizations.of(context)!.editPersonalInfo,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -137,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Icon(Icons.person),
                         const SizedBox(width: 16),
                         Expanded(
-                                                    child: Text(TranslationHelper.getString(context, 'editPersonalInfoDescription', fallback: 'Edit your personal and contact information')),
+                                                    child: Text(AppLocalizations.of(context)!.editPersonalInfoDescription),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -148,8 +148,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Accessibility Settings Card
                   AccessibleCard(
-                    title: TranslationHelper.getString(context, 'accessibilitySettings', fallback: 'Accessibility Settings'),
-                    semanticLabel: TranslationHelper.getString(context, 'configureAccessibility', fallback: 'Configure accessibility options for the app'),
+                    title: AppLocalizations.of(context)!.accessibilitySettings,
+                    semanticLabel: AppLocalizations.of(context)!.configureAccessibility,
                     hasFocus: true, // Highlight as an important option
                     onTap: () {
                       Navigator.of(context).push(
@@ -171,10 +171,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(TranslationHelper.getString(context, 'accessibilityOptions', fallback: 'Accessibility Options')),
+                              Text(AppLocalizations.of(context)!.accessibilityOptions),
                               const SizedBox(height: 4),
                               Text(
-                                                                  TranslationHelper.getString(context, 'configureAccessibilityDescription', fallback: 'Configure high contrast, large text, and screen reader support'),
+                                                                  AppLocalizations.of(context)!.configureAccessibilityDescription,
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
@@ -206,12 +206,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Notification Settings Card
                   AccessibleCard(
-                    title: TranslationHelper.getString(context, 'notificationSettings', fallback: 'Notification Settings'),
-                    semanticLabel: TranslationHelper.getString(context, 'configureNotifications', fallback: 'Configure notification preferences'),
+                    title: AppLocalizations.of(context)!.notificationSettings,
+                    semanticLabel: AppLocalizations.of(context)!.configureNotifications,
                     onTap: () {
                       // Show a toast message that this will be implemented in a future update
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                content: Text(TranslationHelper.getString(context, 'notificationSettingsComingSoon', fallback: 'Notification Settings coming soon')),
+                                                content: Text(AppLocalizations.of(context)!.notificationSettingsComingSoon),
                         duration: const Duration(seconds: 2),
                       ));
                     },
@@ -220,7 +220,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Icon(Icons.notifications_active),
                         const SizedBox(width: 16),
                         Expanded(
-                                                    child: Text(TranslationHelper.getString(context, 'configureNotificationsDescription', fallback: 'Configure how you receive claim updates')),
+                                                    child: Text(AppLocalizations.of(context)!.configureNotificationsDescription),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Language Settings Card
                   AccessibleCard(
                     title: localizations.languageSelection,
-                                        semanticLabel: TranslationHelper.getString(context, 'changeApplicationLanguage', fallback: 'Change application language'),
+                                        semanticLabel: AppLocalizations.of(context)!.changeApplicationLanguage,
                     onTap: () async {
                       final targetLocale = await Navigator.of(context).push(
                         MaterialPageRoute(
@@ -252,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Icon(Icons.language),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: Text(TranslationHelper.getString(context, 'selectLanguage', fallback: 'Select your preferred language')),
+                          child: Text(AppLocalizations.of(context)!.selectLanguage),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -267,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Semantics(
                 label: accessibilityService.semanticLabel(
-                  TranslationHelper.getString(context, 'tipsAndReminders', fallback: 'Tips and Reminders'), 
+                  AppLocalizations.of(context)!.tipsAndReminders, 
                   'Important tips about your profile information'
                 ),
                 child: Container(
@@ -283,17 +283,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Semantics(
                         header: true,
                         child: Text(
-                          TranslationHelper.getString(context, 'tipsAndReminders', fallback: 'Tips & Reminders'),
+                          AppLocalizations.of(context)!.tipsAndReminders,
                           style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 16),
                         ),
                       ),
                       const SizedBox(height: 12),
                       // Each tip is separated semantically for better screen reader experience
                       ...[  
-                        TranslationHelper.getString(context, 'tipProfileUpToDate', fallback: 'Keep your profile up to date for smooth claim processing.'),
-                        TranslationHelper.getString(context, 'tipInformationPrivate', fallback: 'Your information is private and only used for compensation claims.'),
-                        TranslationHelper.getString(context, 'tipContactDetails', fallback: 'Make sure your contact details are correct so we can reach you about your claim.'),
-                        TranslationHelper.getString(context, 'tipAccessibilitySettings', fallback: 'Check the Accessibility Settings to customize the app for your needs.')
+                        AppLocalizations.of(context)!.tipProfileUpToDate,
+                        AppLocalizations.of(context)!.tipInformationPrivate,
+                        AppLocalizations.of(context)!.tipContactDetails,
+                        AppLocalizations.of(context)!.tipAccessibilitySettings
                       ].map((tip) => Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Row(
