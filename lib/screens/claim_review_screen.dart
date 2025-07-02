@@ -42,11 +42,30 @@ class ClaimReviewScreen extends StatelessWidget {
                             Text(AppLocalizations.of(context)!.attachments, style: const TextStyle(fontWeight: FontWeight.bold)),
                             const SizedBox(height: 8),
                             ...claim.attachmentUrls.map((url) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 4.0),
-                                  child: Text(
-                                    Uri.decodeFull(url.split('?').first.split('%2F').last),
-                                    style: const TextStyle(fontSize: 14, color: Colors.blueAccent),
-                                    overflow: TextOverflow.ellipsis,
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          _extractFileName(url),
+                                          style: const TextStyle(fontSize: 14, color: Colors.blueAccent),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      if (kIsWeb && url.startsWith('web-doc-'))
+                                        IconButton(
+                                          icon: const Icon(Icons.visibility, size: 18, color: Colors.blue),
+                                          tooltip: 'Preview attachment',
+                                          onPressed: () {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                content: Text('This is a mock file in web demo mode. File preview would be available in production.'),
+                                                backgroundColor: Colors.blue,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                    ],
                                   ),
                                 )),
                           ],
@@ -86,5 +105,26 @@ class ClaimReviewScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+  
+  /// Extracts a user-friendly filename from the document URL
+  String _extractFileName(String url) {
+    // Handle web mock documents with embedded filenames
+    if (url.startsWith('web-doc-')) {
+      // Extract the filename part after the timestamp
+      final parts = url.split('-');
+      if (parts.length > 2) {
+        // Skip 'web-doc-timestamp-' and join the rest to get the filename
+        return parts.skip(2).join('-').replaceAll('_', ' ');
+      }
+      return 'Attachment';
+    }
+    
+    // Handle standard Firebase storage URLs
+    try {
+      return Uri.decodeFull(url.split('?').first.split('%2F').last);
+    } catch (e) {
+      return 'Document';
+    }
   }
 }

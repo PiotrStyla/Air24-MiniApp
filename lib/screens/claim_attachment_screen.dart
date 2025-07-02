@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
 import '../core/services/service_initializer.dart';
@@ -36,38 +37,123 @@ class _ClaimAttachmentView extends StatefulWidget {
 
 class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
   // Local state to track which documents are selected for this specific claim.
-  late final Set<String> _selectedAttachmentUrls;
+  Set<String> _selectedAttachmentUrls = {};
 
   @override
   void initState() {
     super.initState();
     // Initialize with URLs already associated with the claim.
     _selectedAttachmentUrls = Set.from(widget.claim.attachmentUrls);
+    
+    // Always reload documents when returning to this screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = Provider.of<DocumentViewModel>(context, listen: false);
+      // Reload all documents including mock documents
+      viewModel.loadAllUserDocuments();
+    });
   }
 
   /// Handles the entire process of picking and uploading a new document.
   Future<void> _uploadNewDocument(BuildContext context) async {
     final viewModel = Provider.of<DocumentViewModel>(context, listen: false);
     
-    final newDocument = await viewModel.pickAndUploadDocument(
-      flightNumber: widget.claim.flightNumber,
-      flightDate: widget.claim.flightDate,
-      documentType: FlightDocumentType.other,
-      documentName: AppLocalizations.of(context)!.claimAttachment,
-    );
-
-    if (mounted) {
-      if (newDocument != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.documentUploadSuccess), backgroundColor: Colors.green),
+    // For web environments, use a modified approach
+    if (kIsWeb) {
+      try {
+        // First show a file picker dialog
+        final fileSelected = await viewModel.pickDocument();
+        
+        // Only proceed if a file was selected
+        if (!fileSelected) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('No file selected'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+          return;
+        }
+        
+        // Create mock document ID and file name
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final fileName = viewModel.selectedFileName ?? 'document.pdf';
+        // Include the filename in the document ID so it can be extracted in the review screen
+        final mockDocId = 'web-doc-$timestamp-${fileName.replaceAll(' ', '_')}';
+        
+        // Create a mock FlightDocument with the selected file's name
+        final mockDocument = FlightDocument(
+          id: mockDocId,
+          name: fileName,
+          documentType: FlightDocumentType.other,
+          flightNumber: widget.claim.flightNumber,
+          flightDate: widget.claim.flightDate,
+          storageUrl: mockDocId, // Using mockDocId as the storage URL for web documents
+          uploadDate: DateTime.now(),
+          size: viewModel.selectedFileSize ?? 0,
+          mimeType: viewModel.selectedFileMimeType ?? 'application/octet-stream',
+          notes: '',
         );
-        // Automatically select the newly uploaded document, avoiding race conditions.
+        
+        // Add the mock document to the view model
+        // This will also persist it automatically
+        await viewModel.addMockDocument(mockDocument);
+        
         setState(() {
-          _selectedAttachmentUrls.add(newDocument.storageUrl);
+          _selectedAttachmentUrls.add(mockDocId);
         });
-      } else {
+        
+        // Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Document "$fileName" added successfully (Web Demo)'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to create document: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+      return;
+    }
+    
+    // For non-web environments, proceed with normal upload flow
+    try {
+      final newDocument = await viewModel.pickAndUploadDocument(
+        flightNumber: widget.claim.flightNumber,
+        flightDate: widget.claim.flightDate,
+        documentType: FlightDocumentType.other,
+        documentName: AppLocalizations.of(context)!.claimAttachment,
+      );
+
+      if (mounted) {
+        if (newDocument != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context)!.documentUploadSuccess), backgroundColor: Colors.green),
+          );
+          // Automatically select the newly uploaded document, avoiding race conditions.
+          setState(() {
+            _selectedAttachmentUrls.add(newDocument.storageUrl);
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(viewModel.errorMessage ?? AppLocalizations.of(context)!.uploadFailed), backgroundColor: Colors.red),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(viewModel.errorMessage ?? AppLocalizations.of(context)!.uploadFailed), backgroundColor: Colors.red),
+          SnackBar(content: Text('${AppLocalizations.of(context)!.uploadFailed}: $e'), backgroundColor: Colors.red),
         );
       }
     }

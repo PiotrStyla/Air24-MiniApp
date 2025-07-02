@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
-import 'faq_screen.dart';
+import 'package:provider/provider.dart';
+import '../l10n2/app_localizations.dart';
+import '../models/claim.dart';
+import '../core/services/service_initializer.dart';
+import '../services/claim_tracking_service.dart';
 import '../services/auth_service.dart';
 import 'package:uuid/uuid.dart';
-import '../models/claim.dart';
-import '../services/claim_tracking_service.dart';
-import '../core/services/service_initializer.dart';
 import 'package:intl/intl.dart';
+import 'claim_attachment_screen.dart';
+import 'faq_screen.dart';
 import '../utils/translation_helper.dart';
 
 class QuickClaimScreen extends StatefulWidget {
@@ -33,7 +35,6 @@ class QuickClaimScreen extends StatefulWidget {
 
 class _QuickClaimScreenState extends State<QuickClaimScreen> {
   bool _isSubmitting = false;
-  bool _isConfirmationStep = false;
   String? _errorMessage;
   late TextEditingController _flightNumberController;
   late TextEditingController _departureAirportController;
@@ -41,7 +42,6 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
   late TextEditingController _reasonController;
   late TextEditingController _compensationAmountController;
   late DateTime _flightDate;
-  late Claim _preparedClaim;
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
       }
 
       // Prepare claim object
-      _preparedClaim = Claim(
+      final claim = Claim(
         bookingReference: '', // Placeholder for quick claim
         id: const Uuid().v4(),
         userId: user.uid,
@@ -103,80 +103,20 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
         status: 'pending',
       );
 
-      // Show verification step
-      setState(() {
-        _isConfirmationStep = true;
-      });
-    }
-  }
-
-  void _goBackToEditStep() {
-    setState(() {
-      _isConfirmationStep = false;
-    });
-  }
-
-  Future<void> _submitClaim() async {
-    setState(() {
-      _isSubmitting = true;
-      _errorMessage = null;
-    });
-    try {
-      final claimTrackingService = ServiceInitializer.get<ClaimTrackingService>();
-      await claimTrackingService.saveClaim(_preparedClaim);
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.dialogTitleSuccess),
-            content: Text(AppLocalizations.of(context)!.dialogContentClaimSubmitted),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop(true);
-                },
-                child: Text(AppLocalizations.of(context)!.dialogButtonOK),
-              ),
-            ],
-          ),
-        );
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = AppLocalizations.of(context)!.errorFailedToSubmitClaim;
-        _isSubmitting = false;
-      });
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!.dialogTitleError),
-          content: Text(_errorMessage!),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(AppLocalizations.of(context)!.dialogButtonOK),
-            ),
-          ],
+      // Navigate to the attachment screen first (standard claim flow)
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ClaimAttachmentScreen(claim: claim),
         ),
       );
     }
   }
 
+  // This method is no longer used as we now redirect to the standard claim flow
+
   final _formKey = GlobalKey<FormState>();
   
-  Widget _buildConfirmationRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
-  }
+  // This method is no longer used as we now redirect to the standard claim flow
 
   @override
   Widget build(BuildContext context) {
@@ -367,81 +307,12 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
                 ),
-              if (!_isConfirmationStep)
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _isSubmitting ? null : _prepareClaimForVerification,
-                    child: Text(AppLocalizations.of(context)!.reviewAndConfirm),
-                  ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _isSubmitting ? null : _prepareClaimForVerification,
+                  child: Text(AppLocalizations.of(context)!.continueToReview),
                 ),
-              if (_isConfirmationStep)
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade50,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.green.shade300),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.pleaseConfirmDetails,
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade800),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildConfirmationRow(
-                            AppLocalizations.of(context)!.flightNumber, 
-                            _preparedClaim.flightNumber
-                          ),
-                          _buildConfirmationRow(
-                            AppLocalizations.of(context)!.flightDate, 
-                            DateFormat.yMMMd().format(_preparedClaim.flightDate)
-                          ),
-                          _buildConfirmationRow(
-                            AppLocalizations.of(context)!.departureAirport, 
-                            _preparedClaim.departureAirport
-                          ),
-                          _buildConfirmationRow(
-                            AppLocalizations.of(context)!.arrivalAirport, 
-                            _preparedClaim.arrivalAirport
-                          ),
-                          _buildConfirmationRow(
-                            AppLocalizations.of(context)!.reasonForClaimLabel, 
-                            _preparedClaim.reason
-                          ),
-                          if (_preparedClaim.compensationAmount > 0)
-                            _buildConfirmationRow(
-                              AppLocalizations.of(context)!.compensationAmountOptionalLabel, 
-                              '${_preparedClaim.compensationAmount}'
-                            ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        OutlinedButton(
-                          onPressed: _goBackToEditStep,
-                          child: Text(AppLocalizations.of(context)!.back),
-                        ),
-                        ElevatedButton(
-                          onPressed: _isSubmitting ? null : _submitClaim,
-                          child: _isSubmitting
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                              )
-                            : Text(AppLocalizations.of(context)!.submitClaim),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              ),
               const SizedBox(height: 24),
               Container(
                 padding: const EdgeInsets.all(12),

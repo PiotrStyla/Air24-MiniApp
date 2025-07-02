@@ -35,9 +35,58 @@ class DocumentViewModel extends ChangeNotifier {
   bool get hasSelectedFile => _selectedFile != null;
   String get flightNumber => _flightNumber;
   DateTime get flightDate => _flightDate;
+  String? get selectedFileName => _selectedFile?.name;
   
   // Constructor
   DocumentViewModel(this._documentService, this._localizationService);
+  
+  /// Adds a mock document to the documents list for web testing
+  /// This is used only for web demo purposes
+  Future<void> addMockDocument(FlightDocument document) async {
+    // Add the document to our list
+    _documents = [..._documents, document];
+    
+    // Store mock documents in memory for the session
+    // This ensures they persist when navigating between screens
+    _persistMockDocuments();
+    
+    // Notify listeners about the change
+    notifyListeners();
+  }
+  
+  // In-memory storage for mock documents (web only)
+  static final List<FlightDocument> _persistentMockDocuments = [];
+  
+  // Store mock documents in memory
+  void _persistMockDocuments() {
+    if (!kIsWeb) return;
+    
+    // Find any new mock documents not already in the persistent storage
+    for (final doc in _documents.where((doc) => doc.storageUrl.startsWith('web-doc-'))) {
+      if (!_persistentMockDocuments.any((persistedDoc) => persistedDoc.storageUrl == doc.storageUrl)) {
+        _persistentMockDocuments.add(doc);
+      }
+    }
+  }
+  
+  // Load previously stored mock documents
+  Future<void> loadMockDocuments() async {
+    if (kIsWeb) {
+      // Add persistent mock documents to current documents
+      for (final mockDoc in _persistentMockDocuments) {
+        if (!_documents.any((d) => d.storageUrl == mockDoc.storageUrl)) {
+          _documents.add(mockDoc);
+        }
+      }
+      
+      // Update the documents stream to ensure UI gets updated
+      _documentsStream = Stream.value(_documents);
+      notifyListeners();
+      
+      // Log the number of documents for debugging
+      print('Loaded ${_persistentMockDocuments.length} mock documents');
+    }
+  }
   
   // Document type options for dropdown
   List<Map<String, dynamic>> get documentTypeOptions {
@@ -287,7 +336,19 @@ class DocumentViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      // Load documents from the document service (Firebase, etc.)
       _documents = await _documentService.getAllUserDocuments();
+      
+      // If on web, add any mock documents that were created in the current session
+      if (kIsWeb) {
+        print('Loading mock documents, count: ${_persistentMockDocuments.length}');
+        for (final mockDoc in _persistentMockDocuments) {
+          if (!_documents.any((doc) => doc.storageUrl == mockDoc.storageUrl)) {
+            _documents.add(mockDoc);
+          }
+        }
+      }
+      
       _documentsStream = Stream.value(_documents);
     } on FirebaseException catch (e) {
       _errorMessage = 'Failed to load documents: ${e.message}';
