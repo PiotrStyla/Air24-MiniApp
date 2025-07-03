@@ -12,9 +12,6 @@ class AviationStackService {
   /// The URL for the Python backend service
   final String? pythonBackendUrl = 'http://PiotrS.pythonanywhere.com';
 
-  /// Whether to use the Python backend first
-  final bool usePythonBackend = false;
-
   // Caching for airport and airline data to avoid repeated API calls.
   Map<String, String> _airportCountryCache = {};
   Map<String, String> _airlineCountryCache = {};
@@ -430,7 +427,7 @@ class AviationStackService {
   }
 
   // Fetches flights eligible for EU compensation.
-  // Production-ready: Tries Python backend, falls back to live API, throws exception on failure.
+  // Uses Python backend as primary source, falls back to AviationStack API.
   Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
     int hours = 72,
     bool relaxEligibilityForDebugging = false,
@@ -441,7 +438,8 @@ class AviationStackService {
 
     List<Map<String, dynamic>> allFlights = [];
 
-    if (usePythonBackend) {
+    // Try Python backend first for EU eligible flights
+    try {
       try {
         foundation.debugPrint('AviationStackService: Attempting to fetch flights from Python backend.');
         final uri = Uri.parse('$pythonBackendUrl/eligible_flights').replace(queryParameters: {'hours': hours.toString()});
@@ -551,6 +549,7 @@ class AviationStackService {
   }
   
   // Checks compensation eligibility for a specific flight.
+  // Uses AviationStack API as primary source, falls back to Python backend.
   Future<Map<String, dynamic>> checkCompensationEligibility({
     required String flightNumber,
     String? date,
@@ -559,7 +558,48 @@ class AviationStackService {
     await _initializeAirportCache();
     await _initializeAirlineCache();
 
-    if (usePythonBackend) {
+    // Try AviationStack API first for individual claim checking
+    try {
+      final apiKey = await _getApiKey();
+      final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
+        'access_key': apiKey,
+        'flight_iata': flightNumber,
+        if (date != null) 'flight_date': date,
+      });
+      
+      final response = await http.get(uri).timeout(const Duration(seconds: 15));
+      
+      if (response.statusCode != 200) {
+        foundation.debugPrint('AviationStackService: API returned status code ${response.statusCode}, falling back to Python backend');
+        throw Exception('API returned status code ${response.statusCode}');
+      }
+      
+      final data = json.decode(response.body);
+      if (data['error'] != null) {
+        foundation.debugPrint('AviationStackService: API Error: ${data['error']['message']}, falling back to Python backend');
+        throw Exception('API Error: ${data['error']['message']}');
+      }
+      
+      final flights = data['data'] as List<dynamic>;
+      if (flights.isEmpty) {
+        foundation.debugPrint('AviationStackService: Flight $flightNumber not found, falling back to Python backend');
+        throw Exception('Flight $flightNumber not found');
+      }
+      
+      final flight = _normalizeSingleFlightData(flights[0]);
+      final eligibilityDetails = await _calculateEligibility(flight);
+      
+      return {
+        ...flight,
+        'eligible': eligibilityDetails['isEligible'],
+        'reason': eligibilityDetails['reason'],
+        'potentialCompensationAmount': eligibilityDetails['estimatedCompensation'],
+      };
+    } catch (e) {
+      foundation.debugPrint('Error checking compensation eligibility with AviationStack: $e');
+      foundation.debugPrint('Falling back to Python backend for eligibility check');
+      
+      // Fallback to Python backend
       try {
         final uri = Uri.parse('$pythonBackendUrl/check_eligibility').replace(queryParameters: {
           'flight_number': flightNumber,
@@ -580,47 +620,12 @@ class AviationStackService {
             // Assuming the backend provides full eligibility details.
             return Map<String, dynamic>.from(flight);
         } else {
-            foundation.debugPrint('Python backend error: ${response.statusCode}, falling back to direct API.');
+            throw Exception('Python backend error: ${response.statusCode}');
         }
       } catch (e) {
-        foundation.debugPrint('Error from Python backend: $e, falling back to direct API');
+        foundation.debugPrint('Error from Python backend: $e, both sources failed');
+        rethrow;
       }
-    }
-    
-    // Fallback to direct Aviation Stack API
-    try {
-      final apiKey = await _getApiKey();
-      final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
-        'access_key': apiKey,
-        'flight_iata': flightNumber,
-        if (date != null) 'flight_date': date,
-      });
-      
-      final response = await http.get(uri).timeout(const Duration(seconds: 15));
-      
-      if (response.statusCode != 200) {
-        throw Exception('API returned status code ${response.statusCode}');
-      }
-      
-      final data = json.decode(response.body);
-      if (data['error'] != null) {
-        throw Exception('API Error: ${data['error']['message']}');
-      }
-      
-      final flights = data['data'] as List<dynamic>;
-      if (flights.isEmpty) {
-        throw Exception('Flight $flightNumber not found');
-      }
-      
-      final flight = _normalizeSingleFlightData(flights[0]);
-      final eligibilityDetails = await _calculateEligibility(flight);
-      
-      return {
-        ...flight,
-        'eligible': eligibilityDetails['isEligible'],
-        'reason': eligibilityDetails['reason'],
-        'potentialCompensationAmount': eligibilityDetails['estimatedCompensation'],
-      };
     } catch (e) {
       foundation.debugPrint('Error checking compensation eligibility: $e');
       rethrow; // Rethrow the exception to be handled by the caller.
