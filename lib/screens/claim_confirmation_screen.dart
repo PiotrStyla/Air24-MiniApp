@@ -35,26 +35,33 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         userEmail = authService.currentUser!.email!;
       }
       
-      // Get airline IATA code with safety check
-      String airlineIata;
-      if (widget.claim.flightNumber.length >= 2) {
-        airlineIata = widget.claim.flightNumber.substring(0, 2);
-        print('Extracted airline IATA code: $airlineIata from flight number: ${widget.claim.flightNumber}');
-      } else {
-        print('Flight number too short: ${widget.claim.flightNumber}');
-        airlineIata = 'LH'; // Default to Lufthansa as a fallback
-      }
-      
+      // Extract airline IATA code using proper validation
+      String airlineIata = 'LH'; // Default to Lufthansa if extraction fails
       String airlineEmail = 'customer.relations@lufthansa.com'; // Default fallback email
       
-      try {
-        final procedure = await AirlineProcedureService.getProcedureByIata(airlineIata);
-        if (procedure != null && procedure.claimEmail.isNotEmpty) {
-          airlineEmail = procedure.claimEmail;
+      // Regex for standard flight number format: 2 letters followed by 1-4 digits
+      final RegExp flightNumberRegex = RegExp(r'^([A-Z]{2})\d{1,4}$', caseSensitive: false);
+      final String flightNumber = widget.claim.flightNumber.trim().toUpperCase();
+      
+      if (flightNumberRegex.hasMatch(flightNumber)) {
+        // Extract the first two characters as the IATA code if format is valid
+        airlineIata = flightNumber.substring(0, 2);
+        print('Valid flight number format. Extracted airline IATA code: $airlineIata from: $flightNumber');
+        
+        try {
+          final procedure = await AirlineProcedureService.getProcedureByIata(airlineIata);
+          if (procedure != null && procedure.claimEmail.isNotEmpty) {
+            airlineEmail = procedure.claimEmail;
+            print('Found matching airline: ${procedure.name} with email: $airlineEmail');
+          } else {
+            print('No airline procedure found for IATA code: $airlineIata. Using default.');
+          }
+        } catch (e) {
+          print('Error getting airline procedure: $e');
+          // Use default email already set
         }
-      } catch (e) {
-        print('Error getting airline procedure: $e');
-        // Use default email already set
+      } else {
+        print('Invalid flight number format: $flightNumber. Using default airline (Lufthansa).');
       }
       
       print('User email: $userEmail, Airline email: $airlineEmail');
