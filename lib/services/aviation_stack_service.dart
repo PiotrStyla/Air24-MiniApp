@@ -442,13 +442,23 @@ class AviationStackService {
     try {
       try {
         foundation.debugPrint('AviationStackService: Attempting to fetch flights from Python backend.');
-        final uri = Uri.parse('$pythonBackendUrl/eligible_flights').replace(queryParameters: {'hours': hours.toString()});
+        // Add explicit request for delayed flights to Python backend
+        final uri = Uri.parse('$pythonBackendUrl/eligible_flights').replace(queryParameters: {
+          'hours': hours.toString(),
+          'include_delayed': 'true'
+        });
         final response = await http.get(uri).timeout(const Duration(seconds: 20));
 
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
           allFlights = await _tryProcessFlightsData(data);
           foundation.debugPrint('AviationStackService: Successfully fetched ${allFlights.length} flights from Python backend.');
+          
+          // Debug log to check if there are any delayed flights
+          int delayedCount = allFlights.where((flight) => 
+              flight['status']?.toString().toLowerCase() == 'delayed' || 
+              (flight['delay_minutes'] != null && flight['delay_minutes'] > 0)).length;
+          foundation.debugPrint('AviationStackService: Found $delayedCount delayed flights in the data.');
           return await _processCompensationEligibility(allFlights, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
         } else {
           foundation.debugPrint('AviationStackService: Python backend error: ${response.statusCode}, falling back to direct API.');
@@ -462,16 +472,47 @@ class AviationStackService {
     try {
       foundation.debugPrint('AviationStackService: Attempting to fetch flights from AviationStack API for multiple statuses.');
       final apiKey = await _getApiKey();
-      final statusesToFetch = ['cancelled', 'diverted', 'delayed', 'landed'];
+      // Prioritize 'delayed' status by putting it first in the list
+      final statusesToFetch = ['delayed', 'cancelled', 'diverted', 'landed'];
+      
+      // Add an additional request specifically for delayed flights with significant delay
+      // This is a separate request to increase chances of getting delayed flights
+      try {
+        foundation.debugPrint('AviationStackService: Fetching significantly delayed flights specifically');
+        final delayedUri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
+          'access_key': apiKey,
+          'min_delay': '180', // Get flights with at least 180 minutes (3 hours) delay
+          'limit': '100',
+        });
+        
+        final delayedResponse = await http.get(delayedUri).timeout(const Duration(seconds: 20));
+        
+        if (delayedResponse.statusCode == 200) {
+          final data = json.decode(delayedResponse.body);
+          final flights = await _tryProcessFlightsData(data);
+          allFlights.addAll(flights);
+          foundation.debugPrint('AviationStackService: Successfully fetched ${flights.length} significantly delayed flights.');
+        }
+      } catch (e) {
+        foundation.debugPrint('AviationStackService: Error fetching significantly delayed flights: $e');
+      }
       
       for (final status in statusesToFetch) {
         foundation.debugPrint('AviationStackService: Fetching flights with status: $status');
         try {
-          final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
+          // For delayed status, specifically request flights with minimum delay
+          Map<String, String> queryParams = {
             'access_key': apiKey,
             'flight_status': status,
             'limit': '100',
-          });
+          };
+          
+          // For 'delayed' status, add extra parameters to ensure we get meaningful delays
+          if (status == 'delayed') {
+            queryParams['min_delay'] = '15'; // Get flights with at least 15 minutes delay
+          }
+          
+          final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: queryParams);
 
           final response = await http.get(uri).timeout(const Duration(seconds: 20));
 
