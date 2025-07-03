@@ -440,7 +440,6 @@ class AviationStackService {
 
     // Try Python backend first for EU eligible flights
     try {
-      try {
         foundation.debugPrint('AviationStackService: Attempting to fetch flights from Python backend.');
         // Add explicit request for delayed flights to Python backend
         final uri = Uri.parse('$pythonBackendUrl/eligible_flights').replace(queryParameters: {
@@ -466,7 +465,6 @@ class AviationStackService {
       } catch (e) {
         foundation.debugPrint('AviationStackService: Error fetching from Python backend: $e, falling back to direct API.');
       }
-    }
 
     // Fallback to direct AviationStack API if Python backend is disabled or fails
     try {
