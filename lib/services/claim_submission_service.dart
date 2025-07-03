@@ -37,13 +37,9 @@ class ClaimSubmissionService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Submit a new compensation claim.
-  Uri constructClaimMailtoUri({
-    required Claim claim,
-    required String airlineEmail,
-    required String userEmail,
-  }) {
-    final subject = 'Flight Compensation Claim - Flight ${claim.flightNumber}';
+  /// Get the email content for a claim for preview purposes
+  String getClaimEmailContent(Claim claim) {
+    print('getClaimEmailContent called for flight ${claim.flightNumber}');
     final attachmentsSection = claim.attachmentUrls.isNotEmpty
         ? '\n\nSupporting Documents:\n${claim.attachmentUrls.map((url) => '- $url').join('\n')}'
         : '';
@@ -64,6 +60,18 @@ Please find my details and the flight information above for your processing.$att
 Sincerely,
 ${_authService.currentUser?.displayName ?? 'Awaiting your reply'}
 ''';
+
+    return body;
+  }
+
+  /// Submit a new compensation claim.
+  Uri constructClaimMailtoUri({
+    required Claim claim,
+    required String airlineEmail,
+    required String userEmail,
+  }) {
+    final subject = 'Flight Compensation Claim - Flight ${claim.flightNumber}';
+    final body = getClaimEmailContent(claim);
 
     final Uri mailtoUri = Uri(
       scheme: 'mailto',

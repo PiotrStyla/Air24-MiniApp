@@ -85,15 +85,13 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         // Create a mock FlightDocument with the selected file's name
         final mockDocument = FlightDocument(
           id: mockDocId,
-          name: fileName,
+          userId: 'current-user', // Would normally get from auth service
+          documentName: fileName,
           documentType: FlightDocumentType.other,
           flightNumber: widget.claim.flightNumber,
           flightDate: widget.claim.flightDate,
           storageUrl: mockDocId, // Using mockDocId as the storage URL for web documents
           uploadDate: DateTime.now(),
-          size: viewModel.selectedFileSize ?? 0,
-          mimeType: viewModel.selectedFileMimeType ?? 'application/octet-stream',
-          notes: '',
         );
         
         // Add the mock document to the view model
@@ -227,7 +225,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
               final doc = documents[index];
               final isSelected = _selectedAttachmentUrls.contains(doc.storageUrl);
               return CheckboxListTile(
-                title: Text(doc.documentName == 'Claim Attachment' ? AppLocalizations.of(context)!.claimAttachment : doc.documentName),
+                title: Text(doc.documentName ?? 'Claim Attachment'),
                 subtitle: Text(doc.documentType == FlightDocumentType.other ? AppLocalizations.of(context)!.other : doc.documentType.name),
                 value: isSelected,
                 onChanged: (bool? value) {
@@ -239,6 +237,21 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                     }
                   });
                 },
+                secondary: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.visibility, color: Colors.blue),
+                      tooltip: 'Preview',
+                      onPressed: () => _previewDocument(context, doc),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      tooltip: 'Delete',
+                      onPressed: () => _deleteDocument(context, doc),
+                    ),
+                  ],
+                ),
               );
             },
           ),
@@ -246,6 +259,287 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         _buildBottomActionBar(context),
       ],
     );
+  }
+
+  /// Method to preview a document
+  void _previewDocument(BuildContext context, FlightDocument document) {
+    final String fileName = document.documentName ?? 'Document';
+    final bool isImageFile = _isImageFile(fileName);
+    final bool isPdfFile = fileName.toLowerCase().endsWith('.pdf');
+    
+    if (kIsWeb && document.storageUrl.startsWith('web-doc-')) {
+      // For web mock documents, we need to use a different approach
+      // since we don't have actual file data stored in Firebase
+      _showFullScreenPreview(context, fileName);
+    } else {
+      // For actual documents, we'd show a dialog with an image/PDF viewer
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.9,
+              maxHeight: MediaQuery.of(context).size.height * 0.8,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        fileName,
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: isImageFile
+                      ? _buildImagePreview(document.storageUrl)
+                      : isPdfFile
+                          ? Center(child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.picture_as_pdf, size: 100, color: Colors.red),
+                                const SizedBox(height: 16),
+                                const Text('PDF preview would be shown here.'),
+                                const SizedBox(height: 16),
+                                ElevatedButton.icon(
+                                  icon: const Icon(Icons.download),
+                                  label: const Text('Download PDF'),
+                                  onPressed: () {
+                                    // Would implement actual download functionality here
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Download would start here')),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ))
+                          : Center(child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.insert_drive_file, size: 100, color: Colors.blue),
+                                const SizedBox(height: 16),
+                                const Text('File preview not available'),
+                                Text('File type: ${_getFileExtension(fileName)}'),
+                              ],
+                            )),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+  
+  /// Determine if a file is an image based on its name/extension
+  bool _isImageFile(String fileName) {
+    final extension = _getFileExtension(fileName).toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].contains(extension);
+  }
+  
+  /// Get the file extension from a filename
+  String _getFileExtension(String fileName) {
+    return fileName.contains('.')
+        ? fileName.split('.').last.toLowerCase()
+        : '';
+  }
+  
+  /// Build an image preview widget
+  Widget _buildImagePreview(String url) {
+    if (url.startsWith('web-doc-')) {
+      // For web mock documents, we can't show the actual image
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.image, size: 100, color: Colors.blue),
+            const SizedBox(height: 16),
+            const Text('Preview not available for web mock documents'),
+            const SizedBox(height: 16),
+            const Text('In a real implementation, the actual image would be shown here'),
+          ],
+        ),
+      );
+    } else {
+      // For actual images with a real URL
+      return Center(
+        child: InteractiveViewer(
+          minScale: 0.5,
+          maxScale: 4.0,
+          child: Image.network(
+            url,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.broken_image, size: 100, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text('Failed to load image: $error'),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+  
+  /// Show full-screen preview for web mock documents
+  void _showFullScreenPreview(BuildContext context, String fileName) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, animation, secondaryAnimation) => Material(
+        child: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.black,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.image, size: 150, color: Colors.white70),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Preview of $fileName',
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    const SizedBox(height: 40),
+                    const Text(
+                      'In a production app, the actual image would be shown here.',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Colors.blue,
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Previewing: $fileName',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Close', style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: true,
+      barrierLabel: 'Dismiss',
+      transitionDuration: const Duration(milliseconds: 300),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+  }
+  
+  /// Method to delete a document
+  Future<void> _deleteDocument(BuildContext context, FlightDocument document) async {
+    final viewModel = Provider.of<DocumentViewModel>(context, listen: false);
+    
+    // Show confirmation dialog
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Document'),
+        content: const Text('Are you sure you want to delete this document?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(AppLocalizations.of(context)!.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    ) ?? false;
+    
+    if (!shouldDelete) return;
+    
+    // Delete the document
+    try {
+      final success = await viewModel.deleteDocument(document);
+      
+      if (success) {
+        // Remove from selected attachments if it was selected
+        setState(() {
+          _selectedAttachmentUrls.remove(document.storageUrl);
+        });
+        
+        // Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Document deleted successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        // Show error message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Failed to delete document'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Show error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete document: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   /// Widget for the bottom action bar with upload and continue buttons.
