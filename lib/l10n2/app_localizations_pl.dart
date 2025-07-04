@@ -942,6 +942,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String get claimAttachment => 'Załącznik do roszczenia';
 
   @override
+  String get previewEmail => 'Podgląd e-mail';
+
+  @override
+  String get pdfPreviewMessage => 'Tutaj zostanie wyświetlony podgląd PDF.';
+
+  @override
+  String get downloadPdf => 'Pobierz PDF';
+
+  @override
+  String get filePreviewNotAvailable => 'Podgląd pliku niedostępny';
+
+  @override
+  String get deleteDocument => 'Usuń dokument';
+
+  @override
+  String get deleteDocumentConfirmation =>
+      'Czy na pewno chcesz usunąć ten dokument?';
+
+  @override
+  String get documentDeletedSuccess => 'Dokument został pomyślnie usunięty';
+
+  @override
+  String get documentDeleteFailed => 'Nie udało się usunąć dokumentu';
+
+  @override
   String get other => 'inne';
 
   @override

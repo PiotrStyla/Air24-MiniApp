@@ -209,7 +209,7 @@ class DocumentViewModel extends ChangeNotifier {
     String? documentName,
   }) async {
     // Use localized string for claim attachment name if none provided
-    documentName = documentName ?? _localizationService.getString('claimAttachment', fallback: 'Claim Attachment');
+    documentName = documentName ?? _localizationService.getString('claimAttachment');
     _errorMessage = null;
     notifyListeners();
 

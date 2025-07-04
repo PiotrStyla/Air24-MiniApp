@@ -408,7 +408,7 @@ ${GetIt.instance<AuthService>().currentUser?.displayName ?? 'Awaiting your reply
                     Expanded(
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.preview),
-                        label: const Text('Preview Email'),
+                        label: Text(AppLocalizations.of(context)!.previewEmail),
                         style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
                         onPressed: () {
                           print('Preview button pressed');

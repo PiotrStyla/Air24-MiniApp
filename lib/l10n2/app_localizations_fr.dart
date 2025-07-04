@@ -951,6 +951,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get claimAttachment => 'Claim Attachment';
 
   @override
+  String get previewEmail => 'Preview Email';
+
+  @override
+  String get pdfPreviewMessage => 'PDF preview would be shown here.';
+
+  @override
+  String get downloadPdf => 'Download PDF';
+
+  @override
+  String get filePreviewNotAvailable => 'File preview not available';
+
+  @override
+  String get deleteDocument => 'Delete Document';
+
+  @override
+  String get deleteDocumentConfirmation =>
+      'Are you sure you want to delete this document?';
+
+  @override
+  String get documentDeletedSuccess => 'Document deleted successfully';
+
+  @override
+  String get documentDeleteFailed => 'Failed to delete document';
+
+  @override
   String get other => 'other';
 
   @override

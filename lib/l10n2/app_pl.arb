@@ -895,5 +895,50 @@
   "pleaseConfirmDetails": "Prosimy o potwierdzenie, że poniższe dane są poprawne:",
   "@pleaseConfirmDetails": {
     "description": "Tekst nagłówka dla kroku potwierdzenia proszący użytkownika o weryfikację szczegółów roszczenia"
+  },
+  
+  "previewEmail": "Podgląd e-mail",
+  "@previewEmail": {
+    "description": "Etykieta przycisku do podglądu e-mail"
+  },
+  
+  "pdfPreviewMessage": "Tutaj zostanie wyświetlony podgląd PDF.",
+  "@pdfPreviewMessage": {
+    "description": "Komunikat wyświetlany w miejscu podglądu PDF"
+  },
+  
+  "downloadPdf": "Pobierz PDF",
+  "@downloadPdf": {
+    "description": "Etykieta przycisku do pobierania PDF"
+  },
+  
+  "filePreviewNotAvailable": "Podgląd pliku niedostępny",
+  "@filePreviewNotAvailable": {
+    "description": "Komunikat wyświetlany, gdy podgląd pliku nie jest dostępny"
+  },
+  
+  "deleteDocument": "Usuń dokument",
+  "@deleteDocument": {
+    "description": "Tytuł dla dialogu potwierdzenia usunięcia dokumentu"
+  },
+  
+  "deleteDocumentConfirmation": "Czy na pewno chcesz usunąć ten dokument?",
+  "@deleteDocumentConfirmation": {
+    "description": "Komunikat potwierdzenia usunięcia dokumentu"
+  },
+  
+  "delete": "Usuń",
+  "@delete": {
+    "description": "Etykieta przycisku usuwania"
+  },
+  
+  "documentDeletedSuccess": "Dokument został pomyślnie usunięty",
+  "@documentDeletedSuccess": {
+    "description": "Komunikat sukcesu po usunięciu dokumentu"
+  },
+  
+  "documentDeleteFailed": "Nie udało się usunąć dokumentu",
+  "@documentDeleteFailed": {
+    "description": "Komunikat błędu, gdy usunięcie dokumentu nie powiodło się"
   }
 }

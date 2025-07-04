@@ -946,6 +946,51 @@
     "description": "Label for claim attachment item"
   },
 
+  "previewEmail": "Preview Email",
+  "@previewEmail": {
+    "description": "Label for button to preview email"
+  },
+
+  "pdfPreviewMessage": "PDF preview would be shown here.",
+  "@pdfPreviewMessage": {
+    "description": "Message shown in place of PDF preview"
+  },
+
+  "downloadPdf": "Download PDF",
+  "@downloadPdf": {
+    "description": "Label for button to download PDF"
+  },
+
+  "filePreviewNotAvailable": "File preview not available",
+  "@filePreviewNotAvailable": {
+    "description": "Message shown when file preview is not available"
+  },
+
+  "deleteDocument": "Delete Document",
+  "@deleteDocument": {
+    "description": "Title for document deletion confirmation dialog"
+  },
+
+  "deleteDocumentConfirmation": "Are you sure you want to delete this document?",
+  "@deleteDocumentConfirmation": {
+    "description": "Confirmation message for document deletion"
+  },
+
+  "delete": "Delete",
+  "@delete": {
+    "description": "Label for delete button"
+  },
+
+  "documentDeletedSuccess": "Document deleted successfully",
+  "@documentDeletedSuccess": {
+    "description": "Success message after document deletion"
+  },
+
+  "documentDeleteFailed": "Failed to delete document",
+  "@documentDeleteFailed": {
+    "description": "Error message when document deletion fails"
+  },
+
   "other": "other",
   "@other": {
     "description": "The label for the 'other' document type."

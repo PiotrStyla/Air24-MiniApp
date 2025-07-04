@@ -1240,7 +1240,7 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete'**
   String get deleteDocumentMessage;
 
-  /// Delete button label
+  /// Label for delete button
   ///
   /// In en, this message translates to:
   /// **'Delete'**
@@ -1827,6 +1827,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Claim Attachment'**
   String get claimAttachment;
+
+  /// Label for button to preview email
+  ///
+  /// In en, this message translates to:
+  /// **'Preview Email'**
+  String get previewEmail;
+
+  /// Message shown in place of PDF preview
+  ///
+  /// In en, this message translates to:
+  /// **'PDF preview would be shown here.'**
+  String get pdfPreviewMessage;
+
+  /// Label for button to download PDF
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get downloadPdf;
+
+  /// Message shown when file preview is not available
+  ///
+  /// In en, this message translates to:
+  /// **'File preview not available'**
+  String get filePreviewNotAvailable;
+
+  /// Title for document deletion confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Document'**
+  String get deleteDocument;
+
+  /// Confirmation message for document deletion
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this document?'**
+  String get deleteDocumentConfirmation;
+
+  /// Success message after document deletion
+  ///
+  /// In en, this message translates to:
+  /// **'Document deleted successfully'**
+  String get documentDeletedSuccess;
+
+  /// Error message when document deletion fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete document'**
+  String get documentDeleteFailed;
 
   /// The label for the 'other' document type.
   ///

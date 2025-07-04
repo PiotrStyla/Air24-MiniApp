@@ -225,7 +225,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
               final doc = documents[index];
               final isSelected = _selectedAttachmentUrls.contains(doc.storageUrl);
               return CheckboxListTile(
-                title: Text(doc.documentName ?? 'Claim Attachment'),
+                title: Text(doc.documentName ?? AppLocalizations.of(context)!.claimAttachment),
                 subtitle: Text(doc.documentType == FlightDocumentType.other ? AppLocalizations.of(context)!.other : doc.documentType.name),
                 value: isSelected,
                 onChanged: (bool? value) {
@@ -312,11 +312,11 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                               children: [
                                 const Icon(Icons.picture_as_pdf, size: 100, color: Colors.red),
                                 const SizedBox(height: 16),
-                                const Text('PDF preview would be shown here.'),
+                                Text(AppLocalizations.of(context)!.pdfPreviewMessage),
                                 const SizedBox(height: 16),
                                 ElevatedButton.icon(
                                   icon: const Icon(Icons.download),
-                                  label: const Text('Download PDF'),
+                                  label: Text(AppLocalizations.of(context)!.downloadPdf),
                                   onPressed: () {
                                     // Would implement actual download functionality here
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -331,7 +331,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                               children: [
                                 const Icon(Icons.insert_drive_file, size: 100, color: Colors.blue),
                                 const SizedBox(height: 16),
-                                const Text('File preview not available'),
+                                Text(AppLocalizations.of(context)!.filePreviewNotAvailable),
                                 Text('File type: ${_getFileExtension(fileName)}'),
                               ],
                             )),
@@ -482,8 +482,8 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Document'),
-        content: const Text('Are you sure you want to delete this document?'),
+        title: Text(AppLocalizations.of(context)!.deleteDocument),
+        content: Text(AppLocalizations.of(context)!.deleteDocumentConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -491,7 +491,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -513,7 +513,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Document deleted successfully'),
+              content: Text(AppLocalizations.of(context)!.documentDeletedSuccess),
               backgroundColor: Colors.green,
             ),
           );
@@ -523,7 +523,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Failed to delete document'),
+              content: Text(AppLocalizations.of(context)!.documentDeleteFailed),
               backgroundColor: Colors.red,
             ),
           );
