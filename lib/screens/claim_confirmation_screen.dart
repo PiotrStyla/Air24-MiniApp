@@ -26,7 +26,7 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
     _emailDetailsFuture = _fetchEmailDetails();
   }
 
-  Future<Map<String, String>> _fetchEmailDetails() async {
+  Future<Map<String, String?>> _fetchEmailDetails() async {
     try {
       final authService = GetIt.instance<AuthService>();
       String userEmail = 'user@example.com'; // Default fallback
@@ -36,35 +36,145 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
       }
       
       // Extract airline IATA code using proper validation
-      String airlineIata = 'LH'; // Default to Lufthansa if extraction fails
-      String airlineEmail = 'customer.relations@lufthansa.com'; // Default fallback email
+      String airlineIata = ''; // Will be set if an airline is identified
+      String airlineEmail = userEmail; // Default to user's email as a safer fallback
       
-      // Regex for standard flight number format: 2 letters followed by 1-4 digits
-      final RegExp flightNumberRegex = RegExp(r'^([A-Z]{2})\d{1,4}$', caseSensitive: false);
+      // Get the flight number and normalize it
       final String flightNumber = widget.claim.flightNumber.trim().toUpperCase();
+      print('DEBUG: Original flight number: "$flightNumber"');
       
-      if (flightNumberRegex.hasMatch(flightNumber)) {
-        // Extract the first two characters as the IATA code if format is valid
-        airlineIata = flightNumber.substring(0, 2);
-        print('Valid flight number format. Extracted airline IATA code: $airlineIata from: $flightNumber');
+      // Special handling for Air Austral (UU) flights
+      if (flightNumber.contains('UU')) {
+        print('DEBUG: Detected potential Air Austral flight: $flightNumber');
+        // Check if flight starts with UU
+        if (flightNumber.startsWith('UU')) {
+          print('DEBUG: Confirmed Air Austral flight (starts with UU)');
+          airlineIata = 'UU';
+        } else {
+          // Check for UU with possible separators
+          final uuRegex = RegExp(r'UU[\s-]?\d+');
+          if (uuRegex.hasMatch(flightNumber)) {
+            print('DEBUG: Matched Air Austral flight with regex: $flightNumber');
+            airlineIata = 'UU';
+          }
+        }
+      }
+      
+      // Check if flight number is empty
+      if (flightNumber.isEmpty) {
+        print('DEBUG: Flight number is empty. Using default airline (Lufthansa).');
+      } else {
+        // First check if the flight number has a special format like 'G3' for GOL
+        // Directly check for airline IATA codes in the database
+        final allProcedures = await AirlineProcedureService.loadProcedures();
+        print('DEBUG: Loaded ${allProcedures.length} airline procedures');
         
+        // Try to find a direct match for airline code at the beginning of the flight number
+        bool directMatch = false;
+        print('DEBUG: All IATA codes: ${allProcedures.map((p) => p.iata).join(', ')}');
+        
+        // First try with case-sensitive exact match
+        for (var procedure in allProcedures) {
+          if (flightNumber.startsWith(procedure.iata)) {
+            airlineIata = procedure.iata;
+            print('DEBUG: Direct IATA match: $airlineIata (${procedure.name}) at beginning of flight number: $flightNumber');
+            directMatch = true;
+            break;
+          }
+        }
+        
+        // If no direct match, try with normalized codes (all uppercase)
+        if (!directMatch) {
+          print('DEBUG: Trying normalized case-insensitive match');
+          final upperFlightNumber = flightNumber.toUpperCase();
+          for (var procedure in allProcedures) {
+            final upperIata = procedure.iata.toUpperCase();
+            if (upperFlightNumber.startsWith(upperIata)) {
+              airlineIata = procedure.iata;
+              print('DEBUG: Case-insensitive IATA match: $airlineIata (${procedure.name}) at beginning of flight number: $flightNumber');
+              directMatch = true;
+              break;
+            }
+          }
+        }
+        
+        // If no direct match, try with regex patterns
+        if (!directMatch) {
+          print('DEBUG: No direct IATA match, trying regex patterns');
+          final patterns = [
+            // Standard format: 2 letters followed by 1-4 digits
+            RegExp(r'^([A-Z]{2})\d{1,4}$'),
+            // Format with space: 2 letters, space, 1-4 digits
+            RegExp(r'^([A-Z]{2})\s+\d{1,4}$'),
+            // Format with dash: 2 letters, dash, 1-4 digits
+            RegExp(r'^([A-Z]{2})[-]\d{1,4}$'),
+            // Special format: letter + number + rest of numbers (for airlines like G3)
+            RegExp(r'^([A-Z]\d)\d{1,4}$'),
+          ];
+        
+          bool matched = false;
+          for (var pattern in patterns) {
+            final match = pattern.firstMatch(flightNumber);
+            if (match != null) {
+              // Extract the airline code (first group in the regex)
+              airlineIata = match.group(1)!;
+              print('DEBUG: Matched flight number pattern. Extracted airline IATA code: $airlineIata from: $flightNumber');
+              matched = true;
+              break;
+            }
+          }
+          
+          if (!matched) {
+            // As a last resort, try to extract first two characters if they are letters
+            if (flightNumber.length >= 2 && 
+                RegExp(r'^[A-Z]{2}').hasMatch(flightNumber)) {
+              airlineIata = flightNumber.substring(0, 2);
+              print('DEBUG: Using first two letters as IATA code: $airlineIata from: $flightNumber');
+            } else {
+              print('DEBUG: Could not extract IATA code from: "$flightNumber". Using user email as fallback.');
+              airlineEmail = userEmail;
+            }
+          }
+        }
+      }
+      
+      // Load all airline procedures for debugging
+      final allProcedures = await AirlineProcedureService.loadProcedures();
+      print('DEBUG: Loaded ${allProcedures.length} airline procedures');
+      print('DEBUG: Looking for IATA code: "$airlineIata"');
+      
+      try {
+        // First attempt a direct case-insensitive lookup
+        final procedure = allProcedures.firstWhere(
+          (p) => p.iata.toUpperCase() == airlineIata.toUpperCase(),
+          orElse: () => throw Exception('No matching airline found'),
+        );
+        
+        airlineEmail = procedure.claimEmail;
+        print('DEBUG: Found matching airline: ${procedure.name} with email: $airlineEmail');
+      } catch (e) {
+        print('DEBUG: Direct lookup failed: $e');
+        print('DEBUG: Available airline IATA codes: ${allProcedures.map((p) => p.iata).join(', ')}');
+        
+        // If direct lookup fails, try to get from service
         try {
           final procedure = await AirlineProcedureService.getProcedureByIata(airlineIata);
           if (procedure != null && procedure.claimEmail.isNotEmpty) {
             airlineEmail = procedure.claimEmail;
-            print('Found matching airline: ${procedure.name} with email: $airlineEmail');
+            print('DEBUG: Found airline through service: ${procedure.name} with email: $airlineEmail');
           } else {
-            print('No airline procedure found for IATA code: $airlineIata. Using default.');
+            print('DEBUG: No airline procedure found for IATA code: "$airlineIata". Using user email as fallback.');
+            airlineEmail = userEmail;
           }
         } catch (e) {
-          print('Error getting airline procedure: $e');
-          // Use default email already set
+          print('DEBUG: Error getting airline procedure: $e');
+          // Use user's email as fallback
+          print('DEBUG: Using user email as fallback due to error.');
+          airlineEmail = userEmail;
         }
-      } else {
-        print('Invalid flight number format: $flightNumber. Using default airline (Lufthansa).');
       }
       
-      print('User email: $userEmail, Airline email: $airlineEmail');
+      print('FINAL EMAIL SELECTION: User email: $userEmail, Airline email: $airlineEmail');
       
       return {
         'userEmail': userEmail,

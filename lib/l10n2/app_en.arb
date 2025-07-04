@@ -786,6 +786,11 @@
     "description": "Button label to proceed to attachments screen"
   },
 
+  "continueToReview": "Continue to Review",
+  "@continueToReview": {
+    "description": "Button label to proceed to review screen"
+  },
+
   "country": "Country",
   "@country": {
     "description": "Label for country field"

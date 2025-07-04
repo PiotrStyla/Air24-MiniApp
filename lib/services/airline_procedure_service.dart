@@ -53,14 +53,68 @@ class AirlineProcedureService {
         )
       ]);
     }
-    final String jsonString = await rootBundle.loadString('lib/data/airline_claim_procedures.json');
-    final List<dynamic> jsonList = json.decode(jsonString);
-    return jsonList.map((e) => AirlineClaimProcedure.fromJson(e)).toList();
+    
+    try {
+      print('AirlineProcedureService: Attempting to load airline procedures from JSON file');
+      final String jsonString = await rootBundle.loadString('lib/data/airline_claim_procedures.json');
+      print('AirlineProcedureService: Successfully loaded JSON string, length: ${jsonString.length}');
+      
+      final List<dynamic> jsonList = json.decode(jsonString);
+      print('AirlineProcedureService: Parsed JSON list with ${jsonList.length} items');
+      
+      // Debug: Print first few entries
+      if (jsonList.isNotEmpty) {
+        print('AirlineProcedureService: First item IATA: ${jsonList[0]['iata']}');
+      }
+      
+      final procedures = jsonList.map((e) => AirlineClaimProcedure.fromJson(e)).toList();
+      print('AirlineProcedureService: Created ${procedures.length} airline procedures');
+      
+      // Print all available IATA codes for debugging
+      final iatas = procedures.map((p) => p.iata).toList();
+      print('AirlineProcedureService: Available IATA codes: ${iatas.join(', ')}');
+      
+      return procedures;
+    } catch (e, stackTrace) {
+      print('AirlineProcedureService: Error loading procedures: $e');
+      print('AirlineProcedureService: Stack trace: $stackTrace');
+      
+      // Return empty list on failure to avoid null errors
+      return [];
+    }
   }
 
   static Future<AirlineClaimProcedure?> getProcedureByIata(String iata) async {
+    print('AirlineProcedureService: Looking for procedure with IATA code: "$iata"');
+    
+    if (iata.isEmpty) {
+      print('AirlineProcedureService: IATA code is empty, cannot find matching airline');
+      return null;
+    }
+    
     final procedures = await loadProcedures();
-    // Use firstWhereOrNull for safety, especially in tests where the list might be empty.
-    return procedures.firstWhereOrNull((p) => p.iata.toUpperCase() == iata.toUpperCase());
+    
+    if (procedures.isEmpty) {
+      print('AirlineProcedureService: Procedures list is empty, check if JSON file was loaded correctly');
+      return null;
+    }
+    
+    print('AirlineProcedureService: Searching among ${procedures.length} procedures');
+    
+    // Case-insensitive search
+    final normalized = iata.toUpperCase();
+    final match = procedures.firstWhereOrNull((p) => p.iata.toUpperCase() == normalized);
+    
+    if (match != null) {
+      print('AirlineProcedureService: Found match for "$iata": ${match.name} with email ${match.claimEmail}');
+    } else {
+      print('AirlineProcedureService: No match found for IATA code "$iata"');
+      // Print a few examples of what we have for debugging
+      if (procedures.length > 3) {
+        print('AirlineProcedureService: Sample IATA codes in database: ${procedures.take(3).map((p) => p.iata).join(', ')}...');
+      }
+    }
+    
+    return match;
   }
 }

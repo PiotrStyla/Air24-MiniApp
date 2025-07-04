@@ -1636,6 +1636,12 @@ abstract class AppLocalizations {
   /// **'Continue to Attachments'**
   String get continueToAttachmentsButton;
 
+  /// Button label to proceed to review screen
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to Review'**
+  String get continueToReview;
+
   /// Label for country field
   ///
   /// In en, this message translates to:

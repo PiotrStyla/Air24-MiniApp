@@ -839,6 +839,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueToAttachmentsButton => 'Continue to Attachments';
 
   @override
+  String get continueToReview => 'Continue to Review';
+
+  @override
   String get country => 'Country';
 
   @override

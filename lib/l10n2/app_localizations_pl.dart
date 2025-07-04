@@ -844,6 +844,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get continueToAttachmentsButton => 'Przejdź do załączników';
 
   @override
+  String get continueToReview => 'Continue to Review';
+
+  @override
   String get country => 'Kraj';
 
   @override

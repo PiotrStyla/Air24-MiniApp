@@ -214,8 +214,62 @@
     "name": "Brussels Airlines",
     "claim_email": "customercare@brusselsairlines.com",
     "claim_form_url": "https://www.brusselsairlines.com/en-be/contact-us/complaints",
-    "instructions": "Use the online complaint form or email. Attach all supporting documents.",
-    "phone": "+32 2 723 23 62",
-    "postal_address": "Brussels Airlines Customer Relations, b.house, Brussels Airport Building 26, 1831 Diegem, Belgium"
+    "instructions": "Submit your claim via email or the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "U2",
+    "name": "EasyJet",
+    "claim_email": "customer.support@easyjet.com",
+    "claim_form_url": "https://www.easyjet.com/en/claim/flight-delay",
+    "instructions": "Submit your claim via email or the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "WS",
+    "name": "WestJet",
+    "claim_email": "compensation@westjet.com",
+    "claim_form_url": "https://www.westjet.com/en-ca/contact-us/forms",
+    "instructions": "Submit your claim via email or the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "G3",
+    "name": "Gol Linhas Aéreas",
+    "claim_email": "atendimento@voegol.com.br",
+    "claim_form_url": "https://www.voegol.com.br/en/information/customer-service",
+    "instructions": "Submit your claim via email or the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "MK",
+    "name": "Air Mauritius",
+    "claim_email": "customer.relations@airmauritius.com",
+    "claim_form_url": "https://www.airmauritius.com/contact-us",
+    "instructions": "Submit your claim via email or the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "KQ",
+    "name": "Kenya Airways",
+    "claim_email": "customer.relations@kenya-airways.com",
+    "claim_form_url": "https://www.kenya-airways.com/en-ke/about-us/contact-us",
+    "instructions": "Submit your claim via email or the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "AM",
+    "name": "Aeromexico",
+    "claim_email": "customer.service@aeromexico.com",
+    "claim_form_url": "https://aeromexico.com/en-us/customer-service",
+    "instructions": "Submit your claim via email or the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "FI",
+    "name": "Icelandair",
+    "claim_email": "claims@icelandair.com",
+    "claim_form_url": "https://www.icelandair.com/support/contact-us/",
+    "instructions": "Submit your claim via email or the online form. Include booking reference and flight details."
+  },
+  {
+    "iata": "UU",
+    "name": "Air Austral",
+    "claim_email": "customer.service@air-austral.com",
+    "claim_form_url": "https://www.air-austral.com/en/customer-services.html",
+    "instructions": "Submit your claim via email or the online form. Include booking reference, flight number and details of your claim."
   }
 ]
