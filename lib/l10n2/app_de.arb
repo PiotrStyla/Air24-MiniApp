@@ -638,6 +638,41 @@
 
   "other": "andere",
   "@other": {
-    "description": "Bezeichnung für andere Dokumententypen"
+    "description": "Label for other document type"
+  },
+
+  "flightDiverted": "Flug umgeleitet",
+  "@flightDiverted": {
+    "description": "Status bei umgeleitetem Flug"
+  },
+  
+  "flightCancelled": "Flug storniert",
+  "@flightCancelled": {
+    "description": "Status bei storniertem Flug"
+  },
+  
+  "flightDivertedEligible": "Ihr umgeleiteter Flug ist entschädigungsberechtigt!",
+  "@flightDivertedEligible": {
+    "description": "Meldung, wenn ein umgeleiteter Flug entschädigungsberechtigt ist"
+  },
+  
+  "flightCancelledEligible": "Ihr stornierter Flug ist entschädigungsberechtigt!",
+  "@flightCancelledEligible": {
+    "description": "Meldung, wenn ein stornierter Flug entschädigungsberechtigt ist"
+  },
+  
+  "divertedReason": "Flug wurde zu einem anderen Flughafen umgeleitet",
+  "@divertedReason": {
+    "description": "Grund für umgeleitete Flüge"
+  },
+  
+  "cancelledReason": "Flug wurde storniert",
+  "@cancelledReason": {
+    "description": "Grund für stornierte Flüge"
+  },
+  
+  "checkCompensationEligibility": "Entschädigungsberechtigung prüfen",
+  "@checkCompensationEligibility": {
+    "description": "Text des Buttons zur Überprüfung der Entschädigungsberechtigung"
   }
 }

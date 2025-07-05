@@ -152,25 +152,112 @@ class ManualLocalizationService extends LocalizationService {
   Future<void> ensureLanguageLoaded(String languageCode) async {
     await _loadStrings(languageCode);
   }
+  
+  /// Force reload a language's translations, clearing any cached data
+  Future<void> reloadLanguage(String languageCode) async {
+    debugPrint('ManualLocalizationService: Force reloading language $languageCode');
+    
+    // Clear this language from the cache
+    if (_allStrings.containsKey(languageCode)) {
+      _allStrings.remove(languageCode);
+    }
+    
+    // Reload from source
+    await _loadStrings(languageCode);
+    
+    // If this is the current language, update strings
+    if (languageCode == _currentLocale.languageCode) {
+      _strings = _allStrings[languageCode] ?? _allStrings['en'] ?? {};
+      notifyListeners();
+      forceAppRebuild();
+    }
+    
+    debugPrint('ManualLocalizationService: Successfully reloaded language $languageCode');
+  }
+  
+  /// Add a string directly to the translation map for the specified language
+  /// This is useful for runtime injection of critical translations
+  void addStringDirectly(String languageCode, String key, String value) {
+    debugPrint('ManualLocalizationService: Directly adding key "$key" for language $languageCode');
+    
+    // Ensure the language map exists
+    _allStrings[languageCode] = _allStrings[languageCode] ?? {};
+    
+    // Add or replace the string
+    _allStrings[languageCode]![key] = value;
+    
+    // If this is the current language, update the active strings
+    if (languageCode == _currentLocale.languageCode) {
+      _strings[key] = value;
+    }
+  }
 
   Map<String, dynamic> _getHardcodedStrings(String languageCode) {
     // Basic set of translations for testing in different languages
+    // Common accessibility strings for all languages - will be added to language-specific ones
+    Map<String, dynamic> accessibilityStrings = {};
+    
+    // Add accessibility strings based on language
     switch (languageCode) {
-      case 'pt':
+      case 'pl':
+        accessibilityStrings = _getPolishAccessibilityStrings();
         return {
-          'appTitle': 'Compensação de Voo',
-          'configureUpdatePreferences': 'Configure como você recebe atualizações de reclamações',
-          'notificationSettingsComingSoon': 'Configurações de notificação em breve',
-          'selectPreferredLanguage': 'Selecione seu idioma preferido',
-          'useScannedInfo': 'Usar informações digitalizadas?',
-          'scannedInfoFound': 'Encontramos informações úteis em seu documento digitalizado. Gostaria de preencher o formulário com esses dados?',
-          'noButton': 'Não',
-          'yesFillForm': 'Sim, preencher formulário',
-          'scanDocument': 'Digitalizar documento',
-          'scanDocumentHint': 'Use sua câmera para digitalizar um documento',
-          'tipsAndReminders': 'Dicas e Lembretes',
-          'tipProfileUpToDate': 'Mantenha seu perfil atualizado para um processamento suave de reclamações.',
-          'tipDataPrivacy': 'Suas informações são privadas e usadas apenas para reclamações de compensação.',
+          'appName': 'Rekompensata za Lot',
+          'welcome': 'Witamy',
+          'displaySettings': 'Ustawienia wyświetlania',
+          'highContrastMode': 'Tryb wysokiego kontrastu',
+          'highContrastDescription': 'Tryb wysokiego kontrastu zwiększa kontrast kolorów, aby poprawić czytelność dla użytkowników ze słabym wzrokiem.',
+          'largeText': 'Duży tekst',
+          'largeTextDescription': 'Tryb dużego tekstu zwiększa rozmiar czcionki w całej aplikacji dla lepszej czytelności.',
+          'screenReaderSettings': 'Ustawienia czytnika ekranu',
+          'enhancedScreenReaderDescriptions': 'Rozszerzone opisy dla czytnika ekranu',
+          'providesMoreDetailedDescriptions': 'Zapewnia bardziej szczegółowe opisy dla czytników ekranu, aby lepiej wyjaśnić elementy interfejsu.',
+          ...accessibilityStrings,
+        };
+      case 'de':
+        accessibilityStrings = _getGermanAccessibilityStrings();
+        return {
+          'appName': 'Flugentschädigung',
+          'welcome': 'Willkommen',
+          'displaySettings': 'Anzeigeeinstellungen',
+          'highContrastMode': 'Hoher Kontrast Modus',
+          'highContrastDescription': 'Der Modus mit hohem Kontrast erhöht den Farbkontrast, um die Lesbarkeit für Benutzer mit eingeschränktem Sehvermögen zu verbessern.',
+          'largeText': 'Großer Text',
+          'largeTextDescription': 'Der Großtextmodus erhöht die Schriftgröße in der gesamten App für bessere Lesbarkeit.',
+          'screenReaderSettings': 'Bildschirmleser-Einstellungen',
+          'enhancedScreenReaderDescriptions': 'Erweiterte Bildschirmleserbeschreibungen',
+          'providesMoreDetailedDescriptions': 'Bietet detailliertere Beschreibungen für Bildschirmleser, um Schnittstellenelemente besser zu erklären.',
+          ...accessibilityStrings,
+        };
+      case 'fr':
+        accessibilityStrings = _getFrenchAccessibilityStrings();
+        return {
+          'appName': 'Indemnisation de Vol',
+          'welcome': 'Bienvenue',
+          'displaySettings': 'Paramètres d\'affichage',
+          'highContrastMode': 'Mode contraste élevé',
+          'highContrastDescription': 'Le mode contraste élevé augmente le contraste des couleurs pour améliorer la lisibilité pour les utilisateurs malvoyants.',
+          'largeText': 'Texte grand format',
+          'largeTextDescription': 'Le mode texte grand format augmente la taille de police dans toute l\'application pour une meilleure lisibilité.',
+          'screenReaderSettings': 'Paramètres du lecteur d\'écran',
+          'enhancedScreenReaderDescriptions': 'Descriptions améliorées pour lecteur d\'écran',
+          'providesMoreDetailedDescriptions': 'Fournit des descriptions plus détaillées pour les lecteurs d\'écran afin de mieux expliquer les éléments d\'interface.',
+          ...accessibilityStrings,
+        };
+      case 'pt':
+        accessibilityStrings = _getPortugueseAccessibilityStrings();
+        return {
+          'appName': 'Compensação de Voo',
+          'welcome': 'Bem-vindo',
+          'displaySettings': 'Configurações de exibição',
+          'highContrastMode': 'Modo de alto contraste',
+          'highContrastDescription': 'O modo de alto contraste aumenta o contraste de cores para melhorar a legibilidade para usuários com baixa visão.',
+          'largeText': 'Texto grande',
+          'largeTextDescription': 'O modo de texto grande aumenta o tamanho da fonte em todo o aplicativo para melhor legibilidade.',
+          'screenReaderSettings': 'Configurações do leitor de tela',
+          'enhancedScreenReaderDescriptions': 'Descrições aprimoradas do leitor de tela',
+          'providesMoreDetailedDescriptions': 'Fornece descrições mais detalhadas para leitores de tela para explicar melhor os elementos da interface.',
+          ...accessibilityStrings,
           'tipContactDetails': 'Certifique-se de que seus detalhes de contato estão corretos para que possamos contatá-lo sobre sua reclamação.',
           'tipAccessibilitySettings': 'Verifique as Configurações de Acessibilidade para personalizar o aplicativo para suas necessidades.',
           
@@ -849,6 +936,71 @@ class ManualLocalizationService extends LocalizationService {
   }
   
   // This method has been consolidated into the primary getLocalizedString method
+  
+  /// Helper method for Polish accessibility strings
+  Map<String, dynamic> _getPolishAccessibilityStrings() {
+    return {
+      'accessibilitySettings': 'Ustawienia dostępności',
+      'accessibilityOptions': 'Opcje dostępności',
+      'enableHighContrastMode': 'Włącz tryb wysokiego kontrastu dla lepszej widoczności',
+      'enableLargeText': 'Włącz duży tekst dla lepszej czytelności',
+      'enableMoreDetailedDescriptions': 'Włącz bardziej szczegółowe opisy dla czytników ekranu',
+      'saveSettings': 'Zapisz ustawienia',
+      'saveAccessibilitySettings': 'Zapisz ustawienia dostępności i wróć do poprzedniego ekranu',
+    };
+  }
+  
+  /// Helper method for German accessibility strings
+  Map<String, dynamic> _getGermanAccessibilityStrings() {
+    return {
+      'accessibilitySettings': 'Barrierefreiheitseinstellungen',
+      'accessibilityOptions': 'Barrierefreiheitsoptionen',
+      'enableHighContrastMode': 'Aktivieren Sie den Hochkontrastmodus für bessere Sichtbarkeit',
+      'enableLargeText': 'Aktivieren Sie große Schrift für bessere Lesbarkeit',
+      'enableMoreDetailedDescriptions': 'Aktivieren Sie detailliertere Beschreibungen für Screenreader',
+      'saveSettings': 'Einstellungen speichern',
+      'saveAccessibilitySettings': 'Speichern Sie die Barrierefreiheitseinstellungen und kehren Sie zum vorherigen Bildschirm zurück',
+    };
+  }
+  
+  /// Helper method for French accessibility strings
+  Map<String, dynamic> _getFrenchAccessibilityStrings() {
+    return {
+      'accessibilitySettings': 'Paramètres d\'accessibilité',
+      'accessibilityOptions': 'Options d\'accessibilité',
+      'enableHighContrastMode': 'Activer le mode contraste élevé pour une meilleure visibilité',
+      'enableLargeText': 'Activer le texte grand format pour une meilleure lisibilité',
+      'enableMoreDetailedDescriptions': 'Activer des descriptions plus détaillées pour les lecteurs d\'écran',
+      'saveSettings': 'Enregistrer les paramètres',
+      'saveAccessibilitySettings': 'Enregistrer les paramètres d\'accessibilité et revenir à l\'écran précédent',
+    };
+  }
+  
+  /// Helper method for Portuguese accessibility strings
+  Map<String, dynamic> _getPortugueseAccessibilityStrings() {
+    return {
+      'accessibilitySettings': 'Configurações de Acessibilidade',
+      'accessibilityOptions': 'Opções de Acessibilidade',
+      'enableHighContrastMode': 'Ativar modo de alto contraste para melhor visibilidade',
+      'enableLargeText': 'Ativar texto grande para melhor legibilidade',
+      'enableMoreDetailedDescriptions': 'Ativar descrições mais detalhadas para leitores de tela',
+      'saveSettings': 'Salvar configurações',
+      'saveAccessibilitySettings': 'Salvar configurações de acessibilidade e retornar à tela anterior',
+    };
+  }
+  
+  /// Helper method for Spanish accessibility strings
+  Map<String, dynamic> _getSpanishAccessibilityStrings() {
+    return {
+      'accessibilitySettings': 'Configuración de accesibilidad',
+      'accessibilityOptions': 'Opciones de accesibilidad',
+      'enableHighContrastMode': 'Activar el modo de alto contraste para una mejor visibilidad',
+      'enableLargeText': 'Activar texto grande para una mejor legibilidad',
+      'enableMoreDetailedDescriptions': 'Activar descripciones más detalladas para lectores de pantalla',
+      'saveSettings': 'Guardar configuración',
+      'saveAccessibilitySettings': 'Guardar configuración de accesibilidad y volver a la pantalla anterior',
+    };
+  }
   
   /// Add critical Portuguese translations to ensure app functionality
   void _addCriticalPortugueseStrings() {

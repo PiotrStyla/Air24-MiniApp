@@ -22,6 +22,42 @@
   "@newClaim": {
     "description": "Étiquette du bouton de nouvelle réclamation"
   },
+  "other": "autre",
+  "@other": {
+    "description": "Étiquette pour un autre type de document"
+  },
+  "flightDiverted": "Vol détourné",
+  "@flightDiverted": {
+    "description": "Statut affiché lorsque le vol a été détourné"
+  },
+  "flightCancelled": "Vol annulé",
+  "@flightCancelled": {
+    "description": "Statut affiché lorsque le vol a été annulé"
+  },
+  "flightDivertedEligible": "Votre vol détourné est éligible à une indemnisation !",
+  "@flightDivertedEligible": {
+    "description": "Message affiché lorsqu'un vol détourné est éligible à une indemnisation"
+  },
+  "flightCancelledEligible": "Votre vol annulé est éligible à une indemnisation !",
+  "@flightCancelledEligible": {
+    "description": "Message affiché lorsqu'un vol annulé est éligible à une indemnisation"
+  },
+  "divertedReason": "Le vol a été détourné vers un aéroport différent",
+  "@divertedReason": {
+    "description": "Raison affichée pour les vols détournés"
+  },
+  "cancelledReason": "Le vol a été annulé",
+  "@cancelledReason": {
+    "description": "Raison affichée pour les vols annulés"
+  },
+  "checkCompensationEligibility": "Vérifier l'Éligibilité à l'Indemnisation",
+  "@checkCompensationEligibility": {
+    "description": "Texte du bouton pour vérifier l'éligibilité à l'indemnisation"
+  },
+  "flightCompensationChecker": "Vérificateur d'Indemnisation de Vol",
+  "@flightCompensationChecker": {
+    "description": "Titre de l'écran de vérification d'indemnisation de vol"
+  },
   "home": "Accueil",
   "@home": {
     "description": "Titre de l'écran d'accueil"

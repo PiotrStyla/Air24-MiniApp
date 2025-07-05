@@ -5,9 +5,11 @@ import '../core/accessibility/accessibility_service.dart';
 import '../core/accessibility/accessible_widgets.dart';
 import '../utils/translation_helper.dart';
 import '../services/manual_localization_service.dart';
+import '../utils/translation_initializer.dart';
+import '../services/localization_service.dart';
 
 /// Screen for configuring accessibility settings
-class AccessibilitySettingsScreen extends StatelessWidget {
+class AccessibilitySettingsScreen extends StatefulWidget {
   /// Route name for navigation
   static const routeName = '/accessibility-settings';
 
@@ -15,8 +17,34 @@ class AccessibilitySettingsScreen extends StatelessWidget {
   const AccessibilitySettingsScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  State<AccessibilitySettingsScreen> createState() => _AccessibilitySettingsScreenState();
+}
 
+class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScreen> {
+  bool _translationsRefreshed = false;
+  late final ManualLocalizationService _manualLocalizationService;
+  late final LocalizationService _localizationService;
+  
+  @override
+  void initState() {
+    super.initState();
+    
+    // Get localization services
+    _manualLocalizationService = GetIt.instance<ManualLocalizationService>();
+    _localizationService = GetIt.instance<LocalizationService>();
+    
+    // Force refresh translations when screen is initialized
+    _refreshTranslations().then((_) {
+      if (mounted) {
+        setState(() {
+          _translationsRefreshed = true;
+        });
+      }
+    });
+  }
+  
+  @override
+  Widget build(BuildContext context) {
     return Consumer<AccessibilityService>(
       builder: (context, accessibilityService, _) {
         return Scaffold(
@@ -211,6 +239,113 @@ class AccessibilitySettingsScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Force refresh translations to ensure all accessibility strings are loaded
+  Future<void> _refreshTranslations() async {
+    try {
+      debugPrint('AccessibilitySettingsScreen: Forcing translations refresh');
+      
+      // Get current locale
+      final currentLocale = _localizationService.currentLocale;
+      debugPrint('Current locale: ${currentLocale.languageCode}');
+      
+      // First clear all caches
+      await TranslationInitializer.clearTranslationCaches();
+      
+      // Explicitly reload the current language
+      await _manualLocalizationService.reloadLanguage(currentLocale.languageCode);
+      
+      // Add important accessibility keys directly to the strings map
+      _addDirectAccessibilityTranslations(currentLocale.languageCode);
+      
+      // Force app rebuild to refresh UI
+      ManualLocalizationService.forceAppRebuild();
+      
+      debugPrint('AccessibilitySettingsScreen: Translation refresh completed');
+    } catch (e) {
+      debugPrint('Error refreshing translations: $e');
+    }
+  }
+  
+  /// Directly inject accessibility translations into the strings map based on language
+  void _addDirectAccessibilityTranslations(String languageCode) {
+    // Get accessibility strings based on language
+    Map<String, String> translations = {};
+    
+    switch (languageCode) {
+      case 'pt':
+        translations = {
+          'displaySettings': 'Configurações de exibição',
+          'highContrastMode': 'Modo de alto contraste',
+          'highContrastDescription': 'O modo de alto contraste aumenta o contraste de cores para melhorar a legibilidade para usuários com baixa visão.',
+          'largeText': 'Texto grande',
+          'largeTextDescription': 'O modo de texto grande aumenta o tamanho da fonte em todo o aplicativo para melhor legibilidade.',
+          'screenReaderSettings': 'Configurações do leitor de tela',
+          'enhancedScreenReaderDescriptions': 'Descrições aprimoradas do leitor de tela',
+          'providesMoreDetailedDescriptions': 'Fornece descrições mais detalhadas para leitores de tela para explicar melhor os elementos da interface.',
+        };
+        break;
+        
+      case 'de':
+        translations = {
+          'displaySettings': 'Anzeigeeinstellungen',
+          'highContrastMode': 'Hoher Kontrast Modus',
+          'highContrastDescription': 'Der Modus mit hohem Kontrast erhöht den Farbkontrast, um die Lesbarkeit für Benutzer mit eingeschränktem Sehvermögen zu verbessern.',
+          'largeText': 'Großer Text',
+          'largeTextDescription': 'Der Großtextmodus erhöht die Schriftgröße in der gesamten App für bessere Lesbarkeit.',
+          'screenReaderSettings': 'Bildschirmleser-Einstellungen',
+          'enhancedScreenReaderDescriptions': 'Erweiterte Bildschirmleserbeschreibungen',
+          'providesMoreDetailedDescriptions': 'Bietet detailliertere Beschreibungen für Bildschirmleser, um Schnittstellenelemente besser zu erklären.',
+        };
+        break;
+        
+      case 'fr':
+        translations = {
+          'displaySettings': 'Paramètres d\'affichage',
+          'highContrastMode': 'Mode contraste élevé',
+          'highContrastDescription': 'Le mode contraste élevé augmente le contraste des couleurs pour améliorer la lisibilité pour les utilisateurs malvoyants.',
+          'largeText': 'Texte grand format',
+          'largeTextDescription': 'Le mode texte grand format augmente la taille de police dans toute l\'application pour une meilleure lisibilité.',
+          'screenReaderSettings': 'Paramètres du lecteur d\'écran',
+          'enhancedScreenReaderDescriptions': 'Descriptions améliorées pour lecteur d\'écran',
+          'providesMoreDetailedDescriptions': 'Fournit des descriptions plus détaillées pour les lecteurs d\'écran afin de mieux expliquer les éléments d\'interface.',
+        };
+        break;
+        
+      case 'pl':
+        translations = {
+          'displaySettings': 'Ustawienia wyświetlania',
+          'highContrastMode': 'Tryb wysokiego kontrastu',
+          'highContrastDescription': 'Tryb wysokiego kontrastu zwiększa kontrast kolorów, aby poprawić czytelność dla użytkowników ze słabym wzrokiem.',
+          'largeText': 'Duży tekst',
+          'largeTextDescription': 'Tryb dużego tekstu zwiększa rozmiar czcionki w całej aplikacji dla lepszej czytelności.',
+          'screenReaderSettings': 'Ustawienia czytnika ekranu',
+          'enhancedScreenReaderDescriptions': 'Rozszerzone opisy dla czytnika ekranu',
+          'providesMoreDetailedDescriptions': 'Zapewnia bardziej szczegółowe opisy dla czytników ekranu, aby lepiej wyjaśnić elementy interfejsu.',
+        };
+        break;
+        
+      case 'es':
+        translations = {
+          'displaySettings': 'Configuración de pantalla',
+          'highContrastMode': 'Modo de alto contraste',
+          'highContrastDescription': 'El modo de alto contraste aumenta el contraste de color para mejorar la legibilidad para los usuarios con visión reducida.',
+          'largeText': 'Texto grande',
+          'largeTextDescription': 'El modo de texto grande aumenta el tamaño de la fuente en toda la aplicación para una mejor legibilidad.',
+          'screenReaderSettings': 'Configuración del lector de pantalla',
+          'enhancedScreenReaderDescriptions': 'Descripciones mejoradas del lector de pantalla',
+          'providesMoreDetailedDescriptions': 'Proporciona descripciones más detalladas para los lectores de pantalla para explicar mejor los elementos de la interfaz.',
+        };
+        break;
+    }
+    
+    // Directly inject translations
+    if (translations.isNotEmpty) {
+      translations.forEach((key, value) {
+        _manualLocalizationService.addStringDirectly(languageCode, key, value);
+      });
+    }
   }
   
   /// Build a row displaying a keyboard shortcut and its description

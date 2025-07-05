@@ -693,7 +693,7 @@
     "description": "Etykieta dla elementu załącznika do roszczenia"
   },
 
-  "other": "inne",
+  "other": "inny",
   "@other": {
     "description": "Etykieta dla innego typu dokumentu"
   },
@@ -911,6 +911,11 @@
   "@downloadPdf": {
     "description": "Etykieta przycisku do pobierania PDF"
   },
+
+  "prefillCompensationForm": "Wypełnij formularz automatycznie",
+  "@prefillCompensationForm": {
+    "description": "Etykieta przycisku do automatycznego wypełnienia formularza odszkodowania"
+  },
   
   "filePreviewNotAvailable": "Podgląd pliku niedostępny",
   "@filePreviewNotAvailable": {
@@ -940,5 +945,170 @@
   "documentDeleteFailed": "Nie udało się usunąć dokumentu",
   "@documentDeleteFailed": {
     "description": "Komunikat błędu, gdy usunięcie dokumentu nie powiodło się"
+  },
+
+  "flightCompensationChecker": "Sprawdzanie odszkodowania za lot",
+  "@flightCompensationChecker": {
+    "description": "Tytuł ekranu sprawdzania odszkodowania za lot"
+  },
+  
+  "checkEligibilityTitle": "Sprawdź, czy Twój lot kwalifikuje się do odszkodowania EU261",
+  "@checkEligibilityTitle": {
+    "description": "Tytuł formularza sprawdzania kwalifikowalności lotu"
+  },
+  
+  "flightNumberLabel": "Numer lotu (np. BA123)",
+  "@flightNumberLabel": {
+    "description": "Etykieta dla pola numeru lotu"
+  },
+  
+  "pleaseEnterFlightNumber": "Proszę podać numer lotu",
+  "@pleaseEnterFlightNumber": {
+    "description": "Komunikat błędu walidacji dla pustego numeru lotu"
+  },
+  
+  "dateLabel": "Data (RRRR-MM-DD, opcjonalnie)",
+  "@dateLabel": {
+    "description": "Etykieta dla pola daty"
+  },
+  
+  "dateHintText": "Pozostaw puste dla dzisiejszej daty",
+  "@dateHintText": {
+    "description": "Tekst podpowiedzi dla pola daty"
+  },
+  
+  "checkCompensationEligibility": "Sprawdź kwalifikowalność do odszkodowania",
+  "@checkCompensationEligibility": {
+    "description": "Tekst przycisku do sprawdzania kwalifikowalności odszkodowania"
+  },
+  
+  "error": "Błąd",
+  "@error": {
+    "description": "Tytuł błędu"
+  },
+  
+  "statusLabel": "Status",
+  "@statusLabel": {
+    "description": "Etykieta dla statusu lotu"
+  },
+  
+  "fromLabel": "Z",
+  "@fromLabel": {
+    "description": "Etykieta dla lotniska wylotu"
+  },
+  
+  "toLabel": "Do",
+  "@toLabel": {
+    "description": "Etykieta dla lotniska przylotu"
+  },
+  
+  "delayLabel": "Opóźnienie",
+  "@delayLabel": {
+    "description": "Etykieta dla opóźnienia lotu"
+  },
+  
+  "flightEligible": "Twój lot kwalifikuje się do odszkodowania!",
+  "@flightEligible": {
+    "description": "Komunikat wyświetlany, gdy lot kwalifikuje się do odszkodowania"
+  },
+  
+  "flightNotEligible": "Twój lot nie kwalifikuje się do odszkodowania.",
+  "@flightNotEligible": {
+    "description": "Komunikat wyświetlany, gdy lot nie kwalifikuje się do odszkodowania"
+  },
+  
+  "potentialCompensation": "Potencjalne odszkodowanie:",
+  "@potentialCompensation": {
+    "description": "Etykieta dla potencjalnej kwoty odszkodowania"
+  },
+  
+  "contactAirlineInfo": "Skontaktuj się z linią lotniczą, aby uzyskać odszkodowanie zgodnie z rozporządzeniem UE 261/2004.",
+  "@contactAirlineInfo": {
+    "description": "Informacja o kontakcie z linią lotniczą w sprawie odszkodowania"
+  },
+  
+  "reasonPrefix": "Powód:",
+  "@reasonPrefix": {
+    "description": "Prefiks dla powodu niekwalifikowalności do odszkodowania"
+  },
+  
+  "delayLessThan3Hours": "Opóźnienie lotu jest krótsze niż 3 godziny",
+  "@delayLessThan3Hours": {
+    "description": "Powód niekwalifikowalności do odszkodowania - opóźnienie krótsze niż 3 godziny"
+  },
+  
+  "notUnderEUJurisdiction": "Lot nie podlega jurysdykcji UE",
+  "@notUnderEUJurisdiction": {
+    "description": "Powód niekwalifikowalności do odszkodowania - nie podlega jurysdykcji UE"
+  },
+  
+  "unknownReason": "Nieznany powód",
+  "@unknownReason": {
+    "description": "Nieznany powód niekwalifikowalności do odszkodowania"
+  },
+  
+  "scheduledLabel": "Zaplanowany",
+  "@scheduledLabel": {
+    "description": "Etykieta dla zaplanowanego czasu lotu"
+  },
+  
+  "aircraftLabel": "Samolot",
+  "@aircraftLabel": {
+    "description": "Etykieta dla informacji o samolocie"
+  },
+  
+  "eligibleCalculationNeeded": "Kwalifikuje się (potrzebne obliczenie)",
+  "@eligibleCalculationNeeded": {
+    "description": "Tekst wyświetlany, gdy lot kwalifikuje się do odszkodowania, ale potrzebne jest obliczenie kwoty"
+  },
+  
+  "unknownAirline": "Nieznana linia lotnicza",
+  "@unknownAirline": {
+    "description": "Tekst wyświetlany, gdy nazwa linii lotniczej nie jest dostępna"
+  },
+  
+  "notAvailable": "Brak",
+  "@notAvailable": {
+    "description": "Tekst wyświetlany, gdy informacja nie jest dostępna"
+  },
+  
+  "statusUnknown": "Nieznany",
+  "@statusUnknown": {
+    "description": "Tekst wyświetlany, gdy status jest nieznany"
+  },
+  
+  "aircraftUnknown": "Nieznany",
+  "@aircraftUnknown": {
+    "description": "Tekst wyświetlany, gdy informacja o samolocie nie jest dostępna"
+  },
+  
+  "flightDiverted": "Lot przekierowany",
+  "@flightDiverted": {
+    "description": "Status wyświetlany, gdy lot został przekierowany"
+  },
+  
+  "flightCancelled": "Lot odwołany",
+  "@flightCancelled": {
+    "description": "Status wyświetlany, gdy lot został odwołany"
+  },
+  
+  "flightDivertedEligible": "Twój przekierowany lot kwalifikuje się do odszkodowania!",
+  "@flightDivertedEligible": {
+    "description": "Komunikat wyświetlany, gdy przekierowany lot kwalifikuje się do odszkodowania"
+  },
+  
+  "flightCancelledEligible": "Twój odwołany lot kwalifikuje się do odszkodowania!",
+  "@flightCancelledEligible": {
+    "description": "Komunikat wyświetlany, gdy odwołany lot kwalifikuje się do odszkodowania"
+  },
+  
+  "divertedReason": "Lot został przekierowany na inne lotnisko",
+  "@divertedReason": {
+    "description": "Powód wyświetlany dla przekierowanych lotów"
+  },
+  
+  "cancelledReason": "Lot został odwołany",
+  "@cancelledReason": {
+    "description": "Powód wyświetlany dla odwołanych lotów"
   }
 }

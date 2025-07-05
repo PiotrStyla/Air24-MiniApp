@@ -639,5 +639,225 @@
   "other": "outro",
   "@other": {
     "description": "Rótulo para outro tipo de documento"
+  },
+
+  "accessibilitySettings": "Configurações de acessibilidade",
+  "@accessibilitySettings": {
+    "description": "Título para tela de configurações de acessibilidade"
+  },
+
+  "accessibilityOptions": "Opções de acessibilidade",
+  "@accessibilityOptions": {
+    "description": "Cabeçalho para seção de opções de acessibilidade"
+  },
+
+  "configureAccessibilitySettings": "Configure as definições para melhorar a acessibilidade do aplicativo.",
+  "@configureAccessibilitySettings": {
+    "description": "Texto de descrição para configurações de acessibilidade"
+  },
+
+  "displaySettings": "Configurações de exibição",
+  "@displaySettings": {
+    "description": "Cabeçalho para seção de configurações de exibição"
+  },
+
+  "displayAndVisualSettingsSection": "Seção de configurações de exibição e visuais",
+  "@displayAndVisualSettingsSection": {
+    "description": "Rótulo semântico para seção de configurações de exibição"
+  },
+
+  "highContrastMode": "Modo de alto contraste",
+  "@highContrastMode": {
+    "description": "Rótulo para interruptor de modo de alto contraste"
+  },
+
+  "enableHighContrastMode": "Ativar modo de alto contraste para melhor visibilidade",
+  "@enableHighContrastMode": {
+    "description": "Rótulo semântico para interruptor de modo de alto contraste"
+  },
+
+  "highContrastDescription": "O modo de alto contraste aumenta o contraste de cores para melhorar a legibilidade para usuários com baixa visão.",
+  "@highContrastDescription": {
+    "description": "Descrição para modo de alto contraste"
+  },
+
+  "largeText": "Texto grande",
+  "@largeText": {
+    "description": "Rótulo para interruptor de texto grande"
+  },
+
+  "enableLargeText": "Ativar texto grande para melhor legibilidade",
+  "@enableLargeText": {
+    "description": "Rótulo semântico para interruptor de texto grande"
+  },
+
+  "largeTextDescription": "O modo de texto grande aumenta o tamanho da fonte em todo o aplicativo para melhor legibilidade.",
+  "@largeTextDescription": {
+    "description": "Descrição para modo de texto grande"
+  },
+
+  "screenReaderSettings": "Configurações do leitor de tela",
+  "@screenReaderSettings": {
+    "description": "Cabeçalho para seção de configurações do leitor de tela"
+  },
+
+  "screenReaderEnhancementSettings": "Configurações de aprimoramento do leitor de tela",
+  "@screenReaderEnhancementSettings": {
+    "description": "Rótulo semântico para seção de configurações do leitor de tela"
+  },
+
+  "enhancedScreenReaderDescriptions": "Descrições aprimoradas para leitor de tela",
+  "@enhancedScreenReaderDescriptions": {
+    "description": "Rótulo para interruptor de descrições aprimoradas para leitor de tela"
+  },
+
+  "enableMoreDetailedDescriptions": "Ativar descrições mais detalhadas para leitores de tela",
+  "@enableMoreDetailedDescriptions": {
+    "description": "Rótulo semântico para interruptor de descrições aprimoradas para leitor de tela"
+  },
+
+  "providesMoreDetailedDescriptions": "Fornece descrições mais detalhadas para leitores de tela para explicar melhor os elementos da interface.",
+  "@providesMoreDetailedDescriptions": {
+    "description": "Descrição para descrições aprimoradas para leitor de tela"
+  },
+
+  "keyboardNavigation": "Navegação por teclado",
+  "@keyboardNavigation": {
+    "description": "Cabeçalho para seção de navegação por teclado"
+  },
+
+  "keyboardNavigationGuide": "Guia de navegação por teclado",
+  "@keyboardNavigationGuide": {
+    "description": "Rótulo semântico para seção de navegação por teclado"
+  },
+
+  "useTheFollowingKeyboardShortcuts": "Use os seguintes atalhos de teclado:",
+  "@useTheFollowingKeyboardShortcuts": {
+    "description": "Instrução para atalhos de teclado"
+  },
+
+  "moveToNextItem": "Mover para o próximo item",
+  "@moveToNextItem": {
+    "description": "Descrição para tecla Tab"
+  },
+
+  "moveToPreviousItem": "Mover para o item anterior",
+  "@moveToPreviousItem": {
+    "description": "Descrição para teclas Shift+Tab"
+  },
+
+  "activateFocusedItem": "Ativar item em foco",
+  "@activateFocusedItem": {
+    "description": "Descrição para teclas Espaço/Enter"
+  },
+
+  "navigateWithinComponents": "Navegar dentro de componentes",
+  "@navigateWithinComponents": {
+    "description": "Descrição para teclas de seta"
+  },
+
+  "closeDialogsOrMenus": "Fechar diálogos ou menus",
+  "@closeDialogsOrMenus": {
+    "description": "Descrição para tecla Esc"
+  },
+
+  "testYourSettings": "Teste suas configurações",
+  "@testYourSettings": {
+    "description": "Cabeçalho para seção de teste de configurações"
+  },
+
+  "areaToTestSettings": "Área para testar suas configurações de acessibilidade",
+  "@areaToTestSettings": {
+    "description": "Rótulo semântico para seção de teste de configurações"
+  },
+
+  "useThisAreaToTest": "Use esta área para testar como suas configurações afetam a aparência e o comportamento do aplicativo.",
+  "@useThisAreaToTest": {
+    "description": "Instrução para área de teste"
+  },
+
+  "sampleInputField": "Campo de entrada de exemplo",
+  "@sampleInputField": {
+    "description": "Rótulo para campo de entrada de exemplo"
+  },
+
+  "primaryButton": "Botão primário",
+  "@primaryButton": {
+    "description": "Rótulo para botão primário de exemplo"
+  },
+
+  "samplePrimaryButton": "Botão primário de exemplo para teste",
+  "@samplePrimaryButton": {
+    "description": "Rótulo semântico para botão primário de exemplo"
+  },
+
+  "primaryButtonPressed": "Botão primário pressionado",
+  "@primaryButtonPressed": {
+    "description": "Mensagem quando botão primário é pressionado"
+  },
+
+  "secondaryButton": "Botão secundário",
+  "@secondaryButton": {
+    "description": "Rótulo para botão secundário de exemplo"
+  },
+
+  "sampleSecondaryButton": "Botão secundário de exemplo para teste",
+  "@sampleSecondaryButton": {
+    "description": "Rótulo semântico para botão secundário de exemplo"
+  },
+
+  "secondaryButtonPressed": "Botão secundário pressionado",
+  "@secondaryButtonPressed": {
+    "description": "Mensagem quando botão secundário é pressionado"
+  },
+
+  "saveSettings": "Salvar configurações",
+  "@saveSettings": {
+    "description": "Rótulo para botão de salvar configurações"
+  },
+
+  "saveAccessibilitySettings": "Salvar configurações de acessibilidade e retornar à tela anterior",
+  "@saveAccessibilitySettings": {
+    "description": "Rótulo semântico para botão de salvar configurações"
+  },
+
+  "backToPreviousScreen": "Voltar para a tela anterior",
+  "@backToPreviousScreen": {
+    "description": "Rótulo semântico para botão de voltar"
+  },
+
+  "flightDiverted": "Voo desviado",
+  "@flightDiverted": {
+    "description": "Status mostrado quando o voo foi desviado"
+  },
+  
+  "flightCancelled": "Voo cancelado",
+  "@flightCancelled": {
+    "description": "Status mostrado quando o voo foi cancelado"
+  },
+  
+  "flightDivertedEligible": "Seu voo desviado é elegível para compensação!",
+  "@flightDivertedEligible": {
+    "description": "Mensagem exibida quando um voo desviado é elegível para compensação"
+  },
+  
+  "flightCancelledEligible": "Seu voo cancelado é elegível para compensação!",
+  "@flightCancelledEligible": {
+    "description": "Mensagem exibida quando um voo cancelado é elegível para compensação"
+  },
+  
+  "divertedReason": "Voo foi desviado para um aeroporto diferente",
+  "@divertedReason": {
+    "description": "Motivo mostrado para voos desviados"
+  },
+  
+  "cancelledReason": "Voo foi cancelado",
+  "@cancelledReason": {
+    "description": "Motivo mostrado para voos cancelados"
+  },
+  
+  "checkCompensationEligibility": "Verificar Elegibilidade para Compensação",
+  "@checkCompensationEligibility": {
+    "description": "Texto do botão para verificar a elegibilidade de compensação"
   }
 }
