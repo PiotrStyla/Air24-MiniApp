@@ -287,7 +287,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get checkCompensationEligibility =>
-      'Sprawdź Uprawnienie do Odszkodowania';
+      'Sprawdź kwalifikowalność do odszkodowania';
 
   @override
   String get supportingDocumentsHint =>
@@ -429,7 +429,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get toAirport => 'Do:';
 
   @override
-  String get statusLabel => 'Status:';
+  String get statusLabel => 'Status';
 
   @override
   String get delayedEligible => 'Opóźniony i potencjalnie kwalifikujący się';
@@ -464,7 +464,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get continueToAttachments => 'Przejdź do załączników';
 
   @override
-  String get pleaseEnterFlightNumber => 'Wprowadź numer lotu';
+  String get pleaseEnterFlightNumber => 'Proszę podać numer lotu';
 
   @override
   String get pleaseEnterArrivalAirport => 'Wprowadź lotnisko przylotu';
@@ -567,7 +567,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get last72HoursButton => 'Ostatnie 72 godziny';
 
   @override
-  String get scheduledLabel => 'Scheduled:';
+  String get scheduledLabel => 'Zaplanowany';
 
   @override
   String get statusLabelEuList => 'Status:';
@@ -967,7 +967,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get documentDeleteFailed => 'Nie udało się usunąć dokumentu';
 
   @override
-  String get other => 'inne';
+  String get other => 'inny';
 
   @override
   String get reviewYourClaim => 'Krok 1: Przejrzyj swoją reklamację';
@@ -1004,6 +1004,75 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get confirmAndSendEmail => 'Potwierdź i wyślij e-mail';
+
+  @override
+  String get flightCompensationCheckerTitle => 'Flight Compensation Checker';
+
+  @override
+  String get checkEligibilityForEu261 =>
+      'Check if your flight is eligible for EU261 compensation';
+
+  @override
+  String get flightNumberPlaceholder => 'Flight Number (e.g., BA123)';
+
+  @override
+  String get dateOptionalPlaceholder => 'Date (YYYY-MM-DD, optional)';
+
+  @override
+  String get leaveDateEmptyForToday => 'Leave empty for today';
+
+  @override
+  String get error => 'Błąd';
+
+  @override
+  String flightInfoFormat(String flightNumber, String airline) {
+    return 'Flight $flightNumber - $airline';
+  }
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get from => 'From';
+
+  @override
+  String get to => 'To';
+
+  @override
+  String get delay => 'Delay';
+
+  @override
+  String minutesFormat(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String get flightEligibleForCompensation =>
+      'Your flight is eligible for compensation!';
+
+  @override
+  String get flightNotEligibleForCompensation =>
+      'Your flight is not eligible for compensation.';
+
+  @override
+  String get potentialCompensation => 'Potencjalne odszkodowanie:';
+
+  @override
+  String get contactAirlineForClaim =>
+      'Contact the airline to claim your compensation under EU Regulation 261/2004.';
+
+  @override
+  String get reasonPrefix => 'Powód:';
+
+  @override
+  String get delayLessThan3Hours =>
+      'Opóźnienie lotu jest krótsze niż 3 godziny';
+
+  @override
+  String get notUnderEuJurisdiction => 'Flight is not under EU jurisdiction';
+
+  @override
+  String get unknownReason => 'Nieznany powód';
 
   @override
   String get reviewAndConfirm => 'Przejrzyj i potwierdź';

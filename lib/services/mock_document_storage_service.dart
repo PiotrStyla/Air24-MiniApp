@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
@@ -42,13 +40,13 @@ class MockDocumentStorageService implements DocumentStorageService {
   }
 
   @override
-  Future<File?> pickImage(ImageSource source) async {
+  Future<XFile?> pickImage(ImageSource source) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: source,
         imageQuality: 70,
       );
-      return pickedFile != null ? File(pickedFile.path) : null;
+      return pickedFile;
     } catch (e) {
       debugPrint('Error picking image: $e');
       return null;
@@ -56,7 +54,7 @@ class MockDocumentStorageService implements DocumentStorageService {
   }
 
   @override
-  Future<String?> uploadFile(File file, String flightNumber, FlightDocumentType type) async {
+  Future<String?> uploadFile(XFile file, String flightNumber, FlightDocumentType type) async {
     await Future.delayed(const Duration(seconds: 1)); // Simulate upload
     return 'https://example.com/mock/${_uuid.v4()}.jpg';
   }

@@ -1111,6 +1111,137 @@
   "@tooltipArrivalAirportQuickClaim": {
     "description": "Tooltip for arrival airport field in Quick Claim screen"
   },
+
+  "flightCompensationCheckerTitle": "Flight Compensation Checker",
+  "@flightCompensationCheckerTitle": {
+    "description": "Title for the Flight Compensation Checker screen"
+  },
+
+  "checkEligibilityForEu261": "Check if your flight is eligible for EU261 compensation",
+  "@checkEligibilityForEu261": {
+    "description": "Header text for the EU261 eligibility checker"
+  },
+
+  "flightNumberPlaceholder": "Flight Number (e.g., BA123)",
+  "@flightNumberPlaceholder": {
+    "description": "Placeholder text for flight number input field"
+  },
+
+  "dateOptionalPlaceholder": "Date (YYYY-MM-DD, optional)",
+  "@dateOptionalPlaceholder": {
+    "description": "Placeholder text for optional date input field"
+  },
+
+  "leaveDateEmptyForToday": "Leave empty for today",
+  "@leaveDateEmptyForToday": {
+    "description": "Hint text for date field"
+  },
+
+  "checkCompensationEligibility": "Check Compensation Eligibility",
+  "@checkCompensationEligibility": {
+    "description": "Button label for checking compensation eligibility"
+  },
+
+  "pleaseEnterFlightNumber": "Please enter a flight number",
+  "@pleaseEnterFlightNumber": {
+    "description": "Validation message for empty flight number"
+  },
+
+  "error": "Error",
+  "@error": {
+    "description": "Error text for error messages"
+  },
+
+  "flightInfoFormat": "Flight {flightNumber} - {airline}",
+  "@flightInfoFormat": {
+    "description": "Format for displaying flight info with number and airline",
+    "placeholders": {
+      "flightNumber": {
+        "type": "String",
+        "example": "BA123"
+      },
+      "airline": {
+        "type": "String",
+        "example": "British Airways"
+      }
+    }
+  },
+
+  "status": "Status",
+  "@status": {
+    "description": "Status label"
+  },
+
+  "from": "From",
+  "@from": {
+    "description": "From label for departure airport"
+  },
+
+  "to": "To",
+  "@to": {
+    "description": "To label for arrival airport"
+  },
+
+  "delay": "Delay",
+  "@delay": {
+    "description": "Delay label"
+  },
+
+  "minutesFormat": "{minutes} minutes",
+  "@minutesFormat": {
+    "description": "Format for displaying minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "45"
+      }
+    }
+  },
+
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Text for unknown values"
+  },
+
+  "flightEligibleForCompensation": "Your flight is eligible for compensation!",
+  "@flightEligibleForCompensation": {
+    "description": "Message shown when flight is eligible for compensation"
+  },
+
+  "flightNotEligibleForCompensation": "Your flight is not eligible for compensation.",
+  "@flightNotEligibleForCompensation": {
+    "description": "Message shown when flight is not eligible for compensation"
+  },
+
+  "potentialCompensation": "Potential Compensation:",
+  "@potentialCompensation": {
+    "description": "Label for potential compensation amount"
+  },
+
+  "contactAirlineForClaim": "Contact the airline to claim your compensation under EU Regulation 261/2004.",
+  "@contactAirlineForClaim": {
+    "description": "Instruction for claiming compensation"
+  },
+
+  "reasonPrefix": "Reason: ",
+  "@reasonPrefix": {
+    "description": "Prefix for showing reason for ineligibility"
+  },
+
+  "delayLessThan3Hours": "Flight delay is less than 3 hours",
+  "@delayLessThan3Hours": {
+    "description": "Reason for ineligibility due to short delay"
+  },
+
+  "notUnderEuJurisdiction": "Flight is not under EU jurisdiction",
+  "@notUnderEuJurisdiction": {
+    "description": "Reason for ineligibility due to jurisdiction"
+  },
+
+  "unknownReason": "Unknown reason",
+  "@unknownReason": {
+    "description": "Default reason when specific reason is not available"
+  },
   
   "reasonForClaimLabel": "Reason for Claim",
   "@reasonForClaimLabel": {

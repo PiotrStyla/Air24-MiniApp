@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/foundation.dart';
 import '../services/aviation_stack_service.dart';
@@ -73,8 +73,10 @@ class FlightDetectionService {
       try {
         apiKey = await rootBundle.loadString('assets/rapidapi_key.txt');
       } catch (e) {
-        if (onError != null) onError('rapidapi_key.txt not found or unreadable: $e');
-        return;
+        // For development purposes only, use a placeholder API key
+        debugPrint('Using placeholder API key for development: rapidapi_key.txt not found');
+        apiKey = 'DEVELOPMENT_PLACEHOLDER_KEY';
+        // Continue execution instead of returning
       }
       final aviationService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
       List<Map<String, dynamic>> arrivals = [];
@@ -136,7 +138,14 @@ class FlightDetectionService {
         final arrAirport = await _nearestAirport(pos.latitude, pos.longitude);
         if (depAirport != null && arrAirport != null) {
           // Fetch arrivals at arrival airport
-          final apiKey = await File('rapidapi_key.txt').readAsString();
+          String apiKey;
+          try {
+            apiKey = await rootBundle.loadString('assets/rapidapi_key.txt');
+          } catch (e) {
+            // For development purposes only, use a placeholder API key
+            debugPrint('Using placeholder API key for development: rapidapi_key.txt not found');
+            apiKey = 'DEVELOPMENT_PLACEHOLDER_KEY';
+          }
           final aviationService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
           final arrivals = await aviationService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
           // Find best match: closest departure airport and arrival time

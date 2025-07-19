@@ -221,7 +221,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get accountSettings => 'Definições da Conta';
 
   @override
-  String get accessibilityOptions => 'Opções de Acessibilidade';
+  String get accessibilityOptions => 'Opções de acessibilidade';
 
   @override
   String get configureAccessibilityDescription =>
@@ -802,7 +802,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get totalClaims => 'Total de Solicitações';
 
   @override
-  String get accessibilitySettings => 'Configurações de Acessibilidade';
+  String get accessibilitySettings => 'Configurações de acessibilidade';
 
   @override
   String get configureAccessibility => 'Configurar opções de acessibilidade';
@@ -1009,6 +1009,74 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get confirmAndSendEmail => 'Confirm and Send Email';
+
+  @override
+  String get flightCompensationCheckerTitle => 'Flight Compensation Checker';
+
+  @override
+  String get checkEligibilityForEu261 =>
+      'Check if your flight is eligible for EU261 compensation';
+
+  @override
+  String get flightNumberPlaceholder => 'Flight Number (e.g., BA123)';
+
+  @override
+  String get dateOptionalPlaceholder => 'Date (YYYY-MM-DD, optional)';
+
+  @override
+  String get leaveDateEmptyForToday => 'Leave empty for today';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String flightInfoFormat(String flightNumber, String airline) {
+    return 'Flight $flightNumber - $airline';
+  }
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get from => 'From';
+
+  @override
+  String get to => 'To';
+
+  @override
+  String get delay => 'Delay';
+
+  @override
+  String minutesFormat(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String get flightEligibleForCompensation =>
+      'Your flight is eligible for compensation!';
+
+  @override
+  String get flightNotEligibleForCompensation =>
+      'Your flight is not eligible for compensation.';
+
+  @override
+  String get potentialCompensation => 'Potential Compensation:';
+
+  @override
+  String get contactAirlineForClaim =>
+      'Contact the airline to claim your compensation under EU Regulation 261/2004.';
+
+  @override
+  String get reasonPrefix => 'Reason: ';
+
+  @override
+  String get delayLessThan3Hours => 'Flight delay is less than 3 hours';
+
+  @override
+  String get notUnderEuJurisdiction => 'Flight is not under EU jurisdiction';
+
+  @override
+  String get unknownReason => 'Unknown reason';
 
   @override
   String get reviewAndConfirm => 'Review and Confirm';

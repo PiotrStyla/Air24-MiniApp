@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:async';
+
+// Import mock user for development mode
+import 'mock_user.dart';
 
 /// AuthException class to handle authentication errors in a user-friendly way
 class AuthException implements Exception {
@@ -16,15 +20,41 @@ class AuthException implements Exception {
 /// Service class for handling all authentication operations
 /// Following MVVM pattern for separation of concerns
 class AuthService with ChangeNotifier {
-  final FirebaseAuth _auth;
-  final GoogleSignIn _googleSignIn;
-
+  // Static flag to track if Firebase is unavailable for the app
+  static bool isFirebaseUnavailable = false;
+  FirebaseAuth? _auth;
+  GoogleSignIn? _googleSignIn;
+  
+  // Track if we're in development mode without Firebase
+  bool _isDevMode = false;
+  
+  // Mock user for development mode
+  late final MockUser _mockUser;
+  
   User? _currentUser;
 
   // Private constructor
-  AuthService._({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn})
-      : _auth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn();
+  AuthService._({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn}) {
+    try {
+      _auth = firebaseAuth ?? FirebaseAuth.instance;
+      _googleSignIn = googleSignIn ?? GoogleSignIn();
+    } catch (e) {
+      debugPrint('Firebase Auth not available: $e');
+      _isDevMode = true;
+      AuthService.isFirebaseUnavailable = true;
+      debugPrint('Running AuthService in development mode with mock authentication');
+    }
+    
+    // Create mock user for development mode
+    _mockUser = MockUser(
+      uid: 'dev-user-123',
+      displayName: 'Dev User',
+      email: 'dev@example.com',
+      photoURL: null,
+      isAnonymous: false,
+      emailVerified: true
+    );
+  }
 
   /// Public factory method for safe asynchronous creation
   static Future<AuthService> create({FirebaseAuth? firebaseAuth, GoogleSignIn? googleSignIn}) async {
@@ -35,34 +65,69 @@ class AuthService with ChangeNotifier {
 
   /// Private method to handle asynchronous initialization
   Future<void> _init() async {
-    // By awaiting the first event from the `authStateChanges` stream, we ensure
-    // that the `AuthService` has a definitive initial state (either a user or null)
-    // before its creation is considered complete. This resolves race conditions
-    // during app startup without causing a deadlock.
-    final initialUser = await _auth.authStateChanges().first;
-    _currentUser = initialUser;
+    // Check if we're in development mode without Firebase
+    if (_isDevMode) {
+      debugPrint('AuthService initializing in development mode with mock user');
+      _currentUser = _mockUser;
+      // Simulate delay for authentication
+      await Future.delayed(const Duration(milliseconds: 300));
+      notifyListeners();
+      return;
+    }
+    
+    try {
+      // By awaiting the first event from the `authStateChanges` stream, we ensure
+      // that the `AuthService` has a definitive initial state (either a user or null)
+      // before its creation is considered complete. This resolves race conditions
+      // during app startup without causing a deadlock.
+      final initialUser = await _auth!.authStateChanges().first;
+      _currentUser = initialUser;
 
-    // After handling the initial state, we set up a listener for any subsequent
-    // changes to keep the user state up-to-date.
-    _auth.authStateChanges().listen(_onAuthStateChanged);
+      // After handling the initial state, we set up a listener for any subsequent
+      // changes to keep the user state up-to-date.
+      _auth!.authStateChanges().listen(_onAuthStateChanged);
+    } catch (e) {
+      debugPrint('Error initializing AuthService: $e');
+      // Switch to development mode if Firebase auth fails
+      _isDevMode = true;
+      _currentUser = _mockUser;
+      debugPrint('Switched to development mode with mock authentication');
+      notifyListeners();
+    }
   }
 
   // Current user getter
   User? get currentUser => _currentUser;
 
   // Stream for auth state changes
-  Stream<User?> get userChanges => _auth.authStateChanges();
+  Stream<User?> get userChanges {
+    if (_isDevMode) {
+      // Return a mock stream that just emits the current mock user
+      return Stream.value(_mockUser);
+    }
+    return _auth!.authStateChanges();
+  }
 
   // Get user display name or email
   String get userDisplayName {
-    final user = _auth.currentUser;
+    if (_isDevMode) {
+      return _mockUser.displayName ?? _mockUser.email ?? 'Dev User';
+    }
+    final user = _auth!.currentUser;
     return user?.displayName ?? user?.email ?? 'Guest User';
   }
 
   /// Sign in with email and password
   Future<UserCredential> signInWithEmail(String email, String password) async {
+    if (_isDevMode) {
+      // In dev mode, just return a mock credential
+      _currentUser = _mockUser;
+      notifyListeners();
+      return MockUserCredential(_mockUser);
+    }
+    
     try {
-      return await _auth.signInWithEmailAndPassword(
+      return await _auth!.signInWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
@@ -77,8 +142,15 @@ class AuthService with ChangeNotifier {
 
   /// Create a new account with email and password
   Future<UserCredential> createUserWithEmail(String email, String password) async {
+    if (_isDevMode) {
+      // In dev mode, just return a mock credential
+      _currentUser = _mockUser;
+      notifyListeners();
+      return MockUserCredential(_mockUser);
+    }
+    
     try {
-      return await _auth.createUserWithEmailAndPassword(
+      return await _auth!.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
@@ -93,8 +165,15 @@ class AuthService with ChangeNotifier {
 
   /// Sign in with Google
   Future<UserCredential?> signInWithGoogle() async {
+    if (_isDevMode) {
+      // In dev mode, just return a mock credential
+      _currentUser = _mockUser;
+      notifyListeners();
+      return MockUserCredential(_mockUser);
+    }
+    
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn!.signIn();
       if (googleUser == null) return null; // User cancelled
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -103,7 +182,7 @@ class AuthService with ChangeNotifier {
         idToken: googleAuth.idToken,
       );
 
-      return await _auth.signInWithCredential(credential);
+      return await _auth!.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       debugPrint('Google sign-in error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);
@@ -115,8 +194,23 @@ class AuthService with ChangeNotifier {
 
   /// Sign in anonymously (for quick testing)
   Future<UserCredential> signInAnonymously() async {
+    if (_isDevMode) {
+      // In dev mode, just return a mock credential with anonymous user
+      final anonymousMockUser = MockUser(
+        uid: 'anon-user-${DateTime.now().millisecondsSinceEpoch}',
+        displayName: null,
+        email: null,
+        photoURL: null,
+        isAnonymous: true,
+        emailVerified: false
+      );
+      _currentUser = anonymousMockUser;
+      notifyListeners();
+      return MockUserCredential(anonymousMockUser);
+    }
+    
     try {
-      return await _auth.signInAnonymously();
+      return await _auth!.signInAnonymously();
     } on FirebaseAuthException catch (e) {
       debugPrint('Anonymous sign-in error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);
@@ -128,8 +222,14 @@ class AuthService with ChangeNotifier {
 
   /// Send password reset email
   Future<void> resetPassword(String email) async {
+    if (_isDevMode) {
+      // In dev mode, simulate a delay and return successfully
+      await Future.delayed(const Duration(milliseconds: 500));
+      return;
+    }
+    
     try {
-      await _auth.sendPasswordResetEmail(email: email.trim());
+      await _auth!.sendPasswordResetEmail(email: email.trim());
     } on FirebaseAuthException catch (e) {
       debugPrint('Password reset error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);
@@ -146,9 +246,18 @@ class AuthService with ChangeNotifier {
 
   /// Sign out
   Future<void> signOut() async {
+    if (_isDevMode) {
+      // In dev mode, just set current user to null
+      _currentUser = null;
+      notifyListeners();
+      return;
+    }
+    
     try {
-      await _googleSignIn.signOut(); // Sign out from Google if signed in
-      await _auth.signOut();
+      if (_googleSignIn != null) {
+        await _googleSignIn!.signOut(); // Sign out from Google if signed in
+      }
+      await _auth!.signOut();
     } on FirebaseAuthException catch (e) {
       debugPrint('Sign out error: ${e.code} - ${e.message}');
       throw _handleAuthError(e);

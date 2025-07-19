@@ -19,6 +19,7 @@ class MockClaimTrackingService implements ClaimTrackingService {
       Claim(
         id: _uuid.v4(),
         userId: 'mock_user_id',
+        airlineName: 'British Airways',
         flightNumber: 'BA2490',
         flightDate: DateTime.now().subtract(const Duration(days: 10)),
         departureAirport: 'LHR',

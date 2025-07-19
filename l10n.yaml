@@ -4,4 +4,4 @@ template-arb-file: app_en.arb
 # output-dir: lib/l10n
 # output-dir defaults to lib/generated for non-synthetic
 # nullable-getter defaults to false
-# untranslated-messages-file is optional
+untranslated-messages-file: untranslated_messages.txt

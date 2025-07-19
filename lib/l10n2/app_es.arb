@@ -859,5 +859,541 @@
   "checkCompensationEligibility": "Verificar Elegibilidad para Compensación",
   "@checkCompensationEligibility": {
     "description": "Texto del botón para verificar la elegibilidad de compensación"
+  },
+
+  "flightCompensationCheckerTitle": "Verificador de Compensación de Vuelos",
+  "@flightCompensationCheckerTitle": {
+    "description": "Título para la pantalla del Verificador de Compensación de Vuelos"
+  },
+
+  "copiedToClipboard": "Copiado al portapapeles",
+  "@copiedToClipboard": {
+    "description": "Mensaje que aparece cuando se ha copiado algo al portapapeles"
+  },
+
+  "submitNewClaim": "Enviar nueva reclamación",
+  "@submitNewClaim": {
+    "description": "Texto del botón para enviar una nueva reclamación"
+  },
+
+  "reasonForClaim": "Motivo de la reclamación",
+  "@reasonForClaim": {
+    "description": "Etiqueta para el campo del motivo de la reclamación"
+  },
+
+  "flightDateHint": "Seleccionar fecha del vuelo",
+  "@flightDateHint": {
+    "description": "Texto de ayuda para el campo de fecha del vuelo"
+  },
+
+  "continueToAttachments": "Continuar a archivos adjuntos",
+  "@continueToAttachments": {
+    "description": "Texto del botón para continuar a la pantalla de archivos adjuntos"
+  },
+
+  "pleaseEnterArrivalAirport": "Por favor, introduce el aeropuerto de llegada",
+  "@pleaseEnterArrivalAirport": {
+    "description": "Mensaje de validación para el campo del aeropuerto de llegada"
+  },
+
+  "pleaseEnterReason": "Por favor, introduce un motivo para la reclamación",
+  "@pleaseEnterReason": {
+    "description": "Mensaje de validación para el campo del motivo de la reclamación"
+  },
+
+  "pleaseSelectFlightDate": "Por favor, selecciona la fecha del vuelo",
+  "@pleaseSelectFlightDate": {
+    "description": "Mensaje de validación para el campo de fecha del vuelo"
+  },
+
+  "claimDetails": "Detalles de la reclamación",
+  "@claimDetails": {
+    "description": "Título para la sección de detalles de la reclamación"
+  },
+
+  "refresh": "Actualizar",
+  "@refresh": {
+    "description": "Texto del botón para actualizar"
+  },
+
+  "errorLoadingClaim": "Error al cargar la reclamación",
+  "@errorLoadingClaim": {
+    "description": "Mensaje de error cuando no se puede cargar una reclamación"
+  },
+
+  "unknownError": "Error desconocido",
+  "@unknownError": {
+    "description": "Mensaje para un error desconocido"
+  },
+
+  "networkError": "Error de red",
+  "@networkError": {
+    "description": "Mensaje para un error de red"
+  },
+
+  "generalError": "Error general",
+  "@generalError": {
+    "description": "Mensaje para un error general"
+  },
+
+  "loginRequiredForClaim": "Se requiere inicio de sesión para presentar una reclamación",
+  "@loginRequiredForClaim": {
+    "description": "Mensaje que indica que se requiere iniciar sesión para presentar una reclamación"
+  },
+
+  "quickClaimTitle": "Reclamación rápida",
+  "@quickClaimTitle": {
+    "description": "Título para la pantalla de reclamación rápida"
+  },
+
+  "quickClaimInfoBanner": "Complete los detalles de su vuelo para verificar la elegibilidad para compensación",
+  "@quickClaimInfoBanner": {
+    "description": "Banner informativo en la pantalla de reclamación rápida"
+  },
+
+  "flightNumberHintQuickClaim": "Número de vuelo (ej. LH123)",
+  "@flightNumberHintQuickClaim": {
+    "description": "Texto de ayuda para el campo del número de vuelo en reclamación rápida"
+  },
+
+  "departureAirportHintQuickClaim": "Aeropuerto de salida (ej. MAD)",
+  "@departureAirportHintQuickClaim": {
+    "description": "Texto de ayuda para el campo del aeropuerto de salida en reclamación rápida"
+  },
+
+  "arrivalAirportHintQuickClaim": "Aeropuerto de llegada (ej. BCN)",
+  "@arrivalAirportHintQuickClaim": {
+    "description": "Texto de ayuda para el campo del aeropuerto de llegada en reclamación rápida"
+  },
+
+  "reasonForClaimLabel": "Motivo de la reclamación",
+  "@reasonForClaimLabel": {
+    "description": "Etiqueta para el campo del motivo de la reclamación"
+  },
+
+  "reasonForClaimHint": "Ej. retraso, cancelación",
+  "@reasonForClaimHint": {
+    "description": "Texto de ayuda para el campo del motivo de la reclamación"
+  },
+
+  "compensationAmountOptionalLabel": "Cantidad de compensación (opcional)",
+  "@compensationAmountOptionalLabel": {
+    "description": "Etiqueta para el campo opcional de cantidad de compensación"
+  },
+
+  "compensationAmountHint": "Ej. 250€",
+  "@compensationAmountHint": {
+    "description": "Texto de ayuda para el campo de cantidad de compensación"
+  },
+
+  "euWideCompensationTitle": "Compensaciones a nivel de la UE",
+  "@euWideCompensationTitle": {
+    "description": "Título para la sección de compensaciones a nivel de la UE"
+  },
+
+  "scheduledLabel": "Programado",
+  "@scheduledLabel": {
+    "description": "Etiqueta para la hora/fecha programada"
+  },
+
+  "statusLabelEuList": "Estado",
+  "@statusLabelEuList": {
+    "description": "Etiqueta de estado para la lista de vuelos de la UE"
+  },
+
+  "potentialCompensationLabel": "Compensación potencial",
+  "@potentialCompensationLabel": {
+    "description": "Etiqueta para la cantidad de compensación potencial"
+  },
+
+  "prefillCompensationFormButton": "Rellenar formulario de compensación",
+  "@prefillCompensationFormButton": {
+    "description": "Texto del botón para rellenar automáticamente el formulario de compensación"
+  },
+
+  "claimsTabActive": "Activas",
+  "@claimsTabActive": {
+    "description": "Etiqueta de pestaña para reclamaciones activas"
+  },
+
+  "claimsTabActionRequired": "Acción requerida",
+  "@claimsTabActionRequired": {
+    "description": "Etiqueta de pestaña para reclamaciones que requieren acción"
+  },
+
+  "claimsTabCompleted": "Completadas",
+  "@claimsTabCompleted": {
+    "description": "Etiqueta de pestaña para reclamaciones completadas"
+  },
+
+  "dialogTitleSuccess": "Éxito",
+  "@dialogTitleSuccess": {
+    "description": "Título del diálogo para mensajes de éxito"
+  },
+
+  "dialogContentClaimSubmitted": "Su reclamación ha sido enviada con éxito.",
+  "@dialogContentClaimSubmitted": {
+    "description": "Contenido del diálogo para el envio exitoso de la reclamación"
+  },
+
+  "dialogButtonOK": "OK",
+  "@dialogButtonOK": {
+    "description": "Texto del botón de diálogo para la acción OK"
+  },
+
+  "documentManagementTitle": "Gestión de documentos",
+  "@documentManagementTitle": {
+    "description": "Título para la pantalla de gestión de documentos"
+  },
+
+  "documentsForFlightTitle": "Documentos para vuelo",
+  "@documentsForFlightTitle": {
+    "description": "Título para la sección de documentos de vuelo"
+  },
+
+  "errorLoadingDocuments": "Error al cargar documentos",
+  "@errorLoadingDocuments": {
+    "description": "Mensaje de error al cargar documentos"
+  },
+
+  "addDocumentTooltip": "Añadir documento",
+  "@addDocumentTooltip": {
+    "description": "Tooltip para el botón de añadir documento"
+  },
+
+  "deleteDocumentTitle": "Eliminar documento",
+  "@deleteDocumentTitle": {
+    "description": "Título para el diálogo de eliminación de documento"
+  },
+
+  "deleteDocumentMessage": "¿Está seguro de que desea eliminar este documento?",
+  "@deleteDocumentMessage": {
+    "description": "Mensaje de confirmación para la eliminación de un documento"
+  },
+
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Texto del botón de eliminar"
+  },
+
+  "errorMustBeLoggedIn": "Debe iniciar sesión para realizar esta acción",
+  "@errorMustBeLoggedIn": {
+    "description": "Mensaje de error cuando el usuario no ha iniciado sesión"
+  },
+
+  "errorFailedToSubmitClaim": "Error al enviar la reclamación",
+  "@errorFailedToSubmitClaim": {
+    "description": "Mensaje de error al enviar una reclamación"
+  },
+
+  "dialogTitleError": "Error",
+  "@dialogTitleError": {
+    "description": "Título del diálogo para mensajes de error"
+  },
+
+  "validatorFlightNumberRequired": "Número de vuelo es obligatorio",
+  "@validatorFlightNumberRequired": {
+    "description": "Mensaje de validación para número de vuelo obligatorio"
+  },
+
+  "tooltipFlightNumberQuickClaim": "Introduzca el número de vuelo, p.ej. IB123",
+  "@tooltipFlightNumberQuickClaim": {
+    "description": "Tooltip para el campo de número de vuelo en reclamación rápida"
+  },
+
+  "tooltipFlightDateQuickClaim": "Seleccione la fecha de su vuelo",
+  "@tooltipFlightDateQuickClaim": {
+    "description": "Tooltip para el campo de fecha en reclamación rápida"
+  },
+
+  "validatorDepartureAirportRequired": "Aeropuerto de salida es obligatorio",
+  "@validatorDepartureAirportRequired": {
+    "description": "Mensaje de validación para aeropuerto de salida obligatorio"
+  },
+
+  "tooltipDepartureAirportQuickClaim": "Introduzca el código IATA de 3 letras del aeropuerto de salida",
+  "@tooltipDepartureAirportQuickClaim": {
+    "description": "Tooltip para el campo de aeropuerto de salida en reclamación rápida"
+  },
+
+  "validatorArrivalAirportRequired": "Aeropuerto de llegada es obligatorio",
+  "@validatorArrivalAirportRequired": {
+    "description": "Mensaje de validación para aeropuerto de llegada obligatorio"
+  },
+
+  "tooltipArrivalAirportQuickClaim": "Introduzca el código IATA de 3 letras del aeropuerto de llegada",
+  "@tooltipArrivalAirportQuickClaim": {
+    "description": "Tooltip para el campo de aeropuerto de llegada en reclamación rápida"
+  },
+
+  "hintTextReasonQuickClaim": "p.ej. Retraso de más de 3 horas",
+  "@hintTextReasonQuickClaim": {
+    "description": "Texto de ayuda para el campo de motivo en reclamación rápida"
+  },
+
+  "validatorReasonRequired": "Motivo es obligatorio",
+  "@validatorReasonRequired": {
+    "description": "Mensaje de validación para motivo obligatorio"
+  },
+
+  "tooltipReasonQuickClaim": "Describa brevemente por qué está presentando una reclamación",
+  "@tooltipReasonQuickClaim": {
+    "description": "Tooltip para el campo de motivo en reclamación rápida"
+  },
+
+  "tooltipCompensationAmountQuickClaim": "Introduzca la cantidad si conoce a cuánto tiene derecho",
+  "@tooltipCompensationAmountQuickClaim": {
+    "description": "Tooltip para el campo de cantidad de compensación en reclamación rápida"
+  },
+
+  "tipsAndRemindersTitle": "Consejos y recordatorios",
+  "@tipsAndRemindersTitle": {
+    "description": "Título para la sección de consejos y recordatorios"
+  },
+
+  "tipSecureData": "Protegemos sus datos con cifrado de nivel bancario",
+  "@tipSecureData": {
+    "description": "Consejo de seguridad sobre cifrado de datos"
+  },
+
+  "continueToReview": "Continuar a revisión",
+  "@continueToReview": {
+    "description": "Texto del botón para continuar a revisión"
+  },
+
+  "previewEmail": "Vista previa de correo electrónico",
+  "@previewEmail": {
+    "description": "Título para la vista previa de correo electrónico"
+  },
+
+  "pdfPreviewMessage": "Vista previa de PDF",
+  "@pdfPreviewMessage": {
+    "description": "Mensaje para la vista previa de PDF"
+  },
+
+  "downloadPdf": "Descargar PDF",
+  "@downloadPdf": {
+    "description": "Texto del botón para descargar PDF"
+  },
+
+  "filePreviewNotAvailable": "Vista previa de archivo no disponible",
+  "@filePreviewNotAvailable": {
+    "description": "Mensaje cuando la vista previa de archivo no está disponible"
+  },
+
+  "deleteDocument": "Eliminar documento",
+  "@deleteDocument": {
+    "description": "Texto del botón para eliminar documento"
+  },
+
+  "deleteDocumentConfirmation": "¿Está seguro de que desea eliminar este documento?",
+  "@deleteDocumentConfirmation": {
+    "description": "Mensaje de confirmación para eliminar un documento"
+  },
+
+  "documentDeletedSuccess": "Documento eliminado con éxito",
+  "@documentDeletedSuccess": {
+    "description": "Mensaje de éxito después de eliminar un documento"
+  },
+
+  "documentDeleteFailed": "Error al eliminar el documento",
+  "@documentDeleteFailed": {
+    "description": "Mensaje de error cuando falla la eliminación de un documento"
+  },
+
+  "reviewYourClaim": "Revise su reclamación",
+  "@reviewYourClaim": {
+    "description": "Título para la pantalla de revisión de reclamación"
+  },
+
+  "reviewClaimDetails": "Revise los detalles de la reclamación",
+  "@reviewClaimDetails": {
+    "description": "Instrucción para revisar los detalles de la reclamación"
+  },
+
+  "attachments": "Archivos adjuntos",
+  "@attachments": {
+    "description": "Etiqueta para la sección de archivos adjuntos"
+  },
+
+  "proceedToConfirmation": "Proceder a confirmación",
+  "@proceedToConfirmation": {
+    "description": "Texto del botón para proceder a la confirmación"
+  },
+
+  "confirmAndSend": "Confirmar y enviar",
+  "@confirmAndSend": {
+    "description": "Texto del botón para confirmar y enviar"
+  },
+
+  "errorLoadingEmailDetails": "Error al cargar los detalles del correo electrónico",
+  "@errorLoadingEmailDetails": {
+    "description": "Mensaje de error al cargar los detalles del correo electrónico"
+  },
+
+  "noEmailInfo": "No hay información de correo electrónico disponible",
+  "@noEmailInfo": {
+    "description": "Mensaje cuando no hay información de correo electrónico disponible"
+  },
+
+  "finalConfirmation": "Confirmación final",
+  "@finalConfirmation": {
+    "description": "Título para la pantalla de confirmación final"
+  },
+
+  "claimWillBeSentTo": "Su reclamación se enviará a",
+  "@claimWillBeSentTo": {
+    "description": "Mensaje que indica dónde se enviará la reclamación"
+  },
+
+  "copyToYourEmail": "Copia a su correo electrónico",
+  "@copyToYourEmail": {
+    "description": "Etiqueta para la opción de enviar una copia a su propio correo electrónico"
+  },
+
+  "confirmAndSendEmail": "Confirmar y enviar correo electrónico",
+  "@confirmAndSendEmail": {
+    "description": "Texto del botón para confirmar y enviar correo electrónico"
+  },
+
+  "reviewAndConfirm": "Revisar y confirmar",
+  "@reviewAndConfirm": {
+    "description": "Instrucción para revisar y confirmar"
+  },
+
+  "pleaseConfirmDetails": "Por favor, confirme que todos los detalles son correctos",
+  "@pleaseConfirmDetails": {
+    "description": "Instrucción para confirmar que los detalles son correctos"
+  },
+
+  "emailAppOpenedMessage": "Aplicación de correo electrónico abierta",
+  "@emailAppOpenedMessage": {
+    "description": "Mensaje cuando se abre la aplicación de correo electrónico"
+  },
+
+  "emailAppErrorMessage": "Error al abrir la aplicación de correo electrónico",
+  "@emailAppErrorMessage": {
+    "description": "Mensaje de error cuando no se puede abrir la aplicación de correo electrónico"
+  },
+
+  "checkEligibilityForEu261": "Verifique si su vuelo es elegible para compensación según la normativa EU261",
+  "@checkEligibilityForEu261": {
+    "description": "Texto de encabezado para la verificación de elegibilidad EU261"
+  },
+
+  "flightNumberPlaceholder": "Número de vuelo (ej. IB123)",
+  "@flightNumberPlaceholder": {
+    "description": "Texto de marcador de posición para el campo de entrada del número de vuelo"
+  },
+
+  "dateOptionalPlaceholder": "Fecha (AAAA-MM-DD, opcional)",
+  "@dateOptionalPlaceholder": {
+    "description": "Texto de marcador de posición para el campo de entrada de fecha opcional"
+  },
+
+  "leaveDateEmptyForToday": "Dejar en blanco para hoy",
+  "@leaveDateEmptyForToday": {
+    "description": "Texto de ayuda para el campo de fecha"
+  },
+
+  "pleaseEnterFlightNumber": "Por favor, ingrese un número de vuelo",
+  "@pleaseEnterFlightNumber": {
+    "description": "Mensaje de validación para número de vuelo vacío"
+  },
+
+  "error": "Error",
+  "@error": {
+    "description": "Texto de error para mensajes de error"
+  },
+
+  "flightInfoFormat": "Vuelo {flightNumber} - {airline}",
+  "@flightInfoFormat": {
+    "description": "Formato para mostrar información de vuelo con número y aerolínea",
+    "placeholders": {
+      "flightNumber": {
+        "type": "String",
+        "example": "IB123"
+      },
+      "airline": {
+        "type": "String",
+        "example": "Iberia"
+      }
+    }
+  },
+
+  "status": "Estado",
+  "@status": {
+    "description": "Etiqueta de estado"
+  },
+
+  "from": "Desde",
+  "@from": {
+    "description": "Etiqueta 'Desde' para aeropuerto de salida"
+  },
+
+  "to": "Hasta",
+  "@to": {
+    "description": "Etiqueta 'Hasta' para aeropuerto de llegada"
+  },
+
+  "delay": "Retraso",
+  "@delay": {
+    "description": "Etiqueta de retraso"
+  },
+
+  "minutesFormat": "{minutes} minutos",
+  "@minutesFormat": {
+    "description": "Formato para mostrar minutos",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "45"
+      }
+    }
+  },
+
+  "unknown": "Desconocido",
+  "@unknown": {
+    "description": "Texto para valores desconocidos"
+  },
+
+  "flightEligibleForCompensation": "¡Su vuelo es elegible para compensación!",
+  "@flightEligibleForCompensation": {
+    "description": "Mensaje mostrado cuando el vuelo es elegible para compensación"
+  },
+
+  "flightNotEligibleForCompensation": "Su vuelo no es elegible para compensación.",
+  "@flightNotEligibleForCompensation": {
+    "description": "Mensaje mostrado cuando el vuelo no es elegible para compensación"
+  },
+
+  "potentialCompensation": "Compensación Potencial:",
+  "@potentialCompensation": {
+    "description": "Etiqueta para el monto de compensación potencial"
+  },
+
+  "contactAirlineForClaim": "Contacte a la aerolínea para reclamar su compensación según el Reglamento UE 261/2004.",
+  "@contactAirlineForClaim": {
+    "description": "Instrucción para reclamar compensación"
+  },
+
+  "reasonPrefix": "Razón: ",
+  "@reasonPrefix": {
+    "description": "Prefijo para mostrar razón de inelegibilidad"
+  },
+
+  "delayLessThan3Hours": "El retraso del vuelo es menor a 3 horas",
+  "@delayLessThan3Hours": {
+    "description": "Razón de inelegibilidad debido a retraso corto"
+  },
+
+  "notUnderEuJurisdiction": "El vuelo no está bajo jurisdicción de la UE",
+  "@notUnderEuJurisdiction": {
+    "description": "Razón de inelegibilidad debido a jurisdicción"
+  },
+
+  "unknownReason": "Razón desconocida",
+  "@unknownReason": {
+    "description": "Razón predeterminada cuando no hay razón específica disponible"
   }
 }

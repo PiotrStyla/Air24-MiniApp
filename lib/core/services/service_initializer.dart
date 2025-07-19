@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:f35_flight_compensation/services/auth_service.dart';
 import 'package:f35_flight_compensation/services/document_storage_service.dart';
 import 'package:f35_flight_compensation/services/local_document_storage_service.dart';
+import 'package:f35_flight_compensation/services/mock_document_storage_service.dart';
 
 import 'package:f35_flight_compensation/services/aviation_stack_service.dart';
 import 'package:f35_flight_compensation/services/document_ocr_service.dart';
@@ -10,6 +11,8 @@ import 'package:f35_flight_compensation/services/notification_service.dart';
 import 'package:f35_flight_compensation/services/flight_prediction_service.dart';
 import 'package:f35_flight_compensation/services/claim_tracking_service.dart';
 import 'package:f35_flight_compensation/services/firebase_claim_tracking_service.dart';
+import 'package:f35_flight_compensation/services/mock_claim_tracking_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:f35_flight_compensation/services/localization_service.dart';
 import 'package:f35_flight_compensation/services/manual_localization_service.dart';
 import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
@@ -41,7 +44,21 @@ class ServiceInitializer {
     _locator.registerLazySingleton<NotificationService>(() => NotificationService());
     _locator.registerLazySingleton<FlightPredictionService>(() => FlightPredictionService());
     _locator.registerLazySingleton<ErrorHandler>(() => ErrorHandler());
-    _locator.registerLazySingleton<ClaimTrackingService>(() => FirebaseClaimTrackingService());
+    // Use MockClaimTrackingService in development mode if Firebase is not available
+    _locator.registerLazySingleton<ClaimTrackingService>(() {
+      try {
+        // Check if we're in development mode with Firebase unavailable
+        if (kDebugMode && AuthService.isFirebaseUnavailable) {
+          debugPrint('Using MockClaimTrackingService for development');
+          return MockClaimTrackingService();
+        } else {
+          return FirebaseClaimTrackingService();
+        }
+      } catch (e) {
+        debugPrint('Error initializing ClaimTrackingService, falling back to mock: $e');
+        return MockClaimTrackingService();
+      }
+    });
     _locator.registerLazySingleton<ClaimValidationService>(() => ClaimValidationService());
     _locator.registerLazySingleton<AccessibilityService>(() => AccessibilityService());
 
@@ -61,9 +78,26 @@ class ServiceInitializer {
     print('[ServiceInitializer] AuthService initialized.');
 
     // Register services that depend on AuthService
-    // Register the new LocalDocumentStorageService
-    _locator.registerLazySingleton<LocalDocumentStorageService>(() => LocalDocumentStorageService(_locator<AuthService>()));
-    _locator.registerLazySingleton<DocumentStorageService>(() => _locator<LocalDocumentStorageService>());
+    // Conditionally register DocumentStorageService based on Firebase availability
+    _locator.registerLazySingleton<DocumentStorageService>(() {
+      try {
+        // Check if we're in development mode with Firebase unavailable
+        if (kDebugMode && AuthService.isFirebaseUnavailable) {
+          debugPrint('Using MockDocumentStorageService for development');
+          return MockDocumentStorageService();
+        } else {
+          if (!_locator.isRegistered<LocalDocumentStorageService>()) {
+            _locator.registerLazySingleton<LocalDocumentStorageService>(
+              () => LocalDocumentStorageService(_locator<AuthService>())
+            );
+          }
+          return _locator<LocalDocumentStorageService>();
+        }
+      } catch (e) {
+        debugPrint('Error initializing DocumentStorageService, falling back to mock: $e');
+        return MockDocumentStorageService();
+      }
+    });
 
     // Register services that depend on other services
     _locator.registerLazySingleton<ClaimSubmissionService>(() => ClaimSubmissionService(

@@ -640,7 +640,7 @@ abstract class AppLocalizations {
   /// **'Flight Date:'**
   String get flightDate;
 
-  /// No description provided for @checkCompensationEligibility.
+  /// Button label for checking compensation eligibility
   ///
   /// In en, this message translates to:
   /// **'Check Compensation Eligibility'**
@@ -970,7 +970,7 @@ abstract class AppLocalizations {
   /// **'Continue to Attachments'**
   String get continueToAttachments;
 
-  /// No description provided for @pleaseEnterFlightNumber.
+  /// Validation message for empty flight number
   ///
   /// In en, this message translates to:
   /// **'Please enter a flight number'**
@@ -1462,7 +1462,7 @@ abstract class AppLocalizations {
   /// **'Under Appeal'**
   String get underAppeal;
 
-  /// Status text for an unknown claim status
+  /// Text for unknown values
   ///
   /// In en, this message translates to:
   /// **'Unknown'**
@@ -1947,6 +1947,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm and Send Email'**
   String get confirmAndSendEmail;
+
+  /// Title for the Flight Compensation Checker screen
+  ///
+  /// In en, this message translates to:
+  /// **'Flight Compensation Checker'**
+  String get flightCompensationCheckerTitle;
+
+  /// Header text for the EU261 eligibility checker
+  ///
+  /// In en, this message translates to:
+  /// **'Check if your flight is eligible for EU261 compensation'**
+  String get checkEligibilityForEu261;
+
+  /// Placeholder text for flight number input field
+  ///
+  /// In en, this message translates to:
+  /// **'Flight Number (e.g., BA123)'**
+  String get flightNumberPlaceholder;
+
+  /// Placeholder text for optional date input field
+  ///
+  /// In en, this message translates to:
+  /// **'Date (YYYY-MM-DD, optional)'**
+  String get dateOptionalPlaceholder;
+
+  /// Hint text for date field
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty for today'**
+  String get leaveDateEmptyForToday;
+
+  /// Error text for error messages
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// Format for displaying flight info with number and airline
+  ///
+  /// In en, this message translates to:
+  /// **'Flight {flightNumber} - {airline}'**
+  String flightInfoFormat(String flightNumber, String airline);
+
+  /// Status label
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// From label for departure airport
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get from;
+
+  /// To label for arrival airport
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get to;
+
+  /// Delay label
+  ///
+  /// In en, this message translates to:
+  /// **'Delay'**
+  String get delay;
+
+  /// Format for displaying minutes
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes'**
+  String minutesFormat(int minutes);
+
+  /// Message shown when flight is eligible for compensation
+  ///
+  /// In en, this message translates to:
+  /// **'Your flight is eligible for compensation!'**
+  String get flightEligibleForCompensation;
+
+  /// Message shown when flight is not eligible for compensation
+  ///
+  /// In en, this message translates to:
+  /// **'Your flight is not eligible for compensation.'**
+  String get flightNotEligibleForCompensation;
+
+  /// Label for potential compensation amount
+  ///
+  /// In en, this message translates to:
+  /// **'Potential Compensation:'**
+  String get potentialCompensation;
+
+  /// Instruction for claiming compensation
+  ///
+  /// In en, this message translates to:
+  /// **'Contact the airline to claim your compensation under EU Regulation 261/2004.'**
+  String get contactAirlineForClaim;
+
+  /// Prefix for showing reason for ineligibility
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: '**
+  String get reasonPrefix;
+
+  /// Reason for ineligibility due to short delay
+  ///
+  /// In en, this message translates to:
+  /// **'Flight delay is less than 3 hours'**
+  String get delayLessThan3Hours;
+
+  /// Reason for ineligibility due to jurisdiction
+  ///
+  /// In en, this message translates to:
+  /// **'Flight is not under EU jurisdiction'**
+  String get notUnderEuJurisdiction;
+
+  /// Default reason when specific reason is not available
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown reason'**
+  String get unknownReason;
 
   /// Button text for reviewing and confirming the claim before submission
   ///

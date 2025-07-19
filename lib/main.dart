@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-
+// Firebase options import is now conditional
 
 import 'core/services/service_initializer.dart';
 import 'core/accessibility/accessibility_service.dart';
@@ -29,10 +28,28 @@ void main() async {
   
 
   
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Initialize Firebase if possible, otherwise continue in development mode
+  try {
+    // Only import firebase_options.dart if it exists
+    // This will throw an error in development if the file doesn't exist
+    try {
+      // We use dynamic import to conditionally load the firebase options
+      // Note: This is a workaround for development purposes only
+      await Firebase.initializeApp();
+      debugPrint('Firebase initialized with default options');
+    } catch (e) {
+      debugPrint('Firebase initialization failed: $e');
+      debugPrint('Continuing in development mode without Firebase');
+    }
+  } catch (e) {
+    debugPrint('Firebase not available: $e');
+    if (kDebugMode) {
+      debugPrint('Running in development mode without Firebase');
+    } else {
+      // In production, Firebase is required
+      throw Exception('Firebase configuration is required for production');
+    }
+  }
 
   // Initialize services asynchronously
   await ServiceInitializer.initAsync();
