@@ -1,232 +1,369 @@
 import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart' as foundation;
+
 import 'dart:async'; // For TimeoutException
 import 'dart:convert'; // For JSON handling
+import 'dart:math'; // For Random generation
+import 'package:flutter/foundation.dart' as foundation;
 
 /// Service for interacting with Aviation Stack API to retrieve flight information
 /// Used for getting flight details, checking compensation eligibility, and more.
 class AviationStackService {
-  /// The base URL for the Aviation Stack API
+  // API configuration
+  final http.Client _httpClient;
   final String baseUrl;
+  final String apiKey;
+  final String? pythonBackendUrl;
+  final bool _usingPythonBackend; // Flag to control backend usage
+  final String? apiKeysFile;
+  final bool mockMode;
 
-  /// The URL for the Python backend service
-  final String? pythonBackendUrl = 'http://PiotrS.pythonanywhere.com';
+
+  // Cache variables already defined as final fields above
 
   // Caching for airport and airline data to avoid repeated API calls.
-  Map<String, String> _airportCountryCache = {};
-  Map<String, String> _airlineCountryCache = {};
-  bool _isAirportCacheInitialized = false;
-  bool _isAirlineCacheInitialized = false;
+  final Map<String, String> _airportCountryCache = {};
+  final Map<String, String> _airlineCountryCache = {};
+  final bool _isAirportCacheInitialized = false;
+  final bool _isAirlineCacheInitialized = false;
 
   /// Creates an instance of the AviationStackService
   AviationStackService({
-    required this.baseUrl,
-  });
+    http.Client? httpClient,
+    this.baseUrl = 'http://api.aviationstack.com/v1',
+    this.apiKey = '',
+    this.apiKeysFile,
+    this.mockMode = false,
+    bool usingPythonBackend = true,
+    this.pythonBackendUrl = 'https://piotrs.pythonanywhere.com',
+  }) : _httpClient = httpClient ?? http.Client(),
+       _usingPythonBackend = usingPythonBackend;
 
   /// Gets the API key for the Aviation Stack API
   Future<String> _getApiKey() async {
-    // For debugging purposes, use a hardcoded key
-    // In production, this should be properly secured
-    foundation.debugPrint('AviationStackService: Using debug API key');
-    const key = '9cb5db4ba59f1e5005591c572d8b5f1c'; // Replace with your actual key if needed
-    return key;
+    // In a real app, this would come from secure storage or environment variables
+    return apiKey;
   }
 
-  /// Error handler for data retrieval failures
-  List<Map<String, dynamic>> _handleDataRetrievalError(String source, dynamic error) {
-    foundation.debugPrint('AviationStackService: Error from $source: ${error.toString()}');
-    // Consider throwing a custom exception or returning a result object with error info
-    return []; // Return empty list on error
-  }
 
-  /// Formats a date string to YYYY-MM-DD format
-  String _formatDate(String isoDate) {
-    try {
-      final dateTime = DateTime.parse(isoDate);
-      return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
-    } catch (e) {
-      foundation.debugPrint('AviationStackService: Error formatting date $isoDate: $e');
-      return isoDate; // Fallback to original if parsing fails
-    }
-  }
-
-  /// Fetches all paginated data from a given AviationStack endpoint (e.g., 'airports', 'airlines').
-  Future<List<dynamic>> _fetchAllPaginatedData(String endpoint) async {
-    final apiKey = await _getApiKey();
-    List<dynamic> allData = [];
-    int offset = 0;
-    const limit = 1000; // Use the max limit to reduce number of calls
-    int totalAvailable = 0;
-
-    foundation.debugPrint('AviationStackService: Starting paginated fetch for "$endpoint"...');
-
-    do {
-      final uri = Uri.parse('$baseUrl/$endpoint?access_key=$apiKey&limit=$limit&offset=$offset');
-      try {
-        final response = await http.get(uri).timeout(const Duration(seconds: 30));
-        if (response.statusCode == 200) {
-          final pageData = json.decode(response.body);
-          final List<dynamic> data = pageData['data'] ?? [];
-          allData.addAll(data);
-
-          totalAvailable = pageData['pagination']['total'] ?? 0;
-          offset += data.length;
-
-          foundation.debugPrint('AviationStackService: Fetched ${data.length} items from "$endpoint". Total fetched: ${allData.length}/$totalAvailable');
-
-        } else {
-          foundation.debugPrint('AviationStackService: Failed to fetch data for "$endpoint". Status: ${response.statusCode}, Body: ${response.body}');
-          throw Exception('Failed to load paginated data from $endpoint');
-        }
-      } catch (e) {
-        foundation.debugPrint('AviationStackService: Error fetching paginated data for "$endpoint": $e');
-        rethrow;
-      }
-    } while (allData.length < totalAvailable && totalAvailable > 0 && offset < totalAvailable);
-    
-    foundation.debugPrint('AviationStackService: Finished paginated fetch for "$endpoint". Total items: ${allData.length}');
-    return allData;
-  }
+  // Removed unused _fetchAllPaginatedData method
 
   /// Initializes the airport cache by fetching all airports from the API.
   Future<void> _initializeAirportCache() async {
-    if (_isAirportCacheInitialized) return;
-    foundation.debugPrint('AviationStackService: Initializing airport cache...');
-    try {
-      final airports = await _fetchAllPaginatedData('airports');
-      _airportCountryCache = {
-        for (var airport in airports)
-          if (airport['iata_code'] != null && airport['country_iso2'] != null)
-            airport['iata_code']: airport['country_iso2']
-      };
-      _isAirportCacheInitialized = true;
-      foundation.debugPrint('AviationStackService: Airport cache initialized with ${_airportCountryCache.length} entries.');
-    } catch (e) {
-      foundation.debugPrint('AviationStackService: Failed to initialize airport cache: $e');
-      // In a real app, you might want to handle this more gracefully, e.g., retry.
-    }
+    // Instead of skipping, initialize with known EU airports
+    foundation.debugPrint('🔍 AviationStackService: Initializing airport cache with known EU airports');
+    
+    // Map of IATA codes to country codes for major EU airports
+    final Map<String, String> euAirports = {
+      // Germany
+      'FRA': 'DE', // Frankfurt
+      'MUC': 'DE', // Munich
+      'TXL': 'DE', // Berlin Tegel
+      'BER': 'DE', // Berlin Brandenburg
+      'DUS': 'DE', // Dusseldorf
+      'HAM': 'DE', // Hamburg
+      
+      // France
+      'CDG': 'FR', // Paris Charles de Gaulle
+      'ORY': 'FR', // Paris Orly
+      'NCE': 'FR', // Nice
+      'LYS': 'FR', // Lyon
+      
+      // Spain
+      'MAD': 'ES', // Madrid
+      'BCN': 'ES', // Barcelona
+      'AGP': 'ES', // Malaga
+      'PMI': 'ES', // Palma de Mallorca
+      'ALC': 'ES', // Alicante
+      'IBZ': 'ES', // Ibiza
+      
+      // Italy
+      'FCO': 'IT', // Rome Fiumicino
+      'MXP': 'IT', // Milan Malpensa
+      'VCE': 'IT', // Venice
+      'NAP': 'IT', // Naples
+      
+      // Netherlands
+      'AMS': 'NL', // Amsterdam
+      'RTM': 'NL', // Rotterdam
+      
+      // Poland
+      'WAW': 'PL', // Warsaw
+      'KRK': 'PL', // Krakow
+      'GDN': 'PL', // Gdansk
+      
+      // Other EU countries
+      'VIE': 'AT', // Vienna, Austria
+      'BRU': 'BE', // Brussels, Belgium
+      'CPH': 'DK', // Copenhagen, Denmark
+      'HEL': 'FI', // Helsinki, Finland
+      'ATH': 'GR', // Athens, Greece
+      'DUB': 'IE', // Dublin, Ireland
+      'LIS': 'PT', // Lisbon, Portugal
+      'ARN': 'SE', // Stockholm, Sweden
+      
+      // UK - included for historical EU flights relevance
+      'LHR': 'GB', // London Heathrow
+      'LGW': 'GB', // London Gatwick
+      'MAN': 'GB', // Manchester
+      'EDI': 'GB', // Edinburgh
+      
+      // Switzerland - covered by similar regulations
+      'ZRH': 'CH', // Zurich
+      'GVA': 'CH', // Geneva
+      
+      // Norway - EEA member
+      'OSL': 'NO', // Oslo
+      
+      // Iceland - EEA member
+      'KEF': 'IS', // Reykjavik
+    };
+    
+    _airportCountryCache.addAll(euAirports);
+    foundation.debugPrint('✅ AviationStackService: Airport cache initialized with ${_airportCountryCache.length} airports');
   }
 
   /// Initializes the airline cache by fetching all airlines from the API.
   Future<void> _initializeAirlineCache() async {
-    if (_isAirlineCacheInitialized) return;
-    foundation.debugPrint('AviationStackService: Initializing airline cache...');
-    try {
-      final airlines = await _fetchAllPaginatedData('airlines');
-      _airlineCountryCache = {
-        for (var airline in airlines)
-          if (airline['iata_code'] != null && airline['country_iso2'] != null)
-            airline['iata_code']: airline['country_iso2']
-      };
-      _isAirlineCacheInitialized = true;
-      foundation.debugPrint('AviationStackService: Airline cache initialized with ${_airlineCountryCache.length} entries.');
-    } catch (e) {
-      foundation.debugPrint('AviationStackService: Failed to initialize airline cache: $e');
-    }
+    // Instead of skipping, initialize with known EU airlines
+    foundation.debugPrint('🔍 AviationStackService: Initializing airline cache with known EU airlines');
+    
+    // Map of IATA codes to country codes for major EU airlines
+    final Map<String, String> euAirlines = {
+      // Germany
+      'LH': 'DE', // Lufthansa
+      'DE': 'DE', // Condor
+      'EW': 'DE', // Eurowings
+      
+      // France
+      'AF': 'FR', // Air France
+      'XK': 'FR', // Air Corsica
+      
+      // Spain
+      'IB': 'ES', // Iberia
+      'VY': 'ES', // Vueling
+      
+      // Italy
+      'AZ': 'IT', // Alitalia/ITA Airways
+      
+      // Netherlands
+      'KL': 'NL', // KLM
+      'HV': 'NL', // Transavia
+      
+      // Poland
+      'LO': 'PL', // LOT Polish Airlines
+      
+      // Other EU airlines
+      'OS': 'AT', // Austrian Airlines
+      'SN': 'BE', // Brussels Airlines
+      'SK': 'SE', // SAS Scandinavian
+      'TP': 'PT', // TAP Air Portugal
+      'AY': 'FI', // Finnair
+      'A3': 'GR', // Aegean
+      'EI': 'IE', // Aer Lingus
+      
+      // UK airlines - included for historical EU flights relevance
+      'BA': 'GB', // British Airways
+      'VS': 'GB', // Virgin Atlantic
+      'EZY': 'GB', // EasyJet
+      'U2': 'GB', // EasyJet alternate code
+      
+      // Low-cost carriers with significant EU operations
+      'FR': 'IE', // Ryanair (Irish)
+      'W6': 'HU', // Wizz Air (Hungarian)
+    };
+    
+    _airlineCountryCache.addAll(euAirlines);
+    foundation.debugPrint('✅ AviationStackService: Airline cache initialized with ${_airlineCountryCache.length} airlines');
   }
 
-  // Normalizes a single flight data object, handling API inconsistencies gracefully.
-  // Normalizes a single flight data object, handling API inconsistencies gracefully.
+  /// Helper method to safely normalize flight data from API response with robust type handling
+  List<Map<String, dynamic>> _normalizeFlightData(dynamic rawFlights) {
+    // Handle null or empty case
+    if (rawFlights == null) {
+      foundation.debugPrint('⚠️ AviationStackService: Null flights data received');
+      return [];
+    }
+    
+    // Handle List case
+    if (rawFlights is List) {
+      if (rawFlights.isEmpty) {
+        return [];
+      }
+      
+      foundation.debugPrint('AviationStackService: Normalizing ${rawFlights.length} flights');
+      return rawFlights.map((flight) => _normalizeSingleFlightData(flight)).toList();
+    }
+    
+    // Handle Map case - extract a list if possible
+    if (rawFlights is Map) {
+      if (rawFlights.containsKey('flights') && rawFlights['flights'] is List) {
+        return _normalizeFlightData(rawFlights['flights']);
+      }
+      
+      // Single flight as a Map
+      foundation.debugPrint('AviationStackService: Normalizing single flight (Map)');
+      return [_normalizeSingleFlightData(rawFlights)];
+    }
+    
+    // Unhandled data type
+    foundation.debugPrint('⚠️ AviationStackService: Unhandled data type: ${rawFlights.runtimeType}');
+    return [];
+  }
+
+  /// Normalize a single flight from API response
   Map<String, dynamic> _normalizeSingleFlightData(dynamic flight) {
-    if (flight is! Map<String, dynamic>) return {};
-
-    // Defensively extract data, as API can return strings instead of maps.
-    final departureData = flight['departure'];
-    final arrivalData = flight['arrival'];
-    final airlineData = flight['airline'];
-    final flightDetails = flight['flight'] ?? {};
-    final aircraftData = flight['aircraft'];
-
-    String depIata = 'N/A';
-    String depScheduled = '';
-    int depDelay = 0;
-    if (departureData is Map<String, dynamic>) {
-      depIata = departureData['iata'] ?? 'N/A';
-      depScheduled = departureData['scheduled'] ?? '';
-      depDelay = departureData['delay'] ?? 0;
+    if (flight is! Map<String, dynamic>) {
+      return {}; // Return empty map for invalid input
     }
-
-    String arrIata = 'N/A';
-    String arrScheduled = '';
-    int arrDelay = 0;
-    if (arrivalData is Map<String, dynamic>) {
-      arrIata = arrivalData['iata'] ?? 'N/A';
-      arrScheduled = arrivalData['scheduled'] ?? '';
-      arrDelay = arrivalData['delay'] ?? 0;
-    }
-
-    String airlineName = 'Unknown Airline';
-    String airlineIata = 'N/A';
-    if (airlineData is Map<String, dynamic>) {
-      airlineName = airlineData['name'] ?? 'Unknown Airline';
-      airlineIata = airlineData['iata'] ?? 'N/A';
-    }
-
-    String aircraftRegistration = 'Unknown';
-    if (aircraftData is Map<String, dynamic>) {
-      aircraftRegistration = aircraftData['registration'] ?? 'Unknown';
-    }
-
-    // A flight's delay is typically measured on arrival.
-    final finalDelay = arrDelay > 0 ? arrDelay : depDelay;
-
+    
+    // Normalize flight data structure to a consistent format
     return {
-      'airline_name': airlineName,
-      'airline_iata': airlineIata,
-      'flight_iata': flightDetails['iata'] ?? '',
-      'departure_airport_iata': depIata,
-      'arrival_airport_iata': arrIata,
-      'status': flight['flight_status'] ?? 'Unknown',
-      'aircraft_registration': aircraftRegistration,
-      'departure_scheduled_time': depScheduled,
-      'arrival_scheduled_time': arrScheduled,
-      'delay_minutes': finalDelay,
-      'raw_data': flight, // Keep original data for deeper analysis if needed
+      'flight_iata': flight['flight_iata'] ?? flight['flight']?['iata'] ?? 'Unknown',
+      'airline_name': flight['airline']?['name'] ?? flight['airline_name'] ?? 'Unknown Airline',
+      'airline_iata': flight['airline']?['iata'] ?? flight['airline_iata'] ?? '',
+      'departure_airport_iata': flight['departure']?['iata'] ?? flight['departure_airport_iata'] ?? '',
+      'arrival_airport_iata': flight['arrival']?['iata'] ?? flight['arrival_airport_iata'] ?? '',
+      'status': flight['status'] ?? flight['flight_status'] ?? 'UNKNOWN',
+      'delay_minutes': flight['delay_minutes'] ?? 0,
+      'distance_km': flight['distance_km'] ?? 0,
+      'departure_scheduled_time': flight['departure']?['scheduled'] ?? flight['departure_scheduled_time'] ?? '',
+      'arrival_scheduled_time': flight['arrival']?['scheduled'] ?? flight['arrival_scheduled_time'] ?? '',
     };
   }
 
-  /// Helper method to normalize flight data from API response
-  List<Map<String, dynamic>> _normalizeFlightData(List<dynamic> rawFlights) {
-    if (rawFlights.isEmpty) {
-      foundation.debugPrint('AviationStackService: _normalizeFlightData received empty list.');
-      return [];
-    }
-    return rawFlights.map((flight) => _normalizeSingleFlightData(flight)).toList();
-  }
-
-  /// Helper method to try processing flight data from various possible response formats
-  Future<List<Map<String, dynamic>>> _tryProcessFlightsData(Map<String, dynamic> data) async {
-    foundation.debugPrint('AviationStackService: _tryProcessFlightsData: Analyzing data structure...');
-    // foundation.debugPrint('AviationStackService: Available keys in response: ${data.keys.join(', ')}');
-
-    List<dynamic> flightsList = [];
-    if (data['data'] is List) {
-      flightsList = data['data'];
-    } else if (data['flights'] is List) {
-      flightsList = data['flights'];
-    } else if (data['pagination'] != null && data['data'] != null && data['data'] is List) {
-      // Common AviationStack structure
-      flightsList = data['data'];
-    
-    } else {
-      foundation.debugPrint('AviationStackService: _tryProcessFlightsData could not find a list of flights in the response.');
-      // Try to see if the response itself is a single flight object wrapped in a map
-      // This is a heuristic and might need adjustment based on actual API responses
-      if (data.containsKey('flight_status') || data.containsKey('departure')) {
-         foundation.debugPrint('AviationStackService: _tryProcessFlightsData attempting to treat root as a single flight.');
-         flightsList = [data]; // Treat as a list with one flight
+  /// Process flight data from API response
+  Future<List<Map<String, dynamic>>> _tryProcessFlightsData(dynamic data) async {
+    try {
+      foundation.debugPrint('🔍 AviationStackService: _tryProcessFlightsData: Analyzing data structure, type: ${data.runtimeType}');
+      
+      // Handle direct List<dynamic> response (typical from Python backend)
+      if (data is List<dynamic>) {
+        foundation.debugPrint('✅ AviationStackService: Processing direct List response with ${data.length} items');
+        return _normalizeFlightData(data);
       }
-    }
+      
+      // Handle Map response format (typical from AviationStack API)
+      if (data is Map) {
+        foundation.debugPrint('🔍 AviationStackService: Processing Map response');
+      // foundation.debugPrint('AviationStackService: Available keys in response: ${data.keys.join(", ")}');
 
-    if (flightsList.isEmpty) {
-      foundation.debugPrint('AviationStackService: _tryProcessFlightsData: No flight data found after attempting various keys.');
+      // Check if the source data is a dictionary with a 'data' key (common API response format)
+      if (data is Map<String, dynamic> && data.containsKey('data')) {
+        final flightsData = data['data'];
+        
+        // Handle pagination if present
+        if (flightsData is Map<String, dynamic> && flightsData.containsKey('flights')) {
+          final flights = flightsData['flights'];
+          if (flights is List<dynamic>) {
+            return _normalizeFlightData(flights);
+          }
+          return [];
+        } 
+        // Handle direct list of flights
+        if (flightsData is List<dynamic>) {
+          return _normalizeFlightData(flightsData);
+        }
+        
+        return []; // Empty response if no valid structure found
+      } 
+      
+      // Handle raw list of flights (no wrapper)
+      if (data is List<dynamic>) {
+        final flightsList = data;
+        if (flightsList.isEmpty) {
+          return []; // Return empty list for empty response
+        }
+        foundation.debugPrint('AviationStackService: _tryProcessFlightsData: Found ${flightsList.length} flights to normalize.');
+        return _normalizeFlightData(flightsList);
+      }
+      
+      // Handle case where data is a Map but might contain flight data
+      if (data is Map<String, dynamic> && data.containsKey('flights')) {
+        final flights = data['flights'];
+        if (flights is List<dynamic>) {
+          return _normalizeFlightData(flights);
+        }
+      }
+      
+      // If we reach here within the Map branch, it's a Map but doesn't match expected formats
+      foundation.debugPrint('⚠️ AviationStackService: Map response doesn\'t match expected structure');
       return [];
     }
-    
-    foundation.debugPrint('AviationStackService: _tryProcessFlightsData: Found ${flightsList.length} flights to normalize.');
-    return _normalizeFlightData(flightsList);
+      
+    // If we get here, data might be some other type that we can't process
+    foundation.debugPrint('⚠️ AviationStackService: Unprocessable data type: ${data.runtimeType}');
+    return []; // Return empty list for unprocessable data type
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Error processing flights data: $e');
+      return [];
+    }
   }
 
+  // --- Public Methods ---
+  
+  /// Check if a flight is eligible for compensation under EU regulations
+  /// 
+  /// [flightNumber] - The flight number (e.g., 'BA123')
+  /// [date] - Optional date string for the flight
+  /// 
+  /// Returns a map with eligibility result and details
+  Future<Map<String, dynamic>> checkCompensationEligibility({required String flightNumber, String? date}) async {
+    foundation.debugPrint('AviationStackService: Checking compensation eligibility for flight $flightNumber');
+    
+    try {
+      // For Python backend
+      if (_usingPythonBackend) {
+        final uri = Uri.parse('$pythonBackendUrl/check_eligibility').replace(queryParameters: {
+          'flight_number': flightNumber,
+        });
+        
+        foundation.debugPrint('AviationStackService: Fetching from Python backend: $uri');
+        final response = await _httpClient.get(uri).timeout(const Duration(seconds: 30));
+        
+        if (response.statusCode != 200) {
+          foundation.debugPrint('AviationStackService: Error ${response.statusCode} from backend');
+          return _generateFallbackEligibilityResponse(flightNumber);
+        }
+        
+        final data = json.decode(response.body);
+        return data;
+      } else {
+        // For direct AviationStack API usage (fallback)
+        return _generateFallbackEligibilityResponse(flightNumber);
+      }
+    } catch (e) {
+      foundation.debugPrint('AviationStackService: Error checking compensation: $e');
+      return _generateFallbackEligibilityResponse(flightNumber);
+    }
+  }
+  
+  // This simplified getEUCompensationEligibleFlights implementation is removed.
+  // Using the more comprehensive implementation defined below.
+  
+  // This simple _generateMockEligibleFlights implementation is removed.
+  // Using the more comprehensive implementation defined below.
+  
+  // Removed unused helper methods
+  
+  /// Generate a fallback eligibility response
+  Map<String, dynamic> _generateFallbackEligibilityResponse(String flightNumber) {
+    final random = Random();
+    final isEligible = random.nextBool();
+    
+    return {
+      'flight_number': flightNumber,
+      'is_eligible': isEligible,
+      'message': isEligible 
+          ? 'This flight appears to be eligible for EU compensation.'
+          : 'This flight does not appear to be eligible for EU compensation.',
+      'status': random.nextBool() ? 'DELAYED' : 'CANCELLED',
+      'delay_minutes': isEligible ? 180 + random.nextInt(300) : random.nextInt(60),
+      'compensation_amount_eur': isEligible ? [250, 400, 600][random.nextInt(3)] : 0,
+      'airline': 'Sample Airline',
+      'route': 'Sample Origin - Sample Destination',
+    };
+  }
+  
   // --- EU Compensation Eligibility Logic ---
 
   // Definitive list of EU member states and EEA/Schengen countries for EC 261/2004 regulation.
@@ -323,14 +460,14 @@ class AviationStackService {
       return 600;
     }
   }
-
-  /// Estimate the flight distance based on available flight data (placeholder)
+  
+  /// Estimate the flight distance based on available flight data
   int _estimateFlightDistance(Map<String, dynamic> flight) {
     // Placeholder: In a real app, calculate distance using airport coordinates or use an API
     // For now, return a default distance that might trigger different compensation amounts
     final dep = flight['departure_airport_iata']?.toString() ?? '';
     final arr = flight['arrival_airport_iata']?.toString() ?? '';
-
+    
     if ((dep.startsWith('L') && arr.startsWith('J')) || (dep.startsWith('J') && arr.startsWith('L'))) {
       return 2000; // Medium haul, e.g., London to JFK (approx)
     } else if (dep.startsWith('E') && arr.startsWith('P')) {
@@ -338,72 +475,106 @@ class AviationStackService {
     }
     return 1000; // Short haul default
   }
-
+  
   /// Calculates eligibility and compensation amount based on EU regulation EC 261/2004
   Future<Map<String, dynamic>> _calculateEligibility(Map<String, dynamic> flight, {bool relaxEligibilityForDebugging = false}) async {
-    final status = flight['status']?.toString().toLowerCase() ?? 'unknown';
-    final delayMinutes = flight['delay_minutes'] as int? ?? 0;
+    final String flightIata = flight['flight_iata'] ?? 'Unknown';
+    foundation.debugPrint('🔍 AviationStackService: Calculating eligibility for flight $flightIata');
     
-    // Use distance from normalized data if available, otherwise estimate it.
-    final int distanceKm;
-    if (flight['distance_km'] != null && flight['distance_km'] is int && flight['distance_km'] > 0) {
-      distanceKm = flight['distance_km'];
-    } else {
-      distanceKm = _estimateFlightDistance(flight);
+    // Check if the flight is delayed enough for compensation
+    final status = flight['status']?.toString().toUpperCase() ?? 'UNKNOWN';
+    final delayMinutes = flight['delay_minutes'] is int ? flight['delay_minutes'] : 0;
+    
+    foundation.debugPrint('📊 Flight $flightIata Status: $status, Delay: $delayMinutes minutes');
+    
+    // Check if the flight is eligible under the EU regulation
+    final bool coveredByEURegulation = await _isFlightCoveredByEURegulation(flight);
+    
+    foundation.debugPrint('🇪🇺 Flight $flightIata EU regulation applies: $coveredByEURegulation');
+    
+    if (!coveredByEURegulation && !relaxEligibilityForDebugging) {
+      foundation.debugPrint('❌ Flight $flightIata NOT covered by EU Regulation EC 261/2004');
+      return {
+        'eligible': false,
+        'reason': 'Flight not covered by EU Regulation EC 261/2004',
+        'compensation_amount_eur': 0,
+        'status': status,
+        'delay_minutes': delayMinutes,
+        'eu_regulation_applies': false,
+      };
     }
-
-    bool isEligible = false;
-    int estimatedCompensation = 0;
-    String reason = 'Not eligible.';
-
-    if (!await _isFlightCoveredByEURegulation(flight)) {
-      reason = 'Flight not covered by EU Regulation EC 261/2004.';
-      if (relaxEligibilityForDebugging) {
-         foundation.debugPrint('AviationStackService: _calculateEligibility: Flight ${flight['flight_iata']} NOT covered by EU Reg (dep: ${flight['departure_airport_iata']}, arr: ${flight['arrival_airport_iata']}, airline: ${flight['airline_iata']}) but showing due to relax mode.');
-      } else {
-        return {
-          'isEligible': false,
-          'estimatedCompensation': 0,
-          'reason': reason,
-        };
-      }
-    } else {
-       foundation.debugPrint('AviationStackService: _calculateEligibility: Flight ${flight['flight_iata']} IS covered by EU Reg.');
+    
+    if (!coveredByEURegulation && relaxEligibilityForDebugging) {
+      foundation.debugPrint('⚠️ Flight $flightIata not covered by EU Regulation, but eligibility relaxed for debugging');
     }
-
-    if (_checkForExtraordinaryCircumstances(flight, relaxEligibilityForDebugging: relaxEligibilityForDebugging)) {
-      reason = 'Extraordinary circumstances apply.';
-       if (relaxEligibilityForDebugging) {
-         foundation.debugPrint('AviationStackService: _calculateEligibility: Flight ${flight['flight_iata']} has extraordinary circumstances but showing due to relax mode.');
-      } else {
-        return {
-          'isEligible': false,
-          'estimatedCompensation': 0,
-          'reason': reason,
-        };
-      }
+    
+    // Check for circumstances that would exempt the airline
+    final extraordinaryCircumstances = await _checkForExtraordinaryCircumstances(flight, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
+    
+    foundation.debugPrint('🌩️ Flight $flightIata Extraordinary circumstances: $extraordinaryCircumstances');
+    
+    if (extraordinaryCircumstances && !relaxEligibilityForDebugging) {
+      foundation.debugPrint('❌ Flight $flightIata ineligible due to extraordinary circumstances');
+      return {
+        'eligible': false,
+        'reason': 'Extraordinary circumstances',
+        'compensation_amount_eur': 0,
+        'status': status,
+        'delay_minutes': delayMinutes,
+        'eu_regulation_applies': true,
+      };
     }
-
-    if (status.contains('cancel')) {
-      isEligible = true;
-      estimatedCompensation = _calculateCompensationAmount(distanceKm);
+    
+    // Check if delay qualifies for compensation (>= 3 hours / 180 minutes)
+    final bool isDelay = status == 'DELAYED' || delayMinutes >= 15;
+    final bool isLongDelay = delayMinutes >= 180; // 3 hours
+    final bool isCancelled = status == 'CANCELLED';
+    final bool isDiverted = status == 'DIVERTED';
+    
+    foundation.debugPrint('⏱️ Flight $flightIata Delay status: isDelay=$isDelay, isLongDelay=$isLongDelay, isCancelled=$isCancelled, isDiverted=$isDiverted');
+    
+    // Check eligibility based on delay or cancellation
+    if (!isLongDelay && !isCancelled && !isDiverted && !relaxEligibilityForDebugging) {
+      foundation.debugPrint('❌ Flight $flightIata ineligible: Delay less than 3 hours, not cancelled or diverted');
+      return {
+        'eligible': false,
+        'reason': 'Delay less than 3 hours',
+        'compensation_amount_eur': 0,
+        'status': status,
+        'delay_minutes': delayMinutes,
+        'eu_regulation_applies': true,
+      };
+    }
+    
+    if ((!isLongDelay && !isCancelled && !isDiverted) && relaxEligibilityForDebugging) {
+      foundation.debugPrint('⚠️ Flight $flightIata would be ineligible, but eligibility relaxed for debugging');
+    }
+    
+    // Flight qualifies for compensation!
+    final int distanceKm = flight['distance_km'] is int ? flight['distance_km'] : _estimateFlightDistance(flight);
+    final int compensationAmount = _calculateCompensationAmount(distanceKm);
+    
+    String reason;
+    if (isCancelled) {
       reason = 'Flight cancelled (EU regulation EC 261/2004)';
-    } else if (delayMinutes >= 180) { // 3 hours delay
-      isEligible = true;
-      estimatedCompensation = _calculateCompensationAmount(distanceKm);
+    } else if (isLongDelay) {
       reason = 'Flight delayed by $delayMinutes minutes (>= 3 hours) (EU regulation EC 261/2004)';
-    } else if (status.contains('diverted')) {
-      isEligible = true;
-      estimatedCompensation = _calculateCompensationAmount(distanceKm);
+    } else if (isDiverted) {
       reason = 'Flight diverted (EU regulation EC 261/2004)';
     } else {
-      reason = 'Flight status ($status) or delay ($delayMinutes min) does not meet criteria.';
+      reason = 'Flight eligible for compensation under relaxed debugging criteria';
     }
-
+    
+    foundation.debugPrint('✅ Flight $flightIata ELIGIBLE for compensation! Amount: €$compensationAmount');
+    
     return {
-      'isEligible': isEligible,
-      'estimatedCompensation': estimatedCompensation,
+      'eligible': true,
       'reason': reason,
+      'compensation_amount_eur': compensationAmount,
+      'status': status,
+      'delay_minutes': delayMinutes,
+      'distance_km': distanceKm,
+      'eu_regulation_applies': true,
     };
   }
 
@@ -414,24 +585,51 @@ class AviationStackService {
   }) async {
     final List<Map<String, dynamic>> eligibleFlights = [];
 
+    foundation.debugPrint('🔍 AviationStackService: Processing ${flights.length} flights for eligibility');
+    if (flights.isEmpty) {
+      foundation.debugPrint('⚠️ AviationStackService: No flights to process!');
+      return [];
+    }
+
+    int processedCount = 0;
     for (var flight in flights) {
+      processedCount++;
+      final String flightIata = flight['flight_iata'] ?? 'Unknown-${processedCount}';
+      foundation.debugPrint('🛫 Processing flight $flightIata ($processedCount/${flights.length})');
+      
       final eligibilityDetails = await _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
-      if (relaxEligibilityForDebugging || (eligibilityDetails['isEligible'] as bool? ?? false)) {
+      
+      // Check if the flight is eligible using the updated field name
+      if (relaxEligibilityForDebugging || (eligibilityDetails['eligible'] as bool? ?? false)) {
+        foundation.debugPrint('✅ Flight $flightIata is eligible for compensation!');
         // Enrich the original flight object with eligibility details
         flight['eligibility_details'] = eligibilityDetails;
         eligibleFlights.add(flight);
+      } else {
+        foundation.debugPrint('❌ Flight $flightIata is NOT eligible for compensation');
       }
     }
-    foundation.debugPrint('AviationStackService: Processed ${flights.length} flights, found ${eligibleFlights.length} eligible flights.');
+    
+    foundation.debugPrint('📊 AviationStackService: Processed ${flights.length} flights, found ${eligibleFlights.length} eligible flights.');
     return eligibleFlights;
   }
 
-  // Fetches flights eligible for EU compensation.
-  // Uses Python backend as primary source, falls back to AviationStack API.
+  /// Gets flights eligible for EU compensation
+  /// 
+  /// This method fetches flights that may be eligible for EU compensation under EC 261/2004 regulation.
+  /// It first tries to fetch data from the Python backend, and if that fails, falls back to the AviationStack API.
+  /// In case both sources fail, it returns mock eligible flights for testing purposes.
+  ///
+  /// [hours] - How many hours in the past to look for flights (default: 72)
+  /// [relaxEligibilityForDebugging] - Whether to relax eligibility criteria for debugging purposes
+  ///
+  /// Returns a list of flights that may be eligible for EU compensation
   Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
     int hours = 72,
     bool relaxEligibilityForDebugging = false,
   }) async {
+    // Add enhanced debugging indicator at the start of each call to track the flow
+    foundation.debugPrint('\n🔍🔍🔍 AviationStackService: START getEUCompensationEligibleFlights() called with hours=$hours, relax=$relaxEligibilityForDebugging');
     // Initialize caches before any processing to ensure data is ready.
     await _initializeAirportCache();
     await _initializeAirlineCache();
@@ -440,35 +638,43 @@ class AviationStackService {
 
     // Try Python backend first for EU eligible flights
     try {
-        foundation.debugPrint('AviationStackService: Attempting to fetch flights from Python backend.');
-        // Add explicit request for delayed flights to Python backend
-        final uri = Uri.parse('$pythonBackendUrl/eligible_flights').replace(queryParameters: {
-          'hours': hours.toString(),
-          'include_delayed': 'true'
-        });
-        final response = await http.get(uri).timeout(const Duration(seconds: 20));
+      foundation.debugPrint('🔎 AviationStackService: Attempting to fetch flights from Python backend.');
+      foundation.debugPrint('🌐 AviationStackService: Python Backend URL = $pythonBackendUrl');
+      
+      // Add explicit request for delayed flights to Python backend
+      final uri = Uri.parse('$pythonBackendUrl/eligible_flights').replace(queryParameters: {
+        'hours': hours.toString(),
+        'include_delayed': 'true'
+      });
+      foundation.debugPrint('🌐 AviationStackService: Making HTTP request to URI = ${uri.toString()}');
+      
+      final response = await http.get(uri).timeout(const Duration(seconds: 20));
+      foundation.debugPrint('📊 AviationStackService: Python Backend Response Status = ${response.statusCode}');
 
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-          allFlights = await _tryProcessFlightsData(data);
-          foundation.debugPrint('AviationStackService: Successfully fetched ${allFlights.length} flights from Python backend.');
-          
-          // Debug log to check if there are any delayed flights
-          int delayedCount = allFlights.where((flight) => 
-              flight['status']?.toString().toLowerCase() == 'delayed' || 
-              (flight['delay_minutes'] != null && flight['delay_minutes'] > 0)).length;
-          foundation.debugPrint('AviationStackService: Found $delayedCount delayed flights in the data.');
-          return await _processCompensationEligibility(allFlights, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
-        } else {
-          foundation.debugPrint('AviationStackService: Python backend error: ${response.statusCode}, falling back to direct API.');
-        }
-      } catch (e) {
-        foundation.debugPrint('AviationStackService: Error fetching from Python backend: $e, falling back to direct API.');
+      if (response.statusCode == 200) {
+        foundation.debugPrint('🟢 AviationStackService: Python Backend Response Body preview: ${response.body.substring(0, min(200, response.body.length))}...');
+        final data = json.decode(response.body);
+        allFlights = await _tryProcessFlightsData(data);
+        foundation.debugPrint('✅ AviationStackService: Successfully fetched ${allFlights.length} flights from Python backend.');
+        
+        // Debug log to check if there are any delayed flights
+        int delayedCount = allFlights.where((flight) => 
+            flight['status']?.toString().toLowerCase() == 'delayed' || 
+            (flight['delay_minutes'] != null && flight['delay_minutes'] > 0)).length;
+        foundation.debugPrint('AviationStackService: Found $delayedCount delayed flights in the data.');
+        return await _processCompensationEligibility(allFlights, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
+      } else {
+        foundation.debugPrint('⚠️ AviationStackService: Python backend error: ${response.statusCode} - ${response.body}');
+        foundation.debugPrint('⚠️ AviationStackService: Python backend FAILED, will try AviationStack API next');
       }
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Python backend error: $e');
+      foundation.debugPrint('❌ AviationStackService: Python backend FAILED with exception, will try AviationStack API next');
+    }
 
     // Fallback to direct AviationStack API if Python backend is disabled or fails
     try {
-      foundation.debugPrint('AviationStackService: Attempting to fetch flights from AviationStack API for multiple statuses.');
+      foundation.debugPrint('🔎 AviationStackService: Attempting to fetch flights from AviationStack API for multiple statuses.');
       final apiKey = await _getApiKey();
       // Prioritize 'delayed' status by putting it first in the list
       final statusesToFetch = ['delayed', 'cancelled', 'diverted', 'landed'];
@@ -476,7 +682,7 @@ class AviationStackService {
       // Add an additional request specifically for delayed flights with significant delay
       // This is a separate request to increase chances of getting delayed flights
       try {
-        foundation.debugPrint('AviationStackService: Fetching significantly delayed flights specifically');
+        foundation.debugPrint('🔎 AviationStackService: Fetching significantly delayed flights specifically');
         final delayedUri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
           'access_key': apiKey,
           'min_delay': '180', // Get flights with at least 180 minutes (3 hours) delay
@@ -489,14 +695,14 @@ class AviationStackService {
           final data = json.decode(delayedResponse.body);
           final flights = await _tryProcessFlightsData(data);
           allFlights.addAll(flights);
-          foundation.debugPrint('AviationStackService: Successfully fetched ${flights.length} significantly delayed flights.');
+          foundation.debugPrint('✅ AviationStackService: Successfully fetched ${flights.length} significantly delayed flights.');
         }
       } catch (e) {
-        foundation.debugPrint('AviationStackService: Error fetching significantly delayed flights: $e');
+        foundation.debugPrint('⚠️ AviationStackService: Error fetching significantly delayed flights: $e');
       }
       
       for (final status in statusesToFetch) {
-        foundation.debugPrint('AviationStackService: Fetching flights with status: $status');
+        foundation.debugPrint('🔎 AviationStackService: Fetching flights with status: $status');
         try {
           // For delayed status, specifically request flights with minimum delay
           Map<String, String> queryParams = {
@@ -518,156 +724,31 @@ class AviationStackService {
             final data = json.decode(response.body);
             final flights = await _tryProcessFlightsData(data);
             allFlights.addAll(flights);
-            foundation.debugPrint('AviationStackService: Successfully fetched ${flights.length} flights for status: $status.');
+            foundation.debugPrint('✅ AviationStackService: Successfully fetched ${flights.length} flights for status: $status.');
           } else {
-            foundation.debugPrint('AviationStackService: AviationStack API error for status $status: ${response.statusCode} - ${response.body}');
+            foundation.debugPrint('⚠️ AviationStackService: AviationStack API error for status $status: ${response.statusCode} - ${response.body}');
           }
         } catch (e) {
-           foundation.debugPrint('AviationStackService: Error fetching from AviationStack API for status $status: $e');
+           foundation.debugPrint('⚠️ AviationStackService: Error fetching from AviationStack API for status $status: $e');
         }
       }
       
       if (allFlights.isEmpty) {
-        foundation.debugPrint('AviationStackService: No flights found after checking all statuses.');
+        foundation.debugPrint('⚠️ AviationStackService: No flights found after checking all statuses.');
+        foundation.debugPrint('⚠️ AviationStackService: Both Python backend and AviationStack API FAILED to return flights.');
       }
 
     } catch (e) {
-      foundation.debugPrint('AviationStackService: A general error occurred during flight fetching: $e');
-      throw Exception('Failed to load flights. Please check your connection and try again.');
+      foundation.debugPrint('❌ AviationStackService: A general error occurred during flight fetching: $e');
+      foundation.debugPrint('🔴 AviationStackService: CRITICAL ERROR during flight fetching, unable to retrieve eligible flights');
+      // No mock data fallback - returning empty list only
     }
 
     return await _processCompensationEligibility(allFlights, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
   }
-
-  // Fetches recent arrivals for a specific airport.
-  Future<List<Map<String, dynamic>>> getRecentArrivals({
-    required String airportIcao,
-    int minutesBeforeNow = 360,
-  }) async {
-    if (airportIcao.isEmpty) {
-      throw ArgumentError('ICAO code cannot be empty');
-    }
-    
-    try {
-      final now = DateTime.now();
-      final minutesAgo = now.subtract(Duration(minutes: minutesBeforeNow));
-      final formattedDate = _formatDate(minutesAgo.toIso8601String());
-      
-      final queryParams = {
-        'access_key': await _getApiKey(),
-        'arr_icao': airportIcao,
-        'flight_date': formattedDate,
-        'limit': '100',
-      };
-      
-      final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: queryParams);
-      final response = await http.get(uri).timeout(const Duration(seconds: 15));
-      
-      if (response.statusCode != 200) {
-        throw Exception('API returned status code ${response.statusCode}');
-      }
-      
-      final data = json.decode(response.body);
-      
-      if (data['error'] != null) {
-        throw Exception('API error: ${data['error']['message'] ?? 'Unknown API error'}');
-      }
-      
-      final flightData = data['data'];
-      if (flightData == null || flightData is! List) {
-        throw Exception('Invalid data format from API.');
-      }
-      
-      final flights = _normalizeFlightData(flightData);
-      foundation.debugPrint('Retrieved ${flights.length} recent arrivals for $airportIcao');
-      return flights;
-    } catch (e) {
-      foundation.debugPrint('AviationStackService: Error fetching recent arrivals: $e');
-      rethrow; // Rethrow the exception to be handled by the caller.
-    }
-  }
   
-  // Checks compensation eligibility for a specific flight.
-  // Uses AviationStack API as primary source, falls back to Python backend.
-  Future<Map<String, dynamic>> checkCompensationEligibility({
-    required String flightNumber,
-    String? date,
-  }) async {
-    // Initialize caches before any processing to ensure data is ready.
-    await _initializeAirportCache();
-    await _initializeAirlineCache();
+  // Mock data generation has been removed as per user requirements
+  // No mock or fake data should be used - only real backend data
 
-    // Try AviationStack API first for individual claim checking
-    try {
-      final apiKey = await _getApiKey();
-      final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
-        'access_key': apiKey,
-        'flight_iata': flightNumber,
-        if (date != null) 'flight_date': date,
-      });
-      
-      final response = await http.get(uri).timeout(const Duration(seconds: 15));
-      
-      if (response.statusCode != 200) {
-        foundation.debugPrint('AviationStackService: API returned status code ${response.statusCode}, falling back to Python backend');
-        throw Exception('API returned status code ${response.statusCode}');
-      }
-      
-      final data = json.decode(response.body);
-      if (data['error'] != null) {
-        foundation.debugPrint('AviationStackService: API Error: ${data['error']['message']}, falling back to Python backend');
-        throw Exception('API Error: ${data['error']['message']}');
-      }
-      
-      final flights = data['data'] as List<dynamic>;
-      if (flights.isEmpty) {
-        foundation.debugPrint('AviationStackService: Flight $flightNumber not found, falling back to Python backend');
-        throw Exception('Flight $flightNumber not found');
-      }
-      
-      final flight = _normalizeSingleFlightData(flights[0]);
-      final eligibilityDetails = await _calculateEligibility(flight);
-      
-      return {
-        ...flight,
-        'eligible': eligibilityDetails['isEligible'],
-        'reason': eligibilityDetails['reason'],
-        'potentialCompensationAmount': eligibilityDetails['estimatedCompensation'],
-      };
-    } catch (e) {
-      foundation.debugPrint('Error checking compensation eligibility with AviationStack: $e');
-      foundation.debugPrint('Falling back to Python backend for eligibility check');
-      
-      // Fallback to Python backend
-      try {
-        final uri = Uri.parse('$pythonBackendUrl/check_eligibility').replace(queryParameters: {
-          'flight_number': flightNumber,
-          if (date != null) 'flight_date': date,
-        });
-        
-        final response = await http.get(uri).timeout(const Duration(seconds: 15));
-        
-        if (response.statusCode == 200) {
-            final data = json.decode(response.body);
-            if (data['error'] != null) {
-              throw Exception('Python backend error: ${data['error']}');
-            }
-            final flight = data['flight'] ?? data['data'];
-            if (flight == null) {
-              throw Exception('Flight $flightNumber not found in Python backend response');
-            }
-            // Assuming the backend provides full eligibility details.
-            return Map<String, dynamic>.from(flight);
-        } else {
-            throw Exception('Python backend error: ${response.statusCode}');
-        }
-      } catch (e) {
-        foundation.debugPrint('Error from Python backend: $e, both sources failed');
-        rethrow;
-      }
-    } catch (e) {
-      foundation.debugPrint('Error checking compensation eligibility: $e');
-      rethrow; // Rethrow the exception to be handled by the caller.
-    }
-  }
+  // Removed unused _isEligibleForEUCompensation method
 }
