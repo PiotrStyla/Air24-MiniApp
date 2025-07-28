@@ -1,0 +1,31 @@
+{
+  "tooltipDepartureAirportQuickClaim": "Enter the airport you departed from",
+  "@tooltipDepartureAirportQuickClaim": {
+    "description": "Tooltip for departure airport field in quick claim form"
+  },
+  
+  "arrivalAirportHintQuickClaim": "Enter airport code or name (e.g. LHR, London Heathrow)",
+  "@arrivalAirportHintQuickClaim": {
+    "description": "Helper text for arrival airport field in quick claim form"
+  },
+  
+  "validatorArrivalAirportRequired": "Arrival airport is required",
+  "@validatorArrivalAirportRequired": {
+    "description": "Validation message when arrival airport is empty"
+  },
+  
+  "tooltipArrivalAirportQuickClaim": "Enter the airport you arrived at",
+  "@tooltipArrivalAirportQuickClaim": {
+    "description": "Tooltip for arrival airport field in quick claim form"
+  },
+  
+  "reasonForClaimLabel": "Reason for Claim",
+  "@reasonForClaimLabel": {
+    "description": "Label for reason for claim field"
+  },
+  
+  "hintTextReasonQuickClaim": "Describe your claim reason here",
+  "@hintTextReasonQuickClaim": {
+    "description": "Hint text for reason field in quick claim form"
+  }
+}

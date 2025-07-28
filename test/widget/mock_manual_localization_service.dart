@@ -78,10 +78,10 @@ class MockManualLocalizationService extends ChangeNotifier implements ManualLoca
   bool get isReady => _isReady;
 
   @override
-  String? getString(String key) {
+  String getString(String key, {String fallback = ''}) {
     String? value = _mockStrings[key];
     print('[MockManualLocalizationService] getString called for key: $key, returning: $value');
-    return value ?? 'Mock for $key'; // Improved fallback
+    return value ?? (fallback.isNotEmpty ? fallback : 'Mock for $key');
   }
 
   @override

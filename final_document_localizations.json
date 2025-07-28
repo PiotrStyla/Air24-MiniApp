@@ -1,0 +1,36 @@
+{
+  "documentDeleteFailed": "Failed to delete document",
+  "@documentDeleteFailed": {
+    "description": "Error message shown when document deletion fails"
+  },
+  
+  "uploadNew": "Upload New",
+  "@uploadNew": {
+    "description": "Label for upload new document button"
+  },
+  
+  "continueAction": "Continue",
+  "@continueAction": {
+    "description": "Label for continue button"
+  },
+  
+  "compensationClaimForm": "Compensation Claim Form",
+  "@compensationClaimForm": {
+    "description": "Title for compensation claim form screen"
+  },
+  
+  "flight": "Flight",
+  "@flight": {
+    "description": "Label for flight information"
+  },
+  
+  "passengerInformation": "Passenger Information",
+  "@passengerInformation": {
+    "description": "Header for passenger information section"
+  },
+  
+  "fullName": "Full Name",
+  "@fullName": {
+    "description": "Label for full name field"
+  }
+}

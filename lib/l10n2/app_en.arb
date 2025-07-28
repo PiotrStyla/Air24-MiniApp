@@ -1,570 +1,188 @@
 {
   "@@locale": "en",
-  "appTitle": "Flight Compensation",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
-  "welcomeUser": "Welcome, {userName}",
-  "@welcomeUser": {
-    "description": "A welcome message for the user",
-    "placeholders": {
-      "userName": {
-        "type": "String",
-        "example": "John Doe"
-      }
-    }
-  },
-  "signOut": "Sign Out",
-  "@signOut": {
-    "description": "Sign out button label"
-  },
-  "newClaim": "New Claim",
-  "@newClaim": {
-    "description": "New claim button label"
-  },
-  "home": "Home",
-  "@home": {
-    "description": "Home screen title"
-  },
-  "settings": "Settings",
-  "@settings": {
-    "description": "Settings screen title"
-  },
-  "languageSelection": "Language",
-  "@languageSelection": {
-    "description": "Language selection label"
-  },
-  "passengerName": "Passenger Name",
-  "passengerDetails": "Passenger Details",
-  "flightNumber": "Flight Number",
-  "airline": "Airline",
-  "departureAirport": "Departure Airport",
-  "arrivalAirport": "Arrival Airport",
-  "email": "Email",
-  "bookingReference": "Booking Reference",
-  "additionalInformation": "Additional Information",
-  "optional": "(Optional)",
-  "thisFieldIsRequired": "This field is required.",
-  "pleaseEnterDepartureAirport": "Please enter a departure airport.",
-  "uploadDocuments": "Upload Documents",
-  "submitClaim": "Submit Claim",
-  "addDocument": "Add Document",
-  "claimSubmittedSuccessfully": "Claim submitted successfully!",
-  "completeAllFields": "Please complete all fields.",
-  "supportingDocuments": "Supporting Documents",
-  "cropDocument": "Crop Document",
-  "crop": "Crop",
-  "cropping": "Cropping...",
-  "rotate": "Rotate",
-  "aspectRatio": "Aspect Ratio",
-  "aspectRatioFree": "Free",
-  "aspectRatioSquare": "Square",
-  "aspectRatioPortrait": "Portrait",
-  "aspectRatioLandscape": "Landscape",
-  "aspectRatioMode": "Aspect Ratio: {ratio}",
-  "@aspectRatioMode": {
-    "placeholders": {
-      "ratio": {
-        "type": "String"
-      }
-    }
-  },
-  "documentOcrResult": "OCR Result",
-  "extractedFields": "Extracted Fields",
-  "fullText": "Full Text",
-  "documentSaved": "Document saved.",
-  "useExtractedData": "Use Extracted Data",
-  "copyToClipboard": "Copied to clipboard.",
-  "documentType": "Document Type",
-  "saveDocument": "Save Document",
-  "fieldName": "Field Name",
-  "done": "Done",
-  "yes": "Yes",
-  "no": "No",
-  "ok": "OK",
-  "back": "Back",
-  "save": "Save",
-  "welcomeMessage": "Welcome to the app!",
-  "copiedToClipboard": "Copied to clipboard",
-  "fillForm": "Fill Form",
-  "chooseUseInfo": "Choose how to use this information:",
-  "fillPassengerFlight": "Fill passenger and flight info",
-  "ocrResults": "OCR Results",
-  "noFieldsExtracted": "No fields were extracted from the document.",
-  "extractedInformation": "Extracted Information",
-  "rawOcrText": "Raw OCR Text",
-  "copyAllText": "Copy all text",
-  "claims": "Claims",
-  "noClaimsYet": "No Claims Yet",
-  "startCompensationClaimInstructions": "Start your compensation claim by selecting a flight from the EU Eligible Flights section",
-  "active": "Active",
-  "actionRequired": "Action Required",
-  "completed": "Completed",
-  "profileInfoCardTitle": "Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.",
-  "accountSettings": "Account Settings",
-  "accessibilityOptions": "Accessibility Options",
-  "configureAccessibilityDescription": "Configure high contrast, large text, and screen reader support",
-  "configureNotificationsDescription": "Configure how you receive claim updates",
-  "tipProfileUpToDate": "Keep your profile up to date for smooth claim processing.",
-  "tipInformationPrivate": "Your information is private and only used for compensation claims.",
-  "tipContactDetails": "Make sure your contact details are correct so we can reach you about your claim.",
-  "tipAccessibilitySettings": "Check the Accessibility Settings to customize the app for your needs.",
-  "cancel": "Cancel",
-  "next": "Next",
-  "previous": "Previous",
-  "arrivalsAt": "Arrivals at {airport}",
-  "@arrivalsAt": {
-    "placeholders": {
-      "airport": {
-        "type": "String"
-      }
-    }
-  },
-  "filterByAirline": "Filter by airline",
-  "flightStatusDelayed": "Delayed",
-  "flightStatusCancelled": "Cancelled",
-  "flightStatusDiverted": "Diverted",
-  "flightStatusOnTime": "On time",
-  "flight": "Flight",
-  "flights": "Flights",
-  "myFlights": "My Flights",
-  "findFlight": "Find Flight",
-  "flightDate": "Flight Date",
-  "checkCompensationEligibility": "Check Compensation Eligibility",
-  "supportingDocumentsHint": "Attach boarding passes, tickets, and other documents to strengthen your claim.",
-  "scanDocument": "Scan Document",
-  "uploadDocument": "Upload Document",
-  "scanDocumentHint": "Use camera to auto-fill form",
-  "uploadDocumentHint": "Select from device storage",
-  "noDocumentsYet": "No documents attached yet",
-  "enterFlightNumberFirst": "Please enter a flight number first",
-  "viewAll": "View All",
-  "documentScanner": "Document Scanner",
-  "profileInformation": "Profile Information",
-  "editPersonalInformation": "Edit your personal information",
-  "editPersonalAndContactInformation": "Edit your personal and contact information",
-  "configureAccessibilityOptions": "Configure accessibility options for the app",
-  "configureHighContrastLargeTextAndScreenReaderSupport": "Configure high contrast, large text, and screen reader support",
-  "applicationPreferences": "Application Preferences",
-  "notificationSettings": "Notification Settings",
-  "configureNotificationPreferences": "Configure notification preferences",
-  "configureHowYouReceiveClaimUpdates": "Configure how you receive claim updates",
-  "language": "Language",
-  "changeApplicationLanguage": "Change application language",
-  "selectYourPreferredLanguage": "Select your preferred language",
-  "tipsAndReminders": "Tips & Reminders",
-  "importantTipsAboutProfileInformation": "Important tips about your profile information",
-  "noClaimsYetTitle": "No Claims Yet",
-  "noClaimsYetSubtitle": "Start your compensation claim by selecting a flight from the EU Eligible Flights section",
-  "extractingText": "Extracting text and identifying fields",
-  "scanInstructions": "Position your document within the frame and take a photo",
-  "formFilledWithScannedData": "Form filled with scanned document data",
-  "flightDetails": "Flight Details",
-  "phoneNumber": "Phone Number",
-  "required": "Required",
-  "submit": "Submit",
-  "submissionChecklist": "Submission Checklist",
-  "documentAttached": "Document Attached",
-  "compensationClaimForm": "Compensation Claim Form",
-  "prefilledFromProfile": "Prefilled from your profile",
-  "flightSearch": "Flight Search",
-  "searchFlightNumber": "Search using flight number",
-  "delayedFlightDetected": "Delayed Flight Detected",
-  "flightDetected": "Flight Detected",
-  "flightLabel": "Flight:",
-  "fromAirport": "From:",
-  "toAirport": "To:",
-  "statusLabel": "Status:",
-  "delayedEligible": "Delayed and potentially eligible",
-  "startClaim": "Start Claim",
-  "claimNotFound": "Claim Not Found",
-  "@claimNotFound": {
-    "description": "Title shown when a claim cannot be found."
-  },
-  "claimNotFoundDesc": "The requested claim could not be found. It may have been deleted.",
-  "@claimNotFoundDesc": {
-    "description": "Description shown when a claim cannot be found."
-  },
-  "backToDashboard": "Back to Dashboard",
-  "@backToDashboard": {
-    "description": "Button label to return to the dashboard from a not found screen."
-  },
-  "euWideEligibleFlights": "EU-wide Compensation Eligible Flights",
-  "submitNewClaim": "Submit New Claim",
-  "airline": "Airline",
-  "departureAirport": "Departure Airport (IATA)",
-  "arrivalAirport": "Arrival Airport (IATA)",
-  "reasonForClaim": "Reason for Claim (e.g., Delay > 3h)",
-  "flightDate": "Flight Date",
-  "flightDateHint": "Select the date of your flight",
-  "continueToAttachments": "Continue to Attachments",
-  "pleaseEnterFlightNumber": "Please enter a flight number",
-  "pleaseEnterDepartureAirport": "Please enter a departure airport",
-  "pleaseEnterArrivalAirport": "Please enter an arrival airport",
-  "pleaseEnterReason": "Please enter a reason",
-  "pleaseSelectFlightDate": "Please select a flight date.",
-  "claimDetails": "Claim Details",
-  "refresh": "Refresh",
-  "errorLoadingClaim": "Error loading claim",
-  "retry": "Retry",
-
-  "unknownError": "Unknown error",
-  "requiredFieldsCompleted": "All required fields are completed.",
-  "scanningDocumentsNote": "Scanning documents can pre-fill some fields.",
-  "tipCheckEligibility": "• Ensure your flight is eligible for compensation (e.g., delay >3h, cancellation, denied boarding).",
-  "tipDoubleCheckDetails": "• Double-check all details before submitting to avoid delays.",
-  "tooltipFaqHelp": "Access the frequently asked questions and help section",
-  "formSubmissionError": "Error submitting form: {errorMessage}. Please check your connection and try again.",
-  "@formSubmissionError": {
-    "description": "Error message for form submission failure",
-    "placeholders": {
-      "errorMessage": {
-        "type": "String",
-        "example": "Network timeout"
-      }
-    }
-  },
-  "networkError": "Network error. Please check your internet connection.",
-  "@networkError": {
-    "description": "Error message for network error"
-  },
-  "generalError": "An unexpected error occurred. Please try again later.",
-  "@generalError": {
-    "description": "Generic error message"
-  },
-  "loginRequiredForClaim": "You must be logged in to submit a claim.",
-  "@loginRequiredForClaim": {
-    "description": "Error message for unauthenticated user submitting a claim"
-  },
-  "quickClaimTitle": "Quick Claim",
-  "@quickClaimTitle": {
-    "description": "Title for the Quick Claim screen"
-  },
-  "quickClaimInfoBanner": "For EU-eligible flights. Fill in basic info for a quick preliminary check.",
-  "@quickClaimInfoBanner": {
-    "description": "Informational banner on the Quick Claim screen"
-  },
-  "flightNumberHintQuickClaim": "Usually a 2-letter airline code and digits, e.g. LH1234",
-  "@flightNumberHintQuickClaim": {
-    "description": "Hint text for flight number input on Quick Claim screen"
-  },
-  "departureAirportHintQuickClaim": "e.g. FRA for Frankfurt, LHR for London Heathrow",
-  "@departureAirportHintQuickClaim": {
-    "description": "Hint text for departure airport input on Quick Claim screen"
-  },
-  "arrivalAirportHintQuickClaim": "e.g. JFK for New York, CDG for Paris",
-  "@arrivalAirportHintQuickClaim": {
-    "description": "Hint text for arrival airport input on Quick Claim screen"
-  },
-  "reasonForClaimLabel": "Reason for Claim",
-  "@reasonForClaimLabel": {
-    "description": "Label for the reason for claim field on Quick Claim screen"
-  },
-  "reasonForClaimHint": "State why you are claiming: delay, cancellation, denied boarding, etc.",
-  "@reasonForClaimHint": {
-    "description": "Hint text for reason for claim input on Quick Claim screen"
-  },
-  "compensationAmountOptionalLabel": "Compensation Amount (optional)",
-  "@compensationAmountOptionalLabel": {
-    "description": "Label for the optional compensation amount field on Quick Claim screen"
-  },
-  "compensationAmountHint": "If you know the amount you are eligible for, enter it here",
-  "@compensationAmountHint": {
-    "description": "Hint text for compensation amount input on Quick Claim screen"
-  },
-  "euWideCompensationTitle": "EU-wide Compensation",
-  "@euWideCompensationTitle": {
-    "description": "Title for the EU-wide compensation eligible flights screen"
-  },
-  "last72HoursButton": "Last 72 hours",
-  "@last72HoursButton": {
-    "description": "Button to filter flights from the last 72 hours"
+  "euCompensation": "EU Compensation",
+  "@euCompensation": {
+    "description": "Label for EU compensation tag on eligible flights"
   },
   "scheduledLabel": "Scheduled:",
   "@scheduledLabel": {
-    "description": "Label for scheduled time in flight lists"
+    "description": "Label for scheduled flight time"
   },
-  "statusLabelEuList": "Status:",
-  "@statusLabelEuList": {
-    "description": "Label for flight status in EU-wide flight list"
+  "minutes": "minutes",
+  "@minutes": {
+    "description": "Text for minutes unit"
   },
-  "potentialCompensationLabel": "Potential Compensation:",
-  "@potentialCompensationLabel": {
-    "description": "Label for potential compensation amount in flight lists"
+  "aircraftLabel": "Aircraft:",
+  "@aircraftLabel": {
+    "description": "Label for aircraft information"
   },
-  "prefillCompensationFormButton": "Pre-fill Compensation Form",
-  "@prefillCompensationFormButton": {
-    "description": "Button to pre-fill compensation form from flight details"
+  "prefillCompensationForm": "Pre-fill Compensation Form",
+  "@prefillCompensationForm": {
+    "description": "Button text for pre-filling compensation form"
   },
-  "claimsTabActive": "Active",
-  "@claimsTabActive": {
-    "description": "Label for the 'Active' tab in claims dashboard"
+  "confirmAndSend": "Confirm and Send",
+  "@confirmAndSend": {
+    "description": "Button label for confirming and sending an email"
   },
-  "claimsTabActionRequired": "Action Required",
-  "@claimsTabActionRequired": {
-    "description": "Label for the 'Action Required' tab in claims dashboard"
+  "errorLoadingEmailDetails": "Error loading email details",
+  "@errorLoadingEmailDetails": {
+    "description": "Error message when email details cannot be loaded"
   },
-  "claimsTabCompleted": "Completed",
-  "@claimsTabCompleted": {
-    "description": "Label for the 'Completed' tab in claims dashboard"
+  "noEmailInfo": "No email information available",
+  "@noEmailInfo": {
+    "description": "Message when no email information is available"
   },
-  "dialogTitleSuccess": "Success!",
-  "@dialogTitleSuccess": {
-    "description": "Dialog title for successful operations"
+  "finalConfirmation": "Final Confirmation",
+  "@finalConfirmation": {
+    "description": "Title for the final confirmation screen"
   },
-  "dialogContentClaimSubmitted": "Your claim has been submitted successfully.",
-  "@dialogContentClaimSubmitted": {
-    "description": "Dialog content for successful claim submission"
+  "claimWillBeSentTo": "Your claim will be sent to:",
+  "@claimWillBeSentTo": {
+    "description": "Text explaining where the claim will be sent"
   },
-  "dialogButtonOK": "OK",
-  "@dialogButtonOK": {
-    "description": "Label for OK button in dialogs"
+  "copyToYourEmail": "A copy will be sent to your email:",
+  "@copyToYourEmail": {
+    "description": "Text explaining that a copy will be sent to the user's email"
   },
-  "documentManagementTitle": "Document Management",
-  "@documentManagementTitle": {
-    "description": "Title for the document management screen"
+  "previewEmail": "Preview Email",
+  "@previewEmail": {
+    "description": "Button label for previewing email before sending"
   },
-  "documentsForFlightTitle": "Documents for flight",
-  "@documentsForFlightTitle": {
-    "description": "Title for the document management screen when a flight is specified"
+  "confirmAndSendEmail": "Confirm and Send Email",
+  "@confirmAndSendEmail": {
+    "description": "Button label for confirming and sending email"
   },
-  "errorLoadingDocuments": "Error Loading Documents",
-  "@errorLoadingDocuments": {
-    "description": "Error message when documents fail to load"
-  },
-  "addDocumentTooltip": "Add Document",
-  "@addDocumentTooltip": {
-    "description": "Tooltip for the add document button"
-  },
-  "deleteDocumentTitle": "Delete Document?",
-  "@deleteDocumentTitle": {
-    "description": "Title for the delete document confirmation dialog"
-  },
-  "deleteDocumentMessage": "Are you sure you want to delete",
-  "@deleteDocumentMessage": {
-    "description": "Message for the delete document confirmation dialog"
-  },
-  "delete": "Delete",
-  "@delete": {
-    "description": "Delete button label"
-  },
-  "errorMustBeLoggedIn": "You must be logged in to perform this action.",
-  "@errorMustBeLoggedIn": {
-    "description": "Error message when user is not logged in"
-  },
-  "errorFailedToSubmitClaim": "Failed to submit claim. Please try again.",
-  "@errorFailedToSubmitClaim": {
-    "description": "Error message when claim submission fails"
-  },
-  "dialogTitleError": "Error",
-  "@dialogTitleError": {
-    "description": "Dialog title for error messages"
-  },
-  "validatorFlightNumberRequired": "Flight number is required.",
-  "@validatorFlightNumberRequired": {
-    "description": "Validation error message for flight number field"
-  },
-  "tooltipFlightNumberQuickClaim": "Enter the flight number (e.g., BA2490).",
-  "@tooltipFlightNumberQuickClaim": {
-    "description": "Tooltip for flight number input on Quick Claim screen"
-  },
-  "tooltipFlightDateQuickClaim": "Select the date of your flight.",
-  "@tooltipFlightDateQuickClaim": {
-    "description": "Tooltip for flight date display on Quick Claim screen"
-  },
-  "validatorDepartureAirportRequired": "Departure airport is required.",
-  "@validatorDepartureAirportRequired": {
-    "description": "Validation error message for departure airport field"
-  },
-  "tooltipDepartureAirportQuickClaim": "Enter the 3-letter IATA code for the departure airport (e.g., LHR).",
-  "@tooltipDepartureAirportQuickClaim": {
-    "description": "Tooltip for departure airport input on Quick Claim screen"
-  },
-  "validatorArrivalAirportRequired": "Arrival airport is required.",
-  "@validatorArrivalAirportRequired": {
-    "description": "Validation error message for arrival airport field"
-  },
-  "tooltipArrivalAirportQuickClaim": "Enter the 3-letter IATA code for the arrival airport (e.g., JFK).",
-  "@tooltipArrivalAirportQuickClaim": {
-    "description": "Tooltip for arrival airport input on Quick Claim screen"
-  },
-  "hintTextReasonQuickClaim": "Reason (delay, cancellation, etc.)",
-  "@hintTextReasonQuickClaim": {
-    "description": "Hint text (placeholder) for reason input on Quick Claim screen"
-  },
-  "validatorReasonRequired": "Reason for claim is required.",
-  "@validatorReasonRequired": {
-    "description": "Validation error message for reason field"
-  },
-  "tooltipReasonQuickClaim": "Briefly state the reason for your claim (e.g., 4-hour delay).",
-  "@tooltipReasonQuickClaim": {
-    "description": "Tooltip for reason input on Quick Claim screen"
-  },
-  "tooltipCompensationAmountQuickClaim": "Enter the compensation amount if known (e.g., EUR).",
-  "@tooltipCompensationAmountQuickClaim": {
-    "description": "Tooltip for compensation amount input on Quick Claim screen"
-  },
-  "tipsAndRemindersTitle": "Tips & Reminders",
-  "@tipsAndRemindersTitle": {
-    "description": "Title for the Tips & Reminders section on Quick Claim screen"
-  },
-  "tipSecureData": "• Your data is stored securely and used only for claim processing.",
-  "@tipSecureData": {
-    "description": "Tip about secure data processing"
-  },
-  "tipCheckEligibility": "• Ensure your flight is eligible for compensation (e.g., delay >3h, cancellation, denied boarding).",
-  "@tipCheckEligibility": {
-    "description": "Tip about checking flight eligibility"
-  },
-  "@welcomeUser": {
-    "description": "A welcome message for the user",
-    "placeholders": {
-      "userName": {
-        "type": "String",
-        "example": "John Doe"
-      }
-    }
-  },
-  "signOut": "Sign Out",
-  "@signOut": {
-    "description": "Sign out button label"
-  },
-  "newClaim": "New Claim",
-  "@newClaim": {
-    "description": "New claim button label"
-  },
-  "home": "Home",
-  "@home": {
-    "description": "Home screen title"
-  },
-  "settings": "Settings",
-  "@settings": {
-    "description": "Settings screen title"
-  },
-  "languageSelection": "Language",
-  "@languageSelection": {
-    "description": "Language selection label"
-  },
-  "passengerName": "Passenger Name",
-  "passengerDetails": "Passenger Details",
-  "flightNumber": "Flight Number",
-  "airline": "Airline",
   "departureAirport": "Departure Airport",
+  "@departureAirport": {
+    "description": "Label for departure airport field"
+  },
   "arrivalAirport": "Arrival Airport",
-  "email": "Email",
-  "bookingReference": "Booking Reference",
-  "additionalInformation": "Additional Information",
-  "optional": "(Optional)",
-  "thisFieldIsRequired": "This field is required.",
-  "pleaseEnterDepartureAirport": "Please enter a departure airport.",
-  "uploadDocuments": "Upload Documents",
-  "submitClaim": "Submit Claim",
-  "addDocument": "Add Document",
-  "claimSubmittedSuccessfully": "Claim submitted successfully!",
-  "completeAllFields": "Please complete all fields.",
-  "supportingDocuments": "Supporting Documents",
-  "cropDocument": "Crop Document",
-  "crop": "Crop",
-  "cropping": "Cropping...",
-  "rotate": "Rotate",
-  "aspectRatio": "Aspect Ratio",
-  "aspectRatioFree": "Free",
-  "aspectRatioSquare": "Square",
-  "aspectRatioPortrait": "Portrait",
-  "aspectRatioLandscape": "Landscape",
-  "aspectRatioMode": "Aspect Ratio: {ratio}",
-  "@aspectRatioMode": {
+  "@arrivalAirport": {
+    "description": "Label for arrival airport field"
+  },
+  "reasonForClaim": "Reason for Claim",
+  "@reasonForClaim": {
+    "description": "Label for reason for claim field"
+  },
+  "attachments": "Attachments",
+  "@attachments": {
+    "description": "Label for attachments section"
+  },
+  "proceedToConfirmation": "Proceed to Confirmation",
+  "@proceedToConfirmation": {
+    "description": "Button label to proceed to confirmation screen"
+  },
+  "emailAppOpenedMessage": "Your email app has been opened",
+  "@emailAppOpenedMessage": {
+    "description": "Message shown when the email app is opened",
     "placeholders": {
-      "ratio": {
+      "email": {
         "type": "String"
       }
     }
   },
-  "documentOcrResult": "OCR Result",
-  "extractedFields": "Extracted Fields",
-  "fullText": "Full Text",
-  "documentSaved": "Document saved.",
-  "useExtractedData": "Use Extracted Data",
-  "copyToClipboard": "Copied to clipboard.",
-  "documentType": "Document Type",
-  "saveDocument": "Save Document",
-  "fieldName": "Field Name",
-  "done": "Done",
-  "yes": "Yes",
-  "no": "No",
-  "ok": "OK",
-  "back": "Back",
-  "save": "Save",
-  "welcomeMessage": "Welcome to the app!",
-  "copiedToClipboard": "Copied to clipboard",
-  "fillForm": "Fill Form",
-  "chooseUseInfo": "Choose how to use this information:",
-  "fillPassengerFlight": "Fill passenger and flight info",
-  "ocrResults": "OCR Results",
-  "noFieldsExtracted": "No fields were extracted from the document.",
-  "extractedInformation": "Extracted Information",
-  "rawOcrText": "Raw OCR Text",
-  "copyAllText": "Copy all text",
-  "tipDoubleCheckDetails": "• Double-check all details before submitting to avoid delays.",
-  "@tipDoubleCheckDetails": {
-    "description": "Tip about double-checking details"
-  },
-  "tooltipFaqHelp": "Access the frequently asked questions and help section",
-  "processingDocument": "Processing document...",
-  "@processingDocument": {
-    "description": "Message shown while a document is being processed by OCR"
-  },
-  "fieldValue": "Field Value",
-  "@fieldValue": {
-    "description": "Label for a generic field value in debugging or display"
-  },
-  "errorConnectionFailed": "Connection failed. Please check your network.",
-  "@errorConnectionFailed": {
-    "description": "Error message when a network connection fails"
-  },
-  "lastHours": "Last {hours} hours",
-  "@lastHours": {
-    "description": "Label for filtering flights in the last N hours",
+  "errorFailedToSubmitClaim": "Failed to submit claim. Please try again.",
+  "@errorFailedToSubmitClaim": {
+    "description": "Error message shown when claim submission fails",
     "placeholders": {
-      "hours": {
-        "type": "int",
-        "example": "24"
+      "error": {
+        "type": "String"
       }
     }
+  },
+  "unknownError": "Unknown error",
+  "@unknownError": {
+    "description": "Generic unknown error message"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button label to retry an action"
+  },
+  "claimNotFound": "Claim Not Found",
+  "@claimNotFound": {
+    "description": "Title shown when a claim is not found"
+  },
+  "claimNotFoundDesc": "The requested claim could not be found or may have been deleted",
+  "@claimNotFoundDesc": {
+    "description": "Description shown when a claim is not found"
+  },
+  "backToDashboard": "Back to Dashboard",
+  "@backToDashboard": {
+    "description": "Button label to go back to dashboard"
+  },
+  "reviewYourClaim": "Review Your Claim",
+  "@reviewYourClaim": {
+    "description": "Title for the claim review screen"
+  },
+  "reviewClaimDetails": "Review Claim Details",
+  "@reviewClaimDetails": {
+    "description": "Header for reviewing claim details"
+  },
+  "flightNumber": "Flight Number",
+  "@flightNumber": {
+    "description": "Label for flight number field"
+  },
+  "flightDate": "Flight Date",
+  "@flightDate": {
+    "description": "Label for flight date field"
   },
   "noFlightsMatchingFilter": "No flights matching filter: {filter}",
   "@noFlightsMatchingFilter": {
-    "description": "Message shown when no flights match the selected filter",
+    "description": "Message shown when no flights match the filter",
     "placeholders": {
       "filter": {
         "type": "String",
-        "example": "Lufthansa"
+        "example": "LH"
       }
     }
   },
-  "forceRefreshData": "Force refresh data",
-  "@forceRefreshData": {
-    "description": "Tooltip for button to force refresh data"
+  "statusLabel": "Status",
+  "@statusLabel": {
+    "description": "Label for flight status"
   },
-  "forcingFreshDataLoad": "Forcing a fresh data load...",
-  "@forcingFreshDataLoad": {
-    "description": "Snackbar message shown when forcing a fresh data load"
+  "flightStatusDelayed": "Delayed",
+  "@flightStatusDelayed": {
+    "description": "Status indicating flight is delayed"
   },
-  "checkAgain": "Check again",
-  "@checkAgain": {
-    "description": "Button label to re-check or retry fetching flights"
+  "potentialCompensation": "Potential Compensation",
+  "@potentialCompensation": {
+    "description": "Label for potential compensation amount"
   },
-  "euWideCompensationEligibleFlights": "EU Compensation Eligible Flights",
+  "claimDetails": "Claim Details",
+  "@claimDetails": {
+    "description": "Title for claim details screen"
+  },
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Button label to refresh content"
+  },
+  "errorLoadingClaim": "Error Loading Claim",
+  "@errorLoadingClaim": {
+    "description": "Error message when claim loading fails"
+  },
+  "euWideCompensationEligibleFlights": "EU-Wide Compensation Eligible Flights",
   "@euWideCompensationEligibleFlights": {
-    "description": "Title for the screen or section listing EU compensation eligible flights"
+    "description": "Title for EU eligible flights screen"
   },
-  "noEligibleFlightsFound": "No eligible flights found",
-  "@noEligibleFlightsFound": {
-    "description": "Message shown when no eligible flights are found"
+  "forceRefreshData": "Force Refresh Data",
+  "@forceRefreshData": {
+    "description": "Tooltip for refresh button"
   },
-  "noEligibleFlightsDescription": "No flights found in the last {hours} hours.",
-  "@noEligibleFlightsDescription": {
-    "description": "Description for empty state when no eligible flights are found",
+  "forcingFreshDataLoad": "Forcing fresh data load...",
+  "@forcingFreshDataLoad": {
+    "description": "Message when forcing data refresh"
+  },
+  "loadingExternalData": "Loading External Data",
+  "@loadingExternalData": {
+    "description": "Title for loading screen"
+  },
+  "loadingExternalDataDescription": "Please wait while we fetch the latest flight data...",
+  "@loadingExternalDataDescription": {
+    "description": "Message when loading external data"
+  },
+  "lastHours": "Last {hours} Hours",
+  "@lastHours": {
+    "description": "Time period label for flight list",
     "placeholders": {
       "hours": {
         "type": "int",
@@ -572,758 +190,943 @@
       }
     }
   },
-  "apiConnectionIssue": "API connection issue. Please try again.",
-  "@apiConnectionIssue": {
-    "description": "Message shown when there is a problem connecting to the API"
+  "errorConnectionFailed": "Connection failed",
+  "@errorConnectionFailed": {
+    "description": "Error message when connection fails"
   },
-
-  "noClaimsYet": "No Claims Yet",
-  "@noClaimsYet": { "description": "Displayed when there are no claims yet on the dashboard" },
-  "startCompensationClaimInstructions": "Start your compensation claim by selecting a flight from the EU Eligible Flights section",
-  "@startCompensationClaimInstructions": { "description": "Instructions for starting a compensation claim when no claims exist" },
-  "createClaim": "Create a Claim",
-  "@createClaim": { "description": "Button label for creating a new claim" },
-  "submitted": "Submitted",
-  "@submitted": { "description": "Status text for a submitted claim" },
-  "inReview": "Under Review",
-  "@inReview": { "description": "Status text for a claim that is being reviewed" },
-  "processing": "Processing",
-  "@processing": { "description": "Status text for a claim that is being processed" },
-  "approved": "Approved",
-  "@approved": { "description": "Status text for a claim that has been approved" },
-  "rejected": "Rejected",
-  "@rejected": { "description": "Status text for a claim that has been rejected" },
-  "paid": "Paid",
-  "@paid": { "description": "Status text for a claim that has been paid out" },
-  "underAppeal": "Under Appeal",
-  "@underAppeal": { "description": "Status text for a claim that is under appeal" },
-  "unknown": "Unknown",
-  "@unknown": { "description": "Status text for an unknown claim status" },
-  
-  "authenticationRequired": "Authentication Required",
-  "@authenticationRequired": { "description": "Title shown when authentication is required" },
-  
-  "errorLoadingClaims": "Error Loading Claims",
-  "@errorLoadingClaims": { "description": "Error message when claims cannot be loaded" },
-  
-  "loginToViewClaimsDashboard": "Please log in to view your claims dashboard",
-  "@loginToViewClaimsDashboard": { "description": "Message shown when user needs to log in to view claims" },
-  
-  "logIn": "Log In",
-  "@logIn": { "description": "Button label for login action" },
-  
-  "retry": "Retry",
-  "@retry": { "description": "Button label for retry action" },
-
-  "claimForFlight": "Claim for flight {number} - {status}",
-  "@claimForFlight": { 
-    "description": "Text showing claim for a specific flight with status",
-    "placeholders": {
-      "number": {},
-      "status": {}
-    }
-  },
-
-  "flightRouteDetails": "Flight {number}: {departure} - {arrival}",
-  "@flightRouteDetails": { 
-    "description": "Text showing flight route details with departure and arrival",
-    "placeholders": {
-      "number": {},
-      "departure": {},
-      "arrival": {}
-    }
-  },
-
-  "viewClaimDetails": "View claim details",
-  "@viewClaimDetails": {
-    "description": "Accessibility hint for viewing claim details"
-  },
-
-  "totalCompensation": "Total Compensation",
-  "@totalCompensation": {
-    "description": "Label for total compensation amount in dashboard analytics"
-  },
-
-  "pendingAmount": "Pending Amount",
-  "@pendingAmount": {
-    "description": "Label for pending compensation amount in dashboard analytics"
-  },
-
-  "pending": "Pending",
-  "@pending": {
-    "description": "Text shown when compensation amount is pending"
-  },
-
-  "claimsDashboard": "Claims Dashboard",
-  "@claimsDashboard": {
-    "description": "Title for the claims dashboard screen"
-  },
-
-  "refreshDashboard": "Refresh Dashboard",
-  "@refreshDashboard": {
-    "description": "Tooltip for the refresh button on dashboard"
-  },
-
-  "claimsSummary": "Claims Summary",
-  "@claimsSummary": {
-    "description": "Title for the claims summary section"
-  },
-
-  "totalClaims": "Total Claims",
-  "@totalClaims": {
-    "description": "Label for the total claims count"
-  },
-
-  "tipContactDetails": "Contact Details",
-  "@tipContactDetails": {
-    "description": "Label for contact details section in profile"
-  },
-
-  "tipAccessibilitySettings": "Accessibility Settings",
-  "@tipAccessibilitySettings": {
-    "description": "Label for accessibility settings section in profile"
-  },
-
-  "tipProfileUpToDate": "Keep Your Profile Up-to-date",
-  "@tipProfileUpToDate": {
-    "description": "Tip for keeping profile information current"
-  },
-
-  "tipInformationPrivate": "Your Information is Private",
-  "@tipInformationPrivate": {
-    "description": "Tip indicating privacy of profile information"
-  },
-
-  "accessibilitySettings": "Accessibility Settings",
-  "@accessibilitySettings": {
-    "description": "Title for accessibility settings section"
-  },
-
-  "configureAccessibility": "Configure accessibility options",
-  "@configureAccessibility": {
-    "description": "Semantic label for accessibility settings button"
-  },
-
-  "configureNotifications": "Configure notifications",
-  "@configureNotifications": {
-    "description": "Semantic label for notification settings button"
-  },
-
-  "notificationSettingsComingSoon": "Notification settings coming soon!",
-  "@notificationSettingsComingSoon": {
-    "description": "Message indicating notifications feature is in development"
-  },
-
-  "selectLanguage": "Select Language",
-  "@selectLanguage": {
-    "description": "Label for language selection button"
-  },
-
-  "editPersonalInfo": "Edit Personal Information",
-  "@editPersonalInfo": {
-    "description": "Label for button to edit personal information"
-  },
-
-  "editPersonalInfoDescription": "Update your personal details, address, and contact information",
-  "@editPersonalInfoDescription": {
-    "description": "Description of what editing personal information allows"
-  },
-
-  "signOut": "Sign Out",
-  "@signOut": {
-    "description": "Label for sign out button"
-  },
-
-  "errorSigningOut": "Error signing out: {error}",
-  "@errorSigningOut": {
-    "description": "Error message shown when signing out fails",
+  "formSubmissionError": "Form submission error: {error}",
+  "@formSubmissionError": {
+    "description": "Error message for form submission errors",
     "placeholders": {
       "error": {
         "type": "String",
-        "example": "Network error"
+        "example": "Invalid email"
       }
     }
   },
-
-  "signInOrSignUp": "Sign In / Sign Up",
-  "@signInOrSignUp": {
-    "description": "Label for sign in or sign up button"
+  "apiConnectionIssue": "API Connection Issue",
+  "@apiConnectionIssue": {
+    "description": "Title for API connection issue"
   },
-
-  "genericUser": "User",
-  "@genericUser": {
-    "description": "Generic name for user when actual name is not available"
+  "noEligibleFlightsFound": "No Eligible Flights Found",
+  "@noEligibleFlightsFound": {
+    "description": "Message when no eligible flights are found"
   },
-
-  "welcomeUser": "Welcome, {userName}",
-  "@welcomeUser": {
-    "description": "Welcome message with user name",
+  "noEligibleFlightsDescription": "No flights eligible for EU compensation were found in the last {hours} hours. Check again later.",
+  "@noEligibleFlightsDescription": {
+    "description": "Description when no eligible flights are found",
     "placeholders": {
-      "userName": {
-        "type": "String",
-        "example": "John"
+      "hours": {
+        "type": "int",
+        "example": "72"
       }
     }
   },
-
-  "dismiss": "Dismiss",
-  "@dismiss": {
-    "description": "Label for dismiss button"
+  "checkAgain": "Check Again",
+  "@checkAgain": {
+    "description": "Button label to check again"
   },
-
-  "signInToTrackClaims": "Sign in to track your claims",
-  "@signInToTrackClaims": {
-    "description": "Message encouraging user to sign in to track claims"
+  "filterByAirline": "Filter by airline",
+  "@filterByAirline": {
+    "description": "Hint text for airline filter"
   },
-
-  "createAccountDescription": "Create an account to easily track all your compensation claims",
-  "@createAccountDescription": {
-    "description": "Description of benefits of creating an account"
+  "saveDocument": "Save Document",
+  "@saveDocument": {
+    "description": "Button label to save document"
   },
-
-  "continueToAttachmentsButton": "Continue to Attachments",
-  "@continueToAttachmentsButton": {
-    "description": "Button label to proceed to attachments screen"
+  "fieldName": "Field Name",
+  "@fieldName": {
+    "description": "Label for field name"
   },
-
-  "continueToReview": "Continue to Review",
-  "@continueToReview": {
-    "description": "Button label to proceed to review screen"
+  "fieldValue": "Field Value",
+  "@fieldValue": {
+    "description": "Label for field value"
   },
-
-  "country": "Country",
-  "@country": {
-    "description": "Label for country field"
+  "noFieldsExtracted": "No Fields Extracted",
+  "@noFieldsExtracted": {
+    "description": "Message when no fields are extracted"
   },
-
-  "privacySettings": "Privacy Settings",
-  "@privacySettings": {
-    "description": "Label for privacy settings section"
+  "copiedToClipboard": "Copied to Clipboard",
+  "@copiedToClipboard": {
+    "description": "Message when text is copied to clipboard"
   },
-
-  "consentToShareData": "Consent to Share Data",
-  "@consentToShareData": {
-    "description": "Label for consent to share data switch"
+  "networkError": "Network Error",
+  "@networkError": {
+    "description": "Generic network error message"
   },
-
-  "requiredForProcessing": "Required for processing your claims",
-  "@requiredForProcessing": {
-    "description": "Description for consent to share data"
+  "generalError": "General Error",
+  "@generalError": {
+    "description": "Generic error message"
   },
-
-  "receiveNotifications": "Receive Notifications",
-  "@receiveNotifications": {
-    "description": "Label for receive notifications switch"
+  "loginRequiredForClaim": "Login Required for Claim",
+  "@loginRequiredForClaim": {
+    "description": "Message indicating login is required to submit a claim"
   },
-
-  "getClaimUpdates": "Get updates about your claims",
-  "@getClaimUpdates": {
-    "description": "Description for receive notifications"
+  "aspectRatio": "Aspect Ratio",
+  "@aspectRatio": {
+    "description": "Label for aspect ratio"
   },
-
-  "saveProfile": "Save Profile",
-  "@saveProfile": {
-    "description": "Button label to save profile changes"
+  "documentOcrResult": "Document OCR Result",
+  "@documentOcrResult": {
+    "description": "Title for OCR result section"
   },
-
-  "passportNumber": "Passport Number",
-  "@passportNumber": {
-    "description": "Label for passport number field"
+  "extractedFields": "Extracted Fields",
+  "@extractedFields": {
+    "description": "Title for extracted fields section"
   },
-
-  "nationality": "Nationality",
-  "@nationality": {
-    "description": "Label for nationality field"
+  "fullText": "Full Text",
+  "@fullText": {
+    "description": "Title for full text section"
   },
-
-  "dateOfBirth": "Date of Birth",
-  "@dateOfBirth": {
-    "description": "Label for date of birth field"
+  "documentSaved": "Document Saved",
+  "@documentSaved": {
+    "description": "Message when document is saved"
   },
-
-  "dateFormat": "DD/MM/YYYY",
-  "@dateFormat": {
-    "description": "Hint text for date format"
+  "useExtractedData": "Use Extracted Data",
+  "@useExtractedData": {
+    "description": "Button label for using extracted data"
   },
-
-  "address": "Address",
-  "@address": {
-    "description": "Label for address field"
+  "copyToClipboard": "Copy to Clipboard",
+  "@copyToClipboard": {
+    "description": "Button label for copying to clipboard"
   },
-
-  "city": "City",
-  "@city": {
-    "description": "Label for city field"
+  "documentType": "Document Type",
+  "@documentType": {
+    "description": "Label for document type"
   },
-
-  "postalCode": "Postal Code",
-  "@postalCode": {
-    "description": "Label for postal code field"
+  "submitClaim": "Submit Claim",
+  "@submitClaim": {
+    "description": "Button label for submitting a claim"
   },
-
-  "errorLoadingProfile": "Error loading profile",
-  "@errorLoadingProfile": {
-    "description": "Error message when profile cannot be loaded"
+  "addDocument": "Add Document",
+  "@addDocument": {
+    "description": "Button label for adding a document"
   },
-
-  "profileSaved": "Profile saved successfully",
-  "@profileSaved": {
-    "description": "Success message when profile is saved"
+  "claimSubmittedSuccessfully": "Claim Submitted Successfully",
+  "@claimSubmittedSuccessfully": {
+    "description": "Message when a claim is submitted successfully"
   },
-
-  "editProfile": "Edit Profile",
-  "@editProfile": {
-    "description": "Title for profile edit screen"
+  "completeAllFields": "Complete All Fields",
+  "@completeAllFields": {
+    "description": "Message prompting user to complete all fields"
   },
-
-  "profileAccuracyInfo": "Please ensure your profile information is accurate",
-  "@profileAccuracyInfo": {
-    "description": "Information about keeping profile information accurate"
+  "supportingDocuments": "Supporting Documents",
+  "@supportingDocuments": {
+    "description": "Title for supporting documents section"
   },
-
-  "keepProfileUpToDate": "Keep your profile up to date",
-  "@keepProfileUpToDate": {
-    "description": "Instruction to keep profile information current"
+  "cropDocument": "Crop Document",
+  "@cropDocument": {
+    "description": "Title for crop document screen"
   },
-
-  "profilePrivacy": "We protect your privacy and data",
-  "@profilePrivacy": {
-    "description": "Statement about profile privacy"
+  "crop": "Crop",
+  "@crop": {
+    "description": "Button label for crop action"
   },
-
-  "correctContactDetails": "Correct contact details help with compensation",
-  "@correctContactDetails": {
-    "description": "Explanation about importance of correct contact details"
+  "rotate": "Rotate",
+  "@rotate": {
+    "description": "Button label for rotate action"
   },
-
+  "airline": "Airline",
+  "@airline": {
+    "description": "Label for airline field"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Label for email field"
+  },
+  "bookingReference": "Booking Reference",
+  "@bookingReference": {
+    "description": "Label for booking reference field"
+  },
+  "additionalInformation": "Additional Information",
+  "@additionalInformation": {
+    "description": "Label for additional information field"
+  },
+  "optional": "Optional",
+  "@optional": {
+    "description": "Label for optional fields"
+  },
+  "thisFieldIsRequired": "This field is required",
+  "@thisFieldIsRequired": {
+    "description": "Error message for required fields"
+  },
+  "pleaseEnterDepartureAirport": "Please enter departure airport",
+  "@pleaseEnterDepartureAirport": {
+    "description": "Error message for missing departure airport"
+  },
+  "uploadDocuments": "Upload Documents",
+  "@uploadDocuments": {
+    "description": "Button label for uploading documents"
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "Text for yes button/response"
+  },
+  "no": "No",
+  "@no": {
+    "description": "Text for no button/response"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Text for ok button"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Text for back button"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Text for save button"
+  },
+  "languageSelection": "Language Selection",
+  "@languageSelection": {
+    "description": "Title for language selection screen"
+  },
+  "passengerName": "Passenger Name",
+  "@passengerName": {
+    "description": "Label for passenger name field"
+  },
+  "passengerDetails": "Passenger Details",
+  "@passengerDetails": {
+    "description": "Title for passenger details section"
+  },
+  "appTitle": "Flight Compensation",
+  "@appTitle": {
+    "description": "Title of the app"
+  },
+  "welcomeMessage": "Welcome",
+  "@welcomeMessage": {
+    "description": "Welcome message shown on home screen"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Label for home tab/button"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Label for settings tab/button"
+  },
+  "required": "Required",
+  "@required": {
+    "description": "Error message for required fields"
+  },
+  "emailAddress": "Email Address",
+  "@emailAddress": {
+    "description": "Label for email address field"
+  },
+  "documentDeleteFailed": "Failed to delete document",
+  "@documentDeleteFailed": {
+    "description": "Error message shown when document deletion fails"
+  },
+  "uploadNew": "Upload New",
+  "@uploadNew": {
+    "description": "Label for upload new document button"
+  },
+  "continueAction": "Continue",
+  "@continueAction": {
+    "description": "Label for continue button"
+  },
+  "compensationClaimForm": "Compensation Claim Form",
+  "@compensationClaimForm": {
+    "description": "Title for compensation claim form screen"
+  },
+  "flight": "Flight",
+  "@flight": {
+    "description": "Label for flight information"
+  },
+  "passengerInformation": "Passenger Information",
+  "@passengerInformation": {
+    "description": "Header for passenger information section"
+  },
   "fullName": "Full Name",
   "@fullName": {
     "description": "Label for full name field"
   },
-
-  "attachDocuments": "Attach Documents",
-  "@attachDocuments": {
-    "description": "Title for document attachment screen"
-  },
-
-  "uploadingDocument": "Uploading document...",
-  "@uploadingDocument": {
-    "description": "Message shown when a document is being uploaded"
-  },
-
-  "noDocuments": "You have no documents.",
-  "@noDocuments": {
-    "description": "Message shown when user has no documents"
-  },
-
-  "uploadFirstDocument": "Upload First Document",
-  "@uploadFirstDocument": {
-    "description": "Button label to upload first document"
-  },
-
-  "uploadNew": "Upload New",
-  "@uploadNew": {
-    "description": "Button label to upload a new document"
-  },
-
-  "documentUploadSuccess": "Document uploaded successfully!",
-  "@documentUploadSuccess": {
-    "description": "Success message when document is uploaded"
-  },
-
-  "uploadFailed": "Upload failed. Please try again.",
-  "@uploadFailed": {
-    "description": "Error message when document upload fails"
-  },
-
-  "continueAction": "Continue",
-  "@continueAction": {
-    "description": "Label for button to continue to the next screen"
-  },
-
-  "claimAttachment": "Claim Attachment",
-  "@claimAttachment": {
-    "description": "Label for claim attachment item"
-  },
-
-  "previewEmail": "Preview Email",
-  "@previewEmail": {
-    "description": "Label for button to preview email"
-  },
-
-  "pdfPreviewMessage": "PDF preview would be shown here.",
-  "@pdfPreviewMessage": {
-    "description": "Message shown in place of PDF preview"
-  },
-
   "downloadPdf": "Download PDF",
   "@downloadPdf": {
-    "description": "Label for button to download PDF"
+    "description": "Label for download PDF button"
   },
-
   "filePreviewNotAvailable": "File preview not available",
   "@filePreviewNotAvailable": {
     "description": "Message shown when file preview is not available"
   },
-
   "deleteDocument": "Delete Document",
   "@deleteDocument": {
-    "description": "Title for document deletion confirmation dialog"
+    "description": "Title for delete document confirmation dialog"
   },
-
   "deleteDocumentConfirmation": "Are you sure you want to delete this document?",
   "@deleteDocumentConfirmation": {
     "description": "Confirmation message for document deletion"
   },
-
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Label for cancel button"
+  },
   "delete": "Delete",
   "@delete": {
     "description": "Label for delete button"
   },
-
   "documentDeletedSuccess": "Document deleted successfully",
   "@documentDeletedSuccess": {
-    "description": "Success message after document deletion"
+    "description": "Message shown when document is deleted successfully"
   },
-
-  "documentDeleteFailed": "Failed to delete document",
-  "@documentDeleteFailed": {
-    "description": "Error message when document deletion fails"
+  "attachDocuments": "Attach Documents",
+  "@attachDocuments": {
+    "description": "Title for document attachment screen"
   },
-
-  "other": "other",
+  "uploadingDocument": "Uploading document...",
+  "@uploadingDocument": {
+    "description": "Text shown when a document is being uploaded"
+  },
+  "noDocuments": "No documents uploaded yet",
+  "@noDocuments": {
+    "description": "Text shown when no documents have been uploaded"
+  },
+  "uploadFirstDocument": "Upload First Document",
+  "@uploadFirstDocument": {
+    "description": "Button text to upload the first document"
+  },
+  "claimAttachment": "Claim Attachment",
+  "@claimAttachment": {
+    "description": "Default name for claim attachments"
+  },
+  "other": "Other",
   "@other": {
-    "description": "The label for the 'other' document type."
+    "description": "Label for other document type"
   },
-
-  "reviewYourClaim": "Step 1: Review Your Claim",
-  "@reviewYourClaim": {
-    "description": "Title for the claim review screen."
+  "pdfPreviewMessage": "PDF Preview",
+  "@pdfPreviewMessage": {
+    "description": "Message shown when viewing a PDF preview"
   },
-  "reviewClaimDetails": "Please review the details of your claim before proceeding.",
-  "@reviewClaimDetails": {
-    "description": "Instructions for reviewing claim details."
+  "tipsAndRemindersTitle": "Tips & Reminders",
+  "@tipsAndRemindersTitle": {
+    "description": "Title for tips and reminders section"
   },
-  "flightNumber": "Flight Number:",
-  "@flightNumber": {
-    "description": "Label for flight number field."
+  "tipSecureData": "Your data is secure and encrypted",
+  "@tipSecureData": {
+    "description": "Tip about data security"
   },
-  "flightDate": "Flight Date:",
-  "@flightDate": {
-    "description": "Label for flight date field."
+  "tipCheckEligibility": "Check eligibility before submitting a claim",
+  "@tipCheckEligibility": {
+    "description": "Tip to check eligibility first"
   },
-  "departureAirport": "Departure Airport:",
-  "@departureAirport": {
-    "description": "Label for departure airport field."
+  "tipDoubleCheckDetails": "Double-check all flight details before submission",
+  "@tipDoubleCheckDetails": {
+    "description": "Tip to verify flight details"
   },
-  "arrivalAirport": "Arrival Airport:",
-  "@arrivalAirport": {
-    "description": "Label for arrival airport field."
+  "documentUploadSuccess": "Document uploaded successfully",
+  "@documentUploadSuccess": {
+    "description": "Message shown when document upload is successful"
   },
-  "reasonForClaim": "Reason for Claim:",
-  "@reasonForClaim": {
-    "description": "Label for reason field."
+  "uploadFailed": "Upload failed. Please try again.",
+  "@uploadFailed": {
+    "description": "Message shown when document upload fails"
   },
-  "attachments": "Attachments:",
-  "@attachments": {
-    "description": "Label for attachments section."
+  "reasonForClaimHint": "Describe why you are making this claim",
+  "@reasonForClaimHint": {
+    "description": "Helper text for reason for claim field"
   },
-  "proceedToConfirmation": "Proceed to Confirmation",
-  "@proceedToConfirmation": {
-    "description": "Button text to proceed to confirmation screen."
+  "validatorReasonRequired": "Reason for claim is required",
+  "@validatorReasonRequired": {
+    "description": "Validation message when reason for claim is empty"
   },
-
-  "confirmAndSend": "Step 2: Confirm & Send",
-  "@confirmAndSend": {
-    "description": "Title for the claim confirmation screen."
+  "tooltipReasonQuickClaim": "Explain why you believe you are entitled to compensation",
+  "@tooltipReasonQuickClaim": {
+    "description": "Tooltip for reason field in quick claim form"
   },
-  "errorLoadingEmailDetails": "Error: Could not load email details.",
-  "@errorLoadingEmailDetails": {
-    "description": "Error message when email details cannot be loaded."
+  "compensationAmountOptionalLabel": "Requested Compensation Amount (Optional)",
+  "@compensationAmountOptionalLabel": {
+    "description": "Label for optional compensation amount field"
   },
-  "noEmailInfo": "Could not find email information for the user or airline.",
-  "@noEmailInfo": {
-    "description": "Error message when email information is missing."
+  "compensationAmountHint": "Enter amount if you have a specific request",
+  "@compensationAmountHint": {
+    "description": "Helper text for compensation amount field"
   },
-  "finalConfirmation": "Final Confirmation",
-  "@finalConfirmation": {
-    "description": "Title for final confirmation section."
+  "tooltipCompensationAmountQuickClaim": "You can specify a compensation amount or leave it blank",
+  "@tooltipCompensationAmountQuickClaim": {
+    "description": "Tooltip for compensation amount in quick claim form"
   },
-  "claimWillBeSentTo": "The claim will be sent to:",
-  "@claimWillBeSentTo": {
-    "description": "Label for airline email."
+  "continueToReview": "Continue to Review",
+  "@continueToReview": {
+    "description": "Button text to proceed to review screen"
   },
-  "copyToYourEmail": "A copy will be sent to your email:",
-  "@copyToYourEmail": {
-    "description": "Label for user email."
-  },
-  "confirmAndSendEmail": "Confirm and Send Email",
-  "@confirmAndSendEmail": {
-    "description": "Button text for confirming and sending email in claim confirmation screen"
-  },
-
-  "quickClaimTitle": "Quick Claim",
-  "@quickClaimTitle": {
-    "description": "Title for the Quick Claim screen"
-  },
-  
-  "tooltipFaqHelp": "View FAQ help",
-  "@tooltipFaqHelp": {
-    "description": "Tooltip text for the FAQ help button"
-  },
-  
-  "quickClaimInfoBanner": "For EU-eligible flights. Fill in basic info for a quick preliminary check.",
-  "@quickClaimInfoBanner": {
-    "description": "Info banner text for the Quick Claim screen"
-  },
-  
-  "flightNumberHintQuickClaim": "Usually a 2-letter airline code and digits, e.g. LH1234",
-  "@flightNumberHintQuickClaim": {
-    "description": "Helper text for flight number input in Quick Claim screen"
-  },
-  
-  "tooltipFlightNumberQuickClaim": "Enter the flight number as shown on your ticket or booking",
-  "@tooltipFlightNumberQuickClaim": {
-    "description": "Tooltip for flight number field in Quick Claim screen"
-  },
-  
-  "tooltipFlightDateQuickClaim": "Date when your flight was scheduled to depart",
-  "@tooltipFlightDateQuickClaim": {
-    "description": "Tooltip for flight date field in Quick Claim screen"
-  },
-  
-  "departureAirportHintQuickClaim": "e.g. FRA for Frankfurt, LHR for London Heathrow",
-  "@departureAirportHintQuickClaim": {
-    "description": "Helper text for departure airport input in Quick Claim screen"
-  },
-  
-  "tooltipDepartureAirportQuickClaim": "Enter the 3-letter IATA code for the departure airport",
+  "tooltipDepartureAirportQuickClaim": "Enter the airport you departed from",
   "@tooltipDepartureAirportQuickClaim": {
-    "description": "Tooltip for departure airport field in Quick Claim screen"
+    "description": "Tooltip for departure airport field in quick claim form"
   },
-  
-  "arrivalAirportHintQuickClaim": "e.g. JFK for New York, CDG for Paris",
+  "arrivalAirportHintQuickClaim": "Enter airport code or name (e.g. LHR, London Heathrow)",
   "@arrivalAirportHintQuickClaim": {
-    "description": "Helper text for arrival airport input in Quick Claim screen"
+    "description": "Helper text for arrival airport field in quick claim form"
   },
-  
-  "tooltipArrivalAirportQuickClaim": "Enter the 3-letter IATA code for the arrival airport",
+  "validatorArrivalAirportRequired": "Arrival airport is required",
+  "@validatorArrivalAirportRequired": {
+    "description": "Validation message when arrival airport is empty"
+  },
+  "tooltipArrivalAirportQuickClaim": "Enter the airport you arrived at",
   "@tooltipArrivalAirportQuickClaim": {
-    "description": "Tooltip for arrival airport field in Quick Claim screen"
+    "description": "Tooltip for arrival airport field in quick claim form"
   },
-
-  "flightCompensationCheckerTitle": "Flight Compensation Checker",
-  "@flightCompensationCheckerTitle": {
-    "description": "Title for the Flight Compensation Checker screen"
+  "reasonForClaimLabel": "Reason for Claim",
+  "@reasonForClaimLabel": {
+    "description": "Label for reason for claim field"
   },
-
-  "checkEligibilityForEu261": "Check if your flight is eligible for EU261 compensation",
-  "@checkEligibilityForEu261": {
-    "description": "Header text for the EU261 eligibility checker"
+  "hintTextReasonQuickClaim": "Describe your claim reason here",
+  "@hintTextReasonQuickClaim": {
+    "description": "Hint text for reason field in quick claim form"
   },
-
-  "flightNumberPlaceholder": "Flight Number (e.g., BA123)",
-  "@flightNumberPlaceholder": {
-    "description": "Placeholder text for flight number input field"
+  "flightNumberHintQuickClaim": "Enter flight number (e.g. LH123)",
+  "@flightNumberHintQuickClaim": {
+    "description": "Helper text for flight number field in quick claim form"
   },
-
-  "dateOptionalPlaceholder": "Date (YYYY-MM-DD, optional)",
-  "@dateOptionalPlaceholder": {
-    "description": "Placeholder text for optional date input field"
+  "validatorFlightNumberRequired": "Flight number is required",
+  "@validatorFlightNumberRequired": {
+    "description": "Validation message when flight number is empty"
   },
-
-  "leaveDateEmptyForToday": "Leave empty for today",
-  "@leaveDateEmptyForToday": {
-    "description": "Hint text for date field"
+  "tooltipFlightNumberQuickClaim": "Enter the flight number for your claim",
+  "@tooltipFlightNumberQuickClaim": {
+    "description": "Tooltip for flight number field in quick claim form"
   },
-
-  "checkCompensationEligibility": "Check Compensation Eligibility",
-  "@checkCompensationEligibility": {
-    "description": "Button label for checking compensation eligibility"
+  "tooltipFlightDateQuickClaim": "Select the date of your flight",
+  "@tooltipFlightDateQuickClaim": {
+    "description": "Tooltip for flight date field in quick claim form"
   },
-
-  "pleaseEnterFlightNumber": "Please enter a flight number",
-  "@pleaseEnterFlightNumber": {
-    "description": "Validation message for empty flight number"
+  "departureAirportHintQuickClaim": "Enter airport code or name (e.g. LHR, London Heathrow)",
+  "@departureAirportHintQuickClaim": {
+    "description": "Helper text for departure airport field in quick claim form"
   },
-
-  "error": "Error",
-  "@error": {
-    "description": "Error text for error messages"
+  "validatorDepartureAirportRequired": "Departure airport is required",
+  "@validatorDepartureAirportRequired": {
+    "description": "Validation message when departure airport is empty"
   },
-
-  "flightInfoFormat": "Flight {flightNumber} - {airline}",
-  "@flightInfoFormat": {
-    "description": "Format for displaying flight info with number and airline",
+  "underAppeal": "Under Appeal",
+  "@underAppeal": {
+    "description": "Status label for a claim that is under appeal"
+  },
+  "unknown": "Unknown Status",
+  "@unknown": {
+    "description": "Status label for a claim with unknown status"
+  },
+  "errorMustBeLoggedIn": "You must be logged in to submit a claim",
+  "@errorMustBeLoggedIn": {
+    "description": "Error message shown when trying to access the claim form without being logged in"
+  },
+  "dialogTitleError": "Error",
+  "@dialogTitleError": {
+    "description": "Title for error dialog boxes"
+  },
+  "dialogButtonOK": "OK",
+  "@dialogButtonOK": {
+    "description": "OK button text for dialog boxes"
+  },
+  "quickClaimTitle": "Quick Claim Form",
+  "@quickClaimTitle": {
+    "description": "Title for the quick claim screen"
+  },
+  "tooltipFaqHelp": "View Frequently Asked Questions",
+  "@tooltipFaqHelp": {
+    "description": "Tooltip for FAQ help button"
+  },
+  "quickClaimInfoBanner": "Fill out this form to submit a quick compensation claim for your flight. We'll help you through the process.",
+  "@quickClaimInfoBanner": {
+    "description": "Information banner text at the top of quick claim form"
+  },
+  "createClaim": "Create New Claim",
+  "@createClaim": {
+    "description": "Button label for creating a new claim"
+  },
+  "submitted": "Submitted",
+  "@submitted": {
+    "description": "Status label for a submitted claim"
+  },
+  "inReview": "In Review",
+  "@inReview": {
+    "description": "Status label for a claim being reviewed"
+  },
+  "actionRequired": "Action Required",
+  "@actionRequired": {
+    "description": "Status label for a claim requiring action from the user"
+  },
+  "processing": "Processing",
+  "@processing": {
+    "description": "Status label for a claim being processed"
+  },
+  "approved": "Approved",
+  "@approved": {
+    "description": "Status label for an approved claim"
+  },
+  "rejected": "Rejected",
+  "@rejected": {
+    "description": "Status label for a rejected claim"
+  },
+  "paid": "Paid",
+  "@paid": {
+    "description": "Status label for a paid claim"
+  },
+  "flightRouteDetails": "{departure} to {arrival}",
+  "@flightRouteDetails": {
+    "description": "Format for displaying flight route details",
+    "placeholders": {
+      "departure": {
+        "type": "String",
+        "example": "Warsaw"
+      },
+      "arrival": {
+        "type": "String",
+        "example": "London"
+      }
+    }
+  },
+  "authenticationRequired": "Authentication Required",
+  "@authenticationRequired": {
+    "description": "Message shown when authentication is required to view claims"
+  },
+  "errorLoadingClaims": "Error loading claims",
+  "@errorLoadingClaims": {
+    "description": "Error message when claims cannot be loaded"
+  },
+  "loginToViewClaimsDashboard": "Please log in to view your claims dashboard",
+  "@loginToViewClaimsDashboard": {
+    "description": "Message prompting user to log in to view claims dashboard"
+  },
+  "logIn": "Log In",
+  "@logIn": {
+    "description": "Button label for logging in"
+  },
+  "noClaimsYet": "No Claims Yet",
+  "@noClaimsYet": {
+    "description": "Message shown when user has no claims"
+  },
+  "startCompensationClaimInstructions": "Start by creating a new compensation claim for your flight. We'll guide you through the process.",
+  "@startCompensationClaimInstructions": {
+    "description": "Instructions for starting a new compensation claim"
+  },
+  "claimsDashboard": "Claims Dashboard",
+  "@claimsDashboard": {
+    "description": "Title for the claims dashboard screen"
+  },
+  "refreshDashboard": "Refresh Dashboard",
+  "@refreshDashboard": {
+    "description": "Tooltip for dashboard refresh button"
+  },
+  "claimsSummary": "Claims Summary",
+  "@claimsSummary": {
+    "description": "Title for claims summary section"
+  },
+  "totalClaims": "Total Claims",
+  "@totalClaims": {
+    "description": "Label for total claims count"
+  },
+  "totalCompensation": "Total Compensation",
+  "@totalCompensation": {
+    "description": "Label for total compensation amount"
+  },
+  "pendingAmount": "Pending Amount",
+  "@pendingAmount": {
+    "description": "Label for pending compensation amount"
+  },
+  "noClaimsYetTitle": "No Claims in this Category",
+  "@noClaimsYetTitle": {
+    "description": "Title shown when no claims exist in a category"
+  },
+  "pending": "Pending",
+  "@pending": {
+    "description": "Status label for pending compensation"
+  },
+  "viewClaimDetails": "View claim details",
+  "@viewClaimDetails": {
+    "description": "Semantic label for viewing claim details"
+  },
+  "claimForFlight": "Claim for flight {flightNumber} - {status}",
+  "@claimForFlight": {
+    "description": "Semantic description of a claim item",
     "placeholders": {
       "flightNumber": {
         "type": "String",
-        "example": "BA123"
+        "example": "LH123"
+      },
+      "status": {
+        "type": "String",
+        "example": "In Review"
+      }
+    }
+  },
+  "flightRouteDetailsWithNumber": "{flightNumber}: {departure} to {arrival} {airline}",
+  "@flightRouteDetailsWithNumber": {
+    "description": "Format for displaying flight route details with flight number",
+    "placeholders": {
+      "flightNumber": {
+        "type": "String"
+      },
+      "departure": {
+        "type": "String"
+      },
+      "arrival": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
       },
       "airline": {
-        "type": "String",
-        "example": "British Airways"
+        "type": "String"
+      },
+      "departureAirport": {
+        "type": "String"
+      },
+      "arrivalAirport": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
       }
     }
   },
-
+  "configureNotificationsDescription": "Receive updates about claim status and important information",
+  "@configureNotificationsDescription": {
+    "description": "Description for notification configuration"
+  },
+  "notificationSettingsComingSoon": "Notification settings coming soon!",
+  "@notificationSettingsComingSoon": {
+    "description": "Message indicating notification feature is coming soon"
+  },
+  "changeApplicationLanguage": "Change Application Language",
+  "@changeApplicationLanguage": {
+    "description": "Label for language change option"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Label for language selection button"
+  },
+  "tipsAndReminders": "Tips and Reminders",
+  "@tipsAndReminders": {
+    "description": "Title for tips and reminders section"
+  },
+  "tipProfileUpToDate": "• Keep your profile up-to-date for faster claim processing.",
+  "@tipProfileUpToDate": {
+    "description": "Tip about keeping profile updated"
+  },
+  "tipInformationPrivate": "• Your information is kept private and secure.",
+  "@tipInformationPrivate": {
+    "description": "Tip about privacy of information"
+  },
+  "tipContactDetails": "• Correct contact details help with compensation.",
+  "@tipContactDetails": {
+    "description": "Tip about importance of correct contact details"
+  },
+  "tipAccessibilitySettings": "• Configure accessibility settings to customize your experience.",
+  "@tipAccessibilitySettings": {
+    "description": "Tip about accessibility settings"
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Tab label for active claims"
+  },
+  "completed": "Completed",
+  "@completed": {
+    "description": "Tab label for completed claims"
+  },
+  "genericUser": "Generic User",
+  "signOut": "Sign Out",
+  "errorSigningOut": "Error signing out: {error}",
+  "@errorSigningOut": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profileInformation": "Profile Information",
+  "profileInfoCardTitle": "Personal Information",
+  "accountSettings": "Account Settings",
+  "editPersonalInfo": "Edit Personal Information",
+  "editPersonalInfoDescription": "Update your name, email, and other personal details",
+  "accessibilitySettings": "Accessibility Settings",
+  "configureAccessibility": "Configure Accessibility",
+  "accessibilityOptions": "Accessibility Options",
+  "configureAccessibilityDescription": "Adjust text size, contrast, and other accessibility features",
+  "notificationSettings": "Notification Settings",
+  "configureNotifications": "Configure Notifications",
+  "eu261Rights": "EU261 Rights",
+  "dontLetAirlinesWin": "Don't Let Airlines Win",
+  "submitClaimAnyway": "Submit Claim Anyway",
+  "newClaim": "New Claim",
+  "notLoggedIn": "Not Logged In",
+  "signIn": "Sign In",
+  "checkFlightEligibilityButtonText": "Check Flight Eligibility",
+  "euEligibleFlightsButtonText": "EU Eligible Flights",
+  "welcomeUser": "Welcome, {name} ({role})",
+  "@welcomeUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "errorFormSubmissionFailed": "Error submitting form: {errorMessage}. Please check your connection and try again.",
+  "@errorFormSubmissionFailed": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "String"
+      }
+    }
+  },
+  "contactAirlineForClaim": "Contact Airline for Claim",
+  "flightMightNotBeEligible": "Flight Might Not Be Eligible",
+  "knowYourRights": "Know Your Rights",
+  "airlineDataDisclaimer": "Airline Data Disclaimer",
+  "error": "Error",
   "status": "Status",
-  "@status": {
-    "description": "Status label"
-  },
-
   "from": "From",
-  "@from": {
-    "description": "From label for departure airport"
-  },
-
   "to": "To",
-  "@to": {
-    "description": "To label for arrival airport"
-  },
-
   "delay": "Delay",
-  "@delay": {
-    "description": "Delay label"
+  "flightEligibleForCompensation": "Flight Eligible For Compensation",
+  "flightInfoFormat": "Flight {flightCode} on {flightDate}",
+  "@flightInfoFormat": {
+    "placeholders": {
+      "flightCode": {
+        "type": "String"
+      },
+      "flightDate": {
+        "type": "String"
+      }
+    }
   },
-
   "minutesFormat": "{minutes} minutes",
   "@minutesFormat": {
-    "description": "Format for displaying minutes",
     "placeholders": {
       "minutes": {
-        "type": "int",
-        "example": "45"
+        "type": "int"
       }
     }
   },
-
-  "unknown": "Unknown",
-  "@unknown": {
-    "description": "Text for unknown values"
+  "flightCompensationCheckerTitle": "Flight Compensation Checker",
+  "checkEligibilityForEu261": "Check Eligibility for EU 261 Compensation",
+  "flightNumberPlaceholder": "Flight Number (e.g., LO123)",
+  "pleaseEnterFlightNumber": "Please enter a flight number",
+  "dateOptionalPlaceholder": "Flight Date (optional)",
+  "leaveDateEmptyForToday": "Leave empty for today's date",
+  "checkCompensationEligibility": "Check Compensation Eligibility",
+  "continueToAttachmentsButton": "Continue to Attachments",
+  "flightNotFoundError": "Flight not found",
+  "invalidFlightNumberError": "Invalid flight number",
+  "networkTimeoutError": "Network timeout, please try again",
+  "serverError": "Server error",
+  "rateLimitError": "Too many requests, please try again later",
+  "generalFlightCheckError": "Error checking flight eligibility",
+  "receiveNotifications": "Receive Notifications",
+  "@receiveNotifications": {
+    "description": "Auto-generated for receiveNotifications"
   },
-
-  "flightEligibleForCompensation": "Your flight is eligible for compensation!",
-  "@flightEligibleForCompensation": {
-    "description": "Message shown when flight is eligible for compensation"
+  "getClaimUpdates": "Get Claim Updates",
+  "@getClaimUpdates": {
+    "description": "Auto-generated for getClaimUpdates"
   },
-
-  "flightNotEligibleForCompensation": "Your flight is not eligible for compensation.",
-  "@flightNotEligibleForCompensation": {
-    "description": "Message shown when flight is not eligible for compensation"
+  "saveProfile": "Save Profile",
+  "@saveProfile": {
+    "description": "Auto-generated for saveProfile"
   },
-
-  "potentialCompensation": "Potential Compensation:",
-  "@potentialCompensation": {
-    "description": "Label for potential compensation amount"
+  "@profileInformation": {
+    "description": "Auto-generated for profileInformation"
   },
-
-  "contactAirlineForClaim": "Contact the airline to claim your compensation under EU Regulation 261/2004.",
-  "@contactAirlineForClaim": {
-    "description": "Instruction for claiming compensation"
+  "firstName": "First Name",
+  "@firstName": {
+    "description": "Auto-generated for firstName"
   },
-
-  "reasonPrefix": "Reason: ",
-  "@reasonPrefix": {
-    "description": "Prefix for showing reason for ineligibility"
+  "lastName": "Last Name",
+  "@lastName": {
+    "description": "Auto-generated for lastName"
   },
-
-  "delayLessThan3Hours": "Flight delay is less than 3 hours",
-  "@delayLessThan3Hours": {
-    "description": "Reason for ineligibility due to short delay"
+  "name": "Name",
+  "@name": {
+    "description": "Auto-generated for name"
   },
-
-  "notUnderEuJurisdiction": "Flight is not under EU jurisdiction",
-  "@notUnderEuJurisdiction": {
-    "description": "Reason for ineligibility due to jurisdiction"
+  "phone": "Phone",
+  "@phone": {
+    "description": "Auto-generated for phone"
   },
-
-  "unknownReason": "Unknown reason",
-  "@unknownReason": {
-    "description": "Default reason when specific reason is not available"
+  "address": "Address",
+  "@address": {
+    "description": "Auto-generated for address"
   },
-  
-  "reasonForClaimLabel": "Reason for Claim",
-  "@reasonForClaimLabel": {
-    "description": "Label for the reason field in Quick Claim screen"
+  "city": "City",
+  "@city": {
+    "description": "Auto-generated for city"
   },
-  
-  "hintTextReasonQuickClaim": "State why you are claiming: delay, cancellation, denied boarding, etc.",
-  "@hintTextReasonQuickClaim": {
-    "description": "Hint text for the reason input in Quick Claim screen"
+  "country": "Country",
+  "@country": {
+    "description": "Auto-generated for country"
   },
-  
-  "reasonForClaimHint": "Provide details about what happened with your flight",
-  "@reasonForClaimHint": {
-    "description": "Helper text for the reason field in Quick Claim screen"
+  "postalCode": "Postal Code",
+  "@postalCode": {
+    "description": "Auto-generated for postalCode"
   },
-  
-  "tooltipReasonQuickClaim": "Explain the reason for your claim in detail",
-  "@tooltipReasonQuickClaim": {
-    "description": "Tooltip for reason field in Quick Claim screen"
+  "pleaseSelectFlightDate": "Please select a flight date",
+  "@pleaseSelectFlightDate": {
+    "description": "Auto-generated for pleaseSelectFlightDate"
   },
-  
-  "compensationAmountOptionalLabel": "Compensation Amount (optional)",
-  "@compensationAmountOptionalLabel": {
-    "description": "Label for the optional compensation amount field"
+  "submitNewClaim": "Submit New Claim",
+  "@submitNewClaim": {
+    "description": "Auto-generated for submitNewClaim"
   },
-  
-  "compensationAmountHint": "If you know the amount you are eligible for, enter it here",
-  "@compensationAmountHint": {
-    "description": "Helper text for the compensation amount field"
+  "pleaseEnterArrivalAirport": "Please enter arrival airport",
+  "@pleaseEnterArrivalAirport": {
+    "description": "Auto-generated for pleaseEnterArrivalAirport"
   },
-  
-  "tooltipCompensationAmountQuickClaim": "Enter the amount if you know what you are eligible for",
-  "@tooltipCompensationAmountQuickClaim": {
-    "description": "Tooltip for compensation amount field in Quick Claim screen"
+  "pleaseEnterReason": "Please enter reason for claim",
+  "@pleaseEnterReason": {
+    "description": "Auto-generated for pleaseEnterReason"
   },
-  
-  "tipsAndRemindersTitle": "Tips and Reminders",
-  "@tipsAndRemindersTitle": {
-    "description": "Title for tips and reminders section in Quick Claim screen"
+  "flightDateHint": "Select flight date",
+  "@flightDateHint": {
+    "description": "Auto-generated for flightDateHint"
   },
-  
-  "tipSecureData": "Your data is secure and encrypted.",
-  "@tipSecureData": {
-    "description": "Tip about data security in Quick Claim screen"
+  "@eu261Rights": {
+    "description": "Auto-generated for eu261Rights"
   },
-  
-  "tipCheckEligibility": "Check EU Regulation 261/2004 eligibility before claiming.",
-  "@tipCheckEligibility": {
-    "description": "Tip about checking eligibility in Quick Claim screen"
+  "@dontLetAirlinesWin": {
+    "description": "Auto-generated for dontLetAirlinesWin"
   },
-  
-  "tipDoubleCheckDetails": "Double-check all details before submitting your claim.",
-  "@tipDoubleCheckDetails": {
-    "description": "Tip about double-checking details in the quick claim screen"
+  "@submitClaimAnyway": {
+    "description": "Auto-generated for submitClaimAnyway"
   },
-  
-  "reviewAndConfirm": "Review and Confirm",
-  "@reviewAndConfirm": {
-    "description": "Button text for reviewing and confirming the claim before submission"
+  "number": "Number",
+  "@number": {
+    "description": "Auto-generated for number"
   },
-  
-  "pleaseConfirmDetails": "Please confirm that these details are correct:",
-  "@pleaseConfirmDetails": {
-    "description": "Header text for the confirmation step asking user to verify claim details"
-  },
-  
-  "emailAppOpenedMessage": "Your email app has been opened. Please send the email to finalize your claim.",
-  "@emailAppOpenedMessage": {
-    "description": "Message shown after email app is opened."
-  },
-  "emailAppErrorMessage": "Could not open email app. Please send your claim manually to {email}.",
-  "@emailAppErrorMessage": {
-    "description": "Error message when email app cannot be opened.",
+  "welcomeUser3": "Welcome, {name} ({role} at {company})",
+  "@welcomeUser3": {
+    "description": "Auto-generated for welcomeUser3",
     "placeholders": {
-      "email": {
-        "type": "String",
-        "example": "example@airline.com"
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      },
+      "company": {
+        "type": "String"
       }
     }
   },
-  "back": "Back",
-  "@back": {
-    "description": "Button text to go back."
+  "phoneNumber": "Phone Number",
+  "@phoneNumber": {
+    "description": "Auto-generated for phoneNumber"
+  },
+  "passportNumber": "Passport Number",
+  "@passportNumber": {
+    "description": "Auto-generated for passportNumber"
+  },
+  "nationality": "Nationality",
+  "@nationality": {
+    "description": "Auto-generated for nationality"
+  },
+  "dateOfBirth": "Date of Birth",
+  "@dateOfBirth": {
+    "description": "Auto-generated for dateOfBirth"
+  },
+  "dateFormat": "DD/MM/YYYY",
+  "@dateFormat": {
+    "description": "Auto-generated for dateFormat"
+  },
+  "privacySettings": "Privacy Settings",
+  "@privacySettings": {
+    "description": "Auto-generated for privacySettings"
+  },
+  "consentToShareData": "I consent to share my data for claim processing",
+  "@consentToShareData": {
+    "description": "Auto-generated for consentToShareData"
+  },
+  "requiredForProcessing": "Required for processing your claim",
+  "@requiredForProcessing": {
+    "description": "Auto-generated for requiredForProcessing"
+  },
+  "claims": "Claims",
+  "@claims": {
+    "description": "Auto-generated for claims"
+  },
+  "errorLoadingProfile": "Error loading profile",
+  "@errorLoadingProfile": {
+    "description": "Auto-generated for errorLoadingProfile"
+  },
+  "profileSaved": "Profile saved",
+  "@profileSaved": {
+    "description": "Auto-generated for profileSaved"
+  },
+  "editProfile": "Edit Profile",
+  "@editProfile": {
+    "description": "Auto-generated for editProfile"
+  },
+  "profileAccuracyInfo": "Please ensure your profile information is accurate for claim processing",
+  "@profileAccuracyInfo": {
+    "description": "Auto-generated for profileAccuracyInfo"
+  },
+  "keepProfileUpToDate": "Keep your profile up to date",
+  "@keepProfileUpToDate": {
+    "description": "Auto-generated for keepProfileUpToDate"
+  },
+  "profilePrivacy": "Your data is secure and only used for claim processing",
+  "@profilePrivacy": {
+    "description": "Auto-generated for profilePrivacy"
+  },
+  "correctContactDetails": "Ensure contact details are correct",
+  "@correctContactDetails": {
+    "description": "Auto-generated for correctContactDetails"
+  },
+  "emailReadyToSend": "Your Compensation Email is Ready!",
+  "@emailReadyToSend": {
+    "description": "Title for email preview dialog"
+  },
+  "emailCopyInstructions": "Copy the email details below and paste them into your email app",
+  "@emailCopyInstructions": {
+    "description": "Instructions for copying email content"
+  },
+  "cc": "CC",
+  "@cc": {
+    "description": "Label for CC (carbon copy) email field"
+  },
+  "subject": "Subject",
+  "@subject": {
+    "description": "Label for email subject field"
+  },
+  "emailBody": "Email Body",
+  "@emailBody": {
+    "description": "Label for email body section"
+  },
+  "howToSendEmail": "How to send this email:",
+  "@howToSendEmail": {
+    "description": "Instructions header for email sending steps"
+  },
+  "emailStep1": "Tap \"Copy Email\" below",
+  "@emailStep1": {
+    "description": "First step in email sending instructions"
+  },
+  "emailStep2": "Open your email app (Gmail, Outlook, etc.)",
+  "@emailStep2": {
+    "description": "Second step in email sending instructions"
+  },
+  "emailStep3": "Create a new email",
+  "@emailStep3": {
+    "description": "Third step in email sending instructions"
+  },
+  "emailStep4": "Paste the copied content",
+  "@emailStep4": {
+    "description": "Fourth step in email sending instructions"
+  },
+  "emailStep5": "Send your compensation claim!",
+  "@emailStep5": {
+    "description": "Fifth step in email sending instructions"
+  },
+  "copyEmail": "Copy Email",
+  "@copyEmail": {
+    "description": "Button text to copy email content"
+  },
+  "emailCopiedSuccess": "Email copied to clipboard!",
+  "@emailCopiedSuccess": {
+    "description": "Success message when email is copied"
   }
 }

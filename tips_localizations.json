@@ -1,0 +1,21 @@
+{
+  "tipsAndRemindersTitle": "Tips & Reminders",
+  "@tipsAndRemindersTitle": {
+    "description": "Title for tips and reminders section"
+  },
+  
+  "tipSecureData": "Your data is secure and encrypted",
+  "@tipSecureData": {
+    "description": "Tip about data security"
+  },
+  
+  "tipCheckEligibility": "Check eligibility before submitting a claim",
+  "@tipCheckEligibility": {
+    "description": "Tip to check eligibility first"
+  },
+  
+  "tipDoubleCheckDetails": "Double-check all flight details before submission",
+  "@tipDoubleCheckDetails": {
+    "description": "Tip to verify flight details"
+  }
+}

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../utils/translation_helper.dart';
-import '../l10n2/app_localizations.dart';
+import '../core/emergency_null_safety.dart';
 
 // Screens
 import 'home_screen.dart';
-import 'claims_screen.dart';
 import 'profile_screen.dart';
 import 'claim_dashboard_screen.dart';
 import 'quick_claim_screen.dart';
@@ -83,20 +81,21 @@ class _MainNavigationState extends State<MainNavigation> {
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
-            label: AppLocalizations.of(context)!.home,
+            label: EmergencyNullSafety.safeLocalizations(context).home,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.description),
-            label: AppLocalizations.of(context)!.claims,
+            label: EmergencyNullSafety.safeLocalizations(context).claims,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.person),
-            label: AppLocalizations.of(context)!.settings,
+            label: EmergencyNullSafety.safeLocalizations(context).settings,
           ),
         ],
       ),
       floatingActionButton: _selectedIndex == 0 
         ? FloatingActionButton.extended(
+            heroTag: 'main_navigation_fab',
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -109,7 +108,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 ),
               );
             },
-            label: Text(AppLocalizations.of(context)!.newClaim),
+            label: Text(EmergencyNullSafety.safeLocalizations(context).newClaim),
             icon: const Icon(Icons.add),
           )
         : null,

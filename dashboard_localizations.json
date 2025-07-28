@@ -1,0 +1,70 @@
+{
+  "claimsDashboard": "Claims Dashboard",
+  "@claimsDashboard": {
+    "description": "Title for the claims dashboard screen"
+  },
+  "refreshDashboard": "Refresh Dashboard",
+  "@refreshDashboard": {
+    "description": "Tooltip for dashboard refresh button"
+  },
+  "claimsSummary": "Claims Summary",
+  "@claimsSummary": {
+    "description": "Title for claims summary section"
+  },
+  "totalClaims": "Total Claims",
+  "@totalClaims": {
+    "description": "Label for total claims count"
+  },
+  "totalCompensation": "Total Compensation",
+  "@totalCompensation": {
+    "description": "Label for total compensation amount"
+  },
+  "pendingAmount": "Pending Amount",
+  "@pendingAmount": {
+    "description": "Label for pending compensation amount"
+  },
+  "noClaimsYetTitle": "No Claims in this Category",
+  "@noClaimsYetTitle": {
+    "description": "Title shown when no claims exist in a category"
+  },
+  "pending": "Pending",
+  "@pending": {
+    "description": "Status label for pending compensation"
+  },
+  "viewClaimDetails": "View claim details",
+  "@viewClaimDetails": {
+    "description": "Semantic label for viewing claim details"
+  },
+  "claimForFlight": "Claim for flight {flightNumber} - {status}",
+  "@claimForFlight": {
+    "description": "Semantic description of a claim item",
+    "placeholders": {
+      "flightNumber": {
+        "type": "String",
+        "example": "LH123"
+      },
+      "status": {
+        "type": "String",
+        "example": "In Review"
+      }
+    }
+  },
+  "flightRouteDetailsWithNumber": "{flightNumber}: {departure} to {arrival}",
+  "@flightRouteDetailsWithNumber": {
+    "description": "Format for displaying flight route details with flight number",
+    "placeholders": {
+      "flightNumber": {
+        "type": "String",
+        "example": "LH123"
+      },
+      "departure": {
+        "type": "String",
+        "example": "Warsaw"
+      },
+      "arrival": {
+        "type": "String",
+        "example": "London"
+      }
+    }
+  }
+}

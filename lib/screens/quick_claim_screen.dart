@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../l10n2/app_localizations.dart';
+import '../core/app_localizations_patch.dart'; // Import for safe l10n extension
 import '../models/claim.dart';
+import '../models/flight.dart';
+import '../services/auth_service_firebase.dart';
 import '../core/services/service_initializer.dart';
-import '../services/claim_tracking_service.dart';
-import '../services/auth_service.dart';
-import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 import 'claim_attachment_screen.dart';
 import 'faq_screen.dart';
-import '../utils/translation_helper.dart';
 
 class QuickClaimScreen extends StatefulWidget {
   final String flightNumber;
@@ -66,21 +64,21 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
 
   void _prepareClaimForVerification() {
     if (_formKey.currentState!.validate()) {
-      final authService = ServiceInitializer.get<AuthService>();
+      final authService = ServiceInitializer.get<FirebaseAuthService>();
       final user = authService.currentUser;
       if (user == null) {
         setState(() {
-          _errorMessage = AppLocalizations.of(context)!.errorMustBeLoggedIn;
+          _errorMessage = context.l10n.errorMustBeLoggedIn;
         });
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.dialogTitleError),
+            title: Text(context.l10n.dialogTitleError),
             content: Text(_errorMessage!),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(AppLocalizations.of(context)!.dialogButtonOK),
+                child: Text(context.l10n.dialogButtonOK),
               ),
             ],
           ),
@@ -122,10 +120,10 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.quickClaimTitle),
+        title: Text(context.l10n.quickClaimTitle),
         actions: [
           Tooltip(
-            message: AppLocalizations.of(context)!.tooltipFaqHelp,
+            message: context.l10n.tooltipFaqHelp,
             child: IconButton(
               icon: const Icon(Icons.help_outline, color: Colors.blue),
               onPressed: () {
@@ -160,7 +158,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        AppLocalizations.of(context)!.quickClaimInfoBanner,
+                        context.l10n.quickClaimInfoBanner,
                         style: TextStyle(color: Colors.blue[900]),
                       ),
                     ),
@@ -174,14 +172,14 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _flightNumberController,
                       decoration: InputDecoration(
-                        labelText: '${AppLocalizations.of(context)!.flightNumber} *',
-                        helperText: AppLocalizations.of(context)!.flightNumberHintQuickClaim,
+                        labelText: '${context.l10n.flightNumber} *',
+                        helperText: context.l10n.flightNumberHintQuickClaim,
                       ),
-                      validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.validatorFlightNumberRequired : null,
+                      validator: (value) => value == null || value.isEmpty ? context.l10n.validatorFlightNumberRequired : null,
                     ),
                   ),
                   Tooltip(
-                    message: AppLocalizations.of(context)!.tooltipFlightNumberQuickClaim,
+                    message: context.l10n.tooltipFlightNumberQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -195,12 +193,12 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                 children: [
                   Expanded(
                     child: InputDecorator(
-                      decoration: InputDecoration(labelText: '${AppLocalizations.of(context)!.flightDate} *'),
+                      decoration: InputDecoration(labelText: '${context.l10n.flightDate} *'),
                       child: Text(DateFormat.yMMMd().format(_flightDate)),
                     ),
                   ),
                   Tooltip(
-                    message: AppLocalizations.of(context)!.tooltipFlightDateQuickClaim,
+                    message: context.l10n.tooltipFlightDateQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -216,14 +214,14 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _departureAirportController,
                       decoration: InputDecoration(
-                        labelText: '${AppLocalizations.of(context)!.departureAirport} *',
-                        helperText: AppLocalizations.of(context)!.departureAirportHintQuickClaim,
+                        labelText: '${context.l10n.departureAirport} *',
+                        helperText: context.l10n.departureAirportHintQuickClaim,
                       ),
-                      validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.validatorDepartureAirportRequired : null,
+                      validator: (value) => value == null || value.isEmpty ? context.l10n.validatorDepartureAirportRequired : null,
                     ),
                   ),
                   Tooltip(
-                    message: AppLocalizations.of(context)!.tooltipDepartureAirportQuickClaim,
+                    message: context.l10n.tooltipDepartureAirportQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -239,14 +237,14 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _arrivalAirportController,
                       decoration: InputDecoration(
-                        labelText: '${AppLocalizations.of(context)!.arrivalAirport} *',
-                        helperText: AppLocalizations.of(context)!.arrivalAirportHintQuickClaim,
+                        labelText: '${context.l10n.arrivalAirport} *',
+                        helperText: context.l10n.arrivalAirportHintQuickClaim,
                       ),
-                      validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.validatorArrivalAirportRequired : null,
+                      validator: (value) => value == null || value.isEmpty ? context.l10n.validatorArrivalAirportRequired : null,
                     ),
                   ),
                   Tooltip(
-                    message: AppLocalizations.of(context)!.tooltipArrivalAirportQuickClaim,
+                    message: context.l10n.tooltipArrivalAirportQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -262,15 +260,15 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _reasonController,
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.reasonForClaimLabel,
-                        hintText: AppLocalizations.of(context)!.hintTextReasonQuickClaim,
-                        helperText: AppLocalizations.of(context)!.reasonForClaimHint,
+                        labelText: context.l10n.reasonForClaimLabel,
+                        hintText: context.l10n.hintTextReasonQuickClaim,
+                        helperText: context.l10n.reasonForClaimHint,
                       ),
-                      validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.validatorReasonRequired : null,
+                      validator: (value) => value == null || value.isEmpty ? context.l10n.validatorReasonRequired : null,
                     ),
                   ),
                   Tooltip(
-                    message: AppLocalizations.of(context)!.tooltipReasonQuickClaim,
+                    message: context.l10n.tooltipReasonQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -286,14 +284,14 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                     child: TextFormField(
                       controller: _compensationAmountController,
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.compensationAmountOptionalLabel,
-                        helperText: AppLocalizations.of(context)!.compensationAmountHint,
+                        labelText: context.l10n.compensationAmountOptionalLabel,
+                        helperText: context.l10n.compensationAmountHint,
                       ),
                       keyboardType: TextInputType.number,
                     ),
                   ),
                   Tooltip(
-                    message: AppLocalizations.of(context)!.tooltipCompensationAmountQuickClaim,
+                    message: context.l10n.tooltipCompensationAmountQuickClaim,
                     child: const Padding(
                       padding: EdgeInsets.only(left: 4.0),
                       child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
@@ -310,7 +308,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
               Center(
                 child: ElevatedButton(
                   onPressed: _isSubmitting ? null : _prepareClaimForVerification,
-                  child: Text(AppLocalizations.of(context)!.continueToReview),
+                  child: Text(context.l10n.continueToReview),
                 ),
               ),
               const SizedBox(height: 24),
@@ -326,13 +324,13 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.tipsAndRemindersTitle,
+                      context.l10n.tipsAndRemindersTitle,
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
                     ),
                     SizedBox(height: 6),
-                    Text(AppLocalizations.of(context)!.tipSecureData),
-                    Text(AppLocalizations.of(context)!.tipCheckEligibility),
-                    Text(AppLocalizations.of(context)!.tipDoubleCheckDetails),
+                    Text(context.l10n.tipSecureData),
+                    Text(context.l10n.tipCheckEligibility),
+                    Text(context.l10n.tipDoubleCheckDetails),
                   ],
                 ),
               ),

@@ -6,17 +6,19 @@
   },
   "welcomeUser": "Bienvenido, {userName}",
   "@welcomeUser": {
-    "description": "Un mensaje de bienvenida para el usuario",
+    "description": "Mensaje de bienvenida con el nombre de usuario",
     "placeholders": {
-      "userName": {
-        "type": "String",
-        "example": "Juan Pérez"
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
       }
     }
   },
   "signOut": "Cerrar Sesión",
   "@signOut": {
-    "description": "Etiqueta del botón de cerrar sesión"
+    "description": "Etiqueta para el botón de cerrar sesión"
   },
   "newClaim": "Nueva Reclamación",
   "@newClaim": {
@@ -35,28 +37,94 @@
     "description": "Etiqueta de selección de idioma"
   },
   "passengerName": "Nombre del Pasajero",
+  "@passengerName": {
+    "description": "Label for passenger name field"
+  },
   "passengerDetails": "Detalles del Pasajero",
+  "@passengerDetails": {
+    "description": "Title for passenger details section"
+  },
   "flightNumber": "Número de Vuelo",
+  "@flightNumber": {
+    "description": "Label for flight number field"
+  },
   "airline": "Aerolínea",
+  "@airline": {
+    "description": "Label for airline field"
+  },
   "departureAirport": "Aeropuerto de Salida",
+  "@departureAirport": {
+    "description": "Label for departure airport field"
+  },
   "arrivalAirport": "Aeropuerto de Llegada",
+  "@arrivalAirport": {
+    "description": "Label for arrival airport field"
+  },
   "email": "Correo Electrónico",
+  "@email": {
+    "description": "Label for email field"
+  },
   "bookingReference": "Referencia de Reserva",
+  "@bookingReference": {
+    "description": "Label for booking reference field"
+  },
   "additionalInformation": "Información Adicional",
+  "@additionalInformation": {
+    "description": "Label for additional information field"
+  },
   "optional": "(Opcional)",
+  "@optional": {
+    "description": "Label for optional fields"
+  },
   "thisFieldIsRequired": "Este campo es obligatorio.",
+  "@thisFieldIsRequired": {
+    "description": "Error message for required fields"
+  },
   "pleaseEnterDepartureAirport": "Por favor, ingrese un aeropuerto de salida.",
+  "@pleaseEnterDepartureAirport": {
+    "description": "Error message for missing departure airport"
+  },
   "uploadDocuments": "Subir Documentos",
+  "@uploadDocuments": {
+    "description": "Button label for uploading documents"
+  },
   "submitClaim": "Enviar Reclamación",
+  "@submitClaim": {
+    "description": "Button label for submitting a claim"
+  },
   "addDocument": "Añadir Documento",
+  "@addDocument": {
+    "description": "Button label for adding a document"
+  },
   "claimSubmittedSuccessfully": "¡Reclamación enviada con éxito!",
+  "@claimSubmittedSuccessfully": {
+    "description": "Message when a claim is submitted successfully"
+  },
   "completeAllFields": "Por favor, complete todos los campos.",
+  "@completeAllFields": {
+    "description": "Message prompting user to complete all fields"
+  },
   "supportingDocuments": "Documentos de Soporte",
+  "@supportingDocuments": {
+    "description": "Title for supporting documents section"
+  },
   "cropDocument": "Recortar Documento",
+  "@cropDocument": {
+    "description": "Title for crop document screen"
+  },
   "crop": "Recortar",
+  "@crop": {
+    "description": "Button label for crop action"
+  },
   "cropping": "Recortando...",
   "rotate": "Girar",
+  "@rotate": {
+    "description": "Button label for rotate action"
+  },
   "aspectRatio": "Relación de Aspecto",
+  "@aspectRatio": {
+    "description": "Label for aspect ratio"
+  },
   "aspectRatioFree": "Libre",
   "aspectRatioSquare": "Cuadrado",
   "aspectRatioPortrait": "Retrato",
@@ -70,46 +138,121 @@
     }
   },
   "documentOcrResult": "Resultado OCR",
+  "@documentOcrResult": {
+    "description": "Title for OCR result section"
+  },
   "extractedFields": "Campos Extraídos",
+  "@extractedFields": {
+    "description": "Title for extracted fields section"
+  },
   "fullText": "Texto Completo",
+  "@fullText": {
+    "description": "Title for full text section"
+  },
   "documentSaved": "Documento guardado.",
+  "@documentSaved": {
+    "description": "Message when document is saved"
+  },
   "useExtractedData": "Usar Datos Extraídos",
+  "@useExtractedData": {
+    "description": "Button label for using extracted data"
+  },
   "copyToClipboard": "Copiado al portapapeles.",
+  "@copyToClipboard": {
+    "description": "Button label for copying to clipboard"
+  },
   "documentType": "Tipo de Documento",
+  "@documentType": {
+    "description": "Label for document type"
+  },
   "saveDocument": "Guardar Documento",
+  "@saveDocument": {
+    "description": "Button label to save document"
+  },
   "fieldName": "Nombre del Campo",
+  "@fieldName": {
+    "description": "Label for field name"
+  },
   "done": "Hecho",
   "yes": "Sí",
+  "@yes": {
+    "description": "Text for yes button/response"
+  },
   "no": "No",
+  "@no": {
+    "description": "Text for no button/response"
+  },
   "ok": "Aceptar",
+  "@ok": {
+    "description": "Text for ok button"
+  },
   "back": "Atrás",
+  "@back": {
+    "description": "Text for back button"
+  },
   "save": "Guardar",
+  "@save": {
+    "description": "Text for save button"
+  },
   "welcomeMessage": "¡Bienvenido a la aplicación!",
+  "@welcomeMessage": {
+    "description": "Welcome message shown on home screen"
+  },
   "fillForm": "Rellenar Formulario",
   "chooseUseInfo": "Elija cómo usar esta información:",
   "fillPassengerFlight": "Rellenar información de pasajero y vuelo",
   "ocrResults": "Resultados OCR",
   "noFieldsExtracted": "No se extrajeron campos del documento.",
+  "@noFieldsExtracted": {
+    "description": "Message when no fields are extracted"
+  },
   "extractedInformation": "Información Extraída",
   "rawOcrText": "Texto OCR sin procesar",
   "copyAllText": "Copiar Todo el Texto",
   "claims": "Reclamaciones",
   "noClaimsYet": "Aún no hay reclamaciones",
-  "startCompensationClaimInstructions": "Comience su reclamación de compensación seleccionando un vuelo de la sección Vuelos Elegibles de la UE",
+  "@noClaimsYet": {
+    "description": "Se muestra cuando aún no hay reclamaciones en el panel"
+  },
+  "startCompensationClaimInstructions": "Inicie su reclamación de compensación seleccionando un vuelo en la sección Vuelos elegibles para la UE",
+  "@startCompensationClaimInstructions": {
+    "description": "Instrucciones para iniciar una reclamación de compensación cuando no existen reclamaciones"
+  },
   "active": "Activa",
   "actionRequired": "Acción Requerida",
+  "@actionRequired": {
+    "description": "Status label for a claim requiring action from the user"
+  },
   "completed": "Completada",
   "profileInfoCardTitle": "Su perfil contiene su información personal y de contacto. Esto se utiliza para procesar sus reclamaciones de compensación de vuelo y mantenerlo informado.",
   "accountSettings": "Configuración de la Cuenta",
   "last72HoursButton": "Últimas 72 horas",
-  "accessibilityOptions": "Opciones de Accesibilidad",
+  "accessibilityOptions": "Opciones de accesibilidad",
+  "@accessibilityOptions": {
+    "description": "Encabezado para la sección de opciones de accesibilidad"
+  },
   "configureAccessibilityDescription": "Configurar alto contraste, texto grande y soporte para lector de pantalla",
   "configureNotificationsDescription": "Configurar cómo recibe las actualizaciones de las reclamaciones",
-  "tipProfileUpToDate": "Mantenga su perfil actualizado para un procesamiento fluido de las reclamaciones.",
-  "tipInformationPrivate": "Su información es privada y se utiliza únicamente para reclamaciones de compensación.",
-  "tipContactDetails": "Asegúrese de que sus datos de contacto sean correctos para que podamos comunicarnos con usted sobre su reclamación.",
-  "tipAccessibilitySettings": "Revise la configuración de accesibilidad para personalizar la aplicación según sus necesidades.",
+  "tipProfileUpToDate": "Mantenga su perfil actualizado",
+  "@tipProfileUpToDate": {
+    "description": "Consejo para mantener la información del perfil actualizada"
+  },
+  "tipInformationPrivate": "Su información es privada",
+  "@tipInformationPrivate": {
+    "description": "Consejo que indica la privacidad de la información del perfil"
+  },
+  "tipContactDetails": "Datos de Contacto",
+  "@tipContactDetails": {
+    "description": "Etiqueta para la sección de datos de contacto en el perfil"
+  },
+  "tipAccessibilitySettings": "Configuración de Accesibilidad",
+  "@tipAccessibilitySettings": {
+    "description": "Etiqueta para la sección de configuración de accesibilidad en el perfil"
+  },
   "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Label for cancel button"
+  },
   "next": "Siguiente",
   "previous": "Anterior",
   "arrivalsAt": "Llegadas a {airport}",
@@ -121,16 +264,31 @@
     }
   },
   "filterByAirline": "Filtrar por aerolínea",
+  "@filterByAirline": {
+    "description": "Hint text for airline filter"
+  },
   "flightStatusDelayed": "Retrasado",
+  "@flightStatusDelayed": {
+    "description": "Status indicating flight is delayed"
+  },
   "flightStatusCancelled": "Cancelado",
   "flightStatusDiverted": "Desviado",
   "flightStatusOnTime": "A tiempo",
   "flight": "Vuelo",
+  "@flight": {
+    "description": "Label for flight information"
+  },
   "flights": "Vuelos",
   "myFlights": "Mis Vuelos",
   "findFlight": "Buscar Vuelo",
   "flightDate": "Fecha del Vuelo",
-  "checkCompensationEligibility": "Verificar Elegibilidad de Compensación",
+  "@flightDate": {
+    "description": "Label for flight date field"
+  },
+  "checkCompensationEligibility": "Verificar Elegibilidad para Compensación",
+  "@checkCompensationEligibility": {
+    "description": "Texto del botón para verificar la elegibilidad de compensación"
+  },
   "supportingDocumentsHint": "Adjunte tarjetas de embarque, billetes y otros documentos para respaldar su reclamación.",
   "scanDocument": "Escanear Documento",
   "uploadDocument": "Subir Documento",
@@ -162,10 +320,16 @@
   "flightDetails": "Detalles del Vuelo",
   "phoneNumber": "Número de Teléfono",
   "required": "Obligatorio",
+  "@required": {
+    "description": "Error message for required fields"
+  },
   "submit": "Enviar",
   "submissionChecklist": "Lista de Verificación de Envío",
   "documentAttached": "Documento Adjunto",
   "compensationClaimForm": "Formulario de Reclamación de Compensación",
+  "@compensationClaimForm": {
+    "description": "Title for compensation claim form screen"
+  },
   "prefilledFromProfile": "Prellenado desde su perfil",
   "flightSearch": "Búsqueda de Vuelos",
   "searchFlightNumber": "Buscar por número de vuelo",
@@ -175,6 +339,9 @@
   "fromAirport": "Desde:",
   "toAirport": "A:",
   "statusLabel": "Estado:",
+  "@statusLabel": {
+    "description": "Label for flight status"
+  },
   "delayedEligible": "Retrasado y potencialmente elegible",
   "startClaim": "Iniciar Reclamación",
   "euWideEligibleFlights": "Vuelos elegibles para compensación en toda la UE",
@@ -193,15 +360,24 @@
   "requiredFieldsCompleted": "Todos los campos obligatorios están completos.",
   "scanningDocumentsNote": "Escanear documentos puede prellenar algunos campos.",
   "tipCheckEligibility": "• Asegúrese de que su vuelo sea elegible para compensación (p. ej., retraso >3h, cancelación, denegación de embarque).",
+  "@tipCheckEligibility": {
+    "description": "Tip to check eligibility first"
+  },
   "tipDoubleCheckDetails": "• Verifique todos los detalles antes de enviar para evitar demoras.",
+  "@tipDoubleCheckDetails": {
+    "description": "Tip to verify flight details"
+  },
   "tooltipFaqHelp": "Acceder a las preguntas frecuentes y la sección de ayuda",
-  "formSubmissionError": "Error al enviar el formulario: {errorMessage}. Verifique su conexión e inténtelo de nuevo.",
+  "@tooltipFaqHelp": {
+    "description": "Tooltip for FAQ help button"
+  },
+  "formSubmissionError": "Error al enviar el formulario: {error}. Verifique su conexión e inténtelo de nuevo.",
   "@formSubmissionError": {
     "description": "Mensaje de error mostrado cuando el envío del formulario falla",
     "placeholders": {
-      "errorMessage": {
+      "error": {
         "type": "String",
-        "example": "Tiempo de espera de la red"
+        "example": "Invalid email"
       }
     }
   },
@@ -271,164 +447,154 @@
   "@apiConnectionIssue": {
     "description": "Mensaje que se muestra cuando hay un problema al conectar con la API"
   },
-
-  "noClaimsYet": "Aún no hay reclamaciones",
-  "@noClaimsYet": { "description": "Se muestra cuando aún no hay reclamaciones en el panel" },
-  "startCompensationClaimInstructions": "Inicie su reclamación de compensación seleccionando un vuelo en la sección Vuelos elegibles para la UE",
-  "@startCompensationClaimInstructions": { "description": "Instrucciones para iniciar una reclamación de compensación cuando no existen reclamaciones" },
   "createClaim": "Crear reclamación",
-  "@createClaim": { "description": "Etiqueta del botón para crear una nueva reclamación" },
+  "@createClaim": {
+    "description": "Etiqueta del botón para crear una nueva reclamación"
+  },
   "submitted": "Enviado",
-  "@submitted": { "description": "Estado de una reclamación enviada" },
+  "@submitted": {
+    "description": "Estado de una reclamación enviada"
+  },
   "inReview": "En revisión",
-  "@inReview": { "description": "Estado de una reclamación en revisión" },
+  "@inReview": {
+    "description": "Estado de una reclamación en revisión"
+  },
   "processing": "Procesando",
-  "@processing": { "description": "Estado de una reclamación en proceso" },
+  "@processing": {
+    "description": "Estado de una reclamación en proceso"
+  },
   "approved": "Aprobado",
-  "@approved": { "description": "Estado de una reclamación aprobada" },
+  "@approved": {
+    "description": "Estado de una reclamación aprobada"
+  },
   "rejected": "Rechazado",
-  "@rejected": { "description": "Estado de una reclamación rechazada" },
+  "@rejected": {
+    "description": "Estado de una reclamación rechazada"
+  },
   "paid": "Pagado",
-  "@paid": { "description": "Estado de una reclamación pagada" },
+  "@paid": {
+    "description": "Estado de una reclamación pagada"
+  },
   "underAppeal": "En apelación",
-  "@underAppeal": { "description": "Estado de una reclamación en apelación" },
+  "@underAppeal": {
+    "description": "Estado de una reclamación en apelación"
+  },
   "unknown": "Desconocido",
-  "@unknown": { "description": "Estado de una reclamación con estado desconocido" },
-
+  "@unknown": {
+    "description": "Texto para valores desconocidos"
+  },
   "authenticationRequired": "Autenticación Requerida",
-  "@authenticationRequired": { "description": "Título que se muestra cuando se requiere autenticación" },
-  
+  "@authenticationRequired": {
+    "description": "Título que se muestra cuando se requiere autenticación"
+  },
   "errorLoadingClaims": "Error al cargar las reclamaciones",
-  "@errorLoadingClaims": { "description": "Mensaje de error cuando no se pueden cargar las reclamaciones" },
-  
+  "@errorLoadingClaims": {
+    "description": "Mensaje de error cuando no se pueden cargar las reclamaciones"
+  },
   "loginToViewClaimsDashboard": "Por favor, inicie sesión para ver su panel de reclamaciones",
-  "@loginToViewClaimsDashboard": { "description": "Mensaje que se muestra cuando el usuario necesita iniciar sesión para ver las reclamaciones" },
-  
+  "@loginToViewClaimsDashboard": {
+    "description": "Mensaje que se muestra cuando el usuario necesita iniciar sesión para ver las reclamaciones"
+  },
   "logIn": "Iniciar sesión",
-  "@logIn": { "description": "Etiqueta del botón para iniciar sesión" },
-  
+  "@logIn": {
+    "description": "Etiqueta del botón para iniciar sesión"
+  },
   "retry": "Reintentar",
-  "@retry": { "description": "Etiqueta del botón para reintentar una acción" },
-
-  "claimForFlight": "Reclamación para el vuelo {number} - {status}",
-  "@claimForFlight": { 
+  "@retry": {
+    "description": "Etiqueta del botón para reintentar una acción"
+  },
+  "claimForFlight": "Reclamación para el vuelo {flightNumber} - {status}",
+  "@claimForFlight": {
     "description": "Texto que muestra la reclamación para un vuelo específico con estado",
     "placeholders": {
-      "number": {},
-      "status": {}
+      "flightNumber": {
+        "type": "String",
+        "example": "LH123"
+      },
+      "status": {
+        "type": "String",
+        "example": "En revisión"
+      }
     }
   },
-
-  "flightRouteDetails": "Vuelo {number}: {departure} - {arrival}",
-  "@flightRouteDetails": { 
+  "flightRouteDetails": "Vuelo {flightNumber}: {departure} - {arrival}",
+  "@flightRouteDetails": {
     "description": "Texto que muestra los detalles de la ruta del vuelo con salida y llegada",
     "placeholders": {
-      "number": {},
-      "departure": {},
-      "arrival": {}
+      "flightNumber": {
+        "type": "String",
+        "example": "LH123"
+      },
+      "departure": {
+        "type": "String",
+        "example": "Madrid"
+      },
+      "arrival": {
+        "type": "String",
+        "example": "Barcelona"
+      }
     }
   },
-
   "viewClaimDetails": "Ver detalles de la reclamación",
   "@viewClaimDetails": {
     "description": "Indicación de accesibilidad para ver detalles de la reclamación"
   },
-
   "totalCompensation": "Compensación Total",
   "@totalCompensation": {
     "description": "Etiqueta para el monto total de compensación en las analíticas del panel"
   },
-
   "pendingAmount": "Monto Pendiente",
   "@pendingAmount": {
     "description": "Etiqueta para el monto de compensación pendiente en las analíticas del panel"
   },
-
   "pending": "Pendiente",
   "@pending": {
     "description": "Texto que se muestra cuando el monto de compensación está pendiente"
   },
-
   "claimsDashboard": "Panel de Reclamaciones",
   "@claimsDashboard": {
     "description": "Título para la pantalla del panel de reclamaciones"
   },
-
   "refreshDashboard": "Actualizar Panel",
   "@refreshDashboard": {
     "description": "Descripción emergente para el botón de actualizar en el panel"
   },
-
   "claimsSummary": "Resumen de Reclamaciones",
   "@claimsSummary": {
     "description": "Título para la sección de resumen de reclamaciones"
   },
-
   "totalClaims": "Total de Reclamaciones",
   "@totalClaims": {
     "description": "Etiqueta para el recuento total de reclamaciones"
   },
-
-  "tipContactDetails": "Datos de Contacto",
-  "@tipContactDetails": {
-    "description": "Etiqueta para la sección de datos de contacto en el perfil"
-  },
-
-  "tipAccessibilitySettings": "Configuración de Accesibilidad",
-  "@tipAccessibilitySettings": {
-    "description": "Etiqueta para la sección de configuración de accesibilidad en el perfil"
-  },
-
-  "tipProfileUpToDate": "Mantenga su perfil actualizado",
-  "@tipProfileUpToDate": {
-    "description": "Consejo para mantener la información del perfil actualizada"
-  },
-
-  "tipInformationPrivate": "Su información es privada",
-  "@tipInformationPrivate": {
-    "description": "Consejo que indica la privacidad de la información del perfil"
-  },
-
-  "accessibilitySettings": "Configuración de Accesibilidad",
+  "accessibilitySettings": "Configuración de accesibilidad",
   "@accessibilitySettings": {
-    "description": "Título para la sección de configuración de accesibilidad"
+    "description": "Título para la pantalla de configuración de accesibilidad"
   },
-
   "configureAccessibility": "Configurar opciones de accesibilidad",
   "@configureAccessibility": {
     "description": "Etiqueta semántica para el botón de configuración de accesibilidad"
   },
-
   "configureNotifications": "Configurar notificaciones",
   "@configureNotifications": {
     "description": "Etiqueta semántica para el botón de configuración de notificaciones"
   },
-
   "notificationSettingsComingSoon": "¡Configuración de notificaciones próximamente!",
   "@notificationSettingsComingSoon": {
     "description": "Mensaje que indica que la función de notificaciones está en desarrollo"
   },
-
   "selectLanguage": "Seleccionar Idioma",
   "@selectLanguage": {
     "description": "Etiqueta para el botón de selección de idioma"
   },
-
   "editPersonalInfo": "Editar Información Personal",
   "@editPersonalInfo": {
     "description": "Etiqueta para el botón de editar información personal"
   },
-
   "editPersonalInfoDescription": "Actualice sus datos personales, dirección e información de contacto",
   "@editPersonalInfoDescription": {
     "description": "Descripción de lo que permite la edición de información personal"
   },
-
-  "signOut": "Cerrar Sesión",
-  "@signOut": {
-    "description": "Etiqueta para el botón de cerrar sesión"
-  },
-
   "errorSigningOut": "Error al cerrar sesión: {error}",
   "@errorSigningOut": {
     "description": "Mensaje de error que se muestra cuando falla el cierre de sesión",
@@ -439,873 +605,788 @@
       }
     }
   },
-
   "signInOrSignUp": "Iniciar Sesión / Registrarse",
   "@signInOrSignUp": {
     "description": "Etiqueta para el botón de inicio de sesión o registro"
   },
-
   "genericUser": "Usuario",
   "@genericUser": {
     "description": "Nombre genérico para el usuario cuando el nombre real no está disponible"
   },
-
-  "welcomeUser": "Bienvenido, {userName}",
-  "@welcomeUser": {
-    "description": "Mensaje de bienvenida con el nombre de usuario",
-    "placeholders": {
-      "userName": {
-        "type": "String",
-        "example": "Juan"
-      }
-    }
-  },
-
   "dismiss": "Cerrar",
   "@dismiss": {
     "description": "Etiqueta para botón de cerrar"
   },
-
   "signInToTrackClaims": "Inicie sesión para seguir sus reclamaciones",
   "@signInToTrackClaims": {
     "description": "Mensaje que anima al usuario a iniciar sesión para seguir las reclamaciones"
   },
-
   "createAccountDescription": "Cree una cuenta para seguir fácilmente todas sus reclamaciones de compensación",
   "@createAccountDescription": {
     "description": "Descripción de los beneficios de crear una cuenta"
   },
-
   "continueToAttachmentsButton": "Continuar a los archivos adjuntos",
   "@continueToAttachmentsButton": {
     "description": "Etiqueta de botón para proceder a la pantalla de archivos adjuntos"
   },
-
   "country": "País",
   "@country": {
     "description": "Etiqueta para campo de país"
   },
-
   "privacySettings": "Configuración de Privacidad",
   "@privacySettings": {
     "description": "Etiqueta para sección de configuración de privacidad"
   },
-
   "consentToShareData": "Consentimiento para Compartir Datos",
   "@consentToShareData": {
     "description": "Etiqueta para interruptor de consentimiento para compartir datos"
   },
-
   "requiredForProcessing": "Requerido para procesar sus reclamaciones",
   "@requiredForProcessing": {
     "description": "Descripción para consentimiento para compartir datos"
   },
-
   "receiveNotifications": "Recibir Notificaciones",
   "@receiveNotifications": {
     "description": "Etiqueta para interruptor de recibir notificaciones"
   },
-
   "getClaimUpdates": "Reciba actualizaciones sobre sus reclamaciones",
   "@getClaimUpdates": {
     "description": "Descripción para recibir notificaciones"
   },
-
   "saveProfile": "Guardar Perfil",
   "@saveProfile": {
     "description": "Etiqueta de botón para guardar cambios en el perfil"
   },
-
   "passportNumber": "Número de Pasaporte",
   "@passportNumber": {
     "description": "Etiqueta para campo de número de pasaporte"
   },
-
   "nationality": "Nacionalidad",
   "@nationality": {
     "description": "Etiqueta para campo de nacionalidad"
   },
-
   "dateOfBirth": "Fecha de Nacimiento",
   "@dateOfBirth": {
     "description": "Etiqueta para campo de fecha de nacimiento"
   },
-
   "dateFormat": "DD/MM/AAAA",
   "@dateFormat": {
     "description": "Texto de ayuda para formato de fecha"
   },
-
   "address": "Dirección",
   "@address": {
     "description": "Etiqueta para campo de dirección"
   },
-
   "city": "Ciudad",
   "@city": {
     "description": "Etiqueta para campo de ciudad"
   },
-
   "postalCode": "Código Postal",
   "@postalCode": {
     "description": "Etiqueta para campo de código postal"
   },
-
   "errorLoadingProfile": "Error al cargar el perfil",
   "@errorLoadingProfile": {
     "description": "Mensaje de error cuando no se puede cargar el perfil"
   },
-
   "profileSaved": "Perfil guardado con éxito",
   "@profileSaved": {
     "description": "Mensaje de éxito cuando se guarda el perfil"
   },
-
   "editProfile": "Editar Perfil",
   "@editProfile": {
     "description": "Título para la pantalla de edición de perfil"
   },
-
   "profileAccuracyInfo": "Por favor, asegúrese de que la información de su perfil sea precisa",
   "@profileAccuracyInfo": {
     "description": "Información sobre mantener precisa la información del perfil"
   },
-
   "keepProfileUpToDate": "Mantenga su perfil actualizado",
   "@keepProfileUpToDate": {
     "description": "Instrucción para mantener actualizada la información del perfil"
   },
-
   "profilePrivacy": "Protegemos su privacidad y datos",
   "@profilePrivacy": {
     "description": "Declaración sobre la privacidad del perfil"
   },
-
   "correctContactDetails": "Los datos de contacto correctos ayudan con la compensación",
   "@correctContactDetails": {
     "description": "Explicación sobre la importancia de los datos de contacto correctos"
   },
-
   "fullName": "Nombre Completo",
   "@fullName": {
     "description": "Etiqueta para campo de nombre completo"
   },
-
   "attachDocuments": "Adjuntar Documentos",
   "@attachDocuments": {
     "description": "Título para la pantalla de adjuntar documentos"
   },
-
   "uploadingDocument": "Subiendo documento...",
   "@uploadingDocument": {
     "description": "Mensaje que se muestra cuando se está subiendo un documento"
   },
-
   "noDocuments": "No tienes documentos.",
   "@noDocuments": {
     "description": "Mensaje que se muestra cuando el usuario no tiene documentos"
   },
-
   "uploadFirstDocument": "Subir Primer Documento",
   "@uploadFirstDocument": {
     "description": "Etiqueta del botón para subir el primer documento"
   },
-
   "uploadNew": "Subir Nuevo",
   "@uploadNew": {
     "description": "Etiqueta del botón para subir un nuevo documento"
   },
-
   "documentUploadSuccess": "¡Documento subido exitosamente!",
   "@documentUploadSuccess": {
     "description": "Mensaje de éxito cuando se sube un documento"
   },
-
   "uploadFailed": "Error al subir. Por favor, intenta de nuevo.",
   "@uploadFailed": {
     "description": "Mensaje de error cuando falla la subida del documento"
   },
-
   "continueAction": "Continuar",
   "@continueAction": {
     "description": "Etiqueta para el botón para continuar a la siguiente pantalla"
   },
-
   "claimAttachment": "Adjunto de Reclamo",
   "@claimAttachment": {
     "description": "Etiqueta para elemento de adjunto de reclamo"
   },
-
   "other": "otro",
   "@other": {
     "description": "Etiqueta para otro tipo de documento"
   },
-
-  "accessibilitySettings": "Configuración de accesibilidad",
-  "@accessibilitySettings": {
-    "description": "Título para la pantalla de configuración de accesibilidad"
-  },
-
-  "accessibilityOptions": "Opciones de accesibilidad",
-  "@accessibilityOptions": {
-    "description": "Encabezado para la sección de opciones de accesibilidad"
-  },
-
   "configureAccessibilitySettings": "Configure los ajustes para mejorar la accesibilidad de la aplicación.",
   "@configureAccessibilitySettings": {
     "description": "Texto de descripción para la configuración de accesibilidad"
   },
-
   "displaySettings": "Configuración de pantalla",
   "@displaySettings": {
     "description": "Encabezado para la sección de configuración de pantalla"
   },
-
   "displayAndVisualSettingsSection": "Sección de configuración de pantalla y visual",
   "@displayAndVisualSettingsSection": {
     "description": "Etiqueta semántica para la sección de configuración de pantalla"
   },
-
   "highContrastMode": "Modo de alto contraste",
   "@highContrastMode": {
     "description": "Etiqueta para el interruptor de modo de alto contraste"
   },
-
   "enableHighContrastMode": "Habilitar modo de alto contraste para mejor visibilidad",
   "@enableHighContrastMode": {
     "description": "Etiqueta semántica para el interruptor de modo de alto contraste"
   },
-
   "highContrastDescription": "El modo de alto contraste aumenta el contraste de color para mejorar la legibilidad para usuarios con baja visión.",
   "@highContrastDescription": {
     "description": "Descripción para el modo de alto contraste"
   },
-
   "largeText": "Texto grande",
   "@largeText": {
     "description": "Etiqueta para el interruptor de texto grande"
   },
-
   "enableLargeText": "Habilitar texto grande para mejor legibilidad",
   "@enableLargeText": {
     "description": "Etiqueta semántica para el interruptor de texto grande"
   },
-
   "largeTextDescription": "El modo de texto grande aumenta el tamaño de la fuente en toda la aplicación para una mejor legibilidad.",
   "@largeTextDescription": {
     "description": "Descripción para el modo de texto grande"
   },
-
   "screenReaderSettings": "Configuración del lector de pantalla",
   "@screenReaderSettings": {
     "description": "Encabezado para la sección de configuración del lector de pantalla"
   },
-
   "screenReaderEnhancementSettings": "Configuración de mejora del lector de pantalla",
   "@screenReaderEnhancementSettings": {
     "description": "Etiqueta semántica para la sección de configuración del lector de pantalla"
   },
-
   "enhancedScreenReaderDescriptions": "Descripciones mejoradas para lector de pantalla",
   "@enhancedScreenReaderDescriptions": {
     "description": "Etiqueta para el interruptor de descripciones mejoradas para lector de pantalla"
   },
-
   "enableMoreDetailedDescriptions": "Habilitar descripciones más detalladas para lectores de pantalla",
   "@enableMoreDetailedDescriptions": {
     "description": "Etiqueta semántica para el interruptor de descripciones mejoradas para lector de pantalla"
   },
-
   "providesMoreDetailedDescriptions": "Proporciona descripciones más detalladas para lectores de pantalla para explicar mejor los elementos de la interfaz.",
   "@providesMoreDetailedDescriptions": {
     "description": "Descripción para las descripciones mejoradas para lector de pantalla"
   },
-
   "keyboardNavigation": "Navegación con teclado",
   "@keyboardNavigation": {
     "description": "Encabezado para la sección de navegación con teclado"
   },
-
   "keyboardNavigationGuide": "Guía de navegación con teclado",
   "@keyboardNavigationGuide": {
     "description": "Etiqueta semántica para la sección de navegación con teclado"
   },
-
   "useTheFollowingKeyboardShortcuts": "Use los siguientes atajos de teclado:",
   "@useTheFollowingKeyboardShortcuts": {
     "description": "Instrucción para los atajos de teclado"
   },
-
   "moveToNextItem": "Mover al siguiente elemento",
   "@moveToNextItem": {
     "description": "Descripción para la tecla Tab"
   },
-
   "moveToPreviousItem": "Mover al elemento anterior",
   "@moveToPreviousItem": {
     "description": "Descripción para las teclas Shift+Tab"
   },
-
   "activateFocusedItem": "Activar elemento enfocado",
   "@activateFocusedItem": {
     "description": "Descripción para las teclas Espacio/Enter"
   },
-
   "navigateWithinComponents": "Navegar dentro de componentes",
   "@navigateWithinComponents": {
     "description": "Descripción para las teclas de flecha"
   },
-
   "closeDialogsOrMenus": "Cerrar diálogos o menús",
   "@closeDialogsOrMenus": {
     "description": "Descripción para la tecla Esc"
   },
-
   "testYourSettings": "Pruebe su configuración",
   "@testYourSettings": {
     "description": "Encabezado para la sección de prueba de configuración"
   },
-
   "areaToTestSettings": "Área para probar su configuración de accesibilidad",
   "@areaToTestSettings": {
     "description": "Etiqueta semántica para la sección de prueba de configuración"
   },
-
   "useThisAreaToTest": "Use esta área para probar cómo sus ajustes afectan la apariencia y el comportamiento de la aplicación.",
   "@useThisAreaToTest": {
     "description": "Instrucción para el área de prueba"
   },
-
   "sampleInputField": "Campo de entrada de ejemplo",
   "@sampleInputField": {
     "description": "Etiqueta para el campo de entrada de ejemplo"
   },
-
   "primaryButton": "Botón primario",
   "@primaryButton": {
     "description": "Etiqueta para el botón primario de ejemplo"
   },
-
   "samplePrimaryButton": "Botón primario de ejemplo para pruebas",
   "@samplePrimaryButton": {
     "description": "Etiqueta semántica para el botón primario de ejemplo"
   },
-
   "primaryButtonPressed": "Botón primario presionado",
   "@primaryButtonPressed": {
     "description": "Mensaje cuando se presiona el botón primario"
   },
-
   "secondaryButton": "Botón secundario",
   "@secondaryButton": {
     "description": "Etiqueta para el botón secundario de ejemplo"
   },
-
   "sampleSecondaryButton": "Botón secundario de ejemplo para pruebas",
   "@sampleSecondaryButton": {
     "description": "Etiqueta semántica para el botón secundario de ejemplo"
   },
-
   "secondaryButtonPressed": "Botón secundario presionado",
   "@secondaryButtonPressed": {
     "description": "Mensaje cuando se presiona el botón secundario"
   },
-
   "saveSettings": "Guardar configuración",
   "@saveSettings": {
     "description": "Etiqueta para el botón de guardar configuración"
   },
-
   "saveAccessibilitySettings": "Guardar configuración de accesibilidad y volver a la pantalla anterior",
   "@saveAccessibilitySettings": {
     "description": "Etiqueta semántica para el botón de guardar configuración"
   },
-
   "backToPreviousScreen": "Volver a la pantalla anterior",
   "@backToPreviousScreen": {
     "description": "Etiqueta semántica para el botón de volver"
   },
-
   "flightDiverted": "Vuelo desviado",
   "@flightDiverted": {
     "description": "Estado mostrado cuando el vuelo ha sido desviado"
   },
-  
   "flightCancelled": "Vuelo cancelado",
   "@flightCancelled": {
     "description": "Estado mostrado cuando el vuelo ha sido cancelado"
   },
-  
   "flightDivertedEligible": "¡Tu vuelo desviado es elegible para compensación!",
   "@flightDivertedEligible": {
     "description": "Mensaje mostrado cuando un vuelo desviado es elegible para compensación"
   },
-  
   "flightCancelledEligible": "¡Tu vuelo cancelado es elegible para compensación!",
   "@flightCancelledEligible": {
     "description": "Mensaje mostrado cuando un vuelo cancelado es elegible para compensación"
   },
-  
   "divertedReason": "El vuelo fue desviado a un aeropuerto diferente",
   "@divertedReason": {
     "description": "Motivo mostrado para vuelos desviados"
   },
-  
   "cancelledReason": "El vuelo fue cancelado",
   "@cancelledReason": {
     "description": "Motivo mostrado para vuelos cancelados"
   },
-  
-  "checkCompensationEligibility": "Verificar Elegibilidad para Compensación",
-  "@checkCompensationEligibility": {
-    "description": "Texto del botón para verificar la elegibilidad de compensación"
-  },
-
   "flightCompensationCheckerTitle": "Verificador de Compensación de Vuelos",
   "@flightCompensationCheckerTitle": {
     "description": "Título para la pantalla del Verificador de Compensación de Vuelos"
   },
-
   "copiedToClipboard": "Copiado al portapapeles",
   "@copiedToClipboard": {
     "description": "Mensaje que aparece cuando se ha copiado algo al portapapeles"
   },
-
   "submitNewClaim": "Enviar nueva reclamación",
   "@submitNewClaim": {
     "description": "Texto del botón para enviar una nueva reclamación"
   },
-
   "reasonForClaim": "Motivo de la reclamación",
   "@reasonForClaim": {
     "description": "Etiqueta para el campo del motivo de la reclamación"
   },
-
   "flightDateHint": "Seleccionar fecha del vuelo",
   "@flightDateHint": {
     "description": "Texto de ayuda para el campo de fecha del vuelo"
   },
-
   "continueToAttachments": "Continuar a archivos adjuntos",
   "@continueToAttachments": {
     "description": "Texto del botón para continuar a la pantalla de archivos adjuntos"
   },
-
   "pleaseEnterArrivalAirport": "Por favor, introduce el aeropuerto de llegada",
   "@pleaseEnterArrivalAirport": {
     "description": "Mensaje de validación para el campo del aeropuerto de llegada"
   },
-
   "pleaseEnterReason": "Por favor, introduce un motivo para la reclamación",
   "@pleaseEnterReason": {
     "description": "Mensaje de validación para el campo del motivo de la reclamación"
   },
-
   "pleaseSelectFlightDate": "Por favor, selecciona la fecha del vuelo",
   "@pleaseSelectFlightDate": {
     "description": "Mensaje de validación para el campo de fecha del vuelo"
   },
-
   "claimDetails": "Detalles de la reclamación",
   "@claimDetails": {
     "description": "Título para la sección de detalles de la reclamación"
   },
-
   "refresh": "Actualizar",
   "@refresh": {
     "description": "Texto del botón para actualizar"
   },
-
   "errorLoadingClaim": "Error al cargar la reclamación",
   "@errorLoadingClaim": {
     "description": "Mensaje de error cuando no se puede cargar una reclamación"
   },
-
   "unknownError": "Error desconocido",
   "@unknownError": {
     "description": "Mensaje para un error desconocido"
   },
-
   "networkError": "Error de red",
   "@networkError": {
     "description": "Mensaje para un error de red"
   },
-
   "generalError": "Error general",
   "@generalError": {
     "description": "Mensaje para un error general"
   },
-
   "loginRequiredForClaim": "Se requiere inicio de sesión para presentar una reclamación",
   "@loginRequiredForClaim": {
     "description": "Mensaje que indica que se requiere iniciar sesión para presentar una reclamación"
   },
-
   "quickClaimTitle": "Reclamación rápida",
   "@quickClaimTitle": {
     "description": "Título para la pantalla de reclamación rápida"
   },
-
   "quickClaimInfoBanner": "Complete los detalles de su vuelo para verificar la elegibilidad para compensación",
   "@quickClaimInfoBanner": {
     "description": "Banner informativo en la pantalla de reclamación rápida"
   },
-
   "flightNumberHintQuickClaim": "Número de vuelo (ej. LH123)",
   "@flightNumberHintQuickClaim": {
     "description": "Texto de ayuda para el campo del número de vuelo en reclamación rápida"
   },
-
   "departureAirportHintQuickClaim": "Aeropuerto de salida (ej. MAD)",
   "@departureAirportHintQuickClaim": {
     "description": "Texto de ayuda para el campo del aeropuerto de salida en reclamación rápida"
   },
-
   "arrivalAirportHintQuickClaim": "Aeropuerto de llegada (ej. BCN)",
   "@arrivalAirportHintQuickClaim": {
     "description": "Texto de ayuda para el campo del aeropuerto de llegada en reclamación rápida"
   },
-
   "reasonForClaimLabel": "Motivo de la reclamación",
   "@reasonForClaimLabel": {
     "description": "Etiqueta para el campo del motivo de la reclamación"
   },
-
   "reasonForClaimHint": "Ej. retraso, cancelación",
   "@reasonForClaimHint": {
     "description": "Texto de ayuda para el campo del motivo de la reclamación"
   },
-
   "compensationAmountOptionalLabel": "Cantidad de compensación (opcional)",
   "@compensationAmountOptionalLabel": {
     "description": "Etiqueta para el campo opcional de cantidad de compensación"
   },
-
   "compensationAmountHint": "Ej. 250€",
   "@compensationAmountHint": {
     "description": "Texto de ayuda para el campo de cantidad de compensación"
   },
-
   "euWideCompensationTitle": "Compensaciones a nivel de la UE",
   "@euWideCompensationTitle": {
     "description": "Título para la sección de compensaciones a nivel de la UE"
   },
-
   "scheduledLabel": "Programado",
   "@scheduledLabel": {
     "description": "Etiqueta para la hora/fecha programada"
   },
-
   "statusLabelEuList": "Estado",
   "@statusLabelEuList": {
     "description": "Etiqueta de estado para la lista de vuelos de la UE"
   },
-
   "potentialCompensationLabel": "Compensación potencial",
   "@potentialCompensationLabel": {
     "description": "Etiqueta para la cantidad de compensación potencial"
   },
-
   "prefillCompensationFormButton": "Rellenar formulario de compensación",
   "@prefillCompensationFormButton": {
     "description": "Texto del botón para rellenar automáticamente el formulario de compensación"
   },
-
   "claimsTabActive": "Activas",
   "@claimsTabActive": {
     "description": "Etiqueta de pestaña para reclamaciones activas"
   },
-
   "claimsTabActionRequired": "Acción requerida",
   "@claimsTabActionRequired": {
     "description": "Etiqueta de pestaña para reclamaciones que requieren acción"
   },
-
   "claimsTabCompleted": "Completadas",
   "@claimsTabCompleted": {
     "description": "Etiqueta de pestaña para reclamaciones completadas"
   },
-
   "dialogTitleSuccess": "Éxito",
   "@dialogTitleSuccess": {
     "description": "Título del diálogo para mensajes de éxito"
   },
-
   "dialogContentClaimSubmitted": "Su reclamación ha sido enviada con éxito.",
   "@dialogContentClaimSubmitted": {
     "description": "Contenido del diálogo para el envio exitoso de la reclamación"
   },
-
   "dialogButtonOK": "OK",
   "@dialogButtonOK": {
     "description": "Texto del botón de diálogo para la acción OK"
   },
-
   "documentManagementTitle": "Gestión de documentos",
   "@documentManagementTitle": {
     "description": "Título para la pantalla de gestión de documentos"
   },
-
   "documentsForFlightTitle": "Documentos para vuelo",
   "@documentsForFlightTitle": {
     "description": "Título para la sección de documentos de vuelo"
   },
-
   "errorLoadingDocuments": "Error al cargar documentos",
   "@errorLoadingDocuments": {
     "description": "Mensaje de error al cargar documentos"
   },
-
   "addDocumentTooltip": "Añadir documento",
   "@addDocumentTooltip": {
     "description": "Tooltip para el botón de añadir documento"
   },
-
   "deleteDocumentTitle": "Eliminar documento",
   "@deleteDocumentTitle": {
     "description": "Título para el diálogo de eliminación de documento"
   },
-
   "deleteDocumentMessage": "¿Está seguro de que desea eliminar este documento?",
   "@deleteDocumentMessage": {
     "description": "Mensaje de confirmación para la eliminación de un documento"
   },
-
   "delete": "Eliminar",
   "@delete": {
     "description": "Texto del botón de eliminar"
   },
-
   "errorMustBeLoggedIn": "Debe iniciar sesión para realizar esta acción",
   "@errorMustBeLoggedIn": {
     "description": "Mensaje de error cuando el usuario no ha iniciado sesión"
   },
-
   "errorFailedToSubmitClaim": "Error al enviar la reclamación",
   "@errorFailedToSubmitClaim": {
-    "description": "Mensaje de error al enviar una reclamación"
+    "description": "Mensaje de error al enviar una reclamación",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   },
-
   "dialogTitleError": "Error",
   "@dialogTitleError": {
     "description": "Título del diálogo para mensajes de error"
   },
-
   "validatorFlightNumberRequired": "Número de vuelo es obligatorio",
   "@validatorFlightNumberRequired": {
     "description": "Mensaje de validación para número de vuelo obligatorio"
   },
-
   "tooltipFlightNumberQuickClaim": "Introduzca el número de vuelo, p.ej. IB123",
   "@tooltipFlightNumberQuickClaim": {
     "description": "Tooltip para el campo de número de vuelo en reclamación rápida"
   },
-
   "tooltipFlightDateQuickClaim": "Seleccione la fecha de su vuelo",
   "@tooltipFlightDateQuickClaim": {
     "description": "Tooltip para el campo de fecha en reclamación rápida"
   },
-
   "validatorDepartureAirportRequired": "Aeropuerto de salida es obligatorio",
   "@validatorDepartureAirportRequired": {
     "description": "Mensaje de validación para aeropuerto de salida obligatorio"
   },
-
   "tooltipDepartureAirportQuickClaim": "Introduzca el código IATA de 3 letras del aeropuerto de salida",
   "@tooltipDepartureAirportQuickClaim": {
     "description": "Tooltip para el campo de aeropuerto de salida en reclamación rápida"
   },
-
   "validatorArrivalAirportRequired": "Aeropuerto de llegada es obligatorio",
   "@validatorArrivalAirportRequired": {
     "description": "Mensaje de validación para aeropuerto de llegada obligatorio"
   },
-
   "tooltipArrivalAirportQuickClaim": "Introduzca el código IATA de 3 letras del aeropuerto de llegada",
   "@tooltipArrivalAirportQuickClaim": {
     "description": "Tooltip para el campo de aeropuerto de llegada en reclamación rápida"
   },
-
   "hintTextReasonQuickClaim": "p.ej. Retraso de más de 3 horas",
   "@hintTextReasonQuickClaim": {
     "description": "Texto de ayuda para el campo de motivo en reclamación rápida"
   },
-
   "validatorReasonRequired": "Motivo es obligatorio",
   "@validatorReasonRequired": {
     "description": "Mensaje de validación para motivo obligatorio"
   },
-
   "tooltipReasonQuickClaim": "Describa brevemente por qué está presentando una reclamación",
   "@tooltipReasonQuickClaim": {
     "description": "Tooltip para el campo de motivo en reclamación rápida"
   },
-
   "tooltipCompensationAmountQuickClaim": "Introduzca la cantidad si conoce a cuánto tiene derecho",
   "@tooltipCompensationAmountQuickClaim": {
     "description": "Tooltip para el campo de cantidad de compensación en reclamación rápida"
   },
-
   "tipsAndRemindersTitle": "Consejos y recordatorios",
   "@tipsAndRemindersTitle": {
     "description": "Título para la sección de consejos y recordatorios"
   },
-
   "tipSecureData": "Protegemos sus datos con cifrado de nivel bancario",
   "@tipSecureData": {
     "description": "Consejo de seguridad sobre cifrado de datos"
   },
-
   "continueToReview": "Continuar a revisión",
   "@continueToReview": {
     "description": "Texto del botón para continuar a revisión"
   },
-
   "previewEmail": "Vista previa de correo electrónico",
   "@previewEmail": {
     "description": "Título para la vista previa de correo electrónico"
   },
-
   "pdfPreviewMessage": "Vista previa de PDF",
   "@pdfPreviewMessage": {
     "description": "Mensaje para la vista previa de PDF"
   },
-
   "downloadPdf": "Descargar PDF",
   "@downloadPdf": {
     "description": "Texto del botón para descargar PDF"
   },
-
   "filePreviewNotAvailable": "Vista previa de archivo no disponible",
   "@filePreviewNotAvailable": {
     "description": "Mensaje cuando la vista previa de archivo no está disponible"
   },
-
   "deleteDocument": "Eliminar documento",
   "@deleteDocument": {
     "description": "Texto del botón para eliminar documento"
   },
-
   "deleteDocumentConfirmation": "¿Está seguro de que desea eliminar este documento?",
   "@deleteDocumentConfirmation": {
     "description": "Mensaje de confirmación para eliminar un documento"
   },
-
   "documentDeletedSuccess": "Documento eliminado con éxito",
   "@documentDeletedSuccess": {
     "description": "Mensaje de éxito después de eliminar un documento"
   },
-
   "documentDeleteFailed": "Error al eliminar el documento",
   "@documentDeleteFailed": {
     "description": "Mensaje de error cuando falla la eliminación de un documento"
   },
-
   "reviewYourClaim": "Revise su reclamación",
   "@reviewYourClaim": {
     "description": "Título para la pantalla de revisión de reclamación"
   },
-
   "reviewClaimDetails": "Revise los detalles de la reclamación",
   "@reviewClaimDetails": {
     "description": "Instrucción para revisar los detalles de la reclamación"
   },
-
   "attachments": "Archivos adjuntos",
   "@attachments": {
     "description": "Etiqueta para la sección de archivos adjuntos"
   },
-
   "proceedToConfirmation": "Proceder a confirmación",
   "@proceedToConfirmation": {
     "description": "Texto del botón para proceder a la confirmación"
   },
-
   "confirmAndSend": "Confirmar y enviar",
   "@confirmAndSend": {
     "description": "Texto del botón para confirmar y enviar"
   },
-
   "errorLoadingEmailDetails": "Error al cargar los detalles del correo electrónico",
   "@errorLoadingEmailDetails": {
     "description": "Mensaje de error al cargar los detalles del correo electrónico"
   },
-
   "noEmailInfo": "No hay información de correo electrónico disponible",
   "@noEmailInfo": {
     "description": "Mensaje cuando no hay información de correo electrónico disponible"
   },
-
   "finalConfirmation": "Confirmación final",
   "@finalConfirmation": {
     "description": "Título para la pantalla de confirmación final"
   },
-
   "claimWillBeSentTo": "Su reclamación se enviará a",
   "@claimWillBeSentTo": {
     "description": "Mensaje que indica dónde se enviará la reclamación"
   },
-
   "copyToYourEmail": "Copia a su correo electrónico",
   "@copyToYourEmail": {
     "description": "Etiqueta para la opción de enviar una copia a su propio correo electrónico"
   },
-
   "confirmAndSendEmail": "Confirmar y enviar correo electrónico",
   "@confirmAndSendEmail": {
     "description": "Texto del botón para confirmar y enviar correo electrónico"
   },
-
   "reviewAndConfirm": "Revisar y confirmar",
   "@reviewAndConfirm": {
     "description": "Instrucción para revisar y confirmar"
   },
-
   "pleaseConfirmDetails": "Por favor, confirme que todos los detalles son correctos",
   "@pleaseConfirmDetails": {
     "description": "Instrucción para confirmar que los detalles son correctos"
   },
-
   "emailAppOpenedMessage": "Aplicación de correo electrónico abierta",
   "@emailAppOpenedMessage": {
-    "description": "Mensaje cuando se abre la aplicación de correo electrónico"
+    "description": "Mensaje cuando se abre la aplicación de correo electrónico",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
   },
-
   "emailAppErrorMessage": "Error al abrir la aplicación de correo electrónico",
   "@emailAppErrorMessage": {
     "description": "Mensaje de error cuando no se puede abrir la aplicación de correo electrónico"
   },
-
+  "flightNotFoundError": "Vuelo no encontrado. Por favor, verifique su número de vuelo e inténtelo de nuevo.",
+  "@flightNotFoundError": {
+    "description": "Mensaje de error cuando el número de vuelo no se encuentra en la base de datos"
+  },
+  "invalidFlightNumberError": "Formato de número de vuelo inválido. Por favor, ingrese un número de vuelo válido (ej. BA123, LH456).",
+  "@invalidFlightNumberError": {
+    "description": "Mensaje de error cuando el formato del número de vuelo es incorrecto"
+  },
+  "networkTimeoutError": "Tiempo de conexión agotado. Por favor, verifique su conexión a internet e inténtelo de nuevo.",
+  "@networkTimeoutError": {
+    "description": "Mensaje de error cuando la solicitud de red se agota"
+  },
+  "serverError": "Servidor temporalmente no disponible. Por favor, inténtelo más tarde.",
+  "@serverError": {
+    "description": "Mensaje de error cuando el servidor devuelve un error"
+  },
+  "rateLimitError": "Demasiadas solicitudes. Por favor, espere un momento e inténtelo de nuevo.",
+  "@rateLimitError": {
+    "description": "Mensaje de error cuando se excede el límite de solicitudes"
+  },
+  "generalFlightCheckError": "No se puede verificar la información del vuelo. Por favor, verifique los detalles de su vuelo e inténtelo de nuevo.",
+  "@generalFlightCheckError": {
+    "description": "Mensaje de error genérico para fallas en la verificación de vuelos"
+  },
+  "flightMightNotBeEligible": "Según los datos disponibles, su vuelo podría no ser elegible para compensación.",
+  "@flightMightNotBeEligible": {
+    "description": "Mensaje cuando el vuelo parece no elegible pero alentando más acción"
+  },
+  "airlineDataDisclaimer": "Las aerolíneas a veces subreportan retrasos o cambian el estado de los vuelos. Si experimentó un retraso de 3+ horas, cancelación o desvío, aún puede tener derecho a compensación.",
+  "@airlineDataDisclaimer": {
+    "description": "Descargo de responsabilidad sobre manipulación de datos de aerolíneas"
+  },
+  "submitClaimAnyway": "Presentar Reclamo de Todos Modos",
+  "@submitClaimAnyway": {
+    "description": "Texto del botón para presentar un reclamo a pesar de la aparente no elegibilidad"
+  },
+  "emailReadyToSend": "¡Su email de compensación está listo!",
+  "@emailReadyToSend": {
+    "description": "Título para el diálogo de vista previa de email"
+  },
+  "emailCopyInstructions": "Copie los detalles del email a continuación y péguelos en su aplicación de email",
+  "@emailCopyInstructions": {
+    "description": "Instrucciones para copiar contenido de email"
+  },
+  "cc": "CC",
+  "@cc": {
+    "description": "Etiqueta para campo de email CC (copia)"
+  },
+  "subject": "Asunto",
+  "@subject": {
+    "description": "Etiqueta para campo de asunto de email"
+  },
+  "emailBody": "Cuerpo del Email",
+  "@emailBody": {
+    "description": "Etiqueta para sección del cuerpo del email"
+  },
+  "howToSendEmail": "Cómo enviar este email:",
+  "@howToSendEmail": {
+    "description": "Encabezado de instrucciones para pasos de envío de email"
+  },
+  "emailStep1": "Toque \"Copiar Email\" a continuación",
+  "@emailStep1": {
+    "description": "Primer paso en las instrucciones de envío de email"
+  },
+  "emailStep2": "Abra su aplicación de email (Gmail, Outlook, etc.)",
+  "@emailStep2": {
+    "description": "Segundo paso en las instrucciones de envío de email"
+  },
+  "emailStep3": "Cree un nuevo email",
+  "@emailStep3": {
+    "description": "Tercer paso en las instrucciones de envío de email"
+  },
+  "emailStep4": "Pegue el contenido copiado",
+  "@emailStep4": {
+    "description": "Cuarto paso en las instrucciones de envío de email"
+  },
+  "emailStep5": "¡Envíe su reclamo de compensación!",
+  "@emailStep5": {
+    "description": "Quinto paso en las instrucciones de envío de email"
+  },
+  "copyEmail": "Copiar Email",
+  "@copyEmail": {
+    "description": "Texto del botón para copiar contenido de email"
+  },
+  "emailCopiedSuccess": "¡Email copiado al portapapeles!",
+  "@emailCopiedSuccess": {
+    "description": "Mensaje de éxito cuando el email se copia"
+  },
+  "knowYourRights": "Conozca Sus Derechos",
+  "@knowYourRights": {
+    "description": "Encabezado de sección sobre derechos de pasajeros"
+  },
+  "eu261Rights": "Bajo la regulación EU261, tiene derecho a compensación por:\n• Retrasos de 3+ horas\n• Cancelaciones de vuelos\n• Denegación de embarque\n• Desvíos de vuelos",
+  "@eu261Rights": {
+    "description": "Información sobre derechos de pasajeros EU261"
+  },
+  "dontLetAirlinesWin": "¡No permita que las aerolíneas eviten pagar lo que se le debe!",
+  "@dontLetAirlinesWin": {
+    "description": "Mensaje alentador para perseguir reclamos de compensación"
+  },
   "checkEligibilityForEu261": "Verifique si su vuelo es elegible para compensación según la normativa EU261",
   "@checkEligibilityForEu261": {
     "description": "Texto de encabezado para la verificación de elegibilidad EU261"
   },
-
   "flightNumberPlaceholder": "Número de vuelo (ej. IB123)",
   "@flightNumberPlaceholder": {
     "description": "Texto de marcador de posición para el campo de entrada del número de vuelo"
   },
-
   "dateOptionalPlaceholder": "Fecha (AAAA-MM-DD, opcional)",
   "@dateOptionalPlaceholder": {
     "description": "Texto de marcador de posición para el campo de entrada de fecha opcional"
   },
-
   "leaveDateEmptyForToday": "Dejar en blanco para hoy",
   "@leaveDateEmptyForToday": {
     "description": "Texto de ayuda para el campo de fecha"
   },
-
   "pleaseEnterFlightNumber": "Por favor, ingrese un número de vuelo",
   "@pleaseEnterFlightNumber": {
     "description": "Mensaje de validación para número de vuelo vacío"
   },
-
   "error": "Error",
   "@error": {
     "description": "Texto de error para mensajes de error"
   },
-
   "flightInfoFormat": "Vuelo {flightNumber} - {airline}",
   "@flightInfoFormat": {
     "description": "Formato para mostrar información de vuelo con número y aerolínea",
@@ -1320,27 +1401,22 @@
       }
     }
   },
-
   "status": "Estado",
   "@status": {
     "description": "Etiqueta de estado"
   },
-
   "from": "Desde",
   "@from": {
     "description": "Etiqueta 'Desde' para aeropuerto de salida"
   },
-
   "to": "Hasta",
   "@to": {
     "description": "Etiqueta 'Hasta' para aeropuerto de llegada"
   },
-
   "delay": "Retraso",
   "@delay": {
     "description": "Etiqueta de retraso"
   },
-
   "minutesFormat": "{minutes} minutos",
   "@minutesFormat": {
     "description": "Formato para mostrar minutos",
@@ -1351,49 +1427,181 @@
       }
     }
   },
-
-  "unknown": "Desconocido",
-  "@unknown": {
-    "description": "Texto para valores desconocidos"
-  },
-
   "flightEligibleForCompensation": "¡Su vuelo es elegible para compensación!",
   "@flightEligibleForCompensation": {
     "description": "Mensaje mostrado cuando el vuelo es elegible para compensación"
   },
-
   "flightNotEligibleForCompensation": "Su vuelo no es elegible para compensación.",
   "@flightNotEligibleForCompensation": {
     "description": "Mensaje mostrado cuando el vuelo no es elegible para compensación"
   },
-
   "potentialCompensation": "Compensación Potencial:",
   "@potentialCompensation": {
     "description": "Etiqueta para el monto de compensación potencial"
   },
-
   "contactAirlineForClaim": "Contacte a la aerolínea para reclamar su compensación según el Reglamento UE 261/2004.",
   "@contactAirlineForClaim": {
     "description": "Instrucción para reclamar compensación"
   },
-
   "reasonPrefix": "Razón: ",
   "@reasonPrefix": {
     "description": "Prefijo para mostrar razón de inelegibilidad"
   },
-
   "delayLessThan3Hours": "El retraso del vuelo es menor a 3 horas",
   "@delayLessThan3Hours": {
     "description": "Razón de inelegibilidad debido a retraso corto"
   },
-
   "notUnderEuJurisdiction": "El vuelo no está bajo jurisdicción de la UE",
   "@notUnderEuJurisdiction": {
     "description": "Razón de inelegibilidad debido a jurisdicción"
   },
-
   "unknownReason": "Razón desconocida",
   "@unknownReason": {
     "description": "Razón predeterminada cuando no hay razón específica disponible"
+  },
+  "checkFlightEligibilityButtonText": "Verificar elegibilidad de compensación por vuelo",
+  "@checkFlightEligibilityButtonText": {
+    "description": "Texto del botón para verificar elegibilidad de compensación por vuelo"
+  },
+  "euEligibleFlightsButtonText": "Vuelos elegibles para compensación en la UE",
+  "@euEligibleFlightsButtonText": {
+    "description": "Texto del botón para ver vuelos elegibles en la UE"
+  },
+  "euCompensation": "TODO: Translate 'EU Compensation'",
+  "@euCompensation": {
+    "description": "Label for EU compensation tag on eligible flights"
+  },
+  "minutes": "TODO: Translate 'minutes'",
+  "@minutes": {
+    "description": "Text for minutes unit"
+  },
+  "aircraftLabel": "TODO: Translate 'Aircraft:'",
+  "@aircraftLabel": {
+    "description": "Label for aircraft information"
+  },
+  "prefillCompensationForm": "TODO: Translate 'Pre-fill Compensation Form'",
+  "@prefillCompensationForm": {
+    "description": "Button text for pre-filling compensation form"
+  },
+  "loadingExternalData": "TODO: Translate 'Loading External Data'",
+  "@loadingExternalData": {
+    "description": "Title for loading screen"
+  },
+  "loadingExternalDataDescription": "TODO: Translate 'Please wait while we fetch the latest flight data...'",
+  "@loadingExternalDataDescription": {
+    "description": "Message when loading external data"
+  },
+  "emailAddress": "TODO: Translate 'Email Address'",
+  "@emailAddress": {
+    "description": "Label for email address field"
+  },
+  "passengerInformation": "TODO: Translate 'Passenger Information'",
+  "@passengerInformation": {
+    "description": "Header for passenger information section"
+  },
+  "@noClaimsYetTitle": {
+    "description": "Title shown when no claims exist in a category"
+  },
+  "flightRouteDetailsWithNumber": "{flightNumber}: {departure} to {arrival} {airline}",
+  "@flightRouteDetailsWithNumber": {
+    "description": "Format for displaying flight route details with flight number",
+    "placeholders": {
+      "flightNumber": {
+        "type": "String"
+      },
+      "departure": {
+        "type": "String"
+      },
+      "arrival": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      },
+      "airline": {
+        "type": "String"
+      },
+      "departureAirport": {
+        "type": "String"
+      },
+      "arrivalAirport": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@configureNotificationsDescription": {
+    "description": "Description for notification configuration"
+  },
+  "@changeApplicationLanguage": {
+    "description": "Label for language change option"
+  },
+  "@tipsAndReminders": {
+    "description": "Title for tips and reminders section"
+  },
+  "@active": {
+    "description": "Tab label for active claims"
+  },
+  "@completed": {
+    "description": "Tab label for completed claims"
+  },
+  "notLoggedIn": "Not Logged In",
+  "signIn": "Sign In",
+  "errorFormSubmissionFailed": "Error submitting form: {errorMessage}. Please check your connection and try again.",
+  "@errorFormSubmissionFailed": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "String"
+      }
+    }
+  },
+  "@profileInformation": {
+    "description": "Auto-generated for profileInformation"
+  },
+  "firstName": "First Name",
+  "@firstName": {
+    "description": "Auto-generated for firstName"
+  },
+  "lastName": "Last Name",
+  "@lastName": {
+    "description": "Auto-generated for lastName"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Auto-generated for name"
+  },
+  "phone": "Phone",
+  "@phone": {
+    "description": "Auto-generated for phone"
+  },
+  "number": "Number",
+  "@number": {
+    "description": "Auto-generated for number"
+  },
+  "welcomeUser3": "Welcome, {name} ({role} at {company})",
+  "@welcomeUser3": {
+    "description": "Auto-generated for welcomeUser3",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      },
+      "company": {
+        "type": "String"
+      }
+    }
+  },
+  "@phoneNumber": {
+    "description": "Auto-generated for phoneNumber"
+  },
+  "@claims": {
+    "description": "Auto-generated for claims"
   }
 }

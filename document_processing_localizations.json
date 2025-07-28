@@ -1,0 +1,41 @@
+{
+  "aspectRatio": "Aspect Ratio",
+  "@aspectRatio": {
+    "description": "Label for aspect ratio"
+  },
+  
+  "documentOcrResult": "Document OCR Result",
+  "@documentOcrResult": {
+    "description": "Title for OCR result section"
+  },
+  
+  "extractedFields": "Extracted Fields",
+  "@extractedFields": {
+    "description": "Title for extracted fields section"
+  },
+  
+  "fullText": "Full Text",
+  "@fullText": {
+    "description": "Title for full text section"
+  },
+  
+  "documentSaved": "Document Saved",
+  "@documentSaved": {
+    "description": "Message when document is saved"
+  },
+  
+  "useExtractedData": "Use Extracted Data",
+  "@useExtractedData": {
+    "description": "Button label for using extracted data"
+  },
+  
+  "copyToClipboard": "Copy to Clipboard",
+  "@copyToClipboard": {
+    "description": "Button label for copying to clipboard"
+  },
+  
+  "documentType": "Document Type",
+  "@documentType": {
+    "description": "Label for document type"
+  }
+}

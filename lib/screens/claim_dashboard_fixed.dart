@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:f35_flight_compensation/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -399,14 +400,14 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
           ),
           const SizedBox(height: 16),
           const Text(
-            AppLocalizations.of(context)!.noClaimsYetTitle,
+            context.l10n.noClaimsYetTitle,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
-              AppLocalizations.of(context)!.noClaimsYetSubtitle,
+              context.l10n.noClaimsYetSubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey),
             ),

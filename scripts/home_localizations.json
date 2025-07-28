@@ -1,0 +1,40 @@
+{
+  "eu261Rights": "EU261 Rights",
+  "dontLetAirlinesWin": "Don't Let Airlines Win",
+  "submitClaimAnyway": "Submit Claim Anyway",
+  "newClaim": "New Claim",
+  "notLoggedIn": "Not Logged In",
+  "signIn": "Sign In",
+  "checkFlightEligibilityButtonText": "Check Flight Eligibility",
+  "euEligibleFlightsButtonText": "EU Eligible Flights",
+  "welcomeUser": "Welcome, {name}",
+  "@welcomeUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "errorFormSubmissionFailed": "Error submitting form: {errorMessage}. Please check your connection and try again.",
+  "@errorFormSubmissionFailed": {
+    "placeholders": {
+      "errorMessage": {
+        "type": "String"
+      }
+    }
+  },
+  "flightRouteDetailsWithNumber": "Flight {flightNumber}: {departure} - {arrival}",
+  "@flightRouteDetailsWithNumber": {
+    "placeholders": {
+      "flightNumber": {
+        "type": "String"
+      },
+      "departure": {
+        "type": "String"
+      },
+      "arrival": {
+        "type": "String"
+      }
+    }
+  }
+}

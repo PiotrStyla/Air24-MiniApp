@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
+import '../services/auth_service_firebase.dart';
+import '../models/auth_exception.dart';
 
 /// ViewModel for authentication screens
 /// Follows MVVM pattern with ChangeNotifier for state management
 class AuthViewModel extends ChangeNotifier {
-  final AuthService _authService;
+  final FirebaseAuthService _authService;
   String _email = '';
   String _password = '';
   String _confirmPassword = '';
@@ -27,7 +29,7 @@ class AuthViewModel extends ChangeNotifier {
 
   // Constructor
   AuthViewModel(this._authService) {
-    print('[AuthViewModel Constructor] Initialized with AuthService of type: ${_authService.runtimeType}');
+    print('[AuthViewModel Constructor] Initialized with FirebaseAuthService: ${_authService.runtimeType}');
   }
 
   // Input handlers
@@ -143,26 +145,40 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future<bool> signUp() async {
-    if (!validateSignUp()) return false;
+    print('🔴 AuthViewModel: signUp() called with email=${_email.split('@')[0]}@...');
+    if (!validateSignUp()) {
+      print('🔴 AuthViewModel: Validation failed: ${_errorMessage}');
+      return false;
+    }
     
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
+    print('🔴 AuthViewModel: Validation passed, calling _authService.createUserWithEmail()');
     
     try {
-      await _authService.createUserWithEmail(_email, _password);
+      print('🔴 AuthViewModel: Trying to create user with email/password...');
+      final result = await _authService.createUserWithEmail(_email, _password);
+      print('🔴 AuthViewModel: User created successfully: ${result.user?.email}');
       _isLoading = false;
       notifyListeners();
       return true;
     } on FirebaseAuthException catch (e) {
+      print('❌ AuthViewModel: FirebaseAuthException during sign-up: ${e.code} - ${e.message}');
+      _errorMessage = e.message;
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    } on AuthException catch (e) {
+      print('❌ AuthViewModel: AuthException during sign-up: ${e.code} - ${e.message}');
       _errorMessage = e.message;
       _isLoading = false;
       notifyListeners();
       return false;
     } catch (e, stackTrace) {
+      print('❌ AuthViewModel: Unhandled exception during sign-up: $e');
+      print('📋 AuthViewModel: Stack trace: $stackTrace');
       _errorMessage = 'An unexpected error occurred. Please try again.';
-      // Log the error for debugging
-      print('Sign-up error: $e\n$stackTrace');
       _isLoading = false;
       notifyListeners();
       return false;
@@ -170,21 +186,31 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future<bool> signInWithGoogle() async {
+    print('AuthViewModel: Google Sign-In button pressed - starting process...');
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
     
     try {
+      print('AuthViewModel: Calling AuthService.signInWithGoogle()...');
       final result = await _authService.signInWithGoogle();
+      print('AuthViewModel: AuthService.signInWithGoogle() completed. Result: $result');
+      
+      // UserCredential object cannot be null as per Firebase SDK design
+      print('AuthViewModel: Google Sign-In result: User: ${result.user?.displayName ?? "Unknown"} (${result.user?.email ?? "Unknown"})');
+      
       _isLoading = false;
       notifyListeners();
-      return result != null;
+      return true;  // Success - UserCredential is always non-null when returned
     } on FirebaseAuthException catch (e) {
+      print('AuthViewModel: Firebase auth error during Google Sign-In: ${e.code} - ${e.message}');
       _errorMessage = e.message;
       _isLoading = false;
       notifyListeners();
       return false;
     } catch (e, stackTrace) {
+      print('AuthViewModel: Unexpected error during Google Sign-In: $e');
+      print('AuthViewModel: Stack trace: $stackTrace');
       _errorMessage = 'Google sign-in failed. Please try again.';
       // Log the error for debugging
       print('Google sign-in error: $e\n$stackTrace');

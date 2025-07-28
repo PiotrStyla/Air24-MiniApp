@@ -1,0 +1,36 @@
+{
+  "attachDocuments": "Attach Documents",
+  "@attachDocuments": {
+    "description": "Title for document attachment screen"
+  },
+  
+  "uploadingDocument": "Uploading document...",
+  "@uploadingDocument": {
+    "description": "Text shown when a document is being uploaded"
+  },
+  
+  "noDocuments": "No documents uploaded yet",
+  "@noDocuments": {
+    "description": "Text shown when no documents have been uploaded"
+  },
+  
+  "uploadFirstDocument": "Upload First Document",
+  "@uploadFirstDocument": {
+    "description": "Button text to upload the first document"
+  },
+  
+  "claimAttachment": "Claim Attachment",
+  "@claimAttachment": {
+    "description": "Default name for claim attachments"
+  },
+  
+  "other": "Other",
+  "@other": {
+    "description": "Label for other document type"
+  },
+  
+  "pdfPreviewMessage": "PDF Preview",
+  "@pdfPreviewMessage": {
+    "description": "Message shown when viewing a PDF preview"
+  }
+}

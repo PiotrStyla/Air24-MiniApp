@@ -209,6 +209,7 @@ class ClaimsScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'claims_screen_fab',
         onPressed: () async {
           final result = await Navigator.of(context).push(
             MaterialPageRoute(

@@ -43,7 +43,8 @@ dependencies:
   google_sign_in: ^6.2.1
   cloud_firestore: ^4.17.0
   firebase_storage: ^11.7.0
-
+  # Biometric authentication
+  local_auth: ^2.1.6
   # Charts for dashboard
   fl_chart: ^0.64.0
   # Improved error handling
@@ -53,6 +54,8 @@ dependencies:
   # Enhanced UI
   shimmer: ^3.0.0
   collection: ^1.19.1
+  # Direct email sending via SMTP
+  mailer: ^6.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

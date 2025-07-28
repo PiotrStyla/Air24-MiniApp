@@ -1,0 +1,66 @@
+{
+  "airline": "Airline",
+  "@airline": {
+    "description": "Label for airline field"
+  },
+  
+  "email": "Email",
+  "@email": {
+    "description": "Label for email field"
+  },
+  
+  "bookingReference": "Booking Reference",
+  "@bookingReference": {
+    "description": "Label for booking reference field"
+  },
+  
+  "additionalInformation": "Additional Information",
+  "@additionalInformation": {
+    "description": "Label for additional information field"
+  },
+  
+  "optional": "Optional",
+  "@optional": {
+    "description": "Label for optional fields"
+  },
+  
+  "thisFieldIsRequired": "This field is required",
+  "@thisFieldIsRequired": {
+    "description": "Error message for required fields"
+  },
+  
+  "pleaseEnterDepartureAirport": "Please enter departure airport",
+  "@pleaseEnterDepartureAirport": {
+    "description": "Error message for missing departure airport"
+  },
+  
+  "uploadDocuments": "Upload Documents",
+  "@uploadDocuments": {
+    "description": "Button label for uploading documents"
+  },
+  
+  "saveDocument": "Save Document",
+  "@saveDocument": {
+    "description": "Button label for saving a document"
+  },
+  
+  "fieldName": "Field Name",
+  "@fieldName": {
+    "description": "Label for field name"
+  },
+  
+  "fieldValue": "Field Value",
+  "@fieldValue": {
+    "description": "Label for field value"
+  },
+  
+  "noFieldsExtracted": "No fields extracted",
+  "@noFieldsExtracted": {
+    "description": "Message when no fields are extracted from a document"
+  },
+  
+  "copiedToClipboard": "Copied to clipboard",
+  "@copiedToClipboard": {
+    "description": "Message when text is copied to clipboard"
+  }
+}

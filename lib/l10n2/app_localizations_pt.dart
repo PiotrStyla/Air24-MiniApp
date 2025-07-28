@@ -9,45 +9,253 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
-  String get appTitle => 'Compensação de Voo';
+  String get euCompensation => 'TODO: Translate \'EU Compensation\'';
 
   @override
-  String welcomeUser(String userName) {
-    return 'Bem-vindo, $userName';
-  }
+  String get scheduledLabel => 'TODO: Translate \'Scheduled:\'';
 
   @override
-  String get signOut => 'Sair';
+  String get minutes => 'TODO: Translate \'minutes\'';
 
   @override
-  String get newClaim => 'Nova Reclamação';
+  String get aircraftLabel => 'TODO: Translate \'Aircraft:\'';
 
   @override
-  String get home => 'Início';
+  String get prefillCompensationForm =>
+      'TODO: Translate \'Pre-fill Compensation Form\'';
 
   @override
-  String get settings => 'Definições';
+  String get confirmAndSend => 'TODO: Translate \'Confirm and Send\'';
 
   @override
-  String get languageSelection => 'Idioma';
+  String get errorLoadingEmailDetails =>
+      'TODO: Translate \'Error loading email details\'';
 
   @override
-  String get passengerName => 'Nome do Passageiro';
+  String get noEmailInfo =>
+      'TODO: Translate \'No email information available\'';
 
   @override
-  String get passengerDetails => 'Detalhes do Passageiro';
+  String get finalConfirmation => 'TODO: Translate \'Final Confirmation\'';
 
   @override
-  String get flightNumber => 'Número do Voo';
+  String get claimWillBeSentTo =>
+      'TODO: Translate \'Your claim will be sent to:\'';
 
   @override
-  String get airline => 'Companhia Aérea';
+  String get copyToYourEmail =>
+      'TODO: Translate \'A copy will be sent to your email:\'';
+
+  @override
+  String get previewEmail => 'TODO: Translate \'Preview Email\'';
+
+  @override
+  String get confirmAndSendEmail =>
+      'TODO: Translate \'Confirm and Send Email\'';
 
   @override
   String get departureAirport => 'Aeroporto de Partida';
 
   @override
   String get arrivalAirport => 'Aeroporto de Chegada';
+
+  @override
+  String get reasonForClaim => 'TODO: Translate \'Reason for Claim\'';
+
+  @override
+  String get attachments => 'TODO: Translate \'Attachments\'';
+
+  @override
+  String get proceedToConfirmation =>
+      'TODO: Translate \'Proceed to Confirmation\'';
+
+  @override
+  String emailAppOpenedMessage(String email) {
+    return 'TODO: Translate \'Your email app has been opened\'';
+  }
+
+  @override
+  String errorFailedToSubmitClaim(String error) {
+    return 'TODO: Translate \'Failed to submit claim. Please try again.\'';
+  }
+
+  @override
+  String get unknownError => 'TODO: Translate \'Unknown error\'';
+
+  @override
+  String get retry => 'Tentar novamente';
+
+  @override
+  String get claimNotFound => 'Reclamação não encontrada';
+
+  @override
+  String get claimNotFoundDesc =>
+      'A reclamação solicitada não pôde ser encontrada. Pode ter sido excluída.';
+
+  @override
+  String get backToDashboard => 'Voltar ao painel';
+
+  @override
+  String get reviewYourClaim => 'TODO: Translate \'Review Your Claim\'';
+
+  @override
+  String get reviewClaimDetails => 'TODO: Translate \'Review Claim Details\'';
+
+  @override
+  String get flightNumber => 'Número do Voo';
+
+  @override
+  String get flightDate => 'Data do Voo';
+
+  @override
+  String noFlightsMatchingFilter(String filter) {
+    return 'Nenhum voo corresponde ao filtro: $filter';
+  }
+
+  @override
+  String get statusLabel => 'Estado:';
+
+  @override
+  String get flightStatusDelayed => 'Atrasado';
+
+  @override
+  String get potentialCompensation =>
+      'TODO: Translate \'Potential Compensation\'';
+
+  @override
+  String get claimDetails => 'TODO: Translate \'Claim Details\'';
+
+  @override
+  String get refresh => 'TODO: Translate \'Refresh\'';
+
+  @override
+  String get errorLoadingClaim => 'TODO: Translate \'Error Loading Claim\'';
+
+  @override
+  String get euWideCompensationEligibleFlights =>
+      'Voos elegíveis para compensação na UE';
+
+  @override
+  String get forceRefreshData => 'Forçar atualização de dados';
+
+  @override
+  String get forcingFreshDataLoad =>
+      'Forçando uma nova atualização de dados...';
+
+  @override
+  String get loadingExternalData => 'TODO: Translate \'Loading External Data\'';
+
+  @override
+  String get loadingExternalDataDescription =>
+      'TODO: Translate \'Please wait while we fetch the latest flight data...\'';
+
+  @override
+  String lastHours(int hours) {
+    return 'Últimas $hours horas';
+  }
+
+  @override
+  String get errorConnectionFailed =>
+      'Falha na ligação. Por favor, verifique a sua rede.';
+
+  @override
+  String formSubmissionError(String error) {
+    return 'Erro ao submeter o formulário: $error. Verifique a sua ligação e tente novamente.';
+  }
+
+  @override
+  String get apiConnectionIssue =>
+      'Problema de conexão com a API. Por favor, tente novamente.';
+
+  @override
+  String get noEligibleFlightsFound => 'Nenhum voo elegível encontrado';
+
+  @override
+  String noEligibleFlightsDescription(int hours) {
+    return 'Nenhum voo encontrado nas últimas $hours horas.';
+  }
+
+  @override
+  String get checkAgain => 'Verificar novamente';
+
+  @override
+  String get filterByAirline => 'Filtrar por companhia aérea';
+
+  @override
+  String get saveDocument => 'Guardar Documento';
+
+  @override
+  String get fieldName => 'Nome do Campo';
+
+  @override
+  String get fieldValue => 'Valor do Campo';
+
+  @override
+  String get noFieldsExtracted => 'Nenhum campo foi extraído do documento.';
+
+  @override
+  String get copiedToClipboard => 'TODO: Translate \'Copied to Clipboard\'';
+
+  @override
+  String get networkError => 'TODO: Translate \'Network Error\'';
+
+  @override
+  String get generalError => 'TODO: Translate \'General Error\'';
+
+  @override
+  String get loginRequiredForClaim =>
+      'TODO: Translate \'Login Required for Claim\'';
+
+  @override
+  String get aspectRatio => 'Proporção';
+
+  @override
+  String get documentOcrResult => 'Resultado OCR';
+
+  @override
+  String get extractedFields => 'Campos Extraídos';
+
+  @override
+  String get fullText => 'Texto Completo';
+
+  @override
+  String get documentSaved => 'Documento guardado.';
+
+  @override
+  String get useExtractedData => 'Usar Dados Extraídos';
+
+  @override
+  String get copyToClipboard => 'Copiado para a área de transferência.';
+
+  @override
+  String get documentType => 'Tipo de Documento';
+
+  @override
+  String get submitClaim => 'Submeter Reclamação';
+
+  @override
+  String get addDocument => 'Adicionar Documento';
+
+  @override
+  String get claimSubmittedSuccessfully => 'Reclamação submetida com sucesso!';
+
+  @override
+  String get completeAllFields => 'Por favor, preencha todos os campos.';
+
+  @override
+  String get supportingDocuments => 'Documentos de Suporte';
+
+  @override
+  String get cropDocument => 'Recortar Documento';
+
+  @override
+  String get crop => 'Recortar';
+
+  @override
+  String get rotate => 'Rodar';
+
+  @override
+  String get airline => 'Companhia Aérea';
 
   @override
   String get email => 'Email';
@@ -72,83 +280,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get uploadDocuments => 'Carregar Documentos';
 
   @override
-  String get submitClaim => 'Submeter Reclamação';
-
-  @override
-  String get addDocument => 'Adicionar Documento';
-
-  @override
-  String get claimSubmittedSuccessfully => 'Reclamação submetida com sucesso!';
-
-  @override
-  String get completeAllFields => 'Por favor, preencha todos os campos.';
-
-  @override
-  String get supportingDocuments => 'Documentos de Suporte';
-
-  @override
-  String get cropDocument => 'Recortar Documento';
-
-  @override
-  String get crop => 'Recortar';
-
-  @override
-  String get cropping => 'A recortar...';
-
-  @override
-  String get rotate => 'Rodar';
-
-  @override
-  String get aspectRatio => 'Proporção';
-
-  @override
-  String get aspectRatioFree => 'Livre';
-
-  @override
-  String get aspectRatioSquare => 'Quadrado';
-
-  @override
-  String get aspectRatioPortrait => 'Retrato';
-
-  @override
-  String get aspectRatioLandscape => 'Paisagem';
-
-  @override
-  String aspectRatioMode(String ratio) {
-    return 'Proporção: $ratio';
-  }
-
-  @override
-  String get documentOcrResult => 'Resultado OCR';
-
-  @override
-  String get extractedFields => 'Campos Extraídos';
-
-  @override
-  String get fullText => 'Texto Completo';
-
-  @override
-  String get documentSaved => 'Documento guardado.';
-
-  @override
-  String get useExtractedData => 'Usar Dados Extraídos';
-
-  @override
-  String get copyToClipboard => 'Copiado para a área de transferência.';
-
-  @override
-  String get documentType => 'Tipo de Documento';
-
-  @override
-  String get saveDocument => 'Guardar Documento';
-
-  @override
-  String get fieldName => 'Nome do Campo';
-
-  @override
-  String get done => 'Concluído';
-
-  @override
   String get yes => 'Sim';
 
   @override
@@ -164,343 +295,106 @@ class AppLocalizationsPt extends AppLocalizations {
   String get save => 'Guardar';
 
   @override
+  String get languageSelection => 'Idioma';
+
+  @override
+  String get passengerName => 'Nome do Passageiro';
+
+  @override
+  String get passengerDetails => 'Detalhes do Passageiro';
+
+  @override
+  String get appTitle => 'Compensação de Voo';
+
+  @override
   String get welcomeMessage => 'Bem-vindo à aplicação!';
 
   @override
-  String get copiedToClipboard => 'Copied to clipboard';
+  String get home => 'Início';
 
   @override
-  String get fillForm => 'Preencher Formulário';
-
-  @override
-  String get chooseUseInfo => 'Escolha como usar esta informação:';
-
-  @override
-  String get fillPassengerFlight =>
-      'Preencher informações do passageiro e do voo';
-
-  @override
-  String get ocrResults => 'Resultados OCR';
-
-  @override
-  String get noFieldsExtracted => 'Nenhum campo foi extraído do documento.';
-
-  @override
-  String get extractedInformation => 'Informação Extraída';
-
-  @override
-  String get rawOcrText => 'Texto OCR Bruto';
-
-  @override
-  String get copyAllText => 'Copiar Todo o Texto';
-
-  @override
-  String get claims => 'Reclamações';
-
-  @override
-  String get noClaimsYet => 'Ainda não há solicitações';
-
-  @override
-  String get startCompensationClaimInstructions =>
-      'Inicie sua solicitação de compensação selecionando um voo na seção Voos elegíveis para a UE';
-
-  @override
-  String get active => 'Ativa';
-
-  @override
-  String get actionRequired => 'Ação Necessária';
-
-  @override
-  String get completed => 'Concluída';
-
-  @override
-  String get profileInfoCardTitle =>
-      'O seu perfil contém as suas informações pessoais e de contacto. Estas são usadas para processar as suas reclamações de compensação de voo e mantê-lo informado.';
-
-  @override
-  String get accountSettings => 'Definições da Conta';
-
-  @override
-  String get accessibilityOptions => 'Opções de acessibilidade';
-
-  @override
-  String get configureAccessibilityDescription =>
-      'Configurar contraste elevado, texto grande e suporte para leitor de ecrã';
-
-  @override
-  String get configureNotificationsDescription =>
-      'Configurar como recebe atualizações de reclamações';
-
-  @override
-  String get tipProfileUpToDate => 'Mantenha seu perfil atualizado';
-
-  @override
-  String get tipInformationPrivate => 'Suas informações são privadas';
-
-  @override
-  String get tipContactDetails => 'Detalhes de Contato';
-
-  @override
-  String get tipAccessibilitySettings => 'Configurações de Acessibilidade';
-
-  @override
-  String get cancel => 'Cancelar';
-
-  @override
-  String get next => 'Seguinte';
-
-  @override
-  String get previous => 'Anterior';
-
-  @override
-  String arrivalsAt(String airport) {
-    return 'Chegadas a $airport';
-  }
-
-  @override
-  String get filterByAirline => 'Filtrar por companhia aérea';
-
-  @override
-  String get flightStatusDelayed => 'Atrasado';
-
-  @override
-  String get flightStatusCancelled => 'Cancelado';
-
-  @override
-  String get flightStatusDiverted => 'Desviado';
-
-  @override
-  String get flightStatusOnTime => 'A tempo';
-
-  @override
-  String get flight => 'Voo';
-
-  @override
-  String get flights => 'Voos';
-
-  @override
-  String get myFlights => 'Os Meus Voos';
-
-  @override
-  String get findFlight => 'Encontrar Voo';
-
-  @override
-  String get flightDate => 'Data do Voo';
-
-  @override
-  String get checkCompensationEligibility =>
-      'Verificar Elegibilidade para Compensação';
-
-  @override
-  String get supportingDocumentsHint =>
-      'Anexe cartões de embarque, bilhetes e outros documentos para fortalecer a sua reclamação.';
-
-  @override
-  String get scanDocument => 'Digitalizar Documento';
-
-  @override
-  String get uploadDocument => 'Carregar Documento';
-
-  @override
-  String get scanDocumentHint =>
-      'Usar a câmara para preencher automaticamente o formulário';
-
-  @override
-  String get uploadDocumentHint => 'Selecionar do armazenamento do dispositivo';
-
-  @override
-  String get noDocumentsYet => 'Ainda não há documentos anexados';
-
-  @override
-  String get enterFlightNumberFirst =>
-      'Por favor, introduza primeiro um número de voo';
-
-  @override
-  String get viewAll => 'Ver Tudo';
-
-  @override
-  String get documentScanner => 'Scanner de Documentos';
-
-  @override
-  String get profileInformation => 'Informação do Perfil';
-
-  @override
-  String get editPersonalInformation => 'Editar as suas informações pessoais';
-
-  @override
-  String get editPersonalAndContactInformation =>
-      'Editar as suas informações pessoais e de contacto';
-
-  @override
-  String get configureAccessibilityOptions =>
-      'Configurar as opções de acessibilidade da aplicação';
-
-  @override
-  String get configureHighContrastLargeTextAndScreenReaderSupport =>
-      'Configurar contraste elevado, texto grande e suporte para leitor de ecrã';
-
-  @override
-  String get applicationPreferences => 'Preferências da Aplicação';
-
-  @override
-  String get notificationSettings => 'Definições de Notificação';
-
-  @override
-  String get configureNotificationPreferences =>
-      'Configurar preferências de notificação';
-
-  @override
-  String get configureHowYouReceiveClaimUpdates =>
-      'Configurar como recebe atualizações de reclamações';
-
-  @override
-  String get language => 'Idioma';
-
-  @override
-  String get changeApplicationLanguage => 'Alterar idioma da aplicação';
-
-  @override
-  String get selectYourPreferredLanguage => 'Selecione o seu idioma preferido';
-
-  @override
-  String get tipsAndReminders => 'Dicas e Lembretes';
-
-  @override
-  String get importantTipsAboutProfileInformation =>
-      'Dicas importantes sobre as informações do seu perfil';
-
-  @override
-  String get noClaimsYetTitle => 'Ainda Não Há Reclamações';
-
-  @override
-  String get noClaimsYetSubtitle =>
-      'Comece a sua reclamação de compensação selecionando um voo na secção Voos Elegíveis da UE';
-
-  @override
-  String get extractingText => 'A extrair texto e a identificar campos';
-
-  @override
-  String get scanInstructions =>
-      'Posicione o seu documento dentro da moldura e tire uma foto';
-
-  @override
-  String get formFilledWithScannedData =>
-      'Formulário preenchido com dados do documento digitalizado';
-
-  @override
-  String get flightDetails => 'Detalhes do Voo';
-
-  @override
-  String get phoneNumber => 'Número de Telefone';
+  String get settings => 'Definições';
 
   @override
   String get required => 'Obrigatório';
 
   @override
-  String get submit => 'Submeter';
+  String get emailAddress => 'TODO: Translate \'Email Address\'';
 
   @override
-  String get submissionChecklist => 'Lista de Verificação da Submissão';
+  String get documentDeleteFailed =>
+      'TODO: Translate \'Failed to delete document\'';
 
   @override
-  String get documentAttached => 'Documento Anexado';
+  String get uploadNew => 'Enviar Novo';
+
+  @override
+  String get continueAction => 'Continuar';
 
   @override
   String get compensationClaimForm => 'Formulário de Reclamação de Compensação';
 
   @override
-  String get prefilledFromProfile => 'Pré-preenchido a partir do seu perfil';
+  String get flight => 'Voo';
 
   @override
-  String get flightSearch => 'Pesquisa de Voos';
+  String get passengerInformation =>
+      'TODO: Translate \'Passenger Information\'';
 
   @override
-  String get searchFlightNumber => 'Pesquisar por número de voo';
+  String get fullName => 'Nome Completo';
 
   @override
-  String get delayedFlightDetected => 'Voo Atrasado Detetado';
+  String get downloadPdf => 'TODO: Translate \'Download PDF\'';
 
   @override
-  String get flightDetected => 'Voo Detetado';
+  String get filePreviewNotAvailable =>
+      'TODO: Translate \'File preview not available\'';
 
   @override
-  String get flightLabel => 'Voo:';
+  String get deleteDocument => 'TODO: Translate \'Delete Document\'';
 
   @override
-  String get fromAirport => 'De:';
+  String get deleteDocumentConfirmation =>
+      'TODO: Translate \'Are you sure you want to delete this document?\'';
 
   @override
-  String get toAirport => 'Para:';
+  String get cancel => 'Cancelar';
 
   @override
-  String get statusLabel => 'Estado:';
+  String get delete => 'TODO: Translate \'Delete\'';
 
   @override
-  String get delayedEligible => 'Atrasado e potencialmente elegível';
+  String get documentDeletedSuccess =>
+      'TODO: Translate \'Document deleted successfully\'';
 
   @override
-  String get startClaim => 'Iniciar Reclamação';
+  String get attachDocuments => 'Anexar Documentos';
 
   @override
-  String get claimNotFound => 'Reclamação não encontrada';
+  String get uploadingDocument => 'Enviando documento...';
 
   @override
-  String get claimNotFoundDesc =>
-      'A reclamação solicitada não pôde ser encontrada. Pode ter sido excluída.';
+  String get noDocuments => 'Você não tem documentos.';
 
   @override
-  String get backToDashboard => 'Voltar ao painel';
+  String get uploadFirstDocument => 'Enviar Primeiro Documento';
 
   @override
-  String get euWideEligibleFlights =>
-      'Voos elegíveis para compensação em toda a UE';
+  String get claimAttachment => 'Anexo de Reclamação';
 
   @override
-  String get submitNewClaim => 'Submit New Claim';
+  String get other => 'outro';
 
   @override
-  String get reasonForClaim => 'Reason for Claim:';
+  String get pdfPreviewMessage => 'TODO: Translate \'PDF Preview\'';
 
   @override
-  String get flightDateHint => 'Select the date of your flight';
+  String get tipsAndRemindersTitle => 'TODO: Translate \'Tips & Reminders\'';
 
   @override
-  String get continueToAttachments => 'Continue to Attachments';
-
-  @override
-  String get pleaseEnterFlightNumber => 'Please enter a flight number';
-
-  @override
-  String get pleaseEnterArrivalAirport => 'Please enter an arrival airport';
-
-  @override
-  String get pleaseEnterReason => 'Please enter a reason';
-
-  @override
-  String get pleaseSelectFlightDate => 'Please select a flight date.';
-
-  @override
-  String get claimDetails => 'Claim Details';
-
-  @override
-  String get refresh => 'Refresh';
-
-  @override
-  String get errorLoadingClaim => 'Error loading claim';
-
-  @override
-  String get retry => 'Tentar novamente';
-
-  @override
-  String get unknownError => 'Unknown error';
-
-  @override
-  String get requiredFieldsCompleted =>
-      'Todos os campos obrigatórios estão preenchidos.';
-
-  @override
-  String get scanningDocumentsNote =>
-      'A digitalização de documentos pode pré-preencher alguns campos.';
+  String get tipSecureData =>
+      'TODO: Translate \'Your data is secure and encrypted\'';
 
   @override
   String get tipCheckEligibility =>
@@ -511,221 +405,111 @@ class AppLocalizationsPt extends AppLocalizations {
       '• Verifique todos os detalhes antes de submeter para evitar atrasos.';
 
   @override
+  String get documentUploadSuccess => 'Documento enviado com sucesso!';
+
+  @override
+  String get uploadFailed => 'Falha no envio. Por favor, tente novamente.';
+
+  @override
+  String get reasonForClaimHint =>
+      'TODO: Translate \'Describe why you are making this claim\'';
+
+  @override
+  String get validatorReasonRequired =>
+      'TODO: Translate \'Reason for claim is required\'';
+
+  @override
+  String get tooltipReasonQuickClaim =>
+      'TODO: Translate \'Explain why you believe you are entitled to compensation\'';
+
+  @override
+  String get compensationAmountOptionalLabel =>
+      'TODO: Translate \'Requested Compensation Amount (Optional)\'';
+
+  @override
+  String get compensationAmountHint =>
+      'TODO: Translate \'Enter amount if you have a specific request\'';
+
+  @override
+  String get tooltipCompensationAmountQuickClaim =>
+      'TODO: Translate \'You can specify a compensation amount or leave it blank\'';
+
+  @override
+  String get continueToReview => 'TODO: Translate \'Continue to Review\'';
+
+  @override
+  String get tooltipDepartureAirportQuickClaim =>
+      'TODO: Translate \'Enter the airport you departed from\'';
+
+  @override
+  String get arrivalAirportHintQuickClaim =>
+      'TODO: Translate \'Enter airport code or name (e.g. LHR, London Heathrow)\'';
+
+  @override
+  String get validatorArrivalAirportRequired =>
+      'TODO: Translate \'Arrival airport is required\'';
+
+  @override
+  String get tooltipArrivalAirportQuickClaim =>
+      'TODO: Translate \'Enter the airport you arrived at\'';
+
+  @override
+  String get reasonForClaimLabel => 'TODO: Translate \'Reason for Claim\'';
+
+  @override
+  String get hintTextReasonQuickClaim =>
+      'TODO: Translate \'Describe your claim reason here\'';
+
+  @override
+  String get flightNumberHintQuickClaim =>
+      'TODO: Translate \'Enter flight number (e.g. LH123)\'';
+
+  @override
+  String get validatorFlightNumberRequired =>
+      'TODO: Translate \'Flight number is required\'';
+
+  @override
+  String get tooltipFlightNumberQuickClaim =>
+      'TODO: Translate \'Enter the flight number for your claim\'';
+
+  @override
+  String get tooltipFlightDateQuickClaim =>
+      'TODO: Translate \'Select the date of your flight\'';
+
+  @override
+  String get departureAirportHintQuickClaim =>
+      'TODO: Translate \'Enter airport code or name (e.g. LHR, London Heathrow)\'';
+
+  @override
+  String get validatorDepartureAirportRequired =>
+      'TODO: Translate \'Departure airport is required\'';
+
+  @override
+  String get underAppeal => 'Em recurso';
+
+  @override
+  String get unknown => 'Desconhecido';
+
+  @override
+  String get errorMustBeLoggedIn =>
+      'TODO: Translate \'You must be logged in to submit a claim\'';
+
+  @override
+  String get dialogTitleError => 'TODO: Translate \'Error\'';
+
+  @override
+  String get dialogButtonOK => 'TODO: Translate \'OK\'';
+
+  @override
+  String get quickClaimTitle => 'TODO: Translate \'Quick Claim Form\'';
+
+  @override
   String get tooltipFaqHelp =>
       'Aceder às perguntas frequentes e secção de ajuda';
 
   @override
-  String formSubmissionError(String errorMessage) {
-    return 'Erro ao submeter o formulário: $errorMessage. Verifique a sua ligação e tente novamente.';
-  }
-
-  @override
-  String get networkError =>
-      'Network error. Please check your internet connection.';
-
-  @override
-  String get generalError =>
-      'An unexpected error occurred. Please try again later.';
-
-  @override
-  String get loginRequiredForClaim =>
-      'You must be logged in to submit a claim.';
-
-  @override
-  String get quickClaimTitle => 'Quick Claim';
-
-  @override
   String get quickClaimInfoBanner =>
-      'For EU-eligible flights. Fill in basic info for a quick preliminary check.';
-
-  @override
-  String get flightNumberHintQuickClaim =>
-      'Usually a 2-letter airline code and digits, e.g. LH1234';
-
-  @override
-  String get departureAirportHintQuickClaim =>
-      'e.g. FRA for Frankfurt, LHR for London Heathrow';
-
-  @override
-  String get arrivalAirportHintQuickClaim =>
-      'e.g. JFK for New York, CDG for Paris';
-
-  @override
-  String get reasonForClaimLabel => 'Reason for Claim';
-
-  @override
-  String get reasonForClaimHint =>
-      'Provide details about what happened with your flight';
-
-  @override
-  String get compensationAmountOptionalLabel =>
-      'Compensation Amount (optional)';
-
-  @override
-  String get compensationAmountHint =>
-      'If you know the amount you are eligible for, enter it here';
-
-  @override
-  String get euWideCompensationTitle => 'EU-wide Compensation';
-
-  @override
-  String get last72HoursButton => 'Últimas 72 horas';
-
-  @override
-  String get scheduledLabel => 'Scheduled:';
-
-  @override
-  String get statusLabelEuList => 'Status:';
-
-  @override
-  String get potentialCompensationLabel => 'Potential Compensation:';
-
-  @override
-  String get prefillCompensationFormButton => 'Pre-fill Compensation Form';
-
-  @override
-  String get claimsTabActive => 'Active';
-
-  @override
-  String get claimsTabActionRequired => 'Action Required';
-
-  @override
-  String get claimsTabCompleted => 'Completed';
-
-  @override
-  String get dialogTitleSuccess => 'Success!';
-
-  @override
-  String get dialogContentClaimSubmitted =>
-      'Your claim has been submitted successfully.';
-
-  @override
-  String get dialogButtonOK => 'OK';
-
-  @override
-  String get documentManagementTitle => 'Document Management';
-
-  @override
-  String get documentsForFlightTitle => 'Documents for flight';
-
-  @override
-  String get errorLoadingDocuments => 'Error Loading Documents';
-
-  @override
-  String get addDocumentTooltip => 'Add Document';
-
-  @override
-  String get deleteDocumentTitle => 'Delete Document?';
-
-  @override
-  String get deleteDocumentMessage => 'Are you sure you want to delete';
-
-  @override
-  String get delete => 'Delete';
-
-  @override
-  String get errorMustBeLoggedIn =>
-      'You must be logged in to perform this action.';
-
-  @override
-  String get errorFailedToSubmitClaim =>
-      'Failed to submit claim. Please try again.';
-
-  @override
-  String get dialogTitleError => 'Error';
-
-  @override
-  String get validatorFlightNumberRequired => 'Flight number is required.';
-
-  @override
-  String get tooltipFlightNumberQuickClaim =>
-      'Enter the flight number as shown on your ticket or booking';
-
-  @override
-  String get tooltipFlightDateQuickClaim =>
-      'Date when your flight was scheduled to depart';
-
-  @override
-  String get validatorDepartureAirportRequired =>
-      'Departure airport is required.';
-
-  @override
-  String get tooltipDepartureAirportQuickClaim =>
-      'Enter the 3-letter IATA code for the departure airport';
-
-  @override
-  String get validatorArrivalAirportRequired => 'Arrival airport is required.';
-
-  @override
-  String get tooltipArrivalAirportQuickClaim =>
-      'Enter the 3-letter IATA code for the arrival airport';
-
-  @override
-  String get hintTextReasonQuickClaim =>
-      'State why you are claiming: delay, cancellation, denied boarding, etc.';
-
-  @override
-  String get validatorReasonRequired => 'Reason for claim is required.';
-
-  @override
-  String get tooltipReasonQuickClaim =>
-      'Explain the reason for your claim in detail';
-
-  @override
-  String get tooltipCompensationAmountQuickClaim =>
-      'Enter the amount if you know what you are eligible for';
-
-  @override
-  String get tipsAndRemindersTitle => 'Tips and Reminders';
-
-  @override
-  String get tipSecureData => 'Your data is secure and encrypted.';
-
-  @override
-  String get processingDocument => 'Processando documento...';
-
-  @override
-  String get fieldValue => 'Valor do Campo';
-
-  @override
-  String get errorConnectionFailed =>
-      'Falha na ligação. Por favor, verifique a sua rede.';
-
-  @override
-  String lastHours(int hours) {
-    return 'Últimas $hours horas';
-  }
-
-  @override
-  String noFlightsMatchingFilter(String filter) {
-    return 'Nenhum voo corresponde ao filtro: $filter';
-  }
-
-  @override
-  String get forceRefreshData => 'Forçar atualização de dados';
-
-  @override
-  String get forcingFreshDataLoad =>
-      'Forçando uma nova atualização de dados...';
-
-  @override
-  String get checkAgain => 'Verificar novamente';
-
-  @override
-  String get euWideCompensationEligibleFlights =>
-      'Voos elegíveis para compensação na UE';
-
-  @override
-  String get noEligibleFlightsFound => 'Nenhum voo elegível encontrado';
-
-  @override
-  String noEligibleFlightsDescription(int hours) {
-    return 'Nenhum voo encontrado nas últimas $hours horas.';
-  }
-
-  @override
-  String get apiConnectionIssue =>
-      'Problema de conexão com a API. Por favor, tente novamente.';
+      'TODO: Translate \'Fill out this form to submit a quick compensation claim for your flight. We\'ll help you through the process.\'';
 
   @override
   String get createClaim => 'Criar solicitação';
@@ -735,6 +519,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get inReview => 'Em análise';
+
+  @override
+  String get actionRequired => 'Ação Necessária';
 
   @override
   String get processing => 'Processando';
@@ -749,10 +536,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get paid => 'Pago';
 
   @override
-  String get underAppeal => 'Em recurso';
-
-  @override
-  String get unknown => 'Desconhecido';
+  String flightRouteDetails(String departure, String arrival) {
+    return 'Voo $flightNumber: $departure - $arrival';
+  }
 
   @override
   String get authenticationRequired => 'Autenticação Necessária';
@@ -768,26 +554,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get logIn => 'Entrar';
 
   @override
-  String claimForFlight(Object number, Object status) {
-    return 'Solicitação para voo $number - $status';
-  }
+  String get noClaimsYet => 'Ainda não há solicitações';
 
   @override
-  String flightRouteDetails(Object number, Object departure, Object arrival) {
-    return 'Voo $number: $departure - $arrival';
-  }
-
-  @override
-  String get viewClaimDetails => 'Ver detalhes da solicitação';
-
-  @override
-  String get totalCompensation => 'Compensação Total';
-
-  @override
-  String get pendingAmount => 'Valor Pendente';
-
-  @override
-  String get pending => 'Pendente';
+  String get startCompensationClaimInstructions =>
+      'Inicie sua solicitação de compensação selecionando um voo na seção Voos elegíveis para a UE';
 
   @override
   String get claimsDashboard => 'Painel de Solicitações';
@@ -802,20 +573,94 @@ class AppLocalizationsPt extends AppLocalizations {
   String get totalClaims => 'Total de Solicitações';
 
   @override
-  String get accessibilitySettings => 'Configurações de acessibilidade';
+  String get totalCompensation => 'Compensação Total';
 
   @override
-  String get configureAccessibility => 'Configurar opções de acessibilidade';
+  String get pendingAmount => 'Valor Pendente';
 
   @override
-  String get configureNotifications => 'Configurar notificações';
+  String get noClaimsYetTitle => 'Ainda Não Há Reclamações';
+
+  @override
+  String get pending => 'Pendente';
+
+  @override
+  String get viewClaimDetails => 'Ver detalhes da solicitação';
+
+  @override
+  String claimForFlight(String flightNumber, String status) {
+    return 'Solicitação para voo $flightNumber - $status';
+  }
+
+  @override
+  String flightRouteDetailsWithNumber(
+      String flightNumber,
+      String departure,
+      String arrival,
+      String number,
+      String airline,
+      String departureAirport,
+      String arrivalAirport,
+      String date,
+      String time) {
+    return '$flightNumber: $departure to $arrival $airline';
+  }
+
+  @override
+  String get configureNotificationsDescription =>
+      'Configurar como recebe atualizações de reclamações';
 
   @override
   String get notificationSettingsComingSoon =>
       'Configurações de notificações em breve!';
 
   @override
+  String get changeApplicationLanguage => 'Alterar idioma da aplicação';
+
+  @override
   String get selectLanguage => 'Selecionar Idioma';
+
+  @override
+  String get tipsAndReminders => 'Dicas e Lembretes';
+
+  @override
+  String get tipProfileUpToDate => 'Mantenha seu perfil atualizado';
+
+  @override
+  String get tipInformationPrivate => 'Suas informações são privadas';
+
+  @override
+  String get tipContactDetails => 'Detalhes de Contato';
+
+  @override
+  String get tipAccessibilitySettings => 'Configurações de Acessibilidade';
+
+  @override
+  String get active => 'Ativa';
+
+  @override
+  String get completed => 'Concluída';
+
+  @override
+  String get genericUser => 'Usuário';
+
+  @override
+  String get signOut => 'Sair';
+
+  @override
+  String errorSigningOut(String error) {
+    return 'Erro ao sair: $error';
+  }
+
+  @override
+  String get profileInformation => 'Informação do Perfil';
+
+  @override
+  String get profileInfoCardTitle =>
+      'O seu perfil contém as suas informações pessoais e de contacto. Estas são usadas para processar as suas reclamações de compensação de voo e mantê-lo informado.';
+
+  @override
+  String get accountSettings => 'Definições da Conta';
 
   @override
   String get editPersonalInfo => 'Editar Informações Pessoais';
@@ -825,44 +670,155 @@ class AppLocalizationsPt extends AppLocalizations {
       'Atualize seus dados pessoais, endereço e informações de contato';
 
   @override
-  String errorSigningOut(String error) {
-    return 'Erro ao sair: $error';
+  String get accessibilitySettings => 'Configurações de acessibilidade';
+
+  @override
+  String get configureAccessibility => 'Configurar opções de acessibilidade';
+
+  @override
+  String get accessibilityOptions => 'Opções de acessibilidade';
+
+  @override
+  String get configureAccessibilityDescription =>
+      'Configurar contraste elevado, texto grande e suporte para leitor de ecrã';
+
+  @override
+  String get notificationSettings => 'Definições de Notificação';
+
+  @override
+  String get configureNotifications => 'Configurar notificações';
+
+  @override
+  String get eu261Rights =>
+      'Sob o regulamento EU261, você tem direito à compensação por:\n• Atrasos de 3+ horas\n• Cancelamentos de voos\n• Negação de embarque\n• Desvios de voos';
+
+  @override
+  String get dontLetAirlinesWin =>
+      'Não deixe as companhias aéreas evitarem pagar o que você merece!';
+
+  @override
+  String get submitClaimAnyway => 'Enviar Reclamação Mesmo Assim';
+
+  @override
+  String get newClaim => 'Nova Reclamação';
+
+  @override
+  String get notLoggedIn => 'Not Logged In';
+
+  @override
+  String get signIn => 'Sign In';
+
+  @override
+  String get checkFlightEligibilityButtonText =>
+      'Verificar elegibilidade para compensação';
+
+  @override
+  String get euEligibleFlightsButtonText =>
+      'Voos elegíveis para compensação na UE';
+
+  @override
+  String welcomeUser(String name, String role, Object userName) {
+    return 'Bem-vindo, $userName';
   }
 
   @override
-  String get signInOrSignUp => 'Entrar / Cadastrar-se';
+  String errorFormSubmissionFailed(String errorMessage) {
+    return 'Error submitting form: $errorMessage. Please check your connection and try again.';
+  }
 
   @override
-  String get genericUser => 'Usuário';
+  String get contactAirlineForClaim => 'Contact Airline for Claim';
 
   @override
-  String get dismiss => 'Dispensar';
+  String get flightMightNotBeEligible =>
+      'Com base nos dados disponíveis, seu voo pode não ser elegível para compensação.';
 
   @override
-  String get signInToTrackClaims => 'Entre para acompanhar suas solicitações';
+  String get knowYourRights => 'Conheça Seus Direitos';
 
   @override
-  String get createAccountDescription =>
-      'Crie uma conta para acompanhar facilmente todas as suas solicitações de compensação';
+  String get airlineDataDisclaimer =>
+      'As companhias aéreas às vezes subestimam atrasos ou alteram status de voos. Se você experimentou um atraso de 3+ horas, cancelamento ou desvio, ainda pode ter direito à compensação.';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get from => 'From';
+
+  @override
+  String get to => 'To';
+
+  @override
+  String get delay => 'Delay';
+
+  @override
+  String get flightEligibleForCompensation =>
+      'Flight Eligible For Compensation';
+
+  @override
+  String flightInfoFormat(String flightCode, String flightDate) {
+    return 'Flight $flightCode on $flightDate';
+  }
+
+  @override
+  String minutesFormat(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String get flightCompensationCheckerTitle =>
+      'Verificador de Compensação de Voo';
+
+  @override
+  String get checkEligibilityForEu261 =>
+      'Verificar elegibilidade para compensação EU 261';
+
+  @override
+  String get flightNumberPlaceholder => 'Número do voo (ex. LO123)';
+
+  @override
+  String get pleaseEnterFlightNumber => 'Por favor insira um número de voo';
+
+  @override
+  String get dateOptionalPlaceholder => 'Data do voo (opcional)';
+
+  @override
+  String get leaveDateEmptyForToday => 'Deixe em branco para a data de hoje';
+
+  @override
+  String get checkCompensationEligibility =>
+      'Verificar Elegibilidade para Compensação';
 
   @override
   String get continueToAttachmentsButton => 'Continuar para Anexos';
 
   @override
-  String get continueToReview => 'Continue to Review';
+  String get flightNotFoundError =>
+      'Voo não encontrado. Por favor, verifique o número do voo e tente novamente.';
 
   @override
-  String get country => 'País';
+  String get invalidFlightNumberError =>
+      'Formato de número de voo inválido. Por favor, insira um número de voo válido (ex. BA123, LH456).';
 
   @override
-  String get privacySettings => 'Configurações de Privacidade';
+  String get networkTimeoutError =>
+      'Tempo limite de conexão excedido. Por favor, verifique sua conexão com a internet e tente novamente.';
 
   @override
-  String get consentToShareData => 'Consentimento para Compartilhar Dados';
+  String get serverError =>
+      'Servidor temporariamente indisponível. Por favor, tente mais tarde.';
 
   @override
-  String get requiredForProcessing =>
-      'Necessário para processar suas solicitações';
+  String get rateLimitError =>
+      'Muitas solicitações. Por favor, aguarde um momento e tente novamente.';
+
+  @override
+  String get generalFlightCheckError =>
+      'Não foi possível verificar as informações do voo. Verifique os dados do voo e tente novamente.';
 
   @override
   String get receiveNotifications => 'Receber Notificações';
@@ -872,6 +828,56 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get saveProfile => 'Salvar Perfil';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get phone => 'Phone';
+
+  @override
+  String get address => 'Endereço';
+
+  @override
+  String get city => 'Cidade';
+
+  @override
+  String get country => 'País';
+
+  @override
+  String get postalCode => 'Código Postal';
+
+  @override
+  String get pleaseSelectFlightDate => 'Please select a flight date';
+
+  @override
+  String get submitNewClaim => 'Submit New Claim';
+
+  @override
+  String get pleaseEnterArrivalAirport => 'Please enter arrival airport';
+
+  @override
+  String get pleaseEnterReason => 'Please enter reason for claim';
+
+  @override
+  String get flightDateHint => 'Select flight date';
+
+  @override
+  String get number => 'Number';
+
+  @override
+  String welcomeUser3(String name, String role, String company) {
+    return 'Welcome, $name ($role at $company)';
+  }
+
+  @override
+  String get phoneNumber => 'Número de Telefone';
 
   @override
   String get passportNumber => 'Número do Passaporte';
@@ -886,13 +892,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dateFormat => 'DD/MM/AAAA';
 
   @override
-  String get address => 'Endereço';
+  String get privacySettings => 'Configurações de Privacidade';
 
   @override
-  String get city => 'Cidade';
+  String get consentToShareData => 'Consentimento para Compartilhar Dados';
 
   @override
-  String get postalCode => 'Código Postal';
+  String get requiredForProcessing =>
+      'Necessário para processar suas solicitações';
+
+  @override
+  String get claims => 'Reclamações';
 
   @override
   String get errorLoadingProfile => 'Erro ao carregar perfil';
@@ -918,179 +928,42 @@ class AppLocalizationsPt extends AppLocalizations {
       'Dados de contato corretos ajudam com a compensação';
 
   @override
-  String get fullName => 'Nome Completo';
+  String get emailReadyToSend => 'Your Compensation Email is Ready!';
 
   @override
-  String get attachDocuments => 'Anexar Documentos';
+  String get emailCopyInstructions =>
+      'Copy the email details below and paste them into your email app';
 
   @override
-  String get uploadingDocument => 'Enviando documento...';
+  String get cc => 'CC';
 
   @override
-  String get noDocuments => 'Você não tem documentos.';
+  String get subject => 'Subject';
 
   @override
-  String get uploadFirstDocument => 'Enviar Primeiro Documento';
+  String get emailBody => 'Email Body';
 
   @override
-  String get uploadNew => 'Enviar Novo';
+  String get howToSendEmail => 'How to send this email:';
 
   @override
-  String get documentUploadSuccess => 'Documento enviado com sucesso!';
+  String get emailStep1 => 'Tap \"Copy Email\" below';
 
   @override
-  String get uploadFailed => 'Falha no envio. Por favor, tente novamente.';
+  String get emailStep2 => 'Open your email app (Gmail, Outlook, etc.)';
 
   @override
-  String get continueAction => 'Continuar';
+  String get emailStep3 => 'Create a new email';
 
   @override
-  String get claimAttachment => 'Anexo de Reclamação';
+  String get emailStep4 => 'Paste the copied content';
 
   @override
-  String get previewEmail => 'Preview Email';
+  String get emailStep5 => 'Send your compensation claim!';
 
   @override
-  String get pdfPreviewMessage => 'PDF preview would be shown here.';
+  String get copyEmail => 'Copy Email';
 
   @override
-  String get downloadPdf => 'Download PDF';
-
-  @override
-  String get filePreviewNotAvailable => 'File preview not available';
-
-  @override
-  String get deleteDocument => 'Delete Document';
-
-  @override
-  String get deleteDocumentConfirmation =>
-      'Are you sure you want to delete this document?';
-
-  @override
-  String get documentDeletedSuccess => 'Document deleted successfully';
-
-  @override
-  String get documentDeleteFailed => 'Failed to delete document';
-
-  @override
-  String get other => 'outro';
-
-  @override
-  String get reviewYourClaim => 'Step 1: Review Your Claim';
-
-  @override
-  String get reviewClaimDetails =>
-      'Please review the details of your claim before proceeding.';
-
-  @override
-  String get attachments => 'Attachments:';
-
-  @override
-  String get proceedToConfirmation => 'Proceed to Confirmation';
-
-  @override
-  String get confirmAndSend => 'Step 2: Confirm & Send';
-
-  @override
-  String get errorLoadingEmailDetails => 'Error: Could not load email details.';
-
-  @override
-  String get noEmailInfo =>
-      'Could not find email information for the user or airline.';
-
-  @override
-  String get finalConfirmation => 'Final Confirmation';
-
-  @override
-  String get claimWillBeSentTo => 'The claim will be sent to:';
-
-  @override
-  String get copyToYourEmail => 'A copy will be sent to your email:';
-
-  @override
-  String get confirmAndSendEmail => 'Confirm and Send Email';
-
-  @override
-  String get flightCompensationCheckerTitle => 'Flight Compensation Checker';
-
-  @override
-  String get checkEligibilityForEu261 =>
-      'Check if your flight is eligible for EU261 compensation';
-
-  @override
-  String get flightNumberPlaceholder => 'Flight Number (e.g., BA123)';
-
-  @override
-  String get dateOptionalPlaceholder => 'Date (YYYY-MM-DD, optional)';
-
-  @override
-  String get leaveDateEmptyForToday => 'Leave empty for today';
-
-  @override
-  String get error => 'Error';
-
-  @override
-  String flightInfoFormat(String flightNumber, String airline) {
-    return 'Flight $flightNumber - $airline';
-  }
-
-  @override
-  String get status => 'Status';
-
-  @override
-  String get from => 'From';
-
-  @override
-  String get to => 'To';
-
-  @override
-  String get delay => 'Delay';
-
-  @override
-  String minutesFormat(int minutes) {
-    return '$minutes minutes';
-  }
-
-  @override
-  String get flightEligibleForCompensation =>
-      'Your flight is eligible for compensation!';
-
-  @override
-  String get flightNotEligibleForCompensation =>
-      'Your flight is not eligible for compensation.';
-
-  @override
-  String get potentialCompensation => 'Potential Compensation:';
-
-  @override
-  String get contactAirlineForClaim =>
-      'Contact the airline to claim your compensation under EU Regulation 261/2004.';
-
-  @override
-  String get reasonPrefix => 'Reason: ';
-
-  @override
-  String get delayLessThan3Hours => 'Flight delay is less than 3 hours';
-
-  @override
-  String get notUnderEuJurisdiction => 'Flight is not under EU jurisdiction';
-
-  @override
-  String get unknownReason => 'Unknown reason';
-
-  @override
-  String get reviewAndConfirm => 'Review and Confirm';
-
-  @override
-  String get pleaseConfirmDetails =>
-      'Please confirm that these details are correct:';
-
-  @override
-  String get emailAppOpenedMessage =>
-      'Your email app has been opened. Please send the email to finalize your claim.';
-
-  @override
-  String emailAppErrorMessage(String email) {
-    return 'Could not open email app. Please send your claim manually to $email.';
-  }
+  String get emailCopiedSuccess => 'Email copied to clipboard!';
 }

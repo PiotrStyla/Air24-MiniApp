@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:intl/intl.dart';
-import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 
 import '../models/claim.dart';
 import '../models/claim_status.dart';
@@ -56,11 +56,11 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.claimDetails),
+        title: Text(context.l10n.claimDetails),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: AppLocalizations.of(context)!.refresh,
+            tooltip: context.l10n.refresh,
             onPressed: _isLoading ? null : _loadClaimDetails,
           ),
         ],
@@ -85,12 +85,12 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)!.errorLoadingClaim,
+              context.l10n.errorLoadingClaim,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              _errorMessage ?? AppLocalizations.of(context)!.unknownError,
+              _errorMessage ?? context.l10n.unknownError,
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.red),
             ),
@@ -98,7 +98,7 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             ElevatedButton.icon(
               onPressed: _loadClaimDetails,
               icon: const Icon(Icons.refresh),
-              label: Text(AppLocalizations.of(context)!.retry),
+              label: Text(context.l10n.retry),
             ),
           ],
         ),
@@ -120,12 +120,12 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)!.claimNotFound,
+              context.l10n.claimNotFound,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              AppLocalizations.of(context)!.claimNotFoundDesc,
+              context.l10n.claimNotFoundDesc,
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey),
             ),
@@ -133,7 +133,7 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_back),
-              label: Text(AppLocalizations.of(context)!.backToDashboard),
+              label: Text(context.l10n.backToDashboard),
             ),
           ],
         ),

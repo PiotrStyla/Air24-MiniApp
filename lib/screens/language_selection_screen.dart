@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:get_it/get_it.dart';
 
 import '../services/localization_service.dart';
@@ -36,7 +36,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final currentLocale = _localizationService.currentLocale;
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     
     return Scaffold(
       appBar: AppBar(

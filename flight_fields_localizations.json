@@ -1,0 +1,31 @@
+{
+  "flightNumberHintQuickClaim": "Enter flight number (e.g. LH123)",
+  "@flightNumberHintQuickClaim": {
+    "description": "Helper text for flight number field in quick claim form"
+  },
+  
+  "validatorFlightNumberRequired": "Flight number is required",
+  "@validatorFlightNumberRequired": {
+    "description": "Validation message when flight number is empty"
+  },
+  
+  "tooltipFlightNumberQuickClaim": "Enter the flight number for your claim",
+  "@tooltipFlightNumberQuickClaim": {
+    "description": "Tooltip for flight number field in quick claim form"
+  },
+  
+  "tooltipFlightDateQuickClaim": "Select the date of your flight",
+  "@tooltipFlightDateQuickClaim": {
+    "description": "Tooltip for flight date field in quick claim form"
+  },
+  
+  "departureAirportHintQuickClaim": "Enter airport code or name (e.g. LHR, London Heathrow)",
+  "@departureAirportHintQuickClaim": {
+    "description": "Helper text for departure airport field in quick claim form"
+  },
+  
+  "validatorDepartureAirportRequired": "Departure airport is required",
+  "@validatorDepartureAirportRequired": {
+    "description": "Validation message when departure airport is empty"
+  }
+}

@@ -1,0 +1,1258 @@
+{
+  "@@locale": "de",
+  "appTitle": "Flugentschädigung",
+  "@appTitle": {
+    "description": "Der Titel der Anwendung"
+  },
+  "welcomeUser": "Willkommen, {userName}",
+  "@welcomeUser": {
+    "description": "Eine Willkommensnachricht für den Benutzer",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Max Mustermann"
+      }
+    }
+  },
+  "signOut": "Abmelden",
+  "@signOut": {
+    "description": "Beschriftung der Abmelde-Schaltfläche"
+  },
+  "newClaim": "Neuer Anspruch",
+  "@newClaim": {
+    "description": "Beschriftung der Schaltfläche für einen neuen Anspruch"
+  },
+  "home": "Startseite",
+  "@home": {
+    "description": "Titel des Startbildschirms"
+  },
+  "settings": "Einstellungen",
+  "@settings": {
+    "description": "Titel des Einstellungsbildschirms"
+  },
+  "languageSelection": "Sprache",
+  "@languageSelection": {
+    "description": "Beschriftung für die Sprachauswahl"
+  },
+  "passengerName": "Name des Passagiers",
+  "passengerDetails": "Passagierdetails",
+  "flightNumber": "Flugnummer",
+  "airline": "Fluggesellschaft",
+  "departureAirport": "Abflughafen",
+  "arrivalAirport": "Ankunftsflughafen",
+  "email": "E-Mail",
+  "bookingReference": "Buchungsreferenz",
+  "additionalInformation": "Zusätzliche Informationen",
+  "optional": "(Optional)",
+  "thisFieldIsRequired": "Dieses Feld ist erforderlich.",
+  "pleaseEnterDepartureAirport": "Bitte geben Sie einen Abflughafen ein.",
+  "uploadDocuments": "Dokumente hochladen",
+  "submitClaim": "Anspruch einreichen",
+  "addDocument": "Dokument hinzufügen",
+  "claimSubmittedSuccessfully": "Anspruch erfolgreich eingereicht!",
+  "completeAllFields": "Bitte füllen Sie alle Felder aus.",
+  "supportingDocuments": "Unterstützende Dokumente",
+  "cropDocument": "Dokument zuschneiden",
+  "crop": "Zuschneiden",
+  "cropping": "Wird zugeschnitten...",
+  "rotate": "Drehen",
+  "aspectRatio": "Seitenverhältnis",
+  "aspectRatioFree": "Frei",
+  "aspectRatioSquare": "Quadratisch",
+  "aspectRatioPortrait": "Hochformat",
+  "aspectRatioLandscape": "Querformat",
+  "aspectRatioMode": "Seitenverhältnis: {ratio}",
+  "@aspectRatioMode": {
+    "placeholders": {
+      "ratio": {
+        "type": "String"
+      }
+    }
+  },
+  "documentOcrResult": "OCR-Ergebnis",
+  "extractedFields": "Extrahierte Felder",
+  "fullText": "Volltext",
+  "documentSaved": "Dokument gespeichert.",
+  "useExtractedData": "Extrahierte Daten verwenden",
+  "copyToClipboard": "In die Zwischenablage kopiert.",
+  "documentType": "Dokumententyp",
+  "saveDocument": "Dokument speichern",
+  "fieldName": "Feldname",
+  "done": "Fertig",
+  "yes": "Ja",
+  "no": "Nein",
+  "ok": "OK",
+  "back": "Zurück",
+  "save": "Speichern",
+  "welcomeMessage": "Willkommen in der App!",
+  "fillForm": "Formular ausfüllen",
+  "chooseUseInfo": "Wählen Sie, wie Sie diese Informationen verwenden möchten:",
+  "fillPassengerFlight": "Passagier- und Fluginformationen ausfüllen",
+  "ocrResults": "OCR-Ergebnisse",
+  "noFieldsExtracted": "Es wurden keine Felder aus dem Dokument extrahiert.",
+  "extractedInformation": "Extrahierte Informationen",
+  "rawOcrText": "Roher OCR-Text",
+  "copyAllText": "Gesamten Text kopieren",
+  "claims": "Ansprüche",
+  "noClaimsYet": "Noch keine Ansprüche",
+  "startCompensationClaimInstructions": "Starten Sie Ihren Entschädigungsanspruch, indem Sie einen Flug aus dem Abschnitt EU-berechtigte Flüge auswählen",
+  "active": "Aktiv",
+  "actionRequired": "Handlung erforderlich",
+  "completed": "Abgeschlossen",
+  "profileInfoCardTitle": "Ihr Profil enthält Ihre persönlichen Daten und Kontaktinformationen. Diese werden verwendet, um Ihre Entschädigungsansprüche für Flüge zu bearbeiten und Sie über den Fortschritt auf dem Laufenden zu halten.",
+  "last72HoursButton": "Letzte 72 Stunden",
+  "accountSettings": "Kontoeinstellungen",
+  "accessibilityOptions": "Barrierefreiheitsoptionen",
+  "configureAccessibilityDescription": "Konfigurieren Sie hohen Kontrast, großen Text und Screenreader-Unterstützung",
+  "configureNotificationsDescription": "Konfigurieren Sie, wie Sie Anspruchsaktualisierungen erhalten",
+  "tipProfileUpToDate": "Halten Sie Ihr Profil auf dem neuesten Stand, um eine reibungslose Anspruchsbearbeitung zu gewährleisten.",
+  "tipInformationPrivate": "Ihre Informationen sind privat und werden nur für Entschädigungsansprüche verwendet.",
+  "tipContactDetails": "Stellen Sie sicher, dass Ihre Kontaktdaten korrekt sind, damit wir Sie bezüglich Ihres Anspruchs erreichen können.",
+  "tipAccessibilitySettings": "Überprüfen Sie die Barrierefreiheitseinstellungen, um die App an Ihre Bedürfnisse anzupassen.",
+  "cancel": "Abbrechen",
+  "next": "Weiter",
+  "previous": "Zurück",
+  "arrivalsAt": "Ankünfte in {airport}",
+  "@arrivalsAt": {
+    "placeholders": {
+      "airport": {
+        "type": "String"
+      }
+    }
+  },
+  "filterByAirline": "Nach Fluggesellschaft filtern",
+  "flightStatusDelayed": "Verspätet",
+  "flightStatusCancelled": "Annulliert",
+  "flightStatusDiverted": "Umgelenkt",
+  "flightStatusOnTime": "Pünktlich",
+  "flight": "Flug",
+  "flights": "Flüge",
+  "myFlights": "Meine Flüge",
+  "findFlight": "Flug finden",
+  "flightDate": "Flugdatum",
+  "checkCompensationEligibility": "Anspruchsberechtigung prüfen",
+  "supportingDocumentsHint": "Fügen Sie Bordkarten, Tickets und andere Dokumente bei, um Ihren Anspruch zu untermauern.",
+  "scanDocument": "Dokument scannen",
+  "uploadDocument": "Dokument hochladen",
+  "scanDocumentHint": "Kamera verwenden, um das Formular automatisch auszufüllen",
+  "uploadDocumentHint": "Aus dem Gerätespeicher auswählen",
+  "noDocumentsYet": "Noch keine Dokumente angehängt",
+  "enterFlightNumberFirst": "Bitte geben Sie zuerst eine Flugnummer ein",
+  "viewAll": "Alle anzeigen",
+  "documentScanner": "Dokumentenscanner",
+  "profileInformation": "Profilinformationen",
+  "editPersonalInformation": "Ihre persönlichen Daten bearbeiten",
+  "editPersonalAndContactInformation": "Ihre persönlichen und Kontaktdaten bearbeiten",
+  "configureAccessibilityOptions": "Barrierefreiheitsoptionen der App konfigurieren",
+  "configureHighContrastLargeTextAndScreenReaderSupport": "Hohen Kontrast, großen Text und Screenreader-Unterstützung konfigurieren",
+  "applicationPreferences": "Anwendungseinstellungen",
+  "notificationSettings": "Benachrichtigungseinstellungen",
+  "configureNotificationPreferences": "Benachrichtigungseinstellungen konfigurieren",
+  "configureHowYouReceiveClaimUpdates": "Konfigurieren Sie, wie Sie Anspruchsaktualisierungen erhalten",
+  "language": "Sprache",
+  "changeApplicationLanguage": "Anwendungssprache ändern",
+  "selectYourPreferredLanguage": "Wählen Sie Ihre bevorzugte Sprache",
+  "tipsAndReminders": "Tipps & Erinnerungen",
+  "importantTipsAboutProfileInformation": "Wichtige Tipps zu Ihren Profilinformationen",
+  "noClaimsYetTitle": "Noch keine Ansprüche",
+  "noClaimsYetSubtitle": "Starten Sie Ihren Entschädigungsanspruch, indem Sie einen Flug aus dem Abschnitt EU-berechtigte Flüge auswählen",
+  "extractingText": "Text wird extrahiert und Felder werden identifiziert",
+  "scanInstructions": "Positionieren Sie Ihr Dokument im Rahmen und machen Sie ein Foto",
+  "formFilledWithScannedData": "Formular mit gescannten Dokumentdaten gefüllt",
+  "flightDetails": "Flugdetails",
+  "phoneNumber": "Telefonnummer",
+  "required": "Erforderlich",
+  "submit": "Einreichen",
+  "submissionChecklist": "Einreichungs-Checkliste",
+  "documentAttached": "Dokument angehängt",
+  "compensationClaimForm": "Entschädigungsantragsformular",
+  "prefilledFromProfile": "Aus Ihrem Profil vorausgefüllt",
+  "flightSearch": "Flugsuche",
+  "searchFlightNumber": "Mit Flugnummer suchen",
+  "delayedFlightDetected": "Verspäteter Flug erkannt",
+  "flightDetected": "Flug erkannt",
+  "flightLabel": "Flug:",
+  "fromAirport": "Von:",
+  "toAirport": "Nach:",
+  "statusLabel": "Status:",
+  "delayedEligible": "Verspätet und potenziell anspruchsberechtigt",
+  "startClaim": "Anspruch starten",
+  "euWideEligibleFlights": "EU-weit entschädigungsberechtigte Flüge",
+  "claimNotFound": "Anspruch nicht gefunden",
+  "@claimNotFound": {
+    "description": "Titel, wenn ein Anspruch nicht gefunden werden kann."
+  },
+  "claimNotFoundDesc": "Der angeforderte Anspruch konnte nicht gefunden werden. Er wurde möglicherweise gelöscht.",
+  "@claimNotFoundDesc": {
+    "description": "Beschreibung, wenn ein Anspruch nicht gefunden werden kann."
+  },
+  "backToDashboard": "Zurück zum Dashboard",
+  "@backToDashboard": {
+    "description": "Button-Beschriftung, um zum Dashboard zurückzukehren."
+  },
+  "requiredFieldsCompleted": "Alle erforderlichen Felder sind ausgefüllt.",
+  "scanningDocumentsNote": "Das Scannen von Dokumenten kann einige Felder vorausfüllen.",
+  "tipCheckEligibility": "• Stellen Sie sicher, dass Ihr Flug anspruchsberechtigt ist (z. B. Verspätung >3h, Annullierung, Nichtbeförderung).",
+  "tipDoubleCheckDetails": "• Überprüfen Sie alle Details vor dem Einreichen, um Verzögerungen zu vermeiden.",
+  "tooltipFaqHelp": "Greifen Sie auf die häufig gestellten Fragen und den Hilfebereich zu",
+  "formSubmissionError": "Fehler beim Senden des Formulars: {errorMessage}. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+  "@formSubmissionError": {
+    "description": "Fehlermeldung bei fehlgeschlagener Formularübermittlung",
+    "placeholders": {
+      "errorMessage": {
+        "type": "String",
+        "example": "Netzwerk-Timeout"
+      }
+    }
+  },
+  "processingDocument": "Dokument wird verarbeitet...",
+  "@processingDocument": {
+    "description": "Nachricht, die während der OCR-Verarbeitung eines Dokuments angezeigt wird"
+  },
+  "fieldValue": "Feldwert",
+  "@fieldValue": {
+    "description": "Bezeichnung für einen generischen Feldwert beim Debuggen oder Anzeigen"
+  },
+  "errorConnectionFailed": "Verbindung fehlgeschlagen. Bitte überprüfen Sie Ihr Netzwerk.",
+  "@errorConnectionFailed": {
+    "description": "Fehlermeldung, wenn eine Netzwerkverbindung fehlschlägt"
+  },
+  "lastHours": "Letzte {hours} Stunden",
+  "@lastHours": {
+    "description": "Label zum Filtern von Flügen in den letzten N Stunden",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "24"
+      }
+    }
+  },
+  "noFlightsMatchingFilter": "Keine Flüge entsprechen dem Filter: {filter}",
+  "@noFlightsMatchingFilter": {
+    "description": "Nachricht, wenn keine Flüge dem ausgewählten Filter entsprechen",
+    "placeholders": {
+      "filter": {
+        "type": "String",
+        "example": "Lufthansa"
+      }
+    }
+  },
+  "forceRefreshData": "Datenaktualisierung erzwingen",
+  "@forceRefreshData": {
+    "description": "Tooltip für Button zur erzwungenen Datenaktualisierung"
+  },
+  "forcingFreshDataLoad": "Erzwinge eine neue Datenaktualisierung...",
+  "@forcingFreshDataLoad": {
+    "description": "Snackbar-Nachricht, wenn eine neue Datenaktualisierung erzwungen wird"
+  },
+  "checkAgain": "Erneut prüfen",
+  "@checkAgain": {
+    "description": "Button-Beschriftung zum erneuten Prüfen oder Abrufen von Flügen"
+  },
+  "euWideCompensationEligibleFlights": "EU-Entschädigungsberechtigte Flüge",
+  "@euWideCompensationEligibleFlights": {
+    "description": "Titel für den Bildschirm/Abschnitt mit EU-entschädigungsberechtigten Flügen"
+  },
+  "noEligibleFlightsFound": "Keine berechtigten Flüge gefunden",
+  "@noEligibleFlightsFound": {
+    "description": "Meldung, wenn keine berechtigten Flüge gefunden wurden"
+  },
+  "noEligibleFlightsDescription": "Keine Flüge in den letzten {hours} Stunden gefunden.",
+  "@noEligibleFlightsDescription": {
+    "description": "Beschreibung für den leeren Zustand, wenn keine berechtigten Flüge gefunden wurden",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "72"
+      }
+    }
+  },
+  "apiConnectionIssue": "API-Verbindungsproblem. Bitte versuchen Sie es erneut.",
+  "@apiConnectionIssue": {
+    "description": "Meldung, wenn ein Problem mit der API-Verbindung auftritt"
+  },
+
+  "noClaimsYet": "Noch keine Ansprüche",
+  "@noClaimsYet": { "description": "Angezeigt, wenn noch keine Ansprüche im Dashboard vorhanden sind" },
+  "startCompensationClaimInstructions": "Starten Sie Ihren Entschädigungsantrag, indem Sie einen Flug aus dem Bereich 'EU-berechtigte Flüge' auswählen",
+  "@startCompensationClaimInstructions": { "description": "Anleitung zum Starten eines Entschädigungsantrags, wenn keine Ansprüche existieren" },
+  "createClaim": "Anspruch erstellen",
+  "@createClaim": { "description": "Button-Beschriftung zum Erstellen eines neuen Anspruchs" },
+  "submitted": "Eingereicht",
+  "@submitted": { "description": "Status für einen eingereichten Anspruch" },
+  "inReview": "In Überprüfung",
+  "@inReview": { "description": "Status für einen Anspruch, der überprüft wird" },
+  "processing": "In Bearbeitung",
+  "@processing": { "description": "Status für einen Anspruch, der bearbeitet wird" },
+  "approved": "Genehmigt",
+  "@approved": { "description": "Status für einen genehmigten Anspruch" },
+  "rejected": "Abgelehnt",
+  "@rejected": { "description": "Status für einen abgelehnten Anspruch" },
+  "paid": "Ausbezahlt",
+  "@paid": { "description": "Status für einen ausbezahlten Anspruch" },
+  "underAppeal": "Im Einspruchsverfahren",
+  "@underAppeal": { "description": "Status für einen Anspruch im Einspruchsverfahren" },
+  "unknown": "Unbekannt",
+  "@unknown": { "description": "Status für einen unbekannten Anspruchsstatus" },
+
+  "authenticationRequired": "Authentifizierung erforderlich",
+  "@authenticationRequired": { "description": "Titel, der angezeigt wird, wenn eine Authentifizierung erforderlich ist" },
+  
+  "errorLoadingClaims": "Fehler beim Laden der Ansprüche",
+  "@errorLoadingClaims": { "description": "Fehlermeldung, wenn Ansprüche nicht geladen werden können" },
+  
+  "loginToViewClaimsDashboard": "Bitte melden Sie sich an, um Ihr Anspruchs-Dashboard anzuzeigen",
+  "@loginToViewClaimsDashboard": { "description": "Meldung, die angezeigt wird, wenn sich der Benutzer anmelden muss, um Ansprüche anzuzeigen" },
+  
+  "logIn": "Anmelden",
+  "@logIn": { "description": "Schaltflächenbezeichnung für die Anmeldeaktion" },
+  
+  "retry": "Wiederholen",
+  "@retry": { "description": "Schaltflächenbezeichnung für die Wiederholungsaktion" },
+
+  "claimForFlight": "Anspruch für Flug {number} - {status}",
+  "@claimForFlight": { 
+    "description": "Text, der den Anspruch für einen bestimmten Flug mit Status anzeigt",
+    "placeholders": {
+      "number": {},
+      "status": {}
+    }
+  },
+
+  "flightRouteDetails": "Flug {number}: {departure} - {arrival}",
+  "@flightRouteDetails": { 
+    "description": "Text, der Flugroutendetails mit Abflug und Ankunft anzeigt",
+    "placeholders": {
+      "number": {},
+      "departure": {},
+      "arrival": {}
+    }
+  },
+
+  "viewClaimDetails": "Anspruchsdetails anzeigen",
+  "@viewClaimDetails": {
+    "description": "Barrierefreiheitshinweis für die Anzeige von Anspruchsdetails"
+  },
+
+  "totalCompensation": "Gesamtentschädigung",
+  "@totalCompensation": {
+    "description": "Beschriftung für den Gesamtentschädigungsbetrag in der Dashboard-Analyse"
+  },
+
+  "pendingAmount": "Ausstehender Betrag",
+  "@pendingAmount": {
+    "description": "Beschriftung für den ausstehenden Entschädigungsbetrag in der Dashboard-Analyse"
+  },
+
+  "pending": "Ausstehend",
+  "@pending": {
+    "description": "Text, der angezeigt wird, wenn der Entschädigungsbetrag aussteht"
+  },
+
+  "claimsDashboard": "Anspruchsdashboard",
+  "@claimsDashboard": {
+    "description": "Titel für den Anspruchsdashboard-Bildschirm"
+  },
+
+  "tooltipArrivalAirportQuickClaim": "Ankunftsflughafen für Quick Claim",
+  "@tooltipArrivalAirportQuickClaim": {
+    "description": "Tooltip für das Ankunftsflughafen-Feld im Quick Claim-Bildschirm"
+  },
+
+  "flightCompensationCheckerTitle": "Flugentschädigungs-Prüfer",
+  "@flightCompensationCheckerTitle": {
+    "description": "Titel für den Flugentschädigungs-Prüfer-Bildschirm"
+  },
+
+  "checkEligibilityForEu261": "Prüfen Sie, ob Ihr Flug für eine EU261-Entschädigung in Frage kommt",
+  "@checkEligibilityForEu261": {
+    "description": "Überschriftstext für die EU261-Eignungsprüfung"
+  },
+
+  "flightNumberPlaceholder": "Flugnummer (z.B. LH123)",
+  "@flightNumberPlaceholder": {
+    "description": "Platzhaltertext für das Flugnummer-Eingabefeld"
+  },
+
+  "dateOptionalPlaceholder": "Datum (JJJJ-MM-TT, optional)",
+  "@dateOptionalPlaceholder": {
+    "description": "Platzhaltertext für optionales Datumseingabefeld"
+  },
+
+  "leaveDateEmptyForToday": "Leer lassen für heute",
+  "@leaveDateEmptyForToday": {
+    "description": "Hinweistext für das Datumsfeld"
+  },
+
+  "checkCompensationEligibility": "Entschädigungsberechtigung prüfen",
+  "@checkCompensationEligibility": {
+    "description": "Schaltflächenbeschriftung zur Prüfung der Entschädigungsberechtigung"
+  },
+
+  "pleaseEnterFlightNumber": "Bitte geben Sie eine Flugnummer ein",
+  "@pleaseEnterFlightNumber": {
+    "description": "Validierungsmeldung für leere Flugnummer"
+  },
+
+  "error": "Fehler",
+  "@error": {
+    "description": "Fehlertext für Fehlermeldungen"
+  },
+
+  "flightInfoFormat": "Flug {flightNumber} - {airline}",
+  "@flightInfoFormat": {
+    "description": "Format für die Anzeige von Fluginformationen mit Nummer und Fluggesellschaft",
+    "placeholders": {
+      "flightNumber": {
+        "type": "String",
+        "example": "LH123"
+      },
+      "airline": {
+        "type": "String",
+        "example": "Lufthansa"
+      }
+    }
+  },
+
+  "status": "Status",
+  "@status": {
+    "description": "Status-Label"
+  },
+
+  "from": "Von",
+  "@from": {
+    "description": "Von-Label für Abflughafen"
+  },
+
+  "to": "Nach",
+  "@to": {
+    "description": "Nach-Label für Ankunftsflughafen"
+  },
+
+  "delay": "Verspätung",
+  "@delay": {
+    "description": "Verspätungs-Label"
+  },
+
+  "minutesFormat": "{minutes} Minuten",
+  "@minutesFormat": {
+    "description": "Format für die Anzeige von Minuten",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "45"
+      }
+    }
+  },
+
+  "unknown": "Unbekannt",
+  "@unknown": {
+    "description": "Text für unbekannte Werte"
+  },
+
+  "flightEligibleForCompensation": "Ihr Flug hat Anspruch auf Entschädigung!",
+  "@flightEligibleForCompensation": {
+    "description": "Meldung, die angezeigt wird, wenn der Flug für eine Entschädigung in Frage kommt"
+  },
+
+  "flightNotEligibleForCompensation": "Ihr Flug hat keinen Anspruch auf Entschädigung.",
+  "@flightNotEligibleForCompensation": {
+    "description": "Meldung, die angezeigt wird, wenn der Flug nicht für eine Entschädigung in Frage kommt"
+  },
+
+  "potentialCompensation": "Mögliche Entschädigung:",
+  "@potentialCompensation": {
+    "description": "Bezeichnung für den potenziellen Entschädigungsbetrag"
+  },
+
+  "contactAirlineForClaim": "Kontaktieren Sie die Fluggesellschaft, um Ihre Entschädigung gemäß EU-Verordnung 261/2004 zu beantragen.",
+  "@contactAirlineForClaim": {
+    "description": "Anweisung zur Beantragung einer Entschädigung"
+  },
+
+  "reasonPrefix": "Grund: ",
+  "@reasonPrefix": {
+    "description": "Präfix für die Anzeige des Grundes für die Nichtberechtigung"
+  },
+
+  "delayLessThan3Hours": "Flugverspätung ist weniger als 3 Stunden",
+  "@delayLessThan3Hours": {
+    "description": "Grund für Nichtberechtigung aufgrund kurzer Verzögerung"
+  },
+
+  "notUnderEuJurisdiction": "Flug unterliegt nicht der EU-Rechtsprechung",
+  "@notUnderEuJurisdiction": {
+    "description": "Grund für Nichtberechtigung aufgrund der Rechtsprechung"
+  },
+
+  "unknownReason": "Unbekannter Grund",
+  "@unknownReason": {
+    "description": "Standardgrund, wenn kein spezifischer Grund verfügbar ist"
+  },
+
+  "refreshDashboard": "Dashboard aktualisieren",
+  "@refreshDashboard": {
+    "description": "Tooltip für die Aktualisierungsschaltfläche auf dem Dashboard"
+  },
+  "claimsSummary": "Anspruchsübersicht",
+  "@claimsSummary": {
+    "description": "Titel für den Abschnitt Anspruchsübersicht"
+  },
+
+  "totalClaims": "Gesamte Ansprüche",
+  "@totalClaims": {
+    "description": "Beschriftung für die Gesamtanzahl der Ansprüche"
+  },
+
+  "tipContactDetails": "Kontaktdetails",
+  "@tipContactDetails": {
+    "description": "Beschriftung für den Abschnitt Kontaktdetails im Profil"
+  },
+
+  "tipAccessibilitySettings": "Barrierefreiheitseinstellungen",
+  "@tipAccessibilitySettings": {
+    "description": "Beschriftung für den Abschnitt Barrierefreiheitseinstellungen im Profil"
+  },
+
+  "tipProfileUpToDate": "Halten Sie Ihr Profil aktuell",
+  "@tipProfileUpToDate": {
+    "description": "Tipp zur Aktualisierung der Profilinformationen"
+  },
+
+  "tipInformationPrivate": "Ihre Informationen sind privat",
+  "@tipInformationPrivate": {
+    "description": "Hinweis auf die Privatsphäre der Profilinformationen"
+  },
+
+  "accessibilitySettings": "Barrierefreiheitseinstellungen",
+  "@accessibilitySettings": {
+    "description": "Titel für den Abschnitt Barrierefreiheitseinstellungen"
+  },
+
+  "configureAccessibility": "Barrierefreiheitsoptionen konfigurieren",
+  "@configureAccessibility": {
+    "description": "Semantische Bezeichnung für die Schaltfläche für Barrierefreiheitseinstellungen"
+  },
+
+  "configureNotifications": "Benachrichtigungen konfigurieren",
+  "@configureNotifications": {
+    "description": "Semantische Bezeichnung für die Schaltfläche für Benachrichtigungseinstellungen"
+  },
+
+  "notificationSettingsComingSoon": "Benachrichtigungseinstellungen kommen bald!",
+  "@notificationSettingsComingSoon": {
+    "description": "Nachricht, die darauf hinweist, dass die Benachrichtigungsfunktion in Entwicklung ist"
+  },
+
+  "selectLanguage": "Sprache auswählen",
+  "@selectLanguage": {
+    "description": "Bezeichnung für die Schaltfläche zur Sprachauswahl"
+  },
+
+  "editPersonalInfo": "Persönliche Informationen bearbeiten",
+  "@editPersonalInfo": {
+    "description": "Beschriftung für die Schaltfläche zum Bearbeiten persönlicher Informationen"
+  },
+
+  "editPersonalInfoDescription": "Aktualisieren Sie Ihre persönlichen Daten, Adresse und Kontaktinformationen",
+  "@editPersonalInfoDescription": {
+    "description": "Beschreibung, was die Bearbeitung persönlicher Informationen ermöglicht"
+  },
+
+  "signOut": "Abmelden",
+  "@signOut": {
+    "description": "Beschriftung für die Abmeldeschaltfläche"
+  },
+
+  "errorSigningOut": "Fehler beim Abmelden: {error}",
+  "@errorSigningOut": {
+    "description": "Fehlermeldung, die angezeigt wird, wenn die Abmeldung fehlschlägt",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Netzwerkfehler"
+      }
+    }
+  },
+
+  "signInOrSignUp": "Anmelden / Registrieren",
+  "@signInOrSignUp": {
+    "description": "Beschriftung für die Anmelde- oder Registrierungsschaltfläche"
+  },
+
+  "genericUser": "Benutzer",
+  "@genericUser": {
+    "description": "Generischer Name für Benutzer, wenn der tatsächliche Name nicht verfügbar ist"
+  },
+
+  "welcomeUser": "Willkommen, {userName}",
+  "@welcomeUser": {
+    "description": "Willkommensnachricht mit Benutzername",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Johann"
+      }
+    }
+  },
+
+  "dismiss": "Schließen",
+  "@dismiss": {
+    "description": "Beschriftung für die Schaltfläche zum Schließen"
+  },
+
+  "signInToTrackClaims": "Melden Sie sich an, um Ihre Ansprüche zu verfolgen",
+  "@signInToTrackClaims": {
+    "description": "Nachricht, die den Benutzer zum Anmelden ermutigt, um Ansprüche zu verfolgen"
+  },
+
+  "createAccountDescription": "Erstellen Sie ein Konto, um alle Ihre Entschädigungsansprüche einfach zu verfolgen",
+  "@createAccountDescription": {
+    "description": "Beschreibung der Vorteile der Erstellung eines Kontos"
+  },
+
+  "continueToAttachmentsButton": "Weiter zu den Anhängen",
+  "@continueToAttachmentsButton": {
+    "description": "Schaltflächenbeschriftung zum Fortfahren zum Anhängebildschirm"
+  },
+
+  "country": "Land",
+  "@country": {
+    "description": "Beschriftung für Landfeld"
+  },
+
+  "privacySettings": "Datenschutzeinstellungen",
+  "@privacySettings": {
+    "description": "Beschriftung für den Bereich Datenschutzeinstellungen"
+  },
+
+  "consentToShareData": "Einwilligung zur Datenweitergabe",
+  "@consentToShareData": {
+    "description": "Beschriftung für den Schalter zur Einwilligung zur Datenweitergabe"
+  },
+
+  "requiredForProcessing": "Erforderlich für die Bearbeitung Ihrer Ansprüche",
+  "@requiredForProcessing": {
+    "description": "Beschreibung für die Einwilligung zur Datenweitergabe"
+  },
+
+  "receiveNotifications": "Benachrichtigungen erhalten",
+  "@receiveNotifications": {
+    "description": "Beschriftung für den Schalter zum Erhalt von Benachrichtigungen"
+  },
+
+  "getClaimUpdates": "Erhalten Sie Updates zu Ihren Ansprüchen",
+  "@getClaimUpdates": {
+    "description": "Beschreibung für den Erhalt von Benachrichtigungen"
+  },
+
+  "saveProfile": "Profil speichern",
+  "@saveProfile": {
+    "description": "Schaltflächenbeschriftung zum Speichern von Profiländerungen"
+  },
+
+  "passportNumber": "Passnummer",
+  "@passportNumber": {
+    "description": "Beschriftung für Passnummerfeld"
+  },
+
+  "nationality": "Nationalität",
+  "@nationality": {
+    "description": "Beschriftung für Nationalitätsfeld"
+  },
+
+  "dateOfBirth": "Geburtsdatum",
+  "@dateOfBirth": {
+    "description": "Beschriftung für Geburtsdatumsfeld"
+  },
+
+  "dateFormat": "TT/MM/JJJJ",
+  "@dateFormat": {
+    "description": "Hinweistext für Datumsformat"
+  },
+
+  "address": "Adresse",
+  "@address": {
+    "description": "Beschriftung für Adressfeld"
+  },
+
+  "city": "Stadt",
+  "@city": {
+    "description": "Beschriftung für Stadtfeld"
+  },
+
+  "postalCode": "Postleitzahl",
+  "@postalCode": {
+    "description": "Beschriftung für Postleitzahlfeld"
+  },
+
+  "errorLoadingProfile": "Fehler beim Laden des Profils",
+  "@errorLoadingProfile": {
+    "description": "Fehlermeldung, wenn das Profil nicht geladen werden kann"
+  },
+
+  "profileSaved": "Profil erfolgreich gespeichert",
+  "@profileSaved": {
+    "description": "Erfolgsmeldung, wenn das Profil gespeichert wird"
+  },
+
+  "editProfile": "Profil bearbeiten",
+  "@editProfile": {
+    "description": "Titel für den Profilbearbeitungsbildschirm"
+  },
+
+  "profileAccuracyInfo": "Bitte stellen Sie sicher, dass Ihre Profilinformationen korrekt sind",
+  "@profileAccuracyInfo": {
+    "description": "Informationen über die Genauigkeit der Profilinformationen"
+  },
+
+  "keepProfileUpToDate": "Halten Sie Ihr Profil aktuell",
+  "@keepProfileUpToDate": {
+    "description": "Anweisung, Profilinformationen aktuell zu halten"
+  },
+
+  "profilePrivacy": "Wir schützen Ihre Privatsphäre und Daten",
+  "@profilePrivacy": {
+    "description": "Aussage über die Privatsphäre des Profils"
+  },
+
+  "correctContactDetails": "Korrekte Kontaktdaten helfen bei der Entschädigung",
+  "@correctContactDetails": {
+    "description": "Erklärung über die Wichtigkeit korrekter Kontaktdaten"
+  },
+
+  "fullName": "Vollständiger Name",
+  "@fullName": {
+    "description": "Etikett für das Feld vollständiger Name"
+  },
+
+  "attachDocuments": "Dokumente anhängen",
+  "@attachDocuments": {
+    "description": "Titel für den Bildschirm zum Anhängen von Dokumenten"
+  },
+
+  "uploadingDocument": "Dokument wird hochgeladen...",
+  "@uploadingDocument": {
+    "description": "Meldung, die angezeigt wird, wenn ein Dokument hochgeladen wird"
+  },
+
+  "noDocuments": "Sie haben keine Dokumente.",
+  "@noDocuments": {
+    "description": "Meldung, die angezeigt wird, wenn der Benutzer keine Dokumente hat"
+  },
+
+  "uploadFirstDocument": "Erstes Dokument hochladen",
+  "@uploadFirstDocument": {
+    "description": "Schaltflächentext zum Hochladen des ersten Dokuments"
+  },
+
+  "uploadNew": "Neu hochladen",
+  "@uploadNew": {
+    "description": "Schaltflächentext zum Hochladen eines neuen Dokuments"
+  },
+
+  "documentUploadSuccess": "Dokument erfolgreich hochgeladen!",
+  "@documentUploadSuccess": {
+    "description": "Erfolgsmeldung, wenn Dokument hochgeladen wurde"
+  },
+
+  "uploadFailed": "Hochladen fehlgeschlagen. Bitte versuchen Sie es erneut.",
+  "@uploadFailed": {
+    "description": "Fehlermeldung, wenn der Dokumentupload fehlschlägt"
+  },
+
+  "continueAction": "Weiter",
+  "@continueAction": {
+    "description": "Beschriftung für Schaltfläche, um zum nächsten Bildschirm zu gelangen"
+  },
+
+  "claimAttachment": "Forderungsanhang",
+  "@claimAttachment": {
+    "description": "Bezeichnung für Forderungsanhang"
+  },
+
+  "other": "andere",
+  "@other": {
+    "description": "Label for other document type"
+  },
+
+  "flightDiverted": "Flug umgeleitet",
+  "@flightDiverted": {
+    "description": "Status bei umgeleitetem Flug"
+  },
+  
+  "flightCancelled": "Flug storniert",
+  "@flightCancelled": {
+    "description": "Status bei storniertem Flug"
+  },
+  
+  "flightDivertedEligible": "Ihr umgeleiteter Flug ist entschädigungsberechtigt!",
+  "@flightDivertedEligible": {
+    "description": "Meldung, wenn ein umgeleiteter Flug entschädigungsberechtigt ist"
+  },
+  
+  "flightCancelledEligible": "Ihr stornierter Flug ist entschädigungsberechtigt!",
+  "@flightCancelledEligible": {
+    "description": "Meldung, wenn ein stornierter Flug entschädigungsberechtigt ist"
+  },
+  
+  "divertedReason": "Flug wurde zu einem anderen Flughafen umgeleitet",
+  "@divertedReason": {
+    "description": "Grund für Umleitung eines Fluges"
+  },
+  
+  "cancelledReason": "Flug wurde storniert",
+  "@cancelledReason": {
+    "description": "Grund für stornierte Flüge"
+  },
+  
+  "checkCompensationEligibility": "Entschädigungsberechtigung prüfen",
+  "@checkCompensationEligibility": {
+    "description": "Text des Buttons zur Überprüfung der Entschädigungsberechtigung"
+  },
+
+  "copiedToClipboard": "In die Zwischenablage kopiert",
+  "@copiedToClipboard": {
+    "description": "Meldung, wenn etwas in die Zwischenablage kopiert wurde"
+  },
+
+  "submitNewClaim": "Neuen Anspruch einreichen",
+  "@submitNewClaim": {
+    "description": "Schaltflächen-Text zum Einreichen eines neuen Anspruchs"
+  },
+
+  "reasonForClaim": "Grund für den Anspruch",
+  "@reasonForClaim": {
+    "description": "Beschriftung für das Feld zur Angabe des Grundes für den Anspruch"
+  },
+
+  "flightDateHint": "Flugdatum (JJJJ-MM-TT)",
+  "@flightDateHint": {
+    "description": "Hinweis für das Flugdatum-Eingabefeld"
+  },
+
+  "continueToAttachments": "Weiter zu Anlagen",
+  "@continueToAttachments": {
+    "description": "Schaltflächen-Text, um zum Anlagen-Bildschirm zu navigieren"
+  },
+
+  "pleaseEnterArrivalAirport": "Bitte geben Sie einen Ankunftsflughafen ein",
+  "@pleaseEnterArrivalAirport": {
+    "description": "Validierungsmeldung für leeren Ankunftsflughafen"
+  },
+
+  "pleaseEnterReason": "Bitte geben Sie einen Grund ein",
+  "@pleaseEnterReason": {
+    "description": "Validierungsmeldung für leeren Grund"
+  },
+
+  "pleaseSelectFlightDate": "Bitte wählen Sie ein Flugdatum",
+  "@pleaseSelectFlightDate": {
+    "description": "Validierungsmeldung für nicht ausgewähltes Flugdatum"
+  },
+
+  "claimDetails": "Anspruchsdetails",
+  "@claimDetails": {
+    "description": "Überschrift für den Bereich mit Anspruchsdetails"
+  },
+
+  "refresh": "Aktualisieren",
+  "@refresh": {
+    "description": "Text für die Aktualisierungsschaltfläche"
+  },
+
+  "errorLoadingClaim": "Fehler beim Laden des Anspruchs",
+  "@errorLoadingClaim": {
+    "description": "Fehlermeldung beim Laden der Anspruchsdaten"
+  },
+
+  "unknownError": "Unbekannter Fehler",
+  "@unknownError": {
+    "description": "Meldung für einen unbekannten Fehler"
+  },
+
+  "networkError": "Netzwerkfehler",
+  "@networkError": {
+    "description": "Meldung für Netzwerkfehler"
+  },
+
+  "generalError": "Allgemeiner Fehler",
+  "@generalError": {
+    "description": "Meldung für einen allgemeinen Fehler"
+  },
+
+  "loginRequiredForClaim": "Anmeldung erforderlich, um einen Anspruch einzureichen",
+  "@loginRequiredForClaim": {
+    "description": "Meldung, dass eine Anmeldung erforderlich ist, um einen Anspruch einzureichen"
+  },
+
+  "quickClaimTitle": "Schnellanspruch",
+  "@quickClaimTitle": {
+    "description": "Titel für den Schnellanspruchsbildschirm"
+  },
+
+  "quickClaimInfoBanner": "Für EU-berechtigte Flüge. Füllen Sie grundlegende Informationen für eine schnelle Vorabprüfung aus.",
+  "@quickClaimInfoBanner": {
+    "description": "Informationsbanner für den Schnellanspruch-Bildschirm"
+  },
+
+  "flightNumberHintQuickClaim": "z.B. LH123",
+  "@flightNumberHintQuickClaim": {
+    "description": "Hinweis für das Flugnummernfeld im Schnellanspruch"
+  },
+
+  "departureAirportHintQuickClaim": "z.B. FRA",
+  "@departureAirportHintQuickClaim": {
+    "description": "Hinweis für das Abflughafen-Feld im Schnellanspruch"
+  },
+
+  "arrivalAirportHintQuickClaim": "z.B. LHR",
+  "@arrivalAirportHintQuickClaim": {
+    "description": "Hinweis für das Ankunftsflughafen-Feld im Schnellanspruch"
+  },
+
+  "reasonForClaimLabel": "Grund für den Anspruch",
+  "@reasonForClaimLabel": {
+    "description": "Beschriftung für das Grund-Feld im Anspruchsformular"
+  },
+
+  "reasonForClaimHint": "z.B. Verspätung, Annullierung",
+  "@reasonForClaimHint": {
+    "description": "Hinweis für das Grund-Feld im Anspruchsformular"
+  },
+
+  "compensationAmountOptionalLabel": "Entschädigungsbetrag (optional)",
+  "@compensationAmountOptionalLabel": {
+    "description": "Beschriftung für optionales Entschädigungsbetrags-Feld"
+  },
+
+  "compensationAmountHint": "z.B. 250€",
+  "@compensationAmountHint": {
+    "description": "Hinweis für das Entschädigungsbetrags-Feld"
+  },
+
+  "euWideCompensationTitle": "EU-weite Entschädigungen",
+  "@euWideCompensationTitle": {
+    "description": "Titel für den Bereich mit EU-weiten Entschädigungsinformationen"
+  },
+
+  "scheduledLabel": "Geplant",
+  "@scheduledLabel": {
+    "description": "Beschriftung für geplante Zeit/Datum"
+  },
+
+  "statusLabelEuList": "Status",
+  "@statusLabelEuList": {
+    "description": "Statusbeschriftung für EU-Flugliste"
+  },
+
+  "potentialCompensationLabel": "Potenzielle Entschädigung",
+  "@potentialCompensationLabel": {
+    "description": "Beschriftung für den potenziellen Entschädigungsbetrag"
+  },
+
+  "prefillCompensationFormButton": "Entschädigungsformular ausfüllen",
+  "@prefillCompensationFormButton": {
+    "description": "Text für die Schaltfläche zum Ausfüllen des Entschädigungsformulars"
+  },
+
+  "claimsTabActive": "Aktiv",
+  "@claimsTabActive": {
+    "description": "Registerkartenbeschriftung für aktive Ansprüche"
+  },
+
+  "claimsTabActionRequired": "Maßnahme erforderlich",
+  "@claimsTabActionRequired": {
+    "description": "Registerkartenbeschriftung für Ansprüche, die Maßnahmen erfordern"
+  },
+
+  "claimsTabCompleted": "Abgeschlossen",
+  "@claimsTabCompleted": {
+    "description": "Registerkartenbeschriftung für abgeschlossene Ansprüche"
+  },
+
+  "dialogTitleSuccess": "Erfolg",
+  "@dialogTitleSuccess": {
+    "description": "Dialogtitel für Erfolgsmeldungen"
+  },
+
+  "dialogContentClaimSubmitted": "Ihr Anspruch wurde erfolgreich eingereicht.",
+  "@dialogContentClaimSubmitted": {
+    "description": "Dialoginhalt für erfolgreiche Anspruchseinreichung"
+  },
+
+  "dialogButtonOK": "OK",
+  "@dialogButtonOK": {
+    "description": "Dialogschaltflächentext für OK-Aktion"
+  },
+
+  "documentManagementTitle": "Dokumentenverwaltung",
+  "@documentManagementTitle": {
+    "description": "Titel für den Dokumentenverwaltungsbildschirm"
+  },
+
+  "documentsForFlightTitle": "Dokumente für Flug",
+  "@documentsForFlightTitle": {
+    "description": "Titel für den Bereich mit Flugdokumenten"
+  },
+
+  "errorLoadingDocuments": "Fehler beim Laden der Dokumente",
+  "@errorLoadingDocuments": {
+    "description": "Fehlermeldung beim Laden von Dokumenten"
+  },
+
+  "addDocumentTooltip": "Dokument hinzufügen",
+  "@addDocumentTooltip": {
+    "description": "Tooltip für die Schaltfläche zum Hinzufügen eines Dokuments"
+  },
+
+  "deleteDocumentTitle": "Dokument löschen",
+  "@deleteDocumentTitle": {
+    "description": "Titel für den Löschen-Dialog eines Dokuments"
+  },
+
+  "deleteDocumentMessage": "Sind Sie sicher, dass Sie dieses Dokument löschen möchten?",
+  "@deleteDocumentMessage": {
+    "description": "Bestätigungsmeldung für das Löschen eines Dokuments"
+  },
+
+  "delete": "Löschen",
+  "@delete": {
+    "description": "Text für die Löschen-Schaltfläche"
+  },
+
+  "errorMustBeLoggedIn": "Sie müssen angemeldet sein, um diese Aktion durchzuführen",
+  "@errorMustBeLoggedIn": {
+    "description": "Fehlermeldung, wenn der Benutzer nicht angemeldet ist"
+  },
+
+  "errorFailedToSubmitClaim": "Fehler beim Einreichen des Anspruchs",
+  "@errorFailedToSubmitClaim": {
+    "description": "Fehlermeldung beim Einreichen eines Anspruchs"
+  },
+
+  "dialogTitleError": "Fehler",
+  "@dialogTitleError": {
+    "description": "Dialogtitel für Fehlermeldungen"
+  },
+
+  "validatorFlightNumberRequired": "Flugnummer ist erforderlich",
+  "@validatorFlightNumberRequired": {
+    "description": "Validierungsmeldung für erforderliche Flugnummer"
+  },
+
+  "tooltipFlightNumberQuickClaim": "Geben Sie die Flugnummer ein, z.B. LH123",
+  "@tooltipFlightNumberQuickClaim": {
+    "description": "Tooltip für das Flugnummernfeld im Schnellanspruch"
+  },
+
+  "tooltipFlightDateQuickClaim": "Wählen Sie das Datum Ihres Fluges",
+  "@tooltipFlightDateQuickClaim": {
+    "description": "Tooltip für das Datumsfeld im Schnellanspruch"
+  },
+
+  "validatorDepartureAirportRequired": "Abflughafen ist erforderlich",
+  "@validatorDepartureAirportRequired": {
+    "description": "Validierungsmeldung für erforderlichen Abflughafen"
+  },
+
+  "tooltipDepartureAirportQuickClaim": "Geben Sie den 3-stelligen IATA-Code für den Abflughafen ein",
+  "@tooltipDepartureAirportQuickClaim": {
+    "description": "Tooltip für das Abflughafen-Feld im Schnellanspruch"
+  },
+
+  "validatorArrivalAirportRequired": "Ankunftsflughafen ist erforderlich",
+  "@validatorArrivalAirportRequired": {
+    "description": "Validierungsmeldung für erforderlichen Ankunftsflughafen"
+  },
+
+  "hintTextReasonQuickClaim": "z.B. Verspätung über 3 Stunden",
+  "@hintTextReasonQuickClaim": {
+    "description": "Hinweistext für das Grund-Feld im Schnellanspruch"
+  },
+
+  "validatorReasonRequired": "Grund ist erforderlich",
+  "@validatorReasonRequired": {
+    "description": "Validierungsmeldung für erforderlichen Grund"
+  },
+
+  "tooltipReasonQuickClaim": "Beschreiben Sie kurz, warum Sie einen Anspruch einreichen",
+  "@tooltipReasonQuickClaim": {
+    "description": "Tooltip für das Grund-Feld im Schnellanspruch"
+  },
+
+  "tooltipCompensationAmountQuickClaim": "Geben Sie den Betrag ein, wenn Sie wissen, wofür Sie berechtigt sind",
+  "@tooltipCompensationAmountQuickClaim": {
+    "description": "Tooltip für das Entschädigungsbetrags-Feld im Schnellanspruch"
+  },
+
+  "tipsAndRemindersTitle": "Tipps & Erinnerungen",
+  "@tipsAndRemindersTitle": {
+    "description": "Titel für den Abschnitt mit Tipps und Erinnerungen"
+  },
+
+  "tipSecureData": "Wir schützen Ihre Daten mit Bankstandard-Verschlüsselung",
+  "@tipSecureData": {
+    "description": "Sicherheitshinweis über Datenverschlüsselung"
+  },
+
+  "continueToReview": "Weiter zur Überprüfung",
+  "@continueToReview": {
+    "description": "Text für die Schaltfläche zur Überprüfung"
+  },
+
+  "previewEmail": "E-Mail-Vorschau",
+  "@previewEmail": {
+    "description": "Titel für die E-Mail-Vorschau"
+  },
+
+  "pdfPreviewMessage": "PDF-Vorschau",
+  "@pdfPreviewMessage": {
+    "description": "Meldung für PDF-Vorschau"
+  },
+
+  "downloadPdf": "PDF herunterladen",
+  "@downloadPdf": {
+    "description": "Text für die Schaltfläche zum Herunterladen des PDFs"
+  },
+
+  "filePreviewNotAvailable": "Datevorschau nicht verfügbar",
+  "@filePreviewNotAvailable": {
+    "description": "Meldung, wenn keine Datevorschau verfügbar ist"
+  },
+
+  "deleteDocument": "Dokument löschen",
+  "@deleteDocument": {
+    "description": "Text für die Schaltfläche zum Löschen eines Dokuments"
+  },
+
+  "deleteDocumentConfirmation": "Sind Sie sicher, dass Sie dieses Dokument löschen möchten?",
+  "@deleteDocumentConfirmation": {
+    "description": "Bestätigungsmeldung für das Löschen eines Dokuments"
+  },
+
+  "documentDeletedSuccess": "Dokument erfolgreich gelöscht",
+  "@documentDeletedSuccess": {
+    "description": "Erfolgsmeldung nach dem Löschen eines Dokuments"
+  },
+
+  "documentDeleteFailed": "Dokument konnte nicht gelöscht werden",
+  "@documentDeleteFailed": {
+    "description": "Fehlermeldung, wenn das Löschen eines Dokuments fehlgeschlagen ist"
+  },
+
+  "reviewYourClaim": "Prüfen Sie Ihren Anspruch",
+  "@reviewYourClaim": {
+    "description": "Titel für den Bildschirm zur Überprüfung des Anspruchs"
+  },
+
+  "reviewClaimDetails": "Prüfen Sie die Anspruchsdetails",
+  "@reviewClaimDetails": {
+    "description": "Anweisung zur Überprüfung der Anspruchsdetails"
+  },
+
+  "attachments": "Anlagen",
+  "@attachments": {
+    "description": "Beschriftung für den Anlagen-Abschnitt"
+  },
+
+  "proceedToConfirmation": "Weiter zur Bestätigung",
+  "@proceedToConfirmation": {
+    "description": "Text für die Schaltfläche zum Fortfahren zur Bestätigung"
+  },
+
+  "confirmAndSend": "Bestätigen und senden",
+  "@confirmAndSend": {
+    "description": "Text für die Schaltfläche zum Bestätigen und Senden"
+  },
+
+  "errorLoadingEmailDetails": "Fehler beim Laden der E-Mail-Details",
+  "@errorLoadingEmailDetails": {
+    "description": "Fehlermeldung beim Laden von E-Mail-Details"
+  },
+
+  "noEmailInfo": "Keine E-Mail-Informationen verfügbar",
+  "@noEmailInfo": {
+    "description": "Meldung, wenn keine E-Mail-Informationen verfügbar sind"
+  },
+
+  "finalConfirmation": "Abschließende Bestätigung",
+  "@finalConfirmation": {
+    "description": "Titel für den Bildschirm zur abschließenden Bestätigung"
+  },
+
+  "claimWillBeSentTo": "Ihr Anspruch wird gesendet an",
+  "@claimWillBeSentTo": {
+    "description": "Meldung, die anzeigt, wohin der Anspruch gesendet wird"
+  },
+
+  "copyToYourEmail": "Kopie an Ihre E-Mail",
+  "@copyToYourEmail": {
+    "description": "Beschriftung für die Option, eine Kopie an die eigene E-Mail zu senden"
+  },
+
+  "confirmAndSendEmail": "Bestätigen und E-Mail senden",
+  "@confirmAndSendEmail": {
+    "description": "Text für die Schaltfläche zum Bestätigen und Senden der E-Mail"
+  },
+
+  "reviewAndConfirm": "Überprüfen und bestätigen",
+  "@reviewAndConfirm": {
+    "description": "Anweisung zum Überprüfen und Bestätigen"
+  },
+
+  "pleaseConfirmDetails": "Bitte bestätigen Sie, dass alle Details korrekt sind",
+  "@pleaseConfirmDetails": {
+    "description": "Anweisung zur Bestätigung der Korrektheit der Details"
+  },
+
+  "emailAppOpenedMessage": "E-Mail-App geöffnet",
+  "@emailAppOpenedMessage": {
+    "description": "Meldung, wenn die E-Mail-App geöffnet wurde"
+  },
+
+  "emailAppErrorMessage": "Fehler beim Öffnen der E-Mail-Anwendung",
+  "@emailAppErrorMessage": {
+    "description": "Fehlermeldung, wenn die E-Mail-Anwendung nicht geöffnet werden kann"
+  },
+
+  "flightNotFoundError": "Flug nicht gefunden. Bitte überprüfen Sie Ihre Flugnummer und versuchen Sie es erneut.",
+  "@flightNotFoundError": {
+    "description": "Fehlermeldung, wenn die Flugnummer nicht in der Datenbank gefunden wird"
+  },
+
+  "invalidFlightNumberError": "Ungültiges Flugnummernformat. Bitte geben Sie eine gültige Flugnummer ein (z.B. BA123, LH456).",
+  "@invalidFlightNumberError": {
+    "description": "Fehlermeldung bei falschem Flugnummernformat"
+  },
+
+  "networkTimeoutError": "Verbindungszeitüberschreitung. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+  "@networkTimeoutError": {
+    "description": "Fehlermeldung bei Netzwerk-Timeout"
+  },
+
+  "serverError": "Server vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.",
+  "@serverError": {
+    "description": "Fehlermeldung bei Serverfehler"
+  },
+
+  "rateLimitError": "Zu viele Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+  "@rateLimitError": {
+    "description": "Fehlermeldung bei Überschreitung der Anfragenlimits"
+  },
+
+  "generalFlightCheckError": "Fluginformationen können nicht überprüft werden. Bitte überprüfen Sie Ihre Flugdaten und versuchen Sie es erneut.",
+  "@generalFlightCheckError": {
+    "description": "Allgemeine Fehlermeldung für Flugprüfungsfehler"
+  },
+
+  "checkFlightEligibilityButtonText": "Flugentschädigung prüfen",
+  "@checkFlightEligibilityButtonText": {
+    "description": "Schaltflächentext zur Prüfung der Flugentschädigung"
+  },
+
+  "euEligibleFlightsButtonText": "EU-weit entschädigungsberechtigte Flüge",
+  "@euEligibleFlightsButtonText": {
+    "description": "Schaltflächentext zum Anzeigen von EU-berechtigten Flügen"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "downloadPdf": "Download PDF",
+  "@downloadPdf": {
+    "description": "Label for download PDF button"
+  },
+  
+  "filePreviewNotAvailable": "File preview not available",
+  "@filePreviewNotAvailable": {
+    "description": "Message shown when file preview is not available"
+  },
+  
+  "deleteDocument": "Delete Document",
+  "@deleteDocument": {
+    "description": "Title for delete document confirmation dialog"
+  },
+  
+  "deleteDocumentConfirmation": "Are you sure you want to delete this document?",
+  "@deleteDocumentConfirmation": {
+    "description": "Confirmation message for document deletion"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Label for cancel button"
+  },
+  
+  "delete": "Delete",
+  "@delete": {
+    "description": "Label for delete button"
+  },
+  
+  "documentDeletedSuccess": "Document deleted successfully",
+  "@documentDeletedSuccess": {
+    "description": "Message shown when document is deleted successfully"
+  }
+}

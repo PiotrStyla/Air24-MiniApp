@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:f35_flight_compensation/main.dart' as app;
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
-import 'package:f35_flight_compensation/services/auth_service.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 import 'package:f35_flight_compensation/screens/auth_screen.dart';
 import 'package:f35_flight_compensation/screens/main_navigation.dart';
 import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
@@ -35,16 +35,20 @@ class FakeFirebaseAuth extends Mock implements FirebaseAuth {
   Stream<User?> authStateChanges() => Stream.empty();
 }
 
-// A proper mock for AuthService that implements ChangeNotifier
-class MockAuthService extends AuthService with ChangeNotifier {
+// A proper mock for FirebaseAuthService
+class MockAuthService extends ChangeNotifier implements FirebaseAuthService {
   User? _currentUser;
 
-  MockAuthService({User? currentUser})
-      : _currentUser = currentUser,
-        super(firebaseAuth: FakeFirebaseAuth());
+  MockAuthService({User? currentUser}) : _currentUser = currentUser {}
 
   @override
   User? get currentUser => _currentUser;
+  
+  @override
+  bool get isAuthenticated => _currentUser != null;
+  
+  @override
+  String get userDisplayName => _currentUser?.displayName ?? 'Test User';
 
   // Simulate a user logging in or out and notify listeners
   void simulateLogin(User? user) {
@@ -56,6 +60,55 @@ class MockAuthService extends AuthService with ChangeNotifier {
   Future<void> signOut() async {
     simulateLogin(null);
   }
+  
+  @override
+  Future<UserCredential> signInWithEmail(String email, String password) async {
+    // Create a minimal mock implementation that returns something of type UserCredential
+    return MockUserCredential(user: _currentUser);
+  }
+  
+  @override
+  Future<UserCredential> createUserWithEmail(String email, String password) async {
+    return MockUserCredential(user: _currentUser);
+  }
+  
+  @override
+  Future<bool> checkEmailVerified(String email) async {
+    return true;
+  }
+  
+  @override
+  Future<UserCredential> signInWithGoogle() async {
+    return MockUserCredential(user: _currentUser);
+  }
+  
+  @override
+  Future<void> resetPassword(String email) async {}
+  
+  @override
+  Future<String> getUserDisplayNameAsync() async {
+    return _currentUser?.displayName ?? 'Test User';
+  }
+  
+  // This method is static in the original class, so we can't override it properly
+  // Instead, we'll provide a similar factory constructor
+  static Future<MockAuthService> create() async {
+    return MockAuthService();
+  }
+}
+
+// Mock UserCredential for testing
+class MockUserCredential implements UserCredential {
+  @override
+  final User? user;
+  
+  MockUserCredential({this.user});
+  
+  @override
+  AdditionalUserInfo? get additionalUserInfo => null;
+  
+  @override
+  AuthCredential? get credential => null;
 }
 
 class MockLocalizationService extends Mock implements LocalizationService {

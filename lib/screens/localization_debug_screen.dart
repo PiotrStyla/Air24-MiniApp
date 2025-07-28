@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:flutter/services.dart';
 import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import '../services/localization_service.dart';
@@ -251,7 +252,7 @@ class _LocalizationDebugScreenState extends State<LocalizationDebugScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     final allKeys = _getAllTranslationKeys(localizations);
     final filteredKeys = _getFilteredKeys(allKeys);
     

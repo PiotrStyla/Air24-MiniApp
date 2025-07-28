@@ -1,0 +1,37 @@
+{
+  "euWideCompensationEligibleFlights": "EU-Wide Compensation Eligible Flights",
+  "@euWideCompensationEligibleFlights": {
+    "description": "Title for EU eligible flights screen"
+  },
+  
+  "forceRefreshData": "Force Refresh Data",
+  "@forceRefreshData": {
+    "description": "Tooltip for refresh button"
+  },
+  
+  "forcingFreshDataLoad": "Forcing fresh data load...",
+  "@forcingFreshDataLoad": {
+    "description": "Message when forcing data refresh"
+  },
+  
+  "loadingExternalData": "Loading External Data",
+  "@loadingExternalData": {
+    "description": "Title for loading screen"
+  },
+  
+  "loadingExternalDataDescription": "Please wait while we fetch the latest flight data...",
+  "@loadingExternalDataDescription": {
+    "description": "Message when loading external data"
+  },
+  
+  "lastHours": "Last {hours} Hours",
+  "@lastHours": {
+    "description": "Time period label for flight list",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "72"
+      }
+    }
+  }
+}

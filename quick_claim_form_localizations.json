@@ -1,0 +1,36 @@
+{
+  "reasonForClaimHint": "Describe why you are making this claim",
+  "@reasonForClaimHint": {
+    "description": "Helper text for reason for claim field"
+  },
+  
+  "validatorReasonRequired": "Reason for claim is required",
+  "@validatorReasonRequired": {
+    "description": "Validation message when reason for claim is empty"
+  },
+  
+  "tooltipReasonQuickClaim": "Explain why you believe you are entitled to compensation",
+  "@tooltipReasonQuickClaim": {
+    "description": "Tooltip for reason field in quick claim form"
+  },
+  
+  "compensationAmountOptionalLabel": "Requested Compensation Amount (Optional)",
+  "@compensationAmountOptionalLabel": {
+    "description": "Label for optional compensation amount field"
+  },
+  
+  "compensationAmountHint": "Enter amount if you have a specific request",
+  "@compensationAmountHint": {
+    "description": "Helper text for compensation amount field"
+  },
+  
+  "tooltipCompensationAmountQuickClaim": "You can specify a compensation amount or leave it blank",
+  "@tooltipCompensationAmountQuickClaim": {
+    "description": "Tooltip for compensation amount in quick claim form"
+  },
+  
+  "continueToReview": "Continue to Review",
+  "@continueToReview": {
+    "description": "Button text to proceed to review screen"
+  }
+}

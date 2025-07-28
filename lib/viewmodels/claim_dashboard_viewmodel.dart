@@ -6,7 +6,7 @@ import '../models/claim.dart';
 import '../models/claim_status.dart';
 
 import '../services/claim_tracking_service.dart';
-import '../services/auth_service.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 import '../core/services/service_initializer.dart';
 
 /// Dashboard statistics model
@@ -30,7 +30,7 @@ class DashboardStats {
 class ClaimDashboardViewModel extends ChangeNotifier {
   
   final ClaimTrackingService _trackingService;
-  final AuthService _authService;
+  final FirebaseAuthService _authService;
   
   // Dashboard state
   List<Claim> _claims = [];
@@ -62,7 +62,7 @@ class ClaimDashboardViewModel extends ChangeNotifier {
   
   ClaimDashboardViewModel({
     required ClaimTrackingService trackingService,
-    required AuthService authService,
+    required FirebaseAuthService authService,
   })  : _trackingService = trackingService,
         _authService = authService;
   
@@ -136,13 +136,13 @@ class ClaimDashboardViewModel extends ChangeNotifier {
       for (final claim in _claims) {
         // For paid claims, add to total compensation
         if (claim.status == 'paid' && claim.compensationAmount != null) {
-          totalCompensation += claim.compensationAmount!;
+          totalCompensation += claim.compensationAmount;
         }
         
         // For pending claims, add to pending compensation
         if (claim.status != 'rejected' && claim.status != 'paid' && claim.compensationAmount != null) {
           // Use the actual compensation amount as an estimate for pending claims
-          pendingCompensation += claim.compensationAmount!;
+          pendingCompensation += claim.compensationAmount;
         }
       }
       

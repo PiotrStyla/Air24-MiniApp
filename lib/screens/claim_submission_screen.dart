@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:intl/intl.dart';
 import '../models/claim.dart';
 import 'claim_attachment_screen.dart';
-import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 
 class ClaimSubmissionScreen extends StatefulWidget {
   final Claim? initialClaim;
@@ -70,7 +69,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
   void _submitClaim() {
     if (_formKey.currentState!.validate()) {
       if (_selectedDate == null) {
-        final loc = AppLocalizations.of(context)!;
+        final loc = context.l10n;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(loc.pleaseSelectFlightDate)),
         );
@@ -114,7 +113,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.submitNewClaim),
+        title: Text(context.l10n.submitNewClaim),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -126,46 +125,46 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
             children: [
               TextFormField(
                 controller: _airlineNameController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.airline),
+                decoration: InputDecoration(labelText: context.l10n.airline),
                 readOnly: true, // This field is pre-filled and not editable
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _flightNumberController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.flightNumber),
-                validator: (value) => value!.isEmpty ? AppLocalizations.of(context)!.pleaseEnterFlightNumber : null,
+                decoration: InputDecoration(labelText: context.l10n.flightNumber),
+                validator: (value) => value!.isEmpty ? context.l10n.pleaseEnterFlightNumber : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _departureAirportController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.departureAirport),
-                validator: (value) => value!.isEmpty ? AppLocalizations.of(context)!.pleaseEnterDepartureAirport : null,
+                decoration: InputDecoration(labelText: context.l10n.departureAirport),
+                validator: (value) => value!.isEmpty ? context.l10n.pleaseEnterDepartureAirport : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _arrivalAirportController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.arrivalAirport),
-                validator: (value) => value!.isEmpty ? AppLocalizations.of(context)!.pleaseEnterArrivalAirport : null,
+                decoration: InputDecoration(labelText: context.l10n.arrivalAirport),
+                validator: (value) => value!.isEmpty ? context.l10n.pleaseEnterArrivalAirport : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _reasonController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.reasonForClaim),
-                validator: (value) => value!.isEmpty ? AppLocalizations.of(context)!.pleaseEnterReason : null,
+                decoration: InputDecoration(labelText: context.l10n.reasonForClaim),
+                validator: (value) => value!.isEmpty ? context.l10n.pleaseEnterReason : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _dateController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.flightDate,
-                  hintText: AppLocalizations.of(context)!.flightDateHint,
+                  labelText: context.l10n.flightDate,
+                  hintText: context.l10n.flightDateHint,
                   suffixIcon: const Icon(Icons.calendar_today),
                 ),
                 readOnly: true,
                 onTap: () => _selectDate(context),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.pleaseSelectFlightDate;
+                    return context.l10n.pleaseSelectFlightDate;
                   }
                   return null;
                 },
@@ -174,7 +173,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
               ElevatedButton(
                 onPressed: () => _submitClaim(),
                 style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: Text(AppLocalizations.of(context)!.continueToAttachmentsButton),
+                child: Text(context.l10n.continueToAttachmentsButton),
               ),
             ],
           ),

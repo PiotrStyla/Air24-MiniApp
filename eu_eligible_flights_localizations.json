@@ -1,0 +1,26 @@
+{
+  "euCompensation": "EU Compensation",
+  "@euCompensation": {
+    "description": "Label for EU compensation tag on eligible flights"
+  },
+
+  "scheduledLabel": "Scheduled:",
+  "@scheduledLabel": {
+    "description": "Label for scheduled flight time"
+  },
+
+  "minutes": "minutes",
+  "@minutes": {
+    "description": "Text for minutes unit"
+  },
+
+  "aircraftLabel": "Aircraft:",
+  "@aircraftLabel": {
+    "description": "Label for aircraft information"
+  },
+
+  "prefillCompensationForm": "Pre-fill Compensation Form",
+  "@prefillCompensationForm": {
+    "description": "Button text for pre-filling compensation form"
+  }
+}

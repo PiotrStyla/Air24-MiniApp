@@ -1,0 +1,56 @@
+{
+  "yes": "Yes",
+  "@yes": {
+    "description": "Text for yes button/response"
+  },
+  
+  "no": "No",
+  "@no": {
+    "description": "Text for no button/response"
+  },
+  
+  "ok": "OK",
+  "@ok": {
+    "description": "Text for ok button"
+  },
+  
+  "back": "Back",
+  "@back": {
+    "description": "Text for back button"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Text for save button"
+  },
+  
+  "languageSelection": "Language Selection",
+  "@languageSelection": {
+    "description": "Title for language selection screen"
+  },
+  
+  "passengerName": "Passenger Name",
+  "@passengerName": {
+    "description": "Label for passenger name field"
+  },
+  
+  "passengerDetails": "Passenger Details",
+  "@passengerDetails": {
+    "description": "Title for passenger details section"
+  },
+  
+  "networkError": "Network Error",
+  "@networkError": {
+    "description": "Error message for network issues"
+  },
+  
+  "generalError": "Error",
+  "@generalError": {
+    "description": "Generic error message title"
+  },
+  
+  "loginRequiredForClaim": "Login Required",
+  "@loginRequiredForClaim": {
+    "description": "Message indicating login is required to make a claim"
+  }
+}

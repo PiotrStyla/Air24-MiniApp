@@ -1,0 +1,28 @@
+{
+  "name": "flight-compensation-vercel-backend",
+  "version": "1.0.0",
+  "description": "Vercel backend for Flight Compensation App - secure email sending with attachments",
+  "main": "api/sendEmail.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "resend": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "vercel",
+    "serverless",
+    "email",
+    "flight-compensation",
+    "resend"
+  ],
+  "author": "Flight Compensation App",
+  "license": "MIT"
+}

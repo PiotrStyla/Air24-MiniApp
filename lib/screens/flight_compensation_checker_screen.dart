@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import '../services/aviation_stack_service.dart';
-import '../l10n2/app_localizations.dart';
+import 'compensation_claim_form_screen.dart';
 
 class FlightCompensationCheckerScreen extends StatefulWidget {
   const FlightCompensationCheckerScreen({Key? key}) : super(key: key);
@@ -68,9 +69,32 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
       
     } catch (e) {
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = _getUserFriendlyErrorMessage(e.toString());
         _isLoading = false;
       });
+    }
+  }
+
+  /// Convert technical error messages to user-friendly localized messages
+  String _getUserFriendlyErrorMessage(String technicalError) {
+    final localizations = context.l10n;
+    
+    // Convert technical errors to user-friendly messages
+    if (technicalError.contains('404') || technicalError.contains('not found')) {
+      return localizations.flightNotFoundError;
+    } else if (technicalError.contains('400') || technicalError.contains('bad request')) {
+      return localizations.invalidFlightNumberError;
+    } else if (technicalError.contains('timeout') || technicalError.contains('connection')) {
+      return localizations.networkTimeoutError;
+    } else if (technicalError.contains('network') || technicalError.contains('internet')) {
+      return localizations.networkError;
+    } else if (technicalError.contains('server') || technicalError.contains('500')) {
+      return localizations.serverError;
+    } else if (technicalError.contains('rate limit') || technicalError.contains('429')) {
+      return localizations.rateLimitError;
+    } else {
+      // Generic fallback message for unknown errors
+      return localizations.generalFlightCheckError;
     }
   }
 
@@ -78,7 +102,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.flightCompensationCheckerTitle),
+        title: Text(context.l10n.flightCompensationCheckerTitle),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -104,7 +128,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.checkEligibilityForEu261,
+                                context.l10n.checkEligibilityForEu261,
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -114,12 +138,12 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                               TextFormField(
                                 controller: _flightNumberController,
                                 decoration: InputDecoration(
-                                  labelText: AppLocalizations.of(context)!.flightNumberPlaceholder,
+                                  labelText: context.l10n.flightNumberPlaceholder,
                                   border: const OutlineInputBorder(),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return AppLocalizations.of(context)!.pleaseEnterFlightNumber;
+                                    return context.l10n.pleaseEnterFlightNumber;
                                   }
                                   return null;
                                 },
@@ -128,9 +152,9 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                               TextFormField(
                                 controller: _dateController,
                                 decoration: InputDecoration(
-                                  labelText: AppLocalizations.of(context)!.dateOptionalPlaceholder,
+                                  labelText: context.l10n.dateOptionalPlaceholder,
                                   border: const OutlineInputBorder(),
-                                  hintText: AppLocalizations.of(context)!.leaveDateEmptyForToday,
+                                  hintText: context.l10n.leaveDateEmptyForToday,
                                 ),
                                 onTap: () async {
                                   final date = await showDatePicker(
@@ -152,7 +176,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                                   onPressed: _isLoading ? null : _checkCompensation,
                                   child: _isLoading
                                       ? const CircularProgressIndicator(color: Colors.white)
-                                      : Text(AppLocalizations.of(context)!.checkCompensationEligibility),
+                                      : Text(context.l10n.checkCompensationEligibility),
                                 ),
                               ),
                             ],
@@ -170,7 +194,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.error,
+                                context.l10n.error,
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -183,7 +207,8 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                           ),
                         ),
                       ),
-                    if (_compensationResult != null)
+                    // Show compensation result
+                    if (_compensationResult != null) ...[
                       Card(
                         elevation: 4,
                         child: Padding(
@@ -192,9 +217,9 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.flightInfoFormat(
-                                  _compensationResult!['flightNumber'].toString(),
-                                  _compensationResult!['airline'].toString(),
+                                context.l10n.flightInfoFormat(
+                                  _compensationResult!['flight_number']?.toString() ?? _flightNumberController.text,
+                                  _compensationResult!['airline']?.toString() ?? context.l10n.unknown,
                                 ),
                                 style: const TextStyle(
                                   fontSize: 18,
@@ -203,20 +228,20 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                               ),
                               const SizedBox(height: 16),
                               _buildInfoRow(
-                                AppLocalizations.of(context)!.status, 
-                                _compensationResult!['status'] ?? AppLocalizations.of(context)!.unknown
+                                context.l10n.status, 
+                                (_compensationResult!['status'] ?? context.l10n.unknown).toString()
                               ),
                               _buildInfoRow(
-                                AppLocalizations.of(context)!.from, 
-                                _compensationResult!['departureAirport'] ?? AppLocalizations.of(context)!.unknown
+                                context.l10n.from, 
+                                _compensationResult!['departure_airport'] ?? (_compensationResult!['route']?.toString().split(' - ').first) ?? context.l10n.unknown
                               ),
                               _buildInfoRow(
-                                AppLocalizations.of(context)!.to, 
-                                _compensationResult!['arrivalAirport'] ?? AppLocalizations.of(context)!.unknown
+                                context.l10n.to, 
+                                _compensationResult!['arrival_airport'] ?? (_compensationResult!['route']?.toString().split(' - ').last) ?? context.l10n.unknown
                               ),
                               _buildInfoRow(
-                                AppLocalizations.of(context)!.delay, 
-                                AppLocalizations.of(context)!.minutesFormat(_compensationResult!['delayMinutes'] ?? 0)
+                                context.l10n.delay, 
+                                context.l10n.minutesFormat(_compensationResult!['delay_minutes'] ?? 0)
                               ),
                               const Divider(),
                               const SizedBox(height: 8),
@@ -225,6 +250,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                           ),
                         ),
                       ),
+                    ],
                   ],
                 ),
               ),
@@ -254,37 +280,36 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
   }
 
   Widget _buildEligibilitySection() {
-    final isEligible = _compensationResult!['isEligibleForCompensation'] ?? false;
-    final compensationAmount = _compensationResult!['potentialCompensationAmount'] ?? 0;
+    final isEligible = _compensationResult!['is_eligible'] ?? false;
+    final compensationAmount = _compensationResult!['compensation_amount_eur'] ?? 0;
     final currency = _compensationResult!['currency'] ?? 'EUR';
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(
-              isEligible ? Icons.check_circle : Icons.cancel,
-              color: isEligible ? Colors.green : Colors.red,
-              size: 24,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                isEligible
-                    ? AppLocalizations.of(context)!.flightEligibleForCompensation
-                    : AppLocalizations.of(context)!.flightNotEligibleForCompensation,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: isEligible ? Colors.green : Colors.red,
+        if (isEligible) ...[
+          // Eligible flight - show positive result
+          Row(
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  context.l10n.flightEligibleForCompensation,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.green,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        if (isEligible)
+            ],
+          ),
+          const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -296,7 +321,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.potentialCompensation,
+                  context.l10n.potentialCompensation,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
@@ -309,30 +334,121 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  AppLocalizations.of(context)!.contactAirlineForClaim,
+                  context.l10n.contactAirlineForClaim,
                 ),
               ],
             ),
           ),
-        if (!isEligible)
-          Text(
-            '${AppLocalizations.of(context)!.reasonPrefix}${_getIneligibilityReason(context)}',
-            style: const TextStyle(fontStyle: FontStyle.italic),
+        ] else ...[
+          // Apparently ineligible flight - show empowering messaging
+          Row(
+            children: [
+              Icon(
+                Icons.info_outline,
+                color: Colors.orange,
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  context.l10n.flightMightNotBeEligible,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.orange[800],
+                  ),
+                ),
+              ),
+            ],
           ),
+          const SizedBox(height: 12),
+          
+          // Airline data disclaimer
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.orange[50],
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.orange),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.l10n.knowYourRights,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  context.l10n.airlineDataDisclaimer,
+                  style: const TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  context.l10n.eu261Rights,
+                  style: const TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  context.l10n.dontLetAirlinesWin,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange[800],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          // Submit Claim Anyway button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                _submitClaimAnyway();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                context.l10n.submitClaimAnyway,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
 
-  String _getIneligibilityReason(BuildContext context) {
-    final isDelayedOver3Hours = _compensationResult!['isDelayedOver3Hours'] ?? false;
-    final isUnderEuJurisdiction = _compensationResult!['isUnderEuJurisdiction'] ?? false;
-    
-    if (!isDelayedOver3Hours) {
-      return AppLocalizations.of(context)!.delayLessThan3Hours;
-    } else if (!isUnderEuJurisdiction) {
-      return AppLocalizations.of(context)!.notUnderEuJurisdiction;
-    } else {
-      return AppLocalizations.of(context)!.unknownReason;
-    }
+  /// Navigate to claim form when user wants to submit claim anyway
+  void _submitClaimAnyway() {
+    // Navigate to the compensation claim form with the current flight data
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CompensationClaimFormScreen(
+          flightData: {
+            'flightNumber': _flightNumberController.text.trim(),
+            'flightDate': _dateController.text.isEmpty ? null : _dateController.text.trim(),
+            'forceSubmit': true, // Flag to indicate this is a forced submission
+            ..._compensationResult ?? {},
+          },
+        ),
+      ),
+    );
   }
 }

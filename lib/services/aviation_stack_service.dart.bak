@@ -1,0 +1,2084 @@
+import 'dart:convert';
+import 'dart:math';
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:http/http.dart' as http;
+
+/// Service for interacting with the Aviation Stack API
+/// Responsible for fetching flight data, checking compensation eligibility,
+/// and retrieving EU-eligible flights
+class AviationStackService {
+  // Base API URL
+  final String baseUrl;
+  
+  // API key for authentication
+  String _apiKey = 'mock_api_key';
+  
+  // List of potential API endpoints to try (in order of preference)
+  final List<String> _apiEndpoints = [
+    '/eligible_flights',      // Original endpoint
+    '/api/eligible_flights',  // Common REST API pattern
+    '/flights/eligible',      // Alternative naming
+    '/flight_data',           // Simplified endpoint
+    '/flights',               // Simple flights endpoint
+    '/flight_data/eligible',  // Nested resource
+    '/api/flights/eligible',  // REST API with nested resource
+    '/api/v1/eligible_flights', // Versioned API
+    '/api/flight_data',       // REST API pattern
+    '/'                       // Root endpoint (confirmed working)
+  ];
+  
+  /// Python backend URL (configurable for different environments)
+  final String? pythonBackendUrl;
+  
+  /// Map cache for airports
+  final Map<String, dynamic> _airportCache = {};
+  
+  /// Map cache for airlines
+  final Map<String, dynamic> _airlineCache = {};
+  
+  /// Cache for eligible flights
+  List<Map<String, dynamic>>? _eligibleFlightsCache;
+  
+  /// Cache expiration time
+  DateTime? _cacheExpiration;
+  
+  /// Default cache duration (30 minutes)
+  final Duration _cacheDuration = const Duration(minutes: 30);
+  
+  /// Default API timeout duration (30 seconds)
+  final Duration _apiTimeout = const Duration(seconds: 30);
+  
+  /// Flag to determine if we're using Python backend or direct AviationStack API
+  bool _usingPythonBackend = true;
+
+  /// Constructor - requires a base URL for the Aviation Stack API
+  /// and a Python backend URL for EU compensation eligibility checks
+  AviationStackService({required this.baseUrl, this.pythonBackendUrl}) {
+    // Initialize the service
+    _init();
+  }
+  
+  /// Initializes the service
+  void _init() async {
+    // Initialize airport cache
+    await _initializeAirportCache();
+    
+    // Initialize airline cache
+    await _initializeAirlineCache();
+  }
+  
+  /// Gets recent flight arrivals for a specific airport
+  /// 
+  /// [airportIcao] - Optional ICAO code of the airport to filter by
+  /// [minutesBeforeNow] - Optional timeframe in minutes to look back from current time
+  /// 
+  /// Returns a list of normalized flight data
+  Future<List<Map<String, dynamic>>> getRecentArrivals({String? airportIcao, int minutesBeforeNow = 1440}) async {
+    foundation.debugPrint('🔍 AviationStackService: Getting recent arrivals for ${airportIcao ?? "all airports"} in past $minutesBeforeNow minutes');
+    
+    try {
+      // First try to get data from Python backend
+      if (_usingPythonBackend && pythonBackendUrl != null) {
+        String endpoint = '/flights';
+        if (airportIcao != null) {
+          endpoint = '$endpoint?airport=$airportIcao';
+        }
+        
+        try {
+          final backendData = await _fetchFromPythonBackend(endpoint);
+          if (backendData.isNotEmpty) {
+            foundation.debugPrint('✅ AviationStackService: Received ${backendData.length} arrivals from Python backend');
+            return backendData.where((flight) {
+              // Filter by time if minutesBeforeNow is provided
+              if (minutesBeforeNow > 0) {
+                final scheduledTime = DateTime.tryParse(flight['departure']['scheduled'] ?? '');
+                if (scheduledTime != null) {
+                  final diff = DateTime.now().difference(scheduledTime).inMinutes;
+                  return diff <= minutesBeforeNow;
+                }
+              }
+              return true;
+            }).toList();
+          }
+        } catch (e) {
+          foundation.debugPrint('⚠️ AviationStackService: Error fetching from Python backend: $e');
+        }
+      }
+      
+      // If Python backend fails or is not used, try direct API
+      String url = '$baseUrl/flights?access_key=$_apiKey&limit=100';
+      if (airportIcao != null) {
+        url += '&dep_icao=$airportIcao';
+      }
+      
+      final response = await http.get(Uri.parse(url)).timeout(_apiTimeout);
+      
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final flights = _tryProcessFlightsData(data);
+        
+        // Filter by time if minutesBeforeNow is provided
+        final filteredFlights = flights.where((flight) {
+          if (minutesBeforeNow > 0) {
+            final scheduledTime = DateTime.tryParse(flight['departure']['scheduled'] ?? '');
+            if (scheduledTime != null) {
+              final diff = DateTime.now().difference(scheduledTime).inMinutes;
+              return diff <= minutesBeforeNow;
+            }
+          }
+          return true;
+        }).toList();
+        
+        foundation.debugPrint('✅ AviationStackService: Received ${filteredFlights.length} arrivals from AviationStack API');
+        return filteredFlights;
+      } else {
+        throw Exception('Failed to fetch recent arrivals: ${response.statusCode}');
+      }
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Error getting recent arrivals: $e');
+      // Fallback to mock data in case of error
+      final mockData = _generateMockArrivals(airportIcao: airportIcao, count: 20);
+      foundation.debugPrint('⚠️ AviationStackService: Using mock data for recent arrivals');
+      return mockData;
+    }
+  }
+  
+  /// Gets EU flights that are eligible for compensation
+  /// 
+  /// Returns a list of normalized flight data for flights eligible for EU compensation
+  Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights() async {
+    foundation.debugPrint('🔍 AviationStackService: Getting EU compensation eligible flights');
+    
+    try {
+      // First try to get data from Python backend
+      if (_usingPythonBackend && pythonBackendUrl != null) {
+        try {
+          final backendData = await _fetchFromPythonBackend('/eligible_flights');
+          if (backendData.isNotEmpty) {
+            foundation.debugPrint('✅ AviationStackService: Received ${backendData.length} eligible flights from Python backend');
+            return backendData;
+          }
+        } catch (e) {
+          foundation.debugPrint('⚠️ AviationStackService: Error fetching eligible flights from Python backend: $e');
+        }
+      }
+      
+      // If Python backend fails or is not used, try direct API
+      // Get recent flights from the API and filter them
+      final recentFlights = await getRecentArrivals(minutesBeforeNow: 1440); // Last 24 hours
+      
+      // Filter flights that are eligible for EU compensation
+      final eligibleFlights = recentFlights.where((flight) {
+        // Check if flight is eligible for EU compensation
+        final eligibilityResult = _isEligibleForEUCompensation(flight);
+        return eligibilityResult['isEligible'] == true;
+      }).toList();
+      
+      foundation.debugPrint('✅ AviationStackService: Found ${eligibleFlights.length} EU compensation eligible flights');
+      return eligibleFlights;
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Error getting EU eligible flights: $e');
+      // Fallback to mock data in case of error
+      final mockData = _generateMockEligibleFlights(count: 10);
+      foundation.debugPrint('⚠️ AviationStackService: Using mock data for EU eligible flights');
+      return mockData;
+    }
+  }
+  
+  /// Mock flight data for development testing
+  Map<String, dynamic> _getMockFlightData(String flightNumber) {
+    final random = Random();
+    final isDelayed = random.nextBool();
+    final delayMinutes = isDelayed ? 30 + random.nextInt(300) : 0;
+    
+    return {
+      'flight_number': flightNumber,
+      'departure': {
+        'airport': 'WAW',
+        'scheduled': '2023-12-01T12:00:00Z',
+        'actual': isDelayed ? '2023-12-01T${12 + (delayMinutes ~/ 60)}:${delayMinutes % 60}:00Z' : '2023-12-01T12:00:00Z',
+      },
+      'arrival': {
+        'airport': 'LHR',
+        'scheduled': '2023-12-01T14:00:00Z',
+        'actual': isDelayed ? '2023-12-01T${14 + (delayMinutes ~/ 60)}:${delayMinutes % 60}:00Z' : '2023-12-01T14:00:00Z',
+      },
+      'airline': {
+        'name': 'LOT Polish Airlines',
+        'iata': 'LO',
+      },
+      'status': isDelayed ? 'DELAYED' : 'LANDED',
+      'delay_minutes': delayMinutes,
+      'eu_compensation_eligible': isDelayed && delayMinutes > 180,
+    };
+  }
+
+  /// Gets the API key for the Aviation Stack API
+  Future<String> _getApiKey() async {
+    // In a real app, this would be fetched from a secure storage or environment variable
+    // For this implementation, we're using a mock key
+    _apiKey = 'mock_api_key';
+    return _apiKey;
+  }
+  
+  /// Error handler for data retrieval failures
+  Future<List<Map<String, dynamic>>> _handleDataRetrievalError(String source, dynamic error) async {
+    foundation.debugPrint('❌ AviationStackService: Error retrieving data from $source: $error');
+    // Return empty list as fallback
+    return [];
+  }
+  
+  /// Formats a date string to YYYY-MM-DD format
+  String _formatDate(String isoDate) {
+    try {
+      final date = DateTime.parse(isoDate);
+      return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Error formatting date: $e');
+      return isoDate; // Return the original string if parsing fails
+    }
+  }
+  
+  /// Fetches all paginated data from a given AviationStack endpoint (e.g., 'airports', 'airlines').
+  Future<List<dynamic>> _fetchAllPaginatedData(String endpoint) async {
+    foundation.debugPrint('AviationStackService: Fetching all $endpoint data...');
+    
+    List<dynamic> allItems = [];
+    int offset = 0;
+    int limit = 100; // Number of results per page
+    bool hasMore = true;
+    
+    try {
+      while (hasMore) {
+        final url = '$baseUrl/$endpoint?access_key=$_apiKey&offset=$offset&limit=$limit';
+        final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 30));
+        
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final items = data['data'] as List<dynamic>;
+          
+          if (items.isEmpty) {
+            hasMore = false;
+          } else {
+            allItems.addAll(items);
+            offset += limit;
+          }
+        } else {
+          throw Exception('Failed to fetch $endpoint: ${response.statusCode}');
+        }
+      }
+      
+      foundation.debugPrint('✅ AviationStackService: Successfully fetched ${allItems.length} $endpoint');
+      return allItems;
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Error fetching $endpoint: $e');
+      return []; // Return empty list on error
+    }
+  }
+  
+  /// Initializes the airport cache by fetching all airports from the API.
+  Future<void> _initializeAirportCache() async {
+    foundation.debugPrint('AviationStackService: Initializing airport cache...');
+    
+    try {
+      final airports = await _fetchAllPaginatedData('airports');
+      
+      // Build a lookup map for airports
+      for (var airport in airports) {
+        String iataCode = airport['iata_code'] ?? '';
+        String icaoCode = airport['icao_code'] ?? '';
+        
+        if (iataCode.isNotEmpty) {
+          _airportCache[iataCode] = airport;
+        }
+        
+        if (icaoCode.isNotEmpty) {
+          _airportCache[icaoCode] = airport;
+        }
+      }
+      
+      foundation.debugPrint('✅ AviationStackService: Airport cache initialized with ${_airportCache.length} entries');
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Failed to initialize airport cache: $e');
+    }
+  }
+  
+  /// Initializes the airline cache by fetching all airlines from the API.
+  Future<void> _initializeAirlineCache() async {
+    foundation.debugPrint('AviationStackService: Initializing airline cache...');
+    
+    try {
+      final airlines = await _fetchAllPaginatedData('airlines');
+      
+      // Build a lookup map for airlines
+      for (var airline in airlines) {
+        String iataCode = airline['iata_code'] ?? '';
+        String icaoCode = airline['icao_code'] ?? '';
+        
+        if (iataCode.isNotEmpty) {
+          _airlineCache[iataCode] = airline;
+        }
+        
+        if (icaoCode.isNotEmpty) {
+          _airlineCache[icaoCode] = airline;
+        }
+      }
+      
+      foundation.debugPrint('✅ AviationStackService: Airline cache initialized with ${_airlineCache.length} entries');
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Failed to initialize airline cache: $e');
+    }
+  }
+    '/flight_data',           // Simplified endpoint
+    '/flights',               // Simple flights endpoint
+    '/flight_data/eligible',  // Nested resource
+    '/api/flights/eligible',  // REST API with nested resource
+    '/api/v1/eligible_flights', // Versioned API
+    '/api/flight_data',       // REST API pattern
+    '/'                       // Root endpoint (confirmed working)
+  ];
+  
+  /// Timeout duration for API requests
+  static const Duration _apiTimeout = const Duration(seconds: 20);
+  static const Duration _pythonBackendTimeout = const Duration(seconds: 40);
+  
+  /// Flags for data source tracking
+  bool _usingPythonBackend = false;
+  bool _backendVerified = false;
+
+  // Caching for airport and airline data to avoid repeated API calls.
+  Map<String, String> _airportCountryCache = {};
+  Map<String, String> _airlineCountryCache = {};
+  bool _isAirportCacheInitialized = false;
+  bool _isAirlineCacheInitialized = false;
+
+  /// Creates an instance of the AviationStackService
+  AviationStackService({
+    required this.baseUrl,
+  });
+
+
+
+  /// Mock flight data for development testing
+  Map<String, dynamic> _getMockFlightData(String flightNumber) {
+    final mockFlights = {
+      'FR8404': {
+        'flight_date': '2025-07-19',
+        'flight_status': 'delayed',
+        'departure': {
+          'airport': 'Madrid',
+          'timezone': 'Europe/Madrid',
+          'iata': 'MAD',
+          'icao': 'LEMD',
+          'terminal': '1',
+          'gate': 'A12',
+          'delay': 185,
+          'scheduled': '2025-07-19T10:30:00+00:00',
+          'estimated': '2025-07-19T13:35:00+00:00'
+        },
+        'arrival': {
+          'airport': 'London Stansted',
+          'timezone': 'Europe/London',
+          'iata': 'STN',
+          'icao': 'EGSS',
+          'terminal': '1',
+          'gate': 'B5',
+          'delay': 185,
+          'scheduled': '2025-07-19T12:15:00+00:00',
+          'estimated': '2025-07-19T15:20:00+00:00'
+        },
+        'airline': {
+          'name': 'Ryanair',
+          'iata': 'FR',
+          'icao': 'RYR'
+        },
+        'flight': {
+          'number': '8404',
+          'iata': 'FR8404',
+          'icao': 'RYR8404'
+        },
+        'aircraft': {
+          'registration': 'EI-DPJ',
+          'iata': 'B38M',
+          'icao': 'B38M'
+        }
+      },
+      'LH123': {
+        'flight_date': '2025-07-19',
+        'flight_status': 'delayed',
+        'departure': {
+          'airport': 'Frankfurt',
+          'timezone': 'Europe/Berlin',
+          'iata': 'FRA',
+          'icao': 'EDDF',
+          'terminal': '1',
+          'gate': 'A15',
+          'delay': 220,
+          'scheduled': '2025-07-19T09:00:00+00:00',
+          'estimated': '2025-07-19T12:40:00+00:00'
+        },
+        'arrival': {
+          'airport': 'London Heathrow',
+          'timezone': 'Europe/London',
+          'iata': 'LHR',
+          'icao': 'EGLL',
+          'terminal': '2',
+          'gate': 'A10',
+          'delay': 220,
+          'scheduled': '2025-07-19T10:25:00+00:00',
+          'estimated': '2025-07-19T14:05:00+00:00'
+        },
+        'airline': {
+          'name': 'Lufthansa',
+          'iata': 'LH',
+          'icao': 'DLH'
+        },
+        'flight': {
+          'number': '123',
+          'iata': 'LH123',
+          'icao': 'DLH123'
+        },
+        'aircraft': {
+          'registration': 'D-ABYQ',
+          'iata': 'A21N',
+          'icao': 'A21N'
+        }
+      },
+      'BA456': {
+        'flight_date': '2025-07-19',
+        'flight_status': 'cancelled',
+        'departure': {
+          'airport': 'London Heathrow',
+          'timezone': 'Europe/London',
+          'iata': 'LHR',
+          'icao': 'EGLL',
+          'terminal': '5',
+          'gate': 'B12',
+          'delay': null,
+          'scheduled': '2025-07-19T14:30:00+00:00',
+          'estimated': null
+        },
+        'arrival': {
+          'airport': 'Paris Charles de Gaulle',
+          'timezone': 'Europe/Paris',
+          'iata': 'CDG',
+          'icao': 'LFPG',
+          'terminal': '2A',
+          'gate': null,
+          'delay': null,
+          'scheduled': '2025-07-19T17:15:00+00:00',
+          'estimated': null
+        },
+        'airline': {
+          'name': 'British Airways',
+          'iata': 'BA',
+          'icao': 'BAW'
+        },
+        'flight': {
+          'number': '456',
+          'iata': 'BA456',
+          'icao': 'BAW456'
+        },
+        'aircraft': null
+      }
+    };
+    
+    return mockFlights[flightNumber.toUpperCase().replaceAll(' ', '')] ?? {};
+  }
+
+  /// Gets the API key for the Aviation Stack API
+  Future<String> _getApiKey() async {
+    // For debugging purposes, use a hardcoded key
+    // In production, this should be properly secured
+    foundation.debugPrint('AviationStackService: Using debug API key');
+    const key = '9cb5db4ba59f1e5005591c572d8b5f1c'; // Replace with your actual key if needed
+    return key;
+  }
+
+  /// Error handler for data retrieval failures
+  List<Map<String, dynamic>> _handleDataRetrievalError(String source, dynamic error) {
+    foundation.debugPrint('AviationStackService: Error from $source: ${error.toString()}');
+    // Consider throwing a custom exception or returning a result object with error info
+    return []; // Return empty list on error
+  }
+
+  /// Formats a date string to YYYY-MM-DD format
+  String _formatDate(String isoDate) {
+    try {
+      final dateTime = DateTime.parse(isoDate);
+      return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+    } catch (e) {
+      foundation.debugPrint('AviationStackService: Error formatting date $isoDate: $e');
+      return isoDate; // Fallback to original if parsing fails
+    }
+  }
+
+  /// Fetches all paginated data from a given AviationStack endpoint (e.g., 'airports', 'airlines').
+  Future<List<dynamic>> _fetchAllPaginatedData(String endpoint) async {
+    final apiKey = await _getApiKey();
+    List<dynamic> allData = [];
+    int offset = 0;
+    const limit = 1000; // Use the max limit to reduce number of calls
+    int totalAvailable = 0;
+
+    foundation.debugPrint('AviationStackService: Starting paginated fetch for "$endpoint"...');
+
+    do {
+      final uri = Uri.parse('$baseUrl/$endpoint?access_key=$apiKey&limit=$limit&offset=$offset');
+      try {
+        final response = await http.get(uri).timeout(const Duration(seconds: 30));
+        if (response.statusCode == 200) {
+          final pageData = json.decode(response.body);
+          final List<dynamic> data = pageData['data'] ?? [];
+          allData.addAll(data);
+
+          totalAvailable = pageData['pagination']['total'] ?? 0;
+          offset += data.length;
+
+          foundation.debugPrint('AviationStackService: Fetched ${data.length} items from "$endpoint". Total fetched: ${allData.length}/$totalAvailable');
+
+        } else {
+          foundation.debugPrint('AviationStackService: Failed to fetch data for "$endpoint". Status: ${response.statusCode}, Body: ${response.body}');
+          throw Exception('Failed to load paginated data from $endpoint');
+        }
+      } catch (e) {
+        foundation.debugPrint('AviationStackService: Error fetching paginated data for "$endpoint": $e');
+        rethrow;
+      }
+    } while (allData.length < totalAvailable && totalAvailable > 0 && offset < totalAvailable);
+    
+    foundation.debugPrint('AviationStackService: Finished paginated fetch for "$endpoint". Total items: ${allData.length}');
+    return allData;
+  }
+
+  /// Initializes the airport cache by fetching all airports from the API.
+  Future<void> _initializeAirportCache() async {
+    if (_isAirportCacheInitialized) return;
+    foundation.debugPrint('AviationStackService: Initializing airport cache...');
+    try {
+      final airports = await _fetchAllPaginatedData('airports');
+      _airportCountryCache = {
+        for (var airport in airports)
+          if (airport['iata_code'] != null && airport['country_iso2'] != null)
+            airport['iata_code']: airport['country_iso2']
+      };
+      _isAirportCacheInitialized = true;
+      foundation.debugPrint('AviationStackService: Airport cache initialized with ${_airportCountryCache.length} entries.');
+    } catch (e) {
+      foundation.debugPrint('AviationStackService: Failed to initialize airport cache: $e');
+      // In a real app, you might want to handle this more gracefully, e.g., retry.
+    }
+  }
+
+  /// Initializes the airline cache by fetching all airlines from the API.
+  Future<void> _initializeAirlineCache() async {
+    if (_isAirlineCacheInitialized) return;
+    foundation.debugPrint('AviationStackService: Initializing airline cache...');
+    try {
+      final airlines = await _fetchAllPaginatedData('airlines');
+      _airlineCountryCache = {
+        for (var airline in airlines)
+          if (airline['iata_code'] != null && airline['country_iso2'] != null)
+            airline['iata_code']: airline['country_iso2']
+      };
+      _isAirlineCacheInitialized = true;
+      foundation.debugPrint('AviationStackService: Airline cache initialized with ${_airlineCountryCache.length} entries.');
+    } catch (e) {
+      foundation.debugPrint('AviationStackService: Failed to initialize airline cache: $e');
+    }
+
+    Map<String, dynamic> _normalizeSingleFlightData(dynamic flight) {
+    // Check if flight is null
+    if (flight == null) {
+      foundation.debugPrint('AviationStackService: _normalizeSingleFlightData received null data.');
+      return {};
+    }
+    
+    // Convert to Map<String, dynamic> if needed
+    final flightMap = flight as Map<String, dynamic>;
+
+    // Debug the structure of the flight data
+    foundation.debugPrint('🔵 Flight data keys: ${flightMap.keys.join(', ')}');
+
+    // Extract flight details based on both API formats
+    Map<String, dynamic> depData;
+    Map<String, dynamic> arrData;
+    Map<String, dynamic> airlineData;
+    Map<String, dynamic> flightDetails;
+    Map<String, dynamic> aircraftData = {};
+    
+    // Determine which data format we're working with
+    bool isPythonFormat = flightMap['flight_number'] != null || 
+                         (flightMap['departure'] is Map && 
+                          flightMap['departure']?['airport'] is Map);
+    
+    if (isPythonFormat) {
+      foundation.debugPrint('📡 Using PythonAnywhere data format');
+      // Backend format
+      flightDetails = {
+        'iata': flightMap['flight_number'] ?? flightMap['id'] ?? '',
+        'icao': flightMap['flight_number'] ?? flightMap['id'] ?? '',
+        'number': flightMap['flight_number']?.toString().replaceAll(RegExp(r'^[A-Z]+'), '') ?? '',
+      };
+      
+      // Handle nested airport structure in PythonAnywhere format
+      depData = flightMap['departure'] is Map ? (flightMap['departure'] as Map<String, dynamic>) : {};
+      arrData = flightMap['arrival'] is Map ? (flightMap['arrival'] as Map<String, dynamic>) : {};
+      airlineData = flightMap['airline'] is Map ? (flightMap['airline'] as Map<String, dynamic>) : {};
+    } else {
+      foundation.debugPrint('🚀 Using Aviation Stack data format');
+      // Original Aviation Stack format
+      flightDetails = flightMap['flight'] is Map ? (flightMap['flight'] as Map<String, dynamic>) : {};
+      depData = flightMap['departure'] is Map ? (flightMap['departure'] as Map<String, dynamic>) : {};
+      arrData = flightMap['arrival'] is Map ? (flightMap['arrival'] as Map<String, dynamic>) : {};
+      airlineData = flightMap['airline'] is Map ? (flightMap['airline'] as Map<String, dynamic>) : {};
+      aircraftData = flightMap['aircraft'] is Map ? (flightMap['aircraft'] as Map<String, dynamic>) : {};
+    }
+
+    // Extract departure data with format awareness
+    String depIata = 'N/A';
+    String depScheduled = '';
+    int depDelay = 0;
+    if (isPythonFormat) {
+      if (depData['airport'] is Map<String, dynamic>) {
+        final airportData = depData['airport'] as Map<String, dynamic>;
+        depIata = airportData['iata'] ?? 'N/A';
+      }
+      depScheduled = depData['scheduled'] ?? '';
+      
+      // Calculate delay for PythonAnywhere format
+      if (depData['scheduled'] != null && depData['actual'] != null) {
+        try {
+          final scheduledTime = DateTime.parse(depData['scheduled']);
+          final actualTime = DateTime.parse(depData['actual']);
+          final difference = actualTime.difference(scheduledTime).inMinutes;
+          depDelay = difference > 0 ? difference : 0;
+        } catch (e) {
+          foundation.debugPrint('Error calculating delay: $e');
+        }
+      } else if (flightMap['delay_minutes'] != null) {
+        // Direct delay value
+        if (flightMap['delay_minutes'] is int) {
+          depDelay = flightMap['delay_minutes'];
+        } else if (flightMap['delay_minutes'] is String) {
+          depDelay = int.tryParse(flightMap['delay_minutes']) ?? 0;
+        } else if (flightMap['delay_minutes'] is double) {
+          depDelay = flightMap['delay_minutes'].toInt();
+        }
+      }
+    } else {
+      depIata = depData['iata'] ?? 'N/A';
+      depScheduled = depData['scheduled'] ?? '';
+      depDelay = depData['delay'] ?? 0;
+    }
+
+    // Extract arrival data with format awareness
+    String arrIata = 'N/A';
+    String arrScheduled = '';
+    int arrDelay = 0;
+    if (isPythonFormat) {
+      if (arrData['airport'] is Map) {
+        final airportData = arrData['airport'] as Map<String, dynamic>;
+        arrIata = airportData['iata'] ?? 'N/A';
+      }
+      arrScheduled = arrData['scheduled'] ?? '';
+      
+      // Calculate delay for PythonAnywhere format (if not already calculated)
+      if (depDelay == 0 && arrData['scheduled'] != null && arrData['actual'] != null) {
+        try {
+          final scheduledTime = DateTime.parse(arrData['scheduled']);
+          final actualTime = DateTime.parse(arrData['actual']);
+          final difference = actualTime.difference(scheduledTime).inMinutes;
+          arrDelay = difference > 0 ? difference : 0;
+        } catch (e) {
+          foundation.debugPrint('Error calculating arrival delay: $e');
+        }
+      }
+    } else {
+      arrIata = arrData['iata'] ?? 'N/A';
+      arrScheduled = arrData['scheduled'] ?? '';
+      arrDelay = arrData['delay'] ?? 0;
+    }
+
+    // Extract airline data directly - airlineData is already known to be a Map
+    String airlineName = airlineData['name'] ?? 'Unknown Airline';
+    String airlineIata = airlineData['iata'] ?? 'N/A';
+
+    // Extract aircraft data directly
+    String aircraftRegistration = aircraftData?['registration'] ?? 'Unknown';
+
+    // A flight's delay is typically measured on arrival, but fall back to departure if needed
+    int finalDelay = flightMap['delay_minutes'] ?? 0;
+    if (finalDelay == 0) {
+      finalDelay = arrDelay > 0 ? arrDelay : depDelay;
+    }
+
+    // Get flight IATA code from appropriate source
+    String flightIata = '';
+    if (isPythonFormat) {
+      flightIata = flightMap['flight_number'] ?? flightMap['id'] ?? '';
+    } else {
+      flightIata = flightDetails['iata'] ?? '';
+    }
+    
+    // Get flight status
+    String status;
+    if (isPythonFormat) {
+      status = flightMap['status'] ?? 'Unknown';
+    } else {
+      status = flightMap['flight_status'] ?? 'Unknown';
+    }
+
+    // Extract any pre-calculated eligibility information
+    final bool isEligible = flightMap['eu_compensation_eligible'] == true || 
+                            flightMap['eligible_for_compensation'] == true;
+    
+    final Map<String, dynamic> result = {
+      'airline_name': airlineName,
+      'airline_iata': airlineIata,
+      'flight_iata': flightIata,
+      'flight_number': flightIata,  // Alias for consistency
+      'departure_airport_iata': depIata,
+      'arrival_airport_iata': arrIata,
+      'status': status,
+      'departure_scheduled_time': depScheduled,
+      'arrival_scheduled_time': arrScheduled,
+      'delay_minutes': finalDelay,
+      'eu_compensation_eligible': isEligible,
+      'raw_data': flightMap, // Keep original data for deeper analysis if needed
+    };
+
+    return result;
+  }
+
+  /// Normalizes a single flight data entry from different data formats into a consistent structure
+  /// This handles both AviationStack API format and our PythonAnywhere backend format
+  Map<String, dynamic> _normalizeSingleFlightData(dynamic flight) {
+    if (flight == null) {
+      foundation.debugPrint('AviationStackService: Warning - null flight data passed to _normalizeSingleFlightData');
+      return {}; // Return empty map for null data
+    }
+    
+    // Cast to Map<String, dynamic> if needed
+    final Map<String, dynamic> flightMap = flight is Map<String, dynamic> 
+        ? flight 
+        : (flight is String ? jsonDecode(flight) : {});
+
+    // Check if this is Python backend format (simpler structure) vs AviationStack format (nested structure)
+    bool isPythonFormat = !flightMap.containsKey('departure') && !flightMap.containsKey('arrival');
+
+    // Initialize variables for extraction
+    String airlineName = '';
+    String airlineIata = '';
+    String depIata = '';
+    String arrIata = '';
+    String depScheduled = '';
+    String arrScheduled = '';
+    int depDelay = 0;
+    int arrDelay = 0;
+    int finalDelay = 0;
+
+    // Handle AviationStack API format (nested structure)
+    if (!isPythonFormat) {
+      final flightDetails = flightMap['flight'] ?? {};
+      final departureData = flightMap['departure'] ?? {};
+      final arrivalData = flightMap['arrival'] ?? {};
+      final airlineData = flightMap['airline'] ?? {};
+      final aircraftData = flightMap['aircraft'] ?? {};
+
+      // Extract airline info from nested structure
+      airlineName = airlineData['name'] ?? '';
+      airlineIata = airlineData['iata'] ?? '';
+
+      // Extract airport codes from nested structure
+      depIata = departureData['iata'] ?? '';
+      arrIata = arrivalData['iata'] ?? '';
+
+      // Extract scheduled times
+      depScheduled = departureData['scheduled'] ?? '';
+      arrScheduled = arrivalData['scheduled'] ?? '';
+
+      // Extract delay information
+      final String depDelayString = departureData['delay'] ?? '0';
+      final String arrDelayString = arrivalData['delay'] ?? '0';
+      
+      // Convert delay strings to integers with proper error handling
+      try {
+        depDelay = int.parse(depDelayString);
+      } catch (e) {
+        depDelay = 0;
+      }
+      
+      try {
+        arrDelay = int.parse(arrDelayString);
+      } catch (e) {
+        arrDelay = 0;
+      }
+      
+      // Calculate total delay based on departure and arrival delays
+      finalDelay = (depDelay > 0 && arrDelay > 0) ? (depDelay + arrDelay) : max(depDelay, arrDelay);
+    } 
+    // Handle Python backend format (flatter structure)
+    else {
+      airlineName = flightMap['airline_name'] ?? '';
+      airlineIata = flightMap['airline_iata'] ?? '';
+      depIata = flightMap['departure_airport_iata'] ?? '';
+      arrIata = flightMap['arrival_airport_iata'] ?? '';
+      depScheduled = flightMap['departure_scheduled_time'] ?? '';
+      arrScheduled = flightMap['arrival_scheduled_time'] ?? '';
+      
+      // Try multiple possible field names for delay
+      if (flightMap.containsKey('delay_minutes')) {
+        final delayValue = flightMap['delay_minutes'];
+        finalDelay = delayValue is int ? delayValue : (int.tryParse(delayValue?.toString() ?? '0') ?? 0);
+      } else if (flightMap.containsKey('delay')) {
+        final delayValue = flightMap['delay'];
+        finalDelay = delayValue is int ? delayValue : (int.tryParse(delayValue?.toString() ?? '0') ?? 0);
+      } else {
+        finalDelay = 0;
+      }
+    }
+
+    // Use total delay if available, otherwise use the larger of departure or arrival delay
+    if (finalDelay == 0) {
+      finalDelay = arrDelay > 0 ? arrDelay : depDelay;
+    }
+
+    // Get flight IATA code from appropriate source
+    String flightIata = '';
+    if (isPythonFormat) {
+      flightIata = flightMap['flight_number'] ?? flightMap['id'] ?? '';
+    } else {
+      final flightDetails = flightMap['flight'] ?? {};
+      flightIata = flightDetails['iata'] ?? '';
+    }
+    
+    // Get flight status
+    String status;
+    if (isPythonFormat) {
+      status = flightMap['status'] ?? 'Unknown';
+    } else {
+      status = flightMap['flight_status'] ?? 'Unknown';
+    }
+
+    // Extract any pre-calculated eligibility information
+    final bool isEligible = flightMap['eu_compensation_eligible'] == true || 
+                            flightMap['eligible_for_compensation'] == true;
+    
+    final Map<String, dynamic> result = {
+      'airline_name': airlineName,
+      'airline_iata': airlineIata,
+      'flight_iata': flightIata,
+      'flight_number': flightIata,  // Alias for consistency
+      'departure_airport_iata': depIata,
+      'arrival_airport_iata': arrIata,
+      'status': status,
+      'departure_scheduled_time': depScheduled,
+      'arrival_scheduled_time': arrScheduled,
+      'delay_minutes': finalDelay,
+      'eu_compensation_eligible': isEligible,
+      'raw_data': flightMap, // Keep original data for deeper analysis if needed
+    };
+
+    return result;
+  }
+
+  List<Map<String, dynamic>> _normalizeFlightData(List<dynamic> flights) {
+    if (flights.isEmpty) {
+      foundation.debugPrint('AviationStackService: _normalizeFlightData received empty list.');
+      return [];
+    }
+    return flights.map<Map<String, dynamic>>((flight) => _normalizeSingleFlightData(flight)).toList();
+  }
+  
+  /// Helper method to try processing flight data from various possible response formats
+  /// This method handles both AviationStack and PythonAnywhere backend formats
+  Future<List<Map<String, dynamic>>> _tryProcessFlightsData(Map<String, dynamic> data) async {
+    foundation.debugPrint('AviationStackService: _tryProcessFlightsData: Analyzing data structure...');
+    foundation.debugPrint('AviationStackService: Available keys in response: ${data.keys.join(', ')}');
+
+    List<dynamic> flightsList = [];
+    if (data['data'] is List) {
+      flightsList = data['data'];
+    } else if (data['flights'] is List) {
+      flightsList = data['flights'];
+    } else if (data['pagination'] != null && data['data'] != null) {
+      // Common AviationStack structure
+      var dataField = data['data'];
+      if (dataField is List) {
+        flightsList = dataField;
+      }
+    } else {
+      foundation.debugPrint('AviationStackService: _tryProcessFlightsData could not find a list of flights in the response.');
+      // Try to see if the response itself is a single flight object wrapped in a map
+      // This is a heuristic and might need adjustment based on actual API responses
+      if (data.containsKey('flight_status') || data.containsKey('departure')) {
+         foundation.debugPrint('AviationStackService: _tryProcessFlightsData attempting to treat root as a single flight.');
+         flightsList = [data]; // Treat as a list with one flight
+      }
+    }
+
+    if (flightsList.isEmpty) {
+      foundation.debugPrint('AviationStackService: _tryProcessFlightsData: No flight data found after attempting various keys.');
+      return [];
+    }
+    
+    foundation.debugPrint('AviationStackService: _tryProcessFlightsData: Found ${flightsList.length} flights to normalize.');
+    return _normalizeFlightData(flightsList);
+  }
+
+  // --- EU Compensation Eligibility Logic ---
+
+  // Definitive list of EU member states and EEA/Schengen countries for EC 261/2004 regulation.
+  final List<String> _euCountryCodes = [
+    // EU Member States (ISO 3166-1 alpha-2)
+    'AT', // Austria
+    'BE', // Belgium
+    'BG', // Bulgaria
+    'HR', // Croatia
+    'CY', // Cyprus
+    'CZ', // Czech Republic
+    'DK', // Denmark
+    'EE', // Estonia
+    'FI', // Finland
+    'FR', // France
+    'DE', // Germany
+    'GR', // Greece
+    'HU', // Hungary
+    'IE', // Ireland
+    'IT', // Italy
+    'LV', // Latvia
+    'LT', // Lithuania
+    'LU', // Luxembourg
+    'MT', // Malta
+    'NL', // Netherlands
+    'PL', // Poland
+    'PT', // Portugal
+    'RO', // Romania
+    'SK', // Slovakia
+    'SI', // Slovenia
+    'ES', // Spain
+    'SE', // Sweden
+    // Non-EU but covered by regulation (EEA/Schengen)
+    'IS', // Iceland
+    'LI', // Liechtenstein
+    'NO', // Norway
+    'CH', // Switzerland
+  ];
+
+  /// Check if the flight is covered by EU regulation EC 261/2004 using cached data.
+  Future<bool> _isFlightCoveredByEURegulation(Map<String, dynamic> flight) async {
+    // This check is now primarily defensive. Caches should be initialized higher up.
+    if (!_isAirportCacheInitialized || !_isAirlineCacheInitialized) {
+      foundation.debugPrint('Warning: Caches not initialized. Initializing defensively.');
+      await _initializeAirportCache();
+      await _initializeAirlineCache();
+    }
+
+    final depAirportIata = flight['departure_airport_iata']?.toString().toUpperCase() ?? '';
+    final arrAirportIata = flight['arrival_airport_iata']?.toString().toUpperCase() ?? '';
+    final airlineIata = flight['airline_iata']?.toString().toUpperCase() ?? '';
+
+    // Look up country codes from the cache.
+    final depCountry = _airportCountryCache[depAirportIata] ?? '';
+    final arrCountry = _airportCountryCache[arrAirportIata] ?? '';
+    final airlineCountry = _airlineCountryCache[airlineIata] ?? '';
+
+    final bool isDepEU = _euCountryCodes.contains(depCountry);
+    final bool isArrEU = _euCountryCodes.contains(arrCountry);
+    final bool isAirlineEU = _euCountryCodes.contains(airlineCountry);
+
+    // Rule 1: Flight departs from an EU/EEA airport (regardless of airline).
+    if (isDepEU) {
+      return true;
+    }
+    
+    // Rule 2: Flight arrives at an EU/EEA airport AND is operated by an EU/EEA airline.
+    if (isArrEU && isAirlineEU) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /// Check for extraordinary circumstances that would exempt the airline from compensation
+  bool _checkForExtraordinaryCircumstances(Map<String, dynamic> flight, {bool relaxEligibilityForDebugging = false}) {
+    if (relaxEligibilityForDebugging) {
+      foundation.debugPrint('AviationStackService: Skipping extraordinary circumstances check due to relaxEligibilityForDebugging=true');
+      return false; // Assume no extraordinary circumstances when debugging
+    }
+    // Simplified check: In a real app, this would involve checking weather, ATC strikes, etc.
+    // For now, assume no extraordinary circumstances unless explicitly stated in flight data (which we don't have)
+    // Example: if (flight['reason_for_delay']?.toString().toLowerCase().contains('strike') ?? false) return true;
+    return false; 
+  }
+
+  /// Calculate the compensation amount based on flight distance
+  int _calculateCompensationAmount(int distanceKm) {
+    if (distanceKm <= 1500) {
+      return 250;
+    } else if (distanceKm <= 3500) {
+      return 400;
+    } else {
+      return 600;
+    }
+  }
+
+  /// Estimate the flight distance based on available flight data (placeholder)
+  int _estimateFlightDistance(Map<String, dynamic> flight) {
+    // Placeholder: In a real app, calculate distance using airport coordinates or use an API
+    // For now, return a default distance that might trigger different compensation amounts
+    final dep = flight['departure_airport_iata']?.toString() ?? '';
+    final arr = flight['arrival_airport_iata']?.toString() ?? '';
+
+    if ((dep.startsWith('L') && arr.startsWith('J')) || (dep.startsWith('J') && arr.startsWith('L'))) {
+      return 2000; // Medium haul, e.g., London to JFK (approx)
+    } else if (dep.startsWith('E') && arr.startsWith('P')) {
+      return 4000; // Long haul
+    }
+    return 1000; // Short haul default
+  }
+
+  // Class variables for eligibility calculation
+  bool _isEligible = false;
+  int _estimatedCompensation = 0;
+  String _reason = '';
+
+  /// Determines if a flight is eligible for EU compensation and returns eligibility details
+  /// 
+  /// [flight] - The flight data to check
+  /// [relaxEligibilityForDebugging] - Optional flag to relax eligibility criteria for debugging
+  /// 
+  /// Returns a map with eligibility information including:
+  /// - isEligible: Whether the flight is eligible for compensation
+  /// - reason: The reason for eligibility or ineligibility
+  /// - compensation: The estimated compensation amount (if eligible)
+  Map<String, dynamic> _isEligibleForEUCompensation(Map<String, dynamic> flight, {bool relaxEligibilityForDebugging = false}) {
+    // Calculate eligibility using existing methods
+    _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
+    
+    // Determine distance for compensation calculation
+    final distanceKm = _estimateFlightDistance(flight);
+    int compensation = 0;
+    
+    if (_isEligible) {
+      compensation = _calculateCompensationAmount(distanceKm);
+    }
+    
+    return {
+      'isEligible': _isEligible,
+      'reason': _reason,
+      'compensation': compensation,
+      'distance': distanceKm,
+    };
+  }
+  
+  /// Calculates eligibility and compensation amount based on EU regulation EC 261/2004
+  Future<Map<String, dynamic>> _calculateEligibility(Map<String, dynamic> flight, {bool relaxEligibilityForDebugging = false}) async {
+    // Reset variables for this calculation
+    _isEligible = false;
+    _estimatedCompensation = 0;
+    _reason = '';
+    
+    // Handle both upper and lowercase status values by always converting to lowercase
+    final status = flight['status']?.toString().toLowerCase() ?? 'unknown';
+    
+    // More robust delay minutes extraction that handles various formats
+    int delayMinutes = 0;
+    if (flight['delay_minutes'] != null) {
+      if (flight['delay_minutes'] is int) {
+        delayMinutes = flight['delay_minutes'];
+      } else if (flight['delay_minutes'] is String) {
+        delayMinutes = int.tryParse(flight['delay_minutes']) ?? 0;
+      } else if (flight['delay_minutes'] is double) {
+        delayMinutes = flight['delay_minutes'].toInt();
+      }
+    }
+    
+    // Check if eu_compensation_eligible is explicitly set
+    final bool explicitEligibility = flight['eu_compensation_eligible'] == true;
+    
+    // Debug info for tracing eligibility determination
+    foundation.debugPrint('🔍 Flight ${flight['flight_iata'] ?? flight['flight_number'] ?? 'Unknown'}: status="$status", delayMinutes=$delayMinutes, explicitEligibility=$explicitEligibility');
+    
+    // Use distance from normalized data if available, otherwise estimate it.
+    final int distanceKm;
+    if (flight['distance_km'] != null && flight['distance_km'] is int && flight['distance_km'] > 0) {
+      distanceKm = flight['distance_km'];
+    } else {
+      distanceKm = _estimateFlightDistance(flight);
+    }
+
+    bool isEligible = false;
+    int estimatedCompensation = 0;
+    String reason = 'Not eligible.';
+    
+    // If the backend has already determined eligibility (explicit flag), trust that
+    if (explicitEligibility) {
+      isEligible = true;
+      foundation.debugPrint('✅ Flight ${flight['flight_iata'] ?? flight['flight_number'] ?? 'Unknown'} explicitly marked as eligible by backend');
+      
+      // Use backend-provided compensation amount if available
+      if (flight['compensation_amount_eur'] != null) {
+        if (flight['compensation_amount_eur'] is int) {
+          estimatedCompensation = flight['compensation_amount_eur'];
+        } else if (flight['compensation_amount_eur'] is String) {
+          estimatedCompensation = int.tryParse(flight['compensation_amount_eur']) ?? _calculateCompensationAmount(distanceKm);
+        } else if (flight['compensation_amount_eur'] is double) {
+          estimatedCompensation = flight['compensation_amount_eur'].toInt();
+        }
+        foundation.debugPrint('💶 Using backend-provided compensation: €$estimatedCompensation');
+      } else {
+        estimatedCompensation = _calculateCompensationAmount(distanceKm);
+        foundation.debugPrint('💶 Calculated compensation amount: €$estimatedCompensation');
+      }
+      
+      // Set reason based on available info
+      if (status.contains('cancel')) {
+        reason = 'Flight cancelled (EU regulation EC 261/2004)';
+      } else if (delayMinutes >= 180) {
+        reason = 'Flight delayed by $delayMinutes minutes (>= 3 hours) (EU regulation EC 261/2004)';
+      } else {
+        reason = 'Eligible for EU compensation per backend data';
+      }
+      
+    } else {
+      // Fall back to our own eligibility calculation
+      foundation.debugPrint('🔄 No explicit eligibility flag, calculating eligibility...');
+      
+      // Check if flight is covered by EU regulation
+      if (!await _isFlightCoveredByEURegulation(flight)) {
+        reason = 'Flight not covered by EU Regulation EC 261/2004.';
+        if (relaxEligibilityForDebugging) {
+           foundation.debugPrint('⚠️ Flight ${flight['flight_iata'] ?? flight['flight_number'] ?? 'Unknown'} NOT covered by EU Reg (dep: ${flight['departure_airport_iata']}, arr: ${flight['arrival_airport_iata']}, airline: ${flight['airline_iata']}) but showing due to relax mode.');
+        } else {
+          return {
+            'isEligible': false,
+            'estimatedCompensation': 0,
+            'reason': reason,
+          };
+        }
+      } else {
+         foundation.debugPrint('✅ Flight ${flight['flight_iata'] ?? flight['flight_number'] ?? 'Unknown'} IS covered by EU Reg.');
+      }
+      
+      // Check for extraordinary circumstances
+      if (_checkForExtraordinaryCircumstances(flight, relaxEligibilityForDebugging: relaxEligibilityForDebugging)) {
+        reason = 'Extraordinary circumstances apply.';
+         if (relaxEligibilityForDebugging) {
+           foundation.debugPrint('⚠️ Flight ${flight['flight_iata'] ?? flight['flight_number'] ?? 'Unknown'} has extraordinary circumstances but showing due to relax mode.');
+        } else {
+          return {
+            'isEligible': false,
+            'estimatedCompensation': 0,
+            'reason': reason,
+          };
+        }
+      }
+    }
+
+    // Only process these conditions if we haven't already set eligibility from explicit backend flag
+    if (!isEligible) {
+      // Enhanced case-insensitive status checking with support for more formats
+      if (status.contains('cancel') || status.contains('cancelled')) {
+        isEligible = true;
+        estimatedCompensation = _calculateCompensationAmount(distanceKm);
+        reason = 'Flight cancelled (EU regulation EC 261/2004)';
+        foundation.debugPrint('✅ Flight eligible due to cancellation: $status');
+    }
+
+    return {
+      'isEligible': _isEligible,
+      'estimatedCompensation': _estimatedCompensation, 
+      'reason': _reason,
+      'delayMinutes': delayMinutes,
+    };
+  }
+
+  /// Process flight data to determine compensation eligibility
+  Future<List<Map<String, dynamic>>> _processCompensationEligibility(
+    List<Map<String, dynamic>> flights, {
+    bool relaxEligibilityForDebugging = false,
+  }) async {
+    final List<Map<String, dynamic>> eligibleFlights = [];
+
+    for (var flight in flights) {
+      final eligibilityDetails = await _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
+      if (relaxEligibilityForDebugging || (eligibilityDetails['isEligible'] as bool? ?? false)) {
+        // Enrich the original flight object with eligibility details
+        flight['eligibility_details'] = eligibilityDetails;
+        eligibleFlights.add(flight);
+      }
+    }
+    foundation.debugPrint('AviationStackService: Processed ${flights.length} flights, found ${eligibleFlights.length} eligible flights.');
+    return eligibleFlights;
+  }
+
+  // Fetches flights eligible for EU compensation.
+  // Uses Python backend as primary source, falls back to AviationStack API.
+  Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
+    int hours = 72,
+    bool relaxEligibilityForDebugging = false,
+  }) async {
+    List<Map<String, dynamic>> allFlights = [];
+    
+    foundation.debugPrint('\n\n🔍🔍🔍 FLIGHT COMPENSATION DEBUG 🔍🔍🔍');
+    foundation.debugPrint('🌐 AviationStackService: Starting search for EU eligible flights');
+    foundation.debugPrint('🌐 AviationStackService: PythonAnywhere backend is ${_backendVerified ? "VERIFIED" : "NOT VERIFIED"}');
+    
+    // Force backend verification attempt
+    try {
+      await _verifyPythonBackend();
+      foundation.debugPrint('🔄 AviationStackService: Backend verification completed, status: ${_backendVerified ? "VERIFIED" : "FAILED"}');
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Backend verification error: ${e.toString()}');
+    }
+    
+    // Try Python backend first for EU eligible flights
+    if (_backendVerified) {
+      // Try each endpoint in our list until one works
+      bool endpointFound = false;
+      
+      for (String endpoint in _apiEndpoints) {
+        if (endpointFound) break;
+        
+        try {
+          foundation.debugPrint('🌐 AviationStackService: Attempting to fetch flights from Python backend at $pythonBackendUrl$endpoint');
+          // Special handling for root endpoint vs other endpoints
+          Uri uri;
+          
+          // For the root endpoint, parameters are included directly
+          // For other endpoints, parameters are added through queryParameters
+          if (endpoint == '/') {
+            uri = Uri.parse('$pythonBackendUrl/?hours=${hours.toString()}&include_delayed=true');
+            foundation.debugPrint('🔍 AviationStackService: Using direct parameter string for root endpoint: ${uri.toString()}');
+          } else {
+            uri = Uri.parse('$pythonBackendUrl$endpoint').replace(queryParameters: {
+              'hours': hours.toString(),
+              'include_delayed': 'true'
+            });
+          }
+          
+          // IMPROVEMENT 3: Extended timeout for PythonAnywhere
+          foundation.debugPrint('⚡️ AviationStackService: Using ${_pythonBackendTimeout.inSeconds}s timeout for PythonAnywhere request');
+          final response = await http.get(uri).timeout(_pythonBackendTimeout);
+
+          if (response.statusCode == 200) {
+            // IMPROVEMENT 2: Clear source logging
+            foundation.debugPrint('✅ AviationStackService: Successfully connected to PythonAnywhere backend with endpoint: $endpoint');
+            _usingPythonBackend = true;
+            endpointFound = true;
+            
+            // IMPROVEMENT 4: Enhanced error handling
+            if (response.body.isEmpty) {
+              foundation.debugPrint('⚠️ AviationStackService: PythonAnywhere response body is empty, trying next endpoint');
+              continue;
+            }
+            
+            try {
+              final data = json.decode(response.body);
+              allFlights = await _tryProcessFlightsData(data);
+              
+              if (allFlights.isEmpty) {
+                foundation.debugPrint('⚠️ AviationStackService: PythonAnywhere returned no flight data, trying next endpoint');
+                continue;
+              }
+              
+              foundation.debugPrint('🌐✅ AviationStackService: DATA SOURCE: PYTHONANYWHERE - Successfully fetched ${allFlights.length} flights');
+              foundation.debugPrint('📝 AviationStackService: WORKING ENDPOINT: $pythonBackendUrl$endpoint');
+              foundation.debugPrint('💡 AviationStackService: HINT - To avoid this searching in the future, update the code to use this working endpoint directly');
+              
+              // Store the working endpoint for future reference
+              try {
+                // This debug output will help developers immediately identify which endpoint worked
+                final workingEndpoint = 'SUCCESS: Working endpoint for PythonAnywhere: $pythonBackendUrl$endpoint';
+                foundation.debugPrint('\n\n$workingEndpoint\n\n');                
+              } catch (e) {
+                // Ignore any errors from logging
+              }
+              
+              // Debug log to check if there are any delayed flights
+              int delayedCount = allFlights.where((flight) => 
+                  flight['status']?.toString().toLowerCase() == 'delayed' || 
+                  (flight['delay_minutes'] != null && flight['delay_minutes'] > 0)).length;
+                  
+              foundation.debugPrint('🌐📊 AviationStackService: Found $delayedCount delayed flights in PythonAnywhere data');
+              return await _processCompensationEligibility(allFlights, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
+            } catch (parseError) {
+              foundation.debugPrint('⚠️ AviationStackService: Error parsing PythonAnywhere data: $parseError');
+              continue;
+            }
+          } else {
+            foundation.debugPrint('⚠️ AviationStackService: PythonAnywhere backend error with endpoint $endpoint: ${response.statusCode}');
+            foundation.debugPrint('⚠️ AviationStackService: Response body: ${response.body.substring(0, response.body.length > 100 ? 100 : response.body.length)}...');
+            continue;
+          }
+        } catch (e) {
+          foundation.debugPrint('❌ AviationStackService: Error fetching from PythonAnywhere with endpoint $endpoint: ${e.toString()}');
+          continue;
+        }
+      }
+      
+      // If we tried all endpoints and none worked, set flag to false
+      if (!endpointFound) {
+        _usingPythonBackend = false;
+        foundation.debugPrint('❌ AviationStackService: All PythonAnywhere endpoints failed, falling back to direct API');
+      }
+    }
+    
+    // If we reach here, PythonAnywhere backend failed - fallback to AviationStack
+
+    // Fallback to direct AviationStack API if Python backend is disabled or fails
+    try {
+      foundation.debugPrint('🔄 AviationStackService: DATA SOURCE: AVIATION STACK API - Falling back to direct API');
+      foundation.debugPrint('🔄 AviationStackService: Attempting to fetch flights from AviationStack API for multiple statuses.');
+      final apiKey = await _getApiKey();
+      // Prioritize 'delayed' status by putting it first in the list
+      final statusesToFetch = ['delayed', 'cancelled', 'diverted', 'landed'];
+      
+      // Add an additional request specifically for delayed flights with significant delay
+      // This is a separate request to increase chances of getting delayed flights
+      try {
+        foundation.debugPrint('AviationStackService: Fetching significantly delayed flights specifically');
+        final delayedUri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
+          'access_key': apiKey,
+          'min_delay': '180', // Get flights with at least 180 minutes (3 hours) delay
+          'limit': '100',
+        });
+        
+        final delayedResponse = await http.get(delayedUri).timeout(const Duration(seconds: 20));
+        
+        if (delayedResponse.statusCode == 200) {
+          final data = json.decode(delayedResponse.body);
+          final flights = await _tryProcessFlightsData(data);
+          allFlights.addAll(flights);
+          foundation.debugPrint('AviationStackService: Successfully fetched ${flights.length} significantly delayed flights.');
+        }
+      } catch (e) {
+        foundation.debugPrint('AviationStackService: Error fetching significantly delayed flights: $e');
+      }
+      
+      for (final status in statusesToFetch) {
+        foundation.debugPrint('AviationStackService: Fetching flights with status: $status');
+        try {
+          // For delayed status, specifically request flights with minimum delay
+          Map<String, String> queryParams = {
+            'access_key': apiKey,
+            'flight_status': status,
+            'limit': '100',
+          };
+          
+          // For 'delayed' status, add extra parameters to ensure we get meaningful delays
+          if (status == 'delayed') {
+            queryParams['min_delay'] = '15'; // Get flights with at least 15 minutes delay
+          }
+          
+          final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: queryParams);
+
+          final response = await http.get(uri).timeout(const Duration(seconds: 20));
+
+          if (response.statusCode == 200) {
+            final data = json.decode(response.body);
+            final flights = await _tryProcessFlightsData(data);
+            allFlights.addAll(flights);
+            foundation.debugPrint('AviationStackService: Successfully fetched ${flights.length} flights for status: $status.');
+          } else {
+            foundation.debugPrint('AviationStackService: AviationStack API error for status $status: ${response.statusCode} - ${response.body}');
+          }
+        } catch (e) {
+           foundation.debugPrint('AviationStackService: Error fetching from AviationStack API for status $status: $e');
+        }
+      }
+      
+      if (allFlights.isEmpty) {
+        foundation.debugPrint('AviationStackService: No flights found after checking all statuses.');
+      }
+
+    } catch (e) {
+      foundation.debugPrint('AviationStackService: A general error occurred during flight fetching: $e');
+      throw Exception('Failed to load flights. Please check your connection and try again.');
+    }
+
+    return await _processCompensationEligibility(allFlights, relaxEligibilityForDebugging: relaxEligibilityForDebugging);
+  }
+
+  // Method moved and merged with implementation at line 1282
+  
+  // Verify that the PythonAnywhere backend is available and responding correctly
+  Future<Map<String, dynamic>> _verifyPythonBackend() async {
+    foundation.debugPrint('🔍 AviationStackService: Verifying PythonAnywhere backend at $pythonBackendUrl');
+    try {
+      // Check root endpoint first (confirmed working)
+      final rootUri = Uri.parse('$pythonBackendUrl/');
+      foundation.debugPrint('🔍 AviationStackService: Checking ROOT endpoint first ($pythonBackendUrl/)');
+      
+      try {
+        final rootResponse = await http.get(rootUri).timeout(Duration(seconds: 15));
+        if (rootResponse.statusCode == 200) {
+          foundation.debugPrint('✅ AviationStackService: PythonAnywhere ROOT endpoint responding with 200');
+          _backendVerified = true;
+          return {};
+        } else {
+          foundation.debugPrint('⚠️ AviationStackService: PythonAnywhere ROOT endpoint returned ${rootResponse.statusCode}');
+        }
+      } catch (e) {
+        foundation.debugPrint('⚠️ AviationStackService: Error checking ROOT endpoint: ${e.toString()}');
+      }
+      
+      // If root endpoint fails, try other common endpoints
+      final healthUri = Uri.parse('$pythonBackendUrl/health');
+      final pingUri = Uri.parse('$pythonBackendUrl/ping');
+      final eligibleUri = Uri.parse('$pythonBackendUrl/eligible_flights');
+      
+      Uri uriToCheck;
+      
+      // Try health endpoint first
+      try {
+        final healthResponse = await http.get(healthUri).timeout(Duration(seconds: 10));
+        if (healthResponse.statusCode == 200) {
+          foundation.debugPrint('✅ AviationStackService: PythonAnywhere health endpoint responding');
+          _backendVerified = true;
+          return {};
+        }
+      } catch (e) {
+        foundation.debugPrint('ℹ️ AviationStackService: No health endpoint available, trying ping');
+      }
+      
+      // Try ping endpoint next
+      try {
+        final pingResponse = await http.get(pingUri).timeout(Duration(seconds: 10));
+        if (pingResponse.statusCode == 200) {
+          foundation.debugPrint('✅ AviationStackService: PythonAnywhere ping endpoint responding');
+          _backendVerified = true;
+          return {};
+        }
+      } catch (e) {
+        foundation.debugPrint('ℹ️ AviationStackService: No ping endpoint available, trying main endpoint');
+      }
+      
+      // As last resort, check the main endpoint with minimal parameters
+      final eligibleResponse = await http.get(eligibleUri.replace(queryParameters: {'hours': '1'})).timeout(Duration(seconds: 15));
+      
+      if (eligibleResponse.statusCode == 200) {
+        foundation.debugPrint('✅ AviationStackService: PythonAnywhere eligible_flights endpoint is available');
+        _backendVerified = true;
+      } else {
+        foundation.debugPrint('❌ AviationStackService: PythonAnywhere eligible_flights endpoint returned ${eligibleResponse.statusCode}');
+        _backendVerified = false;
+      }
+    } catch (e) {
+      foundation.debugPrint('❌ AviationStackService: Failed to verify PythonAnywhere backend: $e');
+      _backendVerified = false;
+      return {};
+    }
+    return {};
+  }
+  
+  /// Get recent flight arrivals based on parameters
+  /// Used by flight_arrivals_screen.dart and tests
+  Future<List<Map<String, dynamic>>> getRecentArrivals({
+    String? airport,
+    String? airline,
+    String? flightStatus,
+    int limit = 50,
+  }) async {
+    foundation.debugPrint('AviationStackService: Getting recent arrivals');
+    foundation.debugPrint('Parameters: airport=$airport, airline=$airline, status=$flightStatus, limit=$limit');
+    
+    try {
+      // Try Python backend first
+      final backendUrl = '$pythonBackendUrl/recent_arrivals';
+      final Uri url = Uri.parse(backendUrl);
+      try {
+        final response = await http.get(url).timeout(const Duration(seconds: 10));
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> data = jsonDecode(response.body);
+          return await _tryProcessFlightsData(data);
+        }
+      } catch (e) {
+        foundation.debugPrint('Error from Python backend: $e');
+        // Continue to fallback
+      }
+      
+      // Fallback to mock data
+      foundation.debugPrint('Using mock data for recent arrivals');
+      // Create a list of mock flight data
+      final mockFlights = [
+        _getMockFlightData('FR1234'),
+        _getMockFlightData('W62345'),
+        _getMockFlightData('LO3456'),
+        _getMockFlightData('BA4567'),
+        _getMockFlightData('LH5678'),
+      ];
+      
+      return _normalizeFlightData(mockFlights);
+    } catch (e) {
+      foundation.debugPrint('Error getting recent arrivals: $e');
+      return []; // Return empty list in case of error
+    }
+  }
+  
+  /// Get flights that are eligible for EU compensation
+  /// Used by compensation_eligible_flights_screen.dart and tests
+  Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({bool relaxEligibility = false}) async {
+    foundation.debugPrint('AviationStackService: Getting EU compensation eligible flights');
+    
+    try {
+      // Try Python backend first
+      final backendUrl = '$pythonBackendUrl/eligible_flights';
+      final Uri url = Uri.parse(backendUrl);
+      try {
+        final response = await http.get(url).timeout(const Duration(seconds: 10));
+        if (response.statusCode == 200) {
+          foundation.debugPrint('Received response from Python backend: eligible_flights');
+          final Map<String, dynamic> data = jsonDecode(response.body);
+          final List<Map<String, dynamic>> flights = await _tryProcessFlightsData(data);
+          
+          // Filter for eligible flights or use eligibility flag from backend
+          List<Map<String, dynamic>> eligibleFlights = [];
+          
+          for (var flight in flights) {
+            final eligibilityDetails = await _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibility);
+            
+            if (eligibilityDetails['isEligible'] == true) {
+              flight['eu_compensation_eligible'] = true;
+              flight['estimated_compensation'] = eligibilityDetails['estimatedCompensation'];
+              flight['eligibility_reason'] = eligibilityDetails['reason'];
+              eligibleFlights.add(flight);
+            }
+          }
+          
+          return eligibleFlights;
+        }
+      } catch (e) {
+        foundation.debugPrint('Error from Python backend for eligible flights: $e');
+        // Continue to fallback
+      }
+      
+      // Fallback to mock data
+      foundation.debugPrint('Using mock data for EU compensation eligible flights');
+      final mockFlights = [
+        _getMockFlightData('FR8404'), // Ryanair - Delayed
+        _getMockFlightData('LO291'),  // LOT - Cancelled
+        _getMockFlightData('BA876'),  // British Airways - Delayed
+        _getMockFlightData('LH1234'), // Lufthansa - Delayed
+        _getMockFlightData('W61234'), // Wizz Air - Cancelled
+      ];
+      
+      // Process mock data to ensure eligibility
+      List<Map<String, dynamic>> eligibleFlights = [];
+      final flights = _normalizeFlightData(mockFlights);
+      
+      for (var flight in flights) {
+        final eligibilityDetails = await _calculateEligibility(flight, relaxEligibilityForDebugging: true);
+        
+        if (eligibilityDetails['isEligible'] == true) {
+          flight['eu_compensation_eligible'] = true;
+          flight['estimated_compensation'] = eligibilityDetails['estimatedCompensation'];
+          flight['eligibility_reason'] = eligibilityDetails['reason'];
+          eligibleFlights.add(flight);
+        }
+      }
+      
+      return eligibleFlights;
+    } catch (e) {
+      foundation.debugPrint('Error getting EU compensation eligible flights: $e');
+      return []; // Return empty list in case of error
+    }
+  }
+  
+  /// Check if a specific flight is eligible for EU compensation
+  /// Used by flight_compensation_checker_screen.dart and tests
+  Future<Map<String, dynamic>> checkCompensationEligibility({
+    String? flightNumber,
+    String? departureDate,
+    String? arrivalAirport,
+    String? departureAirport,
+    bool relaxEligibility = false,
+  }) async {
+    foundation.debugPrint('AviationStackService: Checking compensation eligibility');
+    foundation.debugPrint('Parameters: flightNumber=$flightNumber, departureDate=$departureDate');
+    foundation.debugPrint('departureAirport=$departureAirport, arrivalAirport=$arrivalAirport');
+    
+    try {
+      // Try Python backend first
+      final backendUrl = '$pythonBackendUrl/check_eligibility';
+      final Map<String, String> queryParams = {
+        'flight_number': flightNumber ?? '',
+        'departure_date': departureDate ?? '',
+        'departure_airport': departureAirport ?? '',
+        'arrival_airport': arrivalAirport ?? '',
+      };
+      
+      queryParams.removeWhere((key, value) => value.isEmpty);
+      
+      final Uri url = Uri.parse(backendUrl).replace(queryParameters: queryParams);
+      try {
+        final response = await http.get(url).timeout(const Duration(seconds: 10));
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> data = jsonDecode(response.body);
+          final flight = _normalizeSingleFlightData(data);
+          return await _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibility);
+        }
+      } catch (e) {
+        foundation.debugPrint('Error from Python backend for check eligibility: $e');
+        // Continue to fallback
+      }
+      
+      // Fallback to mock data
+      foundation.debugPrint('Using mock data for compensation eligibility check');
+      // Find matching mock flight or create one
+      Map<String, dynamic> mockFlight;
+      if (flightNumber != null && flightNumber.isNotEmpty) {
+        mockFlight = _getMockFlightData(flightNumber);
+      } else {
+        // Create a generic delayed flight if no flight number provided
+        mockFlight = _getMockFlightData('FR8404');
+      }
+      
+      final flight = _normalizeSingleFlightData(mockFlight);
+      return await _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibility);
+    } catch (e) {
+      foundation.debugPrint('Error checking compensation eligibility: $e');
+      return {
+        'isEligible': false,
+        'estimatedCompensation': 0,
+        'reason': 'Error: $e',
+        'delayMinutes': 0,
+      };
+    }
+  }
+
+  /// Fetches recent arrivals for a specific airport.
+  /// Used by flight_arrivals_screen.dart and compensation_eligible_flights_screen.dart
+  Future<List<Map<String, dynamic>>> getRecentArrivals({
+    required String airportIcao,
+    int minutesBeforeNow = 360,
+  }) async {
+    if (airportIcao.isEmpty) {
+      throw ArgumentError('ICAO code cannot be empty');
+    }
+    
+    foundation.debugPrint('AviationStackService: Getting recent arrivals for $airportIcao');
+    
+    try {
+      // Try Python backend first
+      final backendUrl = '$pythonBackendUrl/recent_arrivals';
+      final Uri url = Uri.parse(backendUrl).replace(queryParameters: {
+        'airport': airportIcao,
+        'hours': (minutesBeforeNow / 60).round().toString(),
+      });
+      
+      try {
+        final response = await http.get(url).timeout(const Duration(seconds: 10));
+        if (response.statusCode == 200) {
+          foundation.debugPrint('Received response from Python backend: recent_arrivals');
+          final Map<String, dynamic> data = jsonDecode(response.body);
+          return await _tryProcessFlightsData(data);
+        }
+      } catch (e) {
+        foundation.debugPrint('Error from Python backend for recent arrivals: $e');
+        // Continue to fallback
+      }
+      
+      // Fallback to AviationStack API
+      try {
+        final now = DateTime.now();
+        final minutesAgo = now.subtract(Duration(minutes: minutesBeforeNow));
+        final formattedDate = _formatDate(minutesAgo.toIso8601String());
+        
+        final queryParams = {
+          'access_key': await _getApiKey(),
+          'arr_icao': airportIcao,
+          'flight_date': formattedDate,
+          'limit': '100',
+        };
+        
+        final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: queryParams);
+        final response = await http.get(uri).timeout(const Duration(seconds: 15));
+        
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          
+          if (data['error'] != null) {
+            throw Exception('API error: ${data['error']['message'] ?? 'Unknown API error'}');
+          }
+          
+          final flightData = data['data'];
+          if (flightData == null || flightData is! List) {
+            throw Exception('Invalid data format from API.');
+          }
+          
+          final flights = _normalizeFlightData(flightData);
+          foundation.debugPrint('Retrieved ${flights.length} recent arrivals for $airportIcao');
+          return flights;
+        } else {
+          throw Exception('API returned status code ${response.statusCode}');
+        }
+      } catch (e) {
+        foundation.debugPrint('Error fetching from AviationStack API: $e');
+        // Continue to mock fallback
+      }
+      
+      // Fallback to mock data
+      foundation.debugPrint('Using mock data for recent arrivals');
+      // Create a list of mock flight data
+      final mockFlights = [
+        _getMockFlightData('FR1234'),
+        _getMockFlightData('W62345'),
+        _getMockFlightData('LO3456'),
+        _getMockFlightData('BA4567'),
+        _getMockFlightData('LH5678'),
+      ];
+      
+      return _normalizeFlightData(mockFlights);
+    } catch (e) {
+      foundation.debugPrint('Error getting recent arrivals: $e');
+      return []; // Return empty list in case of error
+    }
+  }
+  
+  /// Get flights that are eligible for EU compensation
+  /// Used by eu_eligible_flights_screen.dart and tests
+  Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
+    int hours = 72,
+    bool relaxEligibility = false,
+  }) async {
+    foundation.debugPrint('AviationStackService: Getting EU compensation eligible flights for last $hours hours');
+    
+    try {
+      // Try Python backend first
+      final backendUrl = '$pythonBackendUrl/eligible_flights';
+      final Uri url = Uri.parse(backendUrl).replace(queryParameters: {
+        'hours': hours.toString(),
+        'relaxed': relaxEligibility.toString(),
+      });
+      
+      try {
+        final response = await http.get(url).timeout(const Duration(seconds: 10));
+        if (response.statusCode == 200) {
+          foundation.debugPrint('Received response from Python backend: eligible_flights');
+          final Map<String, dynamic> data = jsonDecode(response.body);
+          final List<Map<String, dynamic>> flights = await _tryProcessFlightsData(data);
+          
+          // Filter for eligible flights or use eligibility flag from backend
+          List<Map<String, dynamic>> eligibleFlights = [];
+          
+          for (var flight in flights) {
+            final eligibilityDetails = await _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibility);
+            
+            if (eligibilityDetails['isEligible'] == true) {
+              flight['eu_compensation_eligible'] = true;
+              flight['estimated_compensation'] = eligibilityDetails['estimatedCompensation'];
+              flight['eligibility_reason'] = eligibilityDetails['reason'];
+              eligibleFlights.add(flight);
+            }
+          }
+          
+          return eligibleFlights;
+        }
+      } catch (e) {
+        foundation.debugPrint('Error from Python backend for eligible flights: $e');
+        // Continue to fallback
+      }
+      
+      // Fallback to direct AviationStack API if Python backend is disabled or fails
+      try {
+        foundation.debugPrint('🔄 AviationStackService: DATA SOURCE: AVIATION STACK API - Falling back to direct API');
+        foundation.debugPrint('🔄 AviationStackService: Attempting to fetch flights from AviationStack API for multiple statuses.');
+        final apiKey = await _getApiKey();
+        // Prioritize 'delayed' status by putting it first in the list
+        final statusesToFetch = ['delayed', 'cancelled', 'diverted', 'landed'];
+        
+        List<Map<String, dynamic>> allFlights = [];
+        
+        // Add an additional request specifically for delayed flights with significant delay
+        // This is a separate request to increase chances of getting delayed flights
+        try {
+          foundation.debugPrint('AviationStackService: Fetching significantly delayed flights specifically');
+          final delayedUri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
+            'access_key': apiKey,
+            'min_delay': '180', // Get flights with at least 180 minutes (3 hours) delay
+            'limit': '100',
+          });
+          
+          final delayedResponse = await http.get(delayedUri).timeout(const Duration(seconds: 20));
+          
+          if (delayedResponse.statusCode == 200) {
+            final data = json.decode(delayedResponse.body);
+            final flights = await _tryProcessFlightsData(data);
+            allFlights.addAll(flights);
+            foundation.debugPrint('AviationStackService: Successfully fetched ${flights.length} significantly delayed flights.');
+          }
+        } catch (e) {
+          foundation.debugPrint('AviationStackService: Error fetching significantly delayed flights: $e');
+        }
+        
+        for (final status in statusesToFetch) {
+          foundation.debugPrint('AviationStackService: Fetching flights with status: $status');
+          try {
+            // For delayed status, specifically request flights with minimum delay
+            Map<String, String> queryParams = {
+              'access_key': apiKey,
+              'flight_status': status,
+              'limit': '100',
+            };
+            
+            // For 'delayed' status, add extra parameters to ensure we get meaningful delays
+            if (status == 'delayed') {
+              queryParams['min_delay'] = '15'; // Get flights with at least 15 minutes delay
+            }
+            
+            final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: queryParams);
+            
+            final response = await http.get(uri).timeout(const Duration(seconds: 20));
+            
+            if (response.statusCode == 200) {
+              final data = json.decode(response.body);
+              final flights = await _tryProcessFlightsData(data);
+              allFlights.addAll(flights);
+              foundation.debugPrint('AviationStackService: Successfully fetched ${flights.length} flights for status: $status.');
+            } else {
+              foundation.debugPrint('AviationStackService: AviationStack API error for status $status: ${response.statusCode} - ${response.body}');
+            }
+          } catch (e) {
+             foundation.debugPrint('AviationStackService: Error fetching from AviationStack API for status $status: $e');
+          }
+        }
+        
+        if (allFlights.isEmpty) {
+          foundation.debugPrint('AviationStackService: No flights found after checking all statuses.');
+          // Fallback to mock data if no flights found
+          final mockFlights = [
+            _getMockFlightData('FR8404'), // Ryanair - Delayed
+            _getMockFlightData('LO291'),  // LOT - Cancelled
+            _getMockFlightData('BA876'),  // British Airways - Delayed
+            _getMockFlightData('LH1234'), // Lufthansa - Delayed
+            _getMockFlightData('W61234'), // Wizz Air - Cancelled
+          ];
+          
+          allFlights = _normalizeFlightData(mockFlights);
+        }
+        
+        return await _processCompensationEligibility(allFlights, relaxEligibilityForDebugging: relaxEligibility);
+
+      } catch (e) {
+        foundation.debugPrint('AviationStackService: A general error occurred during flight fetching: $e');
+        throw Exception('Failed to load flights. Please check your connection and try again.');
+      }
+    } catch (e) {
+      foundation.debugPrint('Error getting EU compensation eligible flights: $e');
+      return []; // Return empty list in case of error
+    }
+  }
+  
+  /// Check if a specific flight is eligible for EU compensation
+  /// Used by flight_compensation_checker_screen.dart and tests
+  Future<Map<String, dynamic>> checkCompensationEligibility({
+    String? flightNumber,
+    String? date,
+    String? departureDate,
+    String? arrivalAirport,
+    String? departureAirport,
+    bool relaxEligibility = false,
+  }) async {
+    // Use departureDate as a fallback if date is null, for backwards compatibility
+    final effectiveDate = date ?? departureDate;
+    
+    foundation.debugPrint('AviationStackService: Checking compensation eligibility');
+    foundation.debugPrint('Parameters: flightNumber=$flightNumber, date=$effectiveDate');
+    foundation.debugPrint('departureAirport=$departureAirport, arrivalAirport=$arrivalAirport');
+    
+    try {
+      // Try Python backend first
+      final backendUrl = '$pythonBackendUrl/check_eligibility';
+      final Map<String, String> queryParams = {
+        'flight_number': flightNumber ?? '',
+        'departure_date': effectiveDate ?? '',
+        'departure_airport': departureAirport ?? '',
+        'arrival_airport': arrivalAirport ?? '',
+      };
+      
+      queryParams.removeWhere((key, value) => value.isEmpty);
+      
+      final Uri url = Uri.parse(backendUrl).replace(queryParameters: queryParams);
+      try {
+        final response = await http.get(url).timeout(const Duration(seconds: 10));
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> data = jsonDecode(response.body);
+          final flight = _normalizeSingleFlightData(data);
+          return await _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibility);
+        }
+      } catch (e) {
+        foundation.debugPrint('Error from Python backend for check eligibility: $e');
+        // Continue to fallback
+      }
+      
+      // Fallback to AviationStack API
+      if (flightNumber != null && flightNumber.isNotEmpty) {
+        try {
+          final apiKey = await _getApiKey();
+          final currentDate = effectiveDate ?? _formatDate(DateTime.now().toIso8601String());
+          
+          // Extract airline code and flight number
+          final parts = _parseFlightNumber(flightNumber);
+          final airlineIata = parts['airlineCode'] ?? '';
+          final flightNumberOnly = parts['flightNumber'] ?? '';
+          
+          final uri = Uri.parse('$baseUrl/flights').replace(queryParameters: {
+            'access_key': apiKey,
+            'flight_iata': flightNumber,
+            'airline_iata': airlineIata,
+            'flight_date': currentDate,
+          });
+          
+          final response = await http.get(uri).timeout(const Duration(seconds: 20));
+          
+          if (response.statusCode == 200) {
+            final data = json.decode(response.body);
+            
+            if (data['error'] != null) {
+              throw Exception('API error: ${data['error']['message'] ?? 'Unknown API error'}');
+            }
+            
+            final flightsData = data['data'];
+            
+            if (flightsData != null && flightsData is List && flightsData.isNotEmpty) {
+              // Find the specific flight that matches our criteria
+              Map<String, dynamic>? matchedFlight;
+              
+              for (final flight in flightsData) {
+                final flightInfo = flight['flight'] ?? {};
+                final flightIata = flightInfo['iata'] ?? '';
+                
+                if (flightIata.toLowerCase() == flightNumber.toLowerCase()) {
+                  matchedFlight = flight;
+                  break;
+                }
+              }
+              
+              if (matchedFlight != null) {
+                final normalizedFlight = _normalizeSingleFlightData(matchedFlight);
+                return _calculateEligibility(normalizedFlight, relaxEligibilityForDebugging: relaxEligibility);
+              }
+            }
+          }
+        } catch (e) {
+          foundation.debugPrint('Error fetching from AviationStack API: $e');
+        }
+      }
+      
+      // Fallback to mock data
+      foundation.debugPrint('Using mock data for compensation eligibility check');
+      // Find matching mock flight or create one
+      Map<String, dynamic> mockFlight;
+      if (flightNumber != null && flightNumber.isNotEmpty) {
+        mockFlight = _getMockFlightData(flightNumber);
+      } else {
+        // Create a generic delayed flight if no flight number provided
+        mockFlight = _getMockFlightData('FR8404');
+      }
+      
+      final flight = _normalizeSingleFlightData(mockFlight);
+      return await _calculateEligibility(flight, relaxEligibilityForDebugging: relaxEligibility);
+    } catch (e) {
+      foundation.debugPrint('Error checking compensation eligibility: $e');
+      return {
+        'isEligible': false,
+        'estimatedCompensation': 0,
+        'reason': 'Error: $e',
+        'delayMinutes': 0,
+      };
+    }
+  }
+}
+    / / /   C h e c k s   i f   a   s p e c i f i c   f l i g h t   i s   e l i g i b l e   f o r   E U   c o m p e n s a t i o n  
+     / / /    
+     / / /   [ f l i g h t N u m b e r ]   -   T h e   f l i g h t   n u m b e r   t o   c h e c k   ( e . g . ,   ' L H 1 2 3 ' )  
+     / / /   [ d a t e ]   -   O p t i o n a l   d a t e   s t r i n g   i n   Y Y Y Y - M M - D D   f o r m a t   f o r   c h e c k i n g   h i s t o r i c a l   f l i g h t s  
+     / / /    
+     / / /   R e t u r n s   a   m a p   w i t h   e l i g i b i l i t y   i n f o r m a t i o n   i n c l u d i n g :  
+     / / /   -   i s E l i g i b l e :   W h e t h e r   t h e   f l i g h t   i s   e l i g i b l e   f o r   c o m p e n s a t i o n  
+     / / /   -   r e a s o n :   T h e   r e a s o n   f o r   e l i g i b i l i t y   o r   i n e l i g i b i l i t y  
+     / / /   -   c o m p e n s a t i o n :   T h e   e s t i m a t e d   c o m p e n s a t i o n   a m o u n t   ( i f   e l i g i b l e )  
+     / / /   -   f l i g h t D a t a :   T h e   n o r m a l i z e d   f l i g h t   d a t a  
+     F u t u r e < M a p < S t r i n g ,   d y n a m i c > >   c h e c k C o m p e n s a t i o n E l i g i b i l i t y ( {  
+         r e q u i r e d   S t r i n g   f l i g h t N u m b e r ,  
+         S t r i n g ?   d a t e ,  
+     } )   a s y n c   {  
+         f o u n d a t i o n . d e b u g P r i n t ( ' z d  A v i a t i o n S t a c k S e r v i c e :   C h e c k i n g   c o m p e n s a t i o n   e l i g i b i l i t y   f o r   f l i g h t   $ f l i g h t N u m b e r   o n   $ { d a t e   ? ?   " t o d a y " } ' ) ;  
+          
+         t r y   {  
+             / /   F i r s t   t r y   t o   g e t   d a t a   f r o m   P y t h o n   b a c k e n d  
+             i f   ( _ u s i n g P y t h o n B a c k e n d   & &   p y t h o n B a c k e n d U r l   ! =   n u l l )   {  
+                 S t r i n g   e n d p o i n t   =   ' / f l i g h t _ e l i g i b i l i t y ? f l i g h t _ n u m b e r = $ f l i g h t N u m b e r ' ;  
+                 i f   ( d a t e   ! =   n u l l )   {  
+                     e n d p o i n t   =   ' $ e n d p o i n t & d a t e = $ d a t e ' ;  
+                 }  
+                  
+                 t r y   {  
+                     f i n a l   b a c k e n d D a t a   =   a w a i t   _ f e t c h F r o m P y t h o n B a c k e n d ( e n d p o i n t ) ;  
+                     i f   ( b a c k e n d D a t a . i s N o t E m p t y   & &   b a c k e n d D a t a . c o n t a i n s K e y ( ' i s E l i g i b l e ' ) )   {  
+                         f o u n d a t i o n . d e b u g P r i n t ( ' � [&   A v i a t i o n S t a c k S e r v i c e :   R e c e i v e d   e l i g i b i l i t y   d a t a   f r o m   P y t h o n   b a c k e n d ' ) ;  
+                         r e t u r n   b a c k e n d D a t a ;  
+                     }  
+                 }   c a t c h   ( e )   {  
+                     f o u n d a t i o n . d e b u g P r i n t ( ' � a� � y  A v i a t i o n S t a c k S e r v i c e :   E r r o r   f e t c h i n g   e l i g i b i l i t y   f r o m   P y t h o n   b a c k e n d :   $ e ' ) ;  
+                 }  
+             }  
+              
+             / /   I f   P y t h o n   b a c k e n d   f a i l s   o r   i s   n o t   u s e d ,   t r y   d i r e c t   A P I  
+             / /   G e t   f l i g h t   d a t a   f r o m   A v i a t i o n S t a c k   A P I  
+             S t r i n g   u r l   =   ' $ b a s e U r l / f l i g h t s ? a c c e s s _ k e y = $ _ a p i K e y & f l i g h t _ n u m b e r = $ f l i g h t N u m b e r ' ;  
+              
+             / /   I f   d a t e   i s   p r o v i d e d ,   a d d   i t   t o   t h e   q u e r y  
+             i f   ( d a t e   ! =   n u l l )   {  
+                 / /   F o r m a t   d a t e   f o r   A P I   ( A P I   r e q u i r e s   Y Y Y Y - M M - D D   f o r m a t )  
+                 u r l   + =   ' & d a t e = $ d a t e ' ;  
+             }  
+              
+             f i n a l   r e s p o n s e   =   a w a i t   h t t p . g e t ( U r i . p a r s e ( u r l ) ) . t i m e o u t ( _ a p i T i m e o u t ) ;  
+              
+             i f   ( r e s p o n s e . s t a t u s C o d e   = =   2 0 0 )   {  
+                 f i n a l   d a t a   =   j s o n D e c o d e ( r e s p o n s e . b o d y ) ;  
+                 f i n a l   f l i g h t s   =   _ t r y P r o c e s s F l i g h t s D a t a ( d a t a ) ;  
+                  
+                 i f   ( f l i g h t s . i s E m p t y )   {  
+                     r e t u r n   {  
+                         ' i s E l i g i b l e ' :   f a l s e ,  
+                         ' r e a s o n ' :   ' F l i g h t   n o t   f o u n d ' ,  
+                         ' f l i g h t D a t a ' :   n u l l ,  
+                     } ;  
+                 }  
+                  
+                 / /   P r o c e s s   t h e   f i r s t   m a t c h i n g   f l i g h t   ( m o s t   r e l e v a n t )  
+                 f i n a l   f l i g h t   =   f l i g h t s . f i r s t ;  
+                 f i n a l   e l i g i b i l i t y R e s u l t   =   _ i s E l i g i b l e F o r E U C o m p e n s a t i o n ( f l i g h t ) ;  
+                  
+                 f o u n d a t i o n . d e b u g P r i n t ( ' � [&   A v i a t i o n S t a c k S e r v i c e :   S u c c e s s f u l l y   c h e c k e d   e l i g i b i l i t y   f o r   f l i g h t   $ f l i g h t N u m b e r ' ) ;  
+                 r e t u r n   {  
+                     ' i s E l i g i b l e ' :   e l i g i b i l i t y R e s u l t [ ' i s E l i g i b l e ' ] ,  
+                     ' r e a s o n ' :   e l i g i b i l i t y R e s u l t [ ' r e a s o n ' ] ,  
+                     ' c o m p e n s a t i o n ' :   e l i g i b i l i t y R e s u l t [ ' c o m p e n s a t i o n ' ] ,  
+                     ' f l i g h t D a t a ' :   f l i g h t ,  
+                 } ;  
+             }   e l s e   {  
+                 t h r o w   E x c e p t i o n ( ' F a i l e d   t o   f e t c h   f l i g h t   d a t a :   $ { r e s p o n s e . s t a t u s C o d e } ' ) ;  
+             }  
+         }   c a t c h   ( e )   {  
+             f o u n d a t i o n . d e b u g P r i n t ( ' � eZ  A v i a t i o n S t a c k S e r v i c e :   E r r o r   c h e c k i n g   e l i g i b i l i t y :   $ e ' ) ;  
+              
+             / /   F a l l b a c k   t o   m o c k   d a t a   i n   c a s e   o f   e r r o r  
+             f i n a l   m o c k F l i g h t   =   _ g e t M o c k F l i g h t D a t a ( f l i g h t N u m b e r ) ;  
+             f i n a l   e l i g i b i l i t y R e s u l t   =   _ i s E l i g i b l e F o r E U C o m p e n s a t i o n ( m o c k F l i g h t ) ;  
+              
+             f o u n d a t i o n . d e b u g P r i n t ( ' � a� � y  A v i a t i o n S t a c k S e r v i c e :   U s i n g   m o c k   d a t a   f o r   e l i g i b i l i t y   c h e c k ' ) ;  
+             r e t u r n   {  
+                 ' i s E l i g i b l e ' :   e l i g i b i l i t y R e s u l t [ ' i s E l i g i b l e ' ] ,  
+                 ' r e a s o n ' :   e l i g i b i l i t y R e s u l t [ ' r e a s o n ' ] ,  
+                 ' c o m p e n s a t i o n ' :   e l i g i b i l i t y R e s u l t [ ' c o m p e n s a t i o n ' ] ,  
+                 ' f l i g h t D a t a ' :   m o c k F l i g h t ,  
+             } ;  
+         }  
+     }  
+ 

@@ -1,0 +1,48 @@
+{
+  "errorConnectionFailed": "Connection failed",
+  "@errorConnectionFailed": {
+    "description": "Error message when connection fails"
+  },
+  
+  "formSubmissionError": "Form submission error: {error}",
+  "@formSubmissionError": {
+    "description": "Error message for form submission errors",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Invalid email"
+      }
+    }
+  },
+  
+  "apiConnectionIssue": "API Connection Issue",
+  "@apiConnectionIssue": {
+    "description": "Title for API connection issue"
+  },
+  
+  "noEligibleFlightsFound": "No Eligible Flights Found",
+  "@noEligibleFlightsFound": {
+    "description": "Message when no eligible flights are found"
+  },
+  
+  "noEligibleFlightsDescription": "No flights eligible for EU compensation were found in the last {hours} hours. Check again later.",
+  "@noEligibleFlightsDescription": {
+    "description": "Description when no eligible flights are found",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "72"
+      }
+    }
+  },
+  
+  "checkAgain": "Check Again",
+  "@checkAgain": {
+    "description": "Button label to check again"
+  },
+  
+  "filterByAirline": "Filter by airline",
+  "@filterByAirline": {
+    "description": "Hint text for airline filter"
+  }
+}

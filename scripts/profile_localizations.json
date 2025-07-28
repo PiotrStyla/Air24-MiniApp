@@ -1,0 +1,23 @@
+{
+  "genericUser": "Generic User",
+  "signOut": "Sign Out",
+  "errorSigningOut": "Error signing out: {error}",
+  "@errorSigningOut": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profileInformation": "Profile Information",
+  "profileInfoCardTitle": "Personal Information",
+  "accountSettings": "Account Settings",
+  "editPersonalInfo": "Edit Personal Information",
+  "editPersonalInfoDescription": "Update your name, email, and other personal details",
+  "accessibilitySettings": "Accessibility Settings",
+  "configureAccessibility": "Configure Accessibility",
+  "accessibilityOptions": "Accessibility Options",
+  "configureAccessibilityDescription": "Adjust text size, contrast, and other accessibility features",
+  "notificationSettings": "Notification Settings",
+  "configureNotifications": "Configure Notifications"
+}

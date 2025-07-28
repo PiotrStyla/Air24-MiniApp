@@ -1,0 +1,42 @@
+{
+  "noFlightsMatchingFilter": "No flights matching filter: {filter}",
+  "@noFlightsMatchingFilter": {
+    "description": "Message shown when no flights match the filter",
+    "placeholders": {
+      "filter": {
+        "type": "String",
+        "example": "LH"
+      }
+    }
+  },
+  
+  "statusLabel": "Status",
+  "@statusLabel": {
+    "description": "Label for flight status"
+  },
+  
+  "flightStatusDelayed": "Delayed",
+  "@flightStatusDelayed": {
+    "description": "Status indicating flight is delayed"
+  },
+  
+  "potentialCompensation": "Potential Compensation",
+  "@potentialCompensation": {
+    "description": "Label for potential compensation amount"
+  },
+  
+  "claimDetails": "Claim Details",
+  "@claimDetails": {
+    "description": "Title for claim details screen"
+  },
+  
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Button label to refresh content"
+  },
+  
+  "errorLoadingClaim": "Error Loading Claim",
+  "@errorLoadingClaim": {
+    "description": "Error message when claim loading fails"
+  }
+}

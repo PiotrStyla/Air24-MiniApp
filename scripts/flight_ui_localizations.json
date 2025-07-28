@@ -1,0 +1,10 @@
+{
+  "error": "Error",
+  "status": "Status",
+  "from": "From",
+  "to": "To",
+  "delay": "Delay",
+  "flightEligibleForCompensation": "Flight Eligible For Compensation",
+  "flightInfoFormat": "Flight {flightCode} on {flightDate}",
+  "minutesFormat": "{minutes} minutes"
+}

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
-import 'package:get_it/get_it.dart';
 import 'package:f35_flight_compensation/models/claim.dart';
 import 'package:f35_flight_compensation/screens/claim_submission_screen.dart';
 
+import '../core/app_localizations_patch.dart';
 import '../viewmodels/claim_dashboard_viewmodel.dart';
-import '../models/claim.dart';
-import '../models/claim_status.dart';
 import '../core/services/service_initializer.dart';
 import 'claim_detail_screen.dart';
 
@@ -52,13 +49,13 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
         builder: (context, viewModel, _) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.claimsDashboard),
+              title: Text(context.l10n.claimsDashboard),
               bottom: TabBar(
                 controller: _tabController,
                 tabs: [
-                  Tab(text: AppLocalizations.of(context)!.active),
-                  Tab(text: AppLocalizations.of(context)!.actionRequired),
-                  Tab(text: AppLocalizations.of(context)!.completed),
+                  Tab(text: context.l10n.active),
+                  Tab(text: context.l10n.actionRequired),
+                  Tab(text: context.l10n.completed),
                 ],
               ),
               actions: [
@@ -67,7 +64,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                   onPressed: viewModel.isLoading 
                     ? null 
                     : () => viewModel.refreshDashboard(),
-                  tooltip: AppLocalizations.of(context)!.refreshDashboard,
+                  tooltip: context.l10n.refreshDashboard,
                 ),
               ],
             ),
@@ -123,7 +120,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
             Semantics(
               header: true,
               child: Text(
-                AppLocalizations.of(context)!.claimsSummary,
+                context.l10n.claimsSummary,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -147,18 +144,18 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildAnalyticItem(
-                          AppLocalizations.of(context)!.totalClaims, 
+                          context.l10n.totalClaims, 
                           '${stats.totalClaims}',
                           Icons.summarize,
                         ),
                         _buildAnalyticItem(
-                          AppLocalizations.of(context)!.active, 
+                          context.l10n.active, 
                           '${stats.activeClaims}',
                           Icons.pending_actions,
                           color: Colors.amber,
                         ),
                         _buildAnalyticItem(
-                          AppLocalizations.of(context)!.completed, 
+                          context.l10n.completed, 
                           '${stats.completedClaims}',
                           Icons.check_circle,
                           color: Colors.green,
@@ -172,13 +169,13 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildAnalyticItem(
-                          AppLocalizations.of(context)!.totalCompensation, 
+                          context.l10n.totalCompensation, 
                           _currencyFormat.format(stats.totalCompensation),
                           Icons.euro,
                           isWide: true,
                         ),
                         _buildAnalyticItem(
-                          AppLocalizations.of(context)!.pendingAmount, 
+                          context.l10n.pendingAmount, 
                           _currencyFormat.format(stats.pendingCompensation),
                           Icons.account_balance_wallet,
                           isWide: true,
@@ -234,14 +231,14 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
     if (claims.isEmpty) {
       return Center(
         child: Semantics(
-          label: AppLocalizations.of(context)!.noClaimsYetTitle,
+          label: context.l10n.noClaimsYetTitle,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.description_outlined, size: 48, color: Colors.grey[400]),
               const SizedBox(height: 16),
               Text(
-                AppLocalizations.of(context)!.noClaimsYetTitle,
+                context.l10n.noClaimsYetTitle,
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
             ],
@@ -264,15 +261,15 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
           final flightDate = DateFormat.yMMMd().format(claim.flightDate);
           
           // Get compensation amount as string
-          final compensationText = claim.compensationAmount != null
+          final compensationText = claim.compensationAmount > 0
               ? _currencyFormat.format(claim.compensationAmount)
-              : AppLocalizations.of(context)!.pending;
+              : context.l10n.pending;
           
           return Semantics(
             button: true,
             enabled: true,
-            onTapHint: AppLocalizations.of(context)!.viewClaimDetails,
-            value: AppLocalizations.of(context)!.claimForFlight(claim.flightNumber, claim.status.toString()),
+            onTapHint: context.l10n.viewClaimDetails,
+            value: context.l10n.claimForFlight(claim.flightNumber, claim.status.toString()),
             child: Card(
               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               elevation: 2,
@@ -292,10 +289,16 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              AppLocalizations.of(context)!.flightRouteDetails(
+                              context.l10n.flightRouteDetailsWithNumber(
                                 claim.flightNumber,
                                 claim.departureAirport,
-                                claim.arrivalAirport),
+                                claim.arrivalAirport,
+                                claim.flightNumber, // number
+                                claim.airlineName, // airline (using airlineName instead of airline)
+                                claim.departureAirport, // departureAirport
+                                claim.arrivalAirport, // arrivalAirport
+                                claim.flightDate.toString(), // date converted to string
+                                ''), // time (using empty string as flightTime is missing)
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -323,7 +326,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.flightDate
+                            context.l10n.flightDate
                               .replaceAll('{date}', flightDate),
                             style: TextStyle(color: Colors.grey[600], fontSize: 14),
                           ),
@@ -343,7 +346,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                           child: OutlinedButton.icon(
                             onPressed: () => _navigateToClaimDetail(claim.id),
                             icon: const Icon(Icons.warning, size: 16),
-                            label: Text(AppLocalizations.of(context)!.actionRequired),
+                            label: Text(context.l10n.actionRequired),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.red,
                               side: const BorderSide(color: Colors.red),
@@ -380,14 +383,14 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
             const SizedBox(height: 16),
             Text(
               isAuthError 
-                ? AppLocalizations.of(context)!.authenticationRequired 
-                : AppLocalizations.of(context)!.errorLoadingClaims,
+                ? context.l10n.authenticationRequired 
+                : context.l10n.errorLoadingClaims,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
               isAuthError 
-                ? AppLocalizations.of(context)!.loginToViewClaimsDashboard
+                ? context.l10n.loginToViewClaimsDashboard
                 : viewModel.errorMessage,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -402,7 +405,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
                   Navigator.of(context).pushNamed('/auth');
                 },
                 icon: const Icon(Icons.login),
-                label: Text(AppLocalizations.of(context)!.logIn),
+                label: Text(context.l10n.logIn),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
@@ -414,7 +417,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
               ElevatedButton.icon(
                 onPressed: () => viewModel.refreshDashboard(),
                 icon: const Icon(Icons.refresh),
-                label: Text(AppLocalizations.of(context)!.retry),
+                label: Text(context.l10n.retry),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -438,14 +441,14 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
           ),
           const SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.noClaimsYet,
+            context.l10n.noClaimsYet,
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
-              AppLocalizations.of(context)!.startCompensationClaimInstructions,
+              context.l10n.startCompensationClaimInstructions,
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey),
             ),
@@ -463,7 +466,7 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
               });
             },
             icon: const Icon(Icons.add),
-            label: Text(AppLocalizations.of(context)!.createClaim),
+            label: Text(context.l10n.createClaim),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
@@ -557,23 +560,23 @@ class _ClaimDashboardScreenState extends State<ClaimDashboardScreen> with Single
   String _getStatusText(String? status) {
     switch (status) {
       case 'submitted':
-        return AppLocalizations.of(context)!.submitted;
+        return context.l10n.submitted;
       case 'reviewing':
-        return AppLocalizations.of(context)!.inReview;
+        return context.l10n.inReview;
       case 'action_required':
-        return AppLocalizations.of(context)!.actionRequired;
+        return context.l10n.actionRequired;
       case 'processing':
-        return AppLocalizations.of(context)!.processing;
+        return context.l10n.processing;
       case 'approved':
-        return AppLocalizations.of(context)!.approved;
+        return context.l10n.approved;
       case 'rejected':
-        return AppLocalizations.of(context)!.rejected;
+        return context.l10n.rejected;
       case 'paid':
-        return AppLocalizations.of(context)!.paid;
+        return context.l10n.paid;
       case 'appealing':
-        return AppLocalizations.of(context)!.underAppeal;
+        return context.l10n.underAppeal;
       default:
-        return AppLocalizations.of(context)!.unknown;
+        return context.l10n.unknown;
     }
   }
 }

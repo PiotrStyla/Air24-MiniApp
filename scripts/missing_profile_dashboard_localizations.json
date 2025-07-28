@@ -1,0 +1,46 @@
+{
+  "configureNotificationsDescription": "Receive updates about claim status and important information",
+  "@configureNotificationsDescription": {
+    "description": "Description for notification configuration"
+  },
+  "notificationSettingsComingSoon": "Notification settings coming soon!",
+  "@notificationSettingsComingSoon": {
+    "description": "Message indicating notification feature is coming soon"
+  },
+  "changeApplicationLanguage": "Change Application Language",
+  "@changeApplicationLanguage": {
+    "description": "Label for language change option"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Label for language selection button"
+  },
+  "tipsAndReminders": "Tips and Reminders",
+  "@tipsAndReminders": {
+    "description": "Title for tips and reminders section"
+  },
+  "tipProfileUpToDate": "• Keep your profile up-to-date for faster claim processing.",
+  "@tipProfileUpToDate": {
+    "description": "Tip about keeping profile updated"
+  },
+  "tipInformationPrivate": "• Your information is kept private and secure.",
+  "@tipInformationPrivate": {
+    "description": "Tip about privacy of information"
+  },
+  "tipContactDetails": "• Correct contact details help with compensation.",
+  "@tipContactDetails": {
+    "description": "Tip about importance of correct contact details"
+  },
+  "tipAccessibilitySettings": "• Configure accessibility settings to customize your experience.",
+  "@tipAccessibilitySettings": {
+    "description": "Tip about accessibility settings"
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Tab label for active claims"
+  },
+  "completed": "Completed",
+  "@completed": {
+    "description": "Tab label for completed claims"
+  }
+}

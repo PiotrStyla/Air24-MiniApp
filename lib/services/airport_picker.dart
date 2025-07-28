@@ -148,7 +148,7 @@ class _AirportPickerDialogState extends State<_AirportPickerDialog> {
           bottom: 24,
           right: 24,
           child: FloatingActionButton(
-            heroTag: 'addAirportFab',
+            heroTag: 'airport_picker_fab',
             child: const Icon(Icons.add),
             onPressed: () async {
               final picked = await Navigator.of(context).push(

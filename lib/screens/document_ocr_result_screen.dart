@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:f35_flight_compensation/l10n/app_localizations.dart';
 import '../models/document_ocr_result.dart';
 import '../viewmodels/document_scanner_viewmodel.dart';
 import '../core/services/service_initializer.dart';
@@ -51,7 +51,7 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.ocrResult.documentType.displayName} - ${localizations.documentOcrResult}'),
@@ -103,7 +103,7 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
   Widget _buildExtractedFieldsTab() {
     final extractedFields = widget.ocrResult.extractedFields;
     
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     if (extractedFields.isEmpty) {
       return Center(
         child: Text(
@@ -187,7 +187,7 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
   
   /// Build tab for displaying raw OCR text
   Widget _buildRawTextTab() {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -252,7 +252,7 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
     
     Clipboard.setData(ClipboardData(text: textToCopy));
     
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(localizations.copiedToClipboard),
@@ -265,7 +265,7 @@ class _DocumentOcrResultScreenState extends State<DocumentOcrResultScreen> with 
   void _showFormFieldSelection(BuildContext context) {
     final viewModel = ServiceInitializer.get<DocumentScannerViewModel>();
     
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(

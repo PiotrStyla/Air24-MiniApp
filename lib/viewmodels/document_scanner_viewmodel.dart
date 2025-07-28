@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../services/auth_service.dart';
+import '../services/auth_service_firebase.dart' hide debugPrint;
 import '../models/document_ocr_result.dart';
 import '../services/document_ocr_service.dart';
 
 /// ViewModel for document scanning and OCR processing
 class DocumentScannerViewModel extends ChangeNotifier {
   final DocumentOcrService _ocrService;
-  final AuthService _authService;
+  final FirebaseAuthService _authService;
 
   DocumentScannerViewModel({
     required DocumentOcrService ocrService,
-    required AuthService authService,
+    required FirebaseAuthService authService,
   })  : _ocrService = ocrService,
         _authService = authService;
   

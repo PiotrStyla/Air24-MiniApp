@@ -1,0 +1,36 @@
+{
+  "departureAirport": "Departure Airport",
+  "@departureAirport": {
+    "description": "Label for departure airport field"
+  },
+  
+  "arrivalAirport": "Arrival Airport",
+  "@arrivalAirport": {
+    "description": "Label for arrival airport field"
+  },
+  
+  "reasonForClaim": "Reason for Claim",
+  "@reasonForClaim": {
+    "description": "Label for reason for claim field"
+  },
+  
+  "attachments": "Attachments",
+  "@attachments": {
+    "description": "Label for attachments section"
+  },
+  
+  "proceedToConfirmation": "Proceed to Confirmation",
+  "@proceedToConfirmation": {
+    "description": "Button label to proceed to confirmation screen"
+  },
+  
+  "emailAppOpenedMessage": "Your email app has been opened",
+  "@emailAppOpenedMessage": {
+    "description": "Message shown when the email app is opened"
+  },
+  
+  "errorFailedToSubmitClaim": "Failed to submit claim. Please try again.",
+  "@errorFailedToSubmitClaim": {
+    "description": "Error message shown when claim submission fails"
+  }
+}

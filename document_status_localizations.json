@@ -1,0 +1,26 @@
+{
+  "documentUploadSuccess": "Document uploaded successfully",
+  "@documentUploadSuccess": {
+    "description": "Message shown when document upload is successful"
+  },
+  
+  "uploadFailed": "Upload failed. Please try again.",
+  "@uploadFailed": {
+    "description": "Message shown when document upload fails"
+  },
+  
+  "documentDeleteFailed": "Failed to delete document",
+  "@documentDeleteFailed": {
+    "description": "Message shown when document deletion fails"
+  },
+  
+  "uploadNew": "Upload New",
+  "@uploadNew": {
+    "description": "Button text to upload a new document"
+  },
+  
+  "continueAction": "Continue",
+  "@continueAction": {
+    "description": "Button text for continuing to next step"
+  }
+}

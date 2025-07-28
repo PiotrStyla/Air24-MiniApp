@@ -1,0 +1,41 @@
+{
+  "confirmAndSend": "Confirm and Send",
+  "@confirmAndSend": {
+    "description": "Button label for confirming and sending an email"
+  },
+  
+  "errorLoadingEmailDetails": "Error loading email details",
+  "@errorLoadingEmailDetails": {
+    "description": "Error message when email details cannot be loaded"
+  },
+  
+  "noEmailInfo": "No email information available",
+  "@noEmailInfo": {
+    "description": "Message when no email information is available"
+  },
+  
+  "finalConfirmation": "Final Confirmation",
+  "@finalConfirmation": {
+    "description": "Title for the final confirmation screen"
+  },
+  
+  "claimWillBeSentTo": "Your claim will be sent to:",
+  "@claimWillBeSentTo": {
+    "description": "Text explaining where the claim will be sent"
+  },
+  
+  "copyToYourEmail": "A copy will be sent to your email:",
+  "@copyToYourEmail": {
+    "description": "Text explaining that a copy will be sent to the user's email"
+  },
+  
+  "previewEmail": "Preview Email",
+  "@previewEmail": {
+    "description": "Button label for previewing email before sending"
+  },
+  
+  "confirmAndSendEmail": "Confirm and Send Email",
+  "@confirmAndSendEmail": {
+    "description": "Button label for confirming and sending email"
+  }
+}

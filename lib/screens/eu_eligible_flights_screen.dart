@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart'; // Import for safe l10n extension
 import '../services/aviation_stack_service.dart';
 import 'claim_submission_screen.dart';
 import '../models/claim.dart';
-import '../utils/translation_helper.dart';
-import '../services/manual_localization_service.dart';
+
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:intl/intl.dart';
-import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
+
 
 class EUEligibleFlightsScreen extends StatefulWidget {
   const EUEligibleFlightsScreen({super.key});
@@ -28,7 +28,11 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
 
   Future<List<Map<String, dynamic>>> _loadFlights() async {
     foundation.debugPrint('Attempting to load EU compensation eligible flights for the last $_hoursFilter hours...');
-            final service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
+            final service = AviationStackService(
+              baseUrl: 'https://piotrs.pythonanywhere.com',
+              usingPythonBackend: true,
+              pythonBackendUrl: 'https://piotrs.pythonanywhere.com',
+            );
 
     try {
       final flights = await service.getEUCompensationEligibleFlights(hours: _hoursFilter);
@@ -61,16 +65,6 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
       foundation.debugPrint('Error calculating delay: $e');
     }
     return 0;
-  }
-
-  String _formatDelay(int minutes) {
-    if (minutes < 60) {
-      return '$minutes min';
-    } else {
-      final hours = minutes ~/ 60;
-      final remainingMinutes = minutes % 60;
-      return '$hours h ${remainingMinutes > 0 ? '$remainingMinutes min' : ''}'.trim();
-    }
   }
   
   void _openCompensationForm(BuildContext context, Map<String, dynamic> flight) {
@@ -155,25 +149,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
     }
   }
 
-  Widget _buildInfoRow(BuildContext context, IconData icon, String label, String value, {Color? valueColor}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: Colors.grey[600]),
-          const SizedBox(width: 8),
-          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.w500)),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(color: valueColor, fontWeight: valueColor != null ? FontWeight.bold : FontWeight.normal),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildErrorWidget(BuildContext context, Object? error) {
     return Center(
@@ -185,7 +161,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             const Icon(Icons.cloud_off, size: 60, color: Colors.redAccent),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)!.apiConnectionIssue,
+              context.l10n.apiConnectionIssue,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -198,7 +174,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               icon: const Icon(Icons.refresh),
-              label: Text(AppLocalizations.of(context)!.retry),
+              label: Text(context.l10n.retry),
               onPressed: _refreshFlights,
             ),
           ],
@@ -217,7 +193,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             const Icon(Icons.flight_land, size: 80, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)!.noEligibleFlightsFound,
+              context.l10n.noEligibleFlightsFound,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.blueGrey[700],
@@ -228,7 +204,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
-                AppLocalizations.of(context)!.noEligibleFlightsDescription(_hoursFilter),
+                context.l10n.noEligibleFlightsDescription(_hoursFilter),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
               ),
@@ -236,7 +212,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               icon: const Icon(Icons.refresh),
-              label: Text(AppLocalizations.of(context)!.checkAgain),
+              label: Text(context.l10n.checkAgain),
               onPressed: _refreshFlights,
             ),
           ],
@@ -249,15 +225,18 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.euWideCompensationEligibleFlights),
+        title: Text(
+          context.l10n.euWideCompensationEligibleFlights,
+          style: const TextStyle(fontSize: 18),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: AppLocalizations.of(context)!.forceRefreshData,
+            tooltip: context.l10n.forceRefreshData,
             onPressed: () {
               // Show a snackbar to indicate refresh is happening
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(AppLocalizations.of(context)!.forcingFreshDataLoad)),
+                SnackBar(content: Text(context.l10n.forcingFreshDataLoad)),
               );
               // Re-fetch flights using the primary load function
               setState(() {
@@ -270,15 +249,18 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.filterByAirline,
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.search),
+                      hintText: context.l10n.filterByAirline,
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -289,18 +271,14 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(24),
                   ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.schedule),
-                      const SizedBox(width: 4),
-                      Text(
-                        AppLocalizations.of(context)!.lastHours(_hoursFilter), style: TextStyle(fontWeight: FontWeight.bold)),
-                    ],
+                  child: Text(
+                    context.l10n.lastHours(72),
+                    style: TextStyle(fontWeight: FontWeight.w500, color: Colors.grey[700]),
                   ),
                 ),
               ],
@@ -311,8 +289,32 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
               future: _flightsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } 
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 20),
+                        Text(
+                          context.l10n.loadingExternalData,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: Text(
+                            context.l10n.loadingExternalDataDescription,
+                            style: TextStyle(color: Colors.grey[600]),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
                 if (snapshot.hasError) {
                   return _buildErrorWidget(context, snapshot.error);
@@ -333,65 +335,188 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
 
                 if (filteredFlights.isEmpty) {
                   return Center(
-                    child: Text(AppLocalizations.of(context)!.noFlightsMatchingFilter(_carrierFilter)),
+                    child: Text(context.l10n.noFlightsMatchingFilter(_carrierFilter)),
                   );
                 }
 
-                return ListView.builder(
-                  padding: const EdgeInsets.all(8.0),
+                return ListView.separated(
+                  padding: EdgeInsets.zero,
                   itemCount: filteredFlights.length,
+                  separatorBuilder: (context, index) => const Divider(height: 1),
                   itemBuilder: (context, idx) {
                     final flight = filteredFlights[idx];
 
-                    // FINAL FIX: Using correct keys from the log data
-                    final airlineName = flight['airline_name']?.toString() ?? 'Unknown Airline';
+                    final airlineName = flight['airline_name']?.toString() ?? 'Unknown';
                     final flightNumber = flight['flight_iata']?.toString() ?? '';
-                    final departureAirport = flight['departure_airport_iata']?.toString() ?? 'N/A';
-                    final arrivalAirport = flight['arrival_airport_iata']?.toString() ?? 'N/A';
-                    final status = flight['status']?.toString() ?? 'Unknown';
                     final aircraftModel = flight['aircraft_registration']?.toString() ?? 'Unknown';
                     final departureTimeStr = flight['departure_scheduled_time']?.toString();
-                    final departureTime = (departureTimeStr?.isNotEmpty ?? false) ? DateTime.parse(departureTimeStr!) : null;
-                    final compensation = flight['eligibility_details']?['estimatedCompensation'] ?? 0;
+                    final departureTime = (departureTimeStr?.isNotEmpty ?? false) ? 
+                        DateTime.parse(departureTimeStr!) : null;
                     final delayMinutes = flight['delay_minutes'] ?? 0;
+                    
+                    // Determine compensation based on flight data
+                    int compensationAmount = 0;
+                    if (flight.containsKey('eligibility_details') && 
+                        flight['eligibility_details'] != null && 
+                        flight['eligibility_details']['estimatedCompensation'] != null) {
+                      compensationAmount = flight['eligibility_details']['estimatedCompensation'];
+                    } else {
+                      // Fallback compensation calculation
+                      final distance = flight['distance'] as int? ?? _estimateFlightDistance(flight);
+                      if (distance <= 1500) {
+                        compensationAmount = 250;
+                      } else if (distance <= 3500) {
+                        compensationAmount = 400;
+                      } else {
+                        compensationAmount = 600;
+                      }
+                    }
 
-                    String titleText = flightNumber.isNotEmpty ? '$airlineName $flightNumber' : airlineName;
-                    String routeText = '$departureAirport ➔ $arrivalAirport';
+                    // Format title with flight number and airline
+                    String titleText = flightNumber.isNotEmpty ? 
+                        "$flightNumber - $airlineName" : airlineName;
 
-                    return Card(
-                      elevation: 2,
-                      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(titleText, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 4),
-                            Text(routeText, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.blueGrey[700])),
-                            const Divider(height: 20),
-                            _buildInfoRow(context, Icons.access_time, 'Scheduled', departureTime != null ? DateFormat('E, MMM d, HH:mm').format(departureTime) : 'N/A'),
-                            _buildInfoRow(context, Icons.info_outline, 'Status', status, valueColor: status.toLowerCase() == 'cancelled' ? Colors.red : (delayMinutes > 0 ? Colors.orange : Colors.green)),
-                            if (delayMinutes > 0)
-                              _buildInfoRow(context, Icons.timelapse, 'Delay', _formatDelay(delayMinutes), valueColor: delayMinutes >= 180 ? Colors.red : Colors.orange),
-                            _buildInfoRow(context, Icons.euro, 'Potential Compensation', '€$compensation', valueColor: Colors.green[700]),
-                            _buildInfoRow(context, Icons.airplanemode_active, 'Aircraft', aircraftModel),
-                            const SizedBox(height: 16),
-                            Center(
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Column(
+                        children: [
+                          // Flight info section
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            child: Row(
+                              children: [
+                                // Airplane icon
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  child: const Icon(Icons.flight, 
+                                    size: 32, 
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                // Flight details
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Flight number and airline
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            titleText,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          // EU Compensation tag
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.check_circle,
+                                                color: Colors.green,
+                                                size: 18,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                context.l10n.euCompensation,
+                                                style: TextStyle(
+                                                  color: Colors.green[600],
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 6),
+                                      // Scheduled time
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.access_time, size: 14, color: Colors.black54),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "${context.l10n.scheduledLabel} ${departureTime != null ? DateFormat('E, MMM d, HH:mm').format(departureTime) : 'N/A'}",
+                                            style: const TextStyle(fontSize: 14, color: Colors.black54),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Status with delay
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.info_outline, size: 14, color: Colors.black54),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "${context.l10n.statusLabel} ${context.l10n.flightStatusDelayed} - $delayMinutes ${context.l10n.minutes}",
+                                            style: TextStyle(
+                                              fontSize: 14, 
+                                              color: delayMinutes >= 180 ? Colors.red : Colors.orange,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Compensation amount
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.euro, size: 14, color: Colors.green),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "${context.l10n.potentialCompensation} €$compensationAmount",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.green[700],
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Aircraft model
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.airplanemode_active, size: 14, color: Colors.black54),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "${context.l10n.aircraftLabel} $aircraftModel",
+                                            style: const TextStyle(fontSize: 14, color: Colors.black54),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Pre-fill button
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
+                            child: SizedBox(
+                              width: double.infinity,
                               child: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.green,
                                   foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  textStyle: const TextStyle(fontSize: 16)
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
                                 ),
                                 onPressed: () => _openCompensationForm(context, flight),
-                                icon: const Icon(Icons.description),
-                                label: Text(TranslationHelper.getString(context, 'prefillCompensationForm', fallback: 'Pre-fill Compensation Form')),
+                                icon: const Icon(Icons.description, size: 16),
+                                label: Text(
+                                  context.l10n.prefillCompensationForm, 
+                                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   },

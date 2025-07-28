@@ -1,0 +1,41 @@
+{
+  "underAppeal": "Under Appeal",
+  "@underAppeal": {
+    "description": "Status label for a claim that is under appeal"
+  },
+  
+  "unknown": "Unknown Status",
+  "@unknown": {
+    "description": "Status label for a claim with unknown status"
+  },
+  
+  "errorMustBeLoggedIn": "You must be logged in to submit a claim",
+  "@errorMustBeLoggedIn": {
+    "description": "Error message shown when trying to access the claim form without being logged in"
+  },
+  
+  "dialogTitleError": "Error",
+  "@dialogTitleError": {
+    "description": "Title for error dialog boxes"
+  },
+  
+  "dialogButtonOK": "OK",
+  "@dialogButtonOK": {
+    "description": "OK button text for dialog boxes"
+  },
+  
+  "quickClaimTitle": "Quick Claim Form",
+  "@quickClaimTitle": {
+    "description": "Title for the quick claim screen"
+  },
+  
+  "tooltipFaqHelp": "View Frequently Asked Questions",
+  "@tooltipFaqHelp": {
+    "description": "Tooltip for FAQ help button"
+  },
+  
+  "quickClaimInfoBanner": "Fill out this form to submit a quick compensation claim for your flight. We'll help you through the process.",
+  "@quickClaimInfoBanner": {
+    "description": "Information banner text at the top of quick claim form"
+  }
+}

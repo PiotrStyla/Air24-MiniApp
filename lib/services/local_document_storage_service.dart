@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:f35_flight_compensation/models/flight_document.dart';
-import 'package:f35_flight_compensation/services/auth_service.dart';
+import '../services/auth_service_firebase.dart' hide debugPrint;
 import 'package:f35_flight_compensation/services/document_storage_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class LocalDocumentStorageService implements DocumentStorageService {
-  final AuthService _authService;
+  final FirebaseAuthService _authService;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ImagePicker _picker = ImagePicker();
   final Uuid _uuid = const Uuid();

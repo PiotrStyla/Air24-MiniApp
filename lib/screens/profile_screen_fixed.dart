@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:f35_flight_compensation/l10n/app_localizations.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:provider/provider.dart';
 import 'faq_screen.dart';
 import 'profile_edit_screen.dart';
@@ -7,7 +7,6 @@ import 'accessibility_settings_screen.dart';
 import 'language_selection_screen.dart';
 import '../core/accessibility/accessibility_service.dart';
 import '../core/accessibility/accessible_widgets.dart';
-import '../services/localization_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -73,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          AppLocalizations.of(context)!.profileInfoCardTitle,
+                          context.l10n.profileInfoCardTitle,
                           style: TextStyle(color: Colors.blue[900]),
                         ),
                       ),
@@ -93,7 +92,7 @@ class ProfileScreen extends StatelessWidget {
                   Semantics(
                     header: true,
                     child: Text(
-                      AppLocalizations.of(context)!.accountSettings,
+                      context.l10n.accountSettings,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -101,8 +100,8 @@ class ProfileScreen extends StatelessWidget {
                   
                   // Profile Information Card
                   AccessibleCard(
-                    title: AppLocalizations.of(context)!.profileInformation,
-                    semanticLabel: AppLocalizations.of(context)!.editPersonalInformation,
+                    title: context.l10n.profileInformation,
+                    semanticLabel: context.l10n.editPersonalInformation,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -115,7 +114,7 @@ class ProfileScreen extends StatelessWidget {
                         const Icon(Icons.person),
                         const SizedBox(width: 16),
                         const Expanded(
-                          child: Text(AppLocalizations.of(context)!.editPersonalAndContactInformation),
+                          child: Text(context.l10n.editPersonalAndContactInformation),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -126,8 +125,8 @@ class ProfileScreen extends StatelessWidget {
                   
                   // Accessibility Settings Card
                   AccessibleCard(
-                    title: AppLocalizations.of(context)!.accessibilitySettings,
-                    semanticLabel: AppLocalizations.of(context)!.configureAccessibilityOptions,
+                    title: context.l10n.accessibilitySettings,
+                    semanticLabel: context.l10n.configureAccessibilityOptions,
                     hasFocus: true, // Highlight as an important option
                     onTap: () {
                       Navigator.of(context).push(
@@ -146,10 +145,10 @@ class ProfileScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(AppLocalizations.of(context)!.accessibilityOptions),
+                              Text(context.l10n.accessibilityOptions),
                               const SizedBox(height: 4),
                               Text(
-                                AppLocalizations.of(context)!.configureHighContrastLargeTextAndScreenReaderSupport,
+                                context.l10n.configureHighContrastLargeTextAndScreenReaderSupport,
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
@@ -173,7 +172,7 @@ class ProfileScreen extends StatelessWidget {
                   Semantics(
                     header: true,
                     child: Text(
-                      AppLocalizations.of(context)!.applicationPreferences,
+                      context.l10n.applicationPreferences,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
@@ -181,14 +180,14 @@ class ProfileScreen extends StatelessWidget {
                   
                   // Notification Settings Card
                   AccessibleCard(
-                    title: AppLocalizations.of(context)!.notificationSettings,
-                    semanticLabel: AppLocalizations.of(context)!.configureNotificationPreferences,
+                    title: context.l10n.notificationSettings,
+                    semanticLabel: context.l10n.configureNotificationPreferences,
                     child: Row(
                       children: [
                         const Icon(Icons.notifications_active),
                         const SizedBox(width: 16),
                         const Expanded(
-                          child: Text(AppLocalizations.of(context)!.configureHowYouReceiveClaimUpdates),
+                          child: Text(context.l10n.configureHowYouReceiveClaimUpdates),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -199,8 +198,8 @@ class ProfileScreen extends StatelessWidget {
                   
                   // Language Settings Card
                   AccessibleCard(
-                    title: AppLocalizations.of(context)!.language,
-                    semanticLabel: AppLocalizations.of(context)!.changeApplicationLanguage,
+                    title: context.l10n.language,
+                    semanticLabel: context.l10n.changeApplicationLanguage,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -213,7 +212,7 @@ class ProfileScreen extends StatelessWidget {
                         const Icon(Icons.language),
                         const SizedBox(width: 16),
                         const Expanded(
-                          child: Text(AppLocalizations.of(context)!.selectYourPreferredLanguage),
+                          child: Text(context.l10n.selectYourPreferredLanguage),
                         ),
                         Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
                       ],
@@ -228,8 +227,8 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Semantics(
                 label: accessibilityService.semanticLabel(
-                  AppLocalizations.of(context)!.tipsAndReminders, 
-                  AppLocalizations.of(context)!.importantTipsAboutProfileInformation
+                  context.l10n.tipsAndReminders, 
+                  context.l10n.importantTipsAboutProfileInformation
                 ),
                 child: Container(
                   padding: const EdgeInsets.all(16),
@@ -244,17 +243,17 @@ class ProfileScreen extends StatelessWidget {
                       Semantics(
                         header: true,
                         child: Text(
-                          AppLocalizations.of(context)!.tipsAndReminders,
+                          context.l10n.tipsAndReminders,
                           style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange, fontSize: 16),
                         ),
                       ),
                       const SizedBox(height: 12),
                       // Each tip is separated semantically for better screen reader experience
                       ...[  
-                        AppLocalizations.of(context)!.tipProfileUpToDate,
-                        AppLocalizations.of(context)!.tipInformationPrivate,
-                        AppLocalizations.of(context)!.tipContactDetails,
-                        AppLocalizations.of(context)!.tipAccessibilitySettings
+                        context.l10n.tipProfileUpToDate,
+                        context.l10n.tipInformationPrivate,
+                        context.l10n.tipContactDetails,
+                        context.l10n.tipAccessibilitySettings
                       ].map((tip) => Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Row(

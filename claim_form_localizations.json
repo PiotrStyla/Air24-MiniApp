@@ -1,0 +1,41 @@
+{
+  "submitClaim": "Submit Claim",
+  "@submitClaim": {
+    "description": "Button label for submitting a claim"
+  },
+  
+  "addDocument": "Add Document",
+  "@addDocument": {
+    "description": "Button label for adding a document"
+  },
+  
+  "claimSubmittedSuccessfully": "Claim Submitted Successfully",
+  "@claimSubmittedSuccessfully": {
+    "description": "Message when a claim is submitted successfully"
+  },
+  
+  "completeAllFields": "Complete All Fields",
+  "@completeAllFields": {
+    "description": "Message prompting user to complete all fields"
+  },
+  
+  "supportingDocuments": "Supporting Documents",
+  "@supportingDocuments": {
+    "description": "Title for supporting documents section"
+  },
+  
+  "cropDocument": "Crop Document",
+  "@cropDocument": {
+    "description": "Title for crop document screen"
+  },
+  
+  "crop": "Crop",
+  "@crop": {
+    "description": "Button label for crop action"
+  },
+  
+  "rotate": "Rotate",
+  "@rotate": {
+    "description": "Button label for rotate action"
+  }
+}

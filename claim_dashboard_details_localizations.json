@@ -1,0 +1,46 @@
+{
+  "flightRouteDetails": "{departure} to {arrival}",
+  "@flightRouteDetails": {
+    "description": "Format for displaying flight route details",
+    "placeholders": {
+      "departure": {
+        "type": "String",
+        "example": "Warsaw"
+      },
+      "arrival": {
+        "type": "String",
+        "example": "London"
+      }
+    }
+  },
+  
+  "authenticationRequired": "Authentication Required",
+  "@authenticationRequired": {
+    "description": "Message shown when authentication is required to view claims"
+  },
+  
+  "errorLoadingClaims": "Error loading claims",
+  "@errorLoadingClaims": {
+    "description": "Error message when claims cannot be loaded"
+  },
+  
+  "loginToViewClaimsDashboard": "Please log in to view your claims dashboard",
+  "@loginToViewClaimsDashboard": {
+    "description": "Message prompting user to log in to view claims dashboard"
+  },
+  
+  "logIn": "Log In",
+  "@logIn": {
+    "description": "Button label for logging in"
+  },
+  
+  "noClaimsYet": "No Claims Yet",
+  "@noClaimsYet": {
+    "description": "Message shown when user has no claims"
+  },
+  
+  "startCompensationClaimInstructions": "Start by creating a new compensation claim for your flight. We'll guide you through the process.",
+  "@startCompensationClaimInstructions": {
+    "description": "Instructions for starting a new compensation claim"
+  }
+}

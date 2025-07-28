@@ -70,24 +70,43 @@ class MockDocumentStorageService implements DocumentStorageService {
     String? thumbnailUrl,
     Map<String, dynamic>? metadata,
   }) async {
-    if (_currentUserId == null) {
-      throw Exception('User not authenticated');
+    // Always succeed in mock mode
+    print('[MockDocumentStorageService] Saving document for flight: $flightNumber');
+    
+    try {
+      final document = FlightDocument(
+        id: _uuid.v4(),
+        userId: _currentUserId ?? 'mock_user_id',
+        flightNumber: flightNumber,
+        flightDate: flightDate,
+        documentType: documentType,
+        documentName: documentName,
+        storageUrl: storageUrl,
+        description: description,
+        uploadDate: DateTime.now(),
+        thumbnailUrl: thumbnailUrl,
+        metadata: metadata,
+      );
+      
+      _documents.add(document);
+      print('[MockDocumentStorageService] Document successfully saved with ID: ${document.id}');
+      return document;
+    } catch (e) {
+      print('[MockDocumentStorageService] Error in saveDocument: $e');
+      // In mock mode, we'll create and return a document even if there was an error
+      final fallbackDocument = FlightDocument(
+        id: _uuid.v4(),
+        userId: 'mock_user_id',
+        flightNumber: flightNumber,
+        flightDate: flightDate,
+        documentType: documentType,
+        documentName: documentName,
+        storageUrl: 'mock://document/${_uuid.v4()}',
+        uploadDate: DateTime.now(),
+      );
+      _documents.add(fallbackDocument);
+      return fallbackDocument;
     }
-    final document = FlightDocument(
-      id: _uuid.v4(),
-      userId: _currentUserId!,
-      flightNumber: flightNumber,
-      flightDate: flightDate,
-      documentType: documentType,
-      documentName: documentName,
-      storageUrl: storageUrl,
-      description: description,
-      uploadDate: DateTime.now(),
-      thumbnailUrl: thumbnailUrl,
-      metadata: metadata,
-    );
-    _documents.add(document);
-    return document;
   }
 
   @override

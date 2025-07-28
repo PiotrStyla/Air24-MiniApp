@@ -1,0 +1,41 @@
+{
+  "createClaim": "Create New Claim",
+  "@createClaim": {
+    "description": "Button label for creating a new claim"
+  },
+  
+  "submitted": "Submitted",
+  "@submitted": {
+    "description": "Status label for a submitted claim"
+  },
+  
+  "inReview": "In Review",
+  "@inReview": {
+    "description": "Status label for a claim being reviewed"
+  },
+  
+  "actionRequired": "Action Required",
+  "@actionRequired": {
+    "description": "Status label for a claim requiring action from the user"
+  },
+  
+  "processing": "Processing",
+  "@processing": {
+    "description": "Status label for a claim being processed"
+  },
+  
+  "approved": "Approved",
+  "@approved": {
+    "description": "Status label for an approved claim"
+  },
+  
+  "rejected": "Rejected",
+  "@rejected": {
+    "description": "Status label for a rejected claim"
+  },
+  
+  "paid": "Paid",
+  "@paid": {
+    "description": "Status label for a paid claim"
+  }
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
@@ -7,20 +8,20 @@ import '../models/claim.dart';
 import '../models/flight_document.dart';
 import '../viewmodels/document_viewmodel.dart';
 import 'claim_review_screen.dart';
-import '../l10n2/app_localizations.dart';
 
 /// A wrapper that provides the DocumentViewModel to the attachment view.
 class ClaimAttachmentScreen extends StatelessWidget {
   final Claim claim;
+  final String? userEmail;
 
-  const ClaimAttachmentScreen({Key? key, required this.claim}) : super(key: key);
+  const ClaimAttachmentScreen({Key? key, required this.claim, this.userEmail}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DocumentViewModel>(
       // Get a fresh view model instance and fetch the user's documents right away.
       create: (_) => ServiceInitializer.get<DocumentViewModel>()..loadAllUserDocuments(),
-      child: _ClaimAttachmentView(claim: claim),
+      child: _ClaimAttachmentView(claim: claim, userEmail: userEmail),
     );
   }
 }
@@ -28,8 +29,9 @@ class ClaimAttachmentScreen extends StatelessWidget {
 /// The main view for attaching documents, consuming the DocumentViewModel.
 class _ClaimAttachmentView extends StatefulWidget {
   final Claim claim;
+  final String? userEmail;
 
-  const _ClaimAttachmentView({required this.claim});
+  const _ClaimAttachmentView({required this.claim, this.userEmail});
 
   @override
   State<_ClaimAttachmentView> createState() => _ClaimAttachmentViewState();
@@ -130,13 +132,13 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         flightNumber: widget.claim.flightNumber,
         flightDate: widget.claim.flightDate,
         documentType: FlightDocumentType.other,
-        documentName: AppLocalizations.of(context)!.claimAttachment,
+        documentName: context.l10n.claimAttachment,
       );
 
       if (mounted) {
         if (newDocument != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.documentUploadSuccess), backgroundColor: Colors.green),
+            SnackBar(content: Text(context.l10n.documentUploadSuccess), backgroundColor: Colors.green),
           );
           // Automatically select the newly uploaded document, avoiding race conditions.
           setState(() {
@@ -144,14 +146,14 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
           });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(viewModel.errorMessage ?? AppLocalizations.of(context)!.uploadFailed), backgroundColor: Colors.red),
+            SnackBar(content: Text(viewModel.errorMessage ?? context.l10n.uploadFailed), backgroundColor: Colors.red),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${AppLocalizations.of(context)!.uploadFailed}: $e'), backgroundColor: Colors.red),
+          SnackBar(content: Text('${context.l10n.uploadFailed}: $e'), backgroundColor: Colors.red),
         );
       }
     }
@@ -161,7 +163,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.attachDocuments),
+        title: Text(context.l10n.attachDocuments),
       ),
       body: Consumer<DocumentViewModel>(
         builder: (context, viewModel, child) {
@@ -184,7 +186,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                       children: <Widget>[
                         const CircularProgressIndicator(),
                         const SizedBox(height: 16),
-                        Text(AppLocalizations.of(context)!.uploadingDocument, style: const TextStyle(color: Colors.white, fontSize: 16)),
+                        Text(context.l10n.uploadingDocument, style: const TextStyle(color: Colors.white, fontSize: 16)),
                       ],
                     ),
                   ),
@@ -202,12 +204,12 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(AppLocalizations.of(context)!.noDocuments),
+          Text(context.l10n.noDocuments),
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () => _uploadNewDocument(context),
             icon: const Icon(Icons.upload_file),
-            label: Text(AppLocalizations.of(context)!.uploadFirstDocument),
+            label: Text(context.l10n.uploadFirstDocument),
           ),
         ],
       ),
@@ -225,8 +227,8 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
               final doc = documents[index];
               final isSelected = _selectedAttachmentUrls.contains(doc.storageUrl);
               return CheckboxListTile(
-                title: Text(doc.documentName ?? AppLocalizations.of(context)!.claimAttachment),
-                subtitle: Text(doc.documentType == FlightDocumentType.other ? AppLocalizations.of(context)!.other : doc.documentType.name),
+                title: Text(doc.documentName ?? context.l10n.claimAttachment),
+                subtitle: Text(doc.documentType == FlightDocumentType.other ? context.l10n.other : doc.documentType.name),
                 value: isSelected,
                 onChanged: (bool? value) {
                   setState(() {
@@ -312,11 +314,11 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                               children: [
                                 const Icon(Icons.picture_as_pdf, size: 100, color: Colors.red),
                                 const SizedBox(height: 16),
-                                Text(AppLocalizations.of(context)!.pdfPreviewMessage),
+                                Text(context.l10n.pdfPreviewMessage),
                                 const SizedBox(height: 16),
                                 ElevatedButton.icon(
                                   icon: const Icon(Icons.download),
-                                  label: Text(AppLocalizations.of(context)!.downloadPdf),
+                                  label: Text(context.l10n.downloadPdf),
                                   onPressed: () {
                                     // Would implement actual download functionality here
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -331,7 +333,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                               children: [
                                 const Icon(Icons.insert_drive_file, size: 100, color: Colors.blue),
                                 const SizedBox(height: 16),
-                                Text(AppLocalizations.of(context)!.filePreviewNotAvailable),
+                                Text(context.l10n.filePreviewNotAvailable),
                                 Text('File type: ${_getFileExtension(fileName)}'),
                               ],
                             )),
@@ -482,16 +484,16 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.deleteDocument),
-        content: Text(AppLocalizations.of(context)!.deleteDocumentConfirmation),
+        title: Text(context.l10n.deleteDocument),
+        content: Text(context.l10n.deleteDocumentConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text(context.l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
+            child: Text(context.l10n.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -513,7 +515,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(AppLocalizations.of(context)!.documentDeletedSuccess),
+              content: Text(context.l10n.documentDeletedSuccess),
               backgroundColor: Colors.green,
             ),
           );
@@ -523,7 +525,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(AppLocalizations.of(context)!.documentDeleteFailed),
+              content: Text(context.l10n.documentDeleteFailed),
               backgroundColor: Colors.red,
             ),
           );
@@ -552,18 +554,21 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
           TextButton.icon(
             onPressed: () => _uploadNewDocument(context),
             icon: const Icon(Icons.add_circle_outline),
-            label: Text(AppLocalizations.of(context)!.uploadNew),
+            label: Text(context.l10n.uploadNew),
           ),
           ElevatedButton(
             onPressed: () {
               final updatedClaim = widget.claim.copyWith(attachmentUrls: _selectedAttachmentUrls.toList());
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => ClaimReviewScreen(claim: updatedClaim),
+                  builder: (context) => ClaimReviewScreen(
+                    claim: updatedClaim,
+                    userEmail: widget.userEmail, // Pass the user's email through the flow
+                  ),
                 ),
               );
             },
-            child: Text(AppLocalizations.of(context)!.continueAction),
+            child: Text(context.l10n.continueAction),
           ),
         ],
       ),

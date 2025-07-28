@@ -1,0 +1,31 @@
+{
+  "appTitle": "Flight Compensation",
+  "@appTitle": {
+    "description": "Title of the app"
+  },
+  
+  "welcomeMessage": "Welcome",
+  "@welcomeMessage": {
+    "description": "Welcome message shown on home screen"
+  },
+  
+  "home": "Home",
+  "@home": {
+    "description": "Label for home tab/button"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Label for settings tab/button"
+  },
+  
+  "required": "Required",
+  "@required": {
+    "description": "Error message for required fields"
+  },
+  
+  "emailAddress": "Email Address",
+  "@emailAddress": {
+    "description": "Label for email address field"
+  }
+}

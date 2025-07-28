@@ -106,1667 +106,611 @@ abstract class AppLocalizations {
     Locale('pt')
   ];
 
-  /// The title of the application
+  /// Label for EU compensation tag on eligible flights
   ///
   /// In en, this message translates to:
-  /// **'Flight Compensation'**
-  String get appTitle;
+  /// **'EU Compensation'**
+  String get euCompensation;
 
-  /// Welcome message with user name
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome, {userName}'**
-  String welcomeUser(String userName);
-
-  /// Label for sign out button
-  ///
-  /// In en, this message translates to:
-  /// **'Sign Out'**
-  String get signOut;
-
-  /// New claim button label
-  ///
-  /// In en, this message translates to:
-  /// **'New Claim'**
-  String get newClaim;
-
-  /// Home screen title
-  ///
-  /// In en, this message translates to:
-  /// **'Home'**
-  String get home;
-
-  /// Settings screen title
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get settings;
-
-  /// Language selection label
-  ///
-  /// In en, this message translates to:
-  /// **'Language'**
-  String get languageSelection;
-
-  /// No description provided for @passengerName.
-  ///
-  /// In en, this message translates to:
-  /// **'Passenger Name'**
-  String get passengerName;
-
-  /// No description provided for @passengerDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Passenger Details'**
-  String get passengerDetails;
-
-  /// Label for flight number field.
-  ///
-  /// In en, this message translates to:
-  /// **'Flight Number:'**
-  String get flightNumber;
-
-  /// No description provided for @airline.
-  ///
-  /// In en, this message translates to:
-  /// **'Airline'**
-  String get airline;
-
-  /// Label for departure airport field.
-  ///
-  /// In en, this message translates to:
-  /// **'Departure Airport:'**
-  String get departureAirport;
-
-  /// Label for arrival airport field.
-  ///
-  /// In en, this message translates to:
-  /// **'Arrival Airport:'**
-  String get arrivalAirport;
-
-  /// No description provided for @email.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get email;
-
-  /// No description provided for @bookingReference.
-  ///
-  /// In en, this message translates to:
-  /// **'Booking Reference'**
-  String get bookingReference;
-
-  /// No description provided for @additionalInformation.
-  ///
-  /// In en, this message translates to:
-  /// **'Additional Information'**
-  String get additionalInformation;
-
-  /// No description provided for @optional.
-  ///
-  /// In en, this message translates to:
-  /// **'(Optional)'**
-  String get optional;
-
-  /// No description provided for @thisFieldIsRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'This field is required.'**
-  String get thisFieldIsRequired;
-
-  /// No description provided for @pleaseEnterDepartureAirport.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter a departure airport.'**
-  String get pleaseEnterDepartureAirport;
-
-  /// No description provided for @uploadDocuments.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload Documents'**
-  String get uploadDocuments;
-
-  /// No description provided for @submitClaim.
-  ///
-  /// In en, this message translates to:
-  /// **'Submit Claim'**
-  String get submitClaim;
-
-  /// No description provided for @addDocument.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Document'**
-  String get addDocument;
-
-  /// No description provided for @claimSubmittedSuccessfully.
-  ///
-  /// In en, this message translates to:
-  /// **'Claim submitted successfully!'**
-  String get claimSubmittedSuccessfully;
-
-  /// No description provided for @completeAllFields.
-  ///
-  /// In en, this message translates to:
-  /// **'Please complete all fields.'**
-  String get completeAllFields;
-
-  /// No description provided for @supportingDocuments.
-  ///
-  /// In en, this message translates to:
-  /// **'Supporting Documents'**
-  String get supportingDocuments;
-
-  /// No description provided for @cropDocument.
-  ///
-  /// In en, this message translates to:
-  /// **'Crop Document'**
-  String get cropDocument;
-
-  /// No description provided for @crop.
-  ///
-  /// In en, this message translates to:
-  /// **'Crop'**
-  String get crop;
-
-  /// No description provided for @cropping.
-  ///
-  /// In en, this message translates to:
-  /// **'Cropping...'**
-  String get cropping;
-
-  /// No description provided for @rotate.
-  ///
-  /// In en, this message translates to:
-  /// **'Rotate'**
-  String get rotate;
-
-  /// No description provided for @aspectRatio.
-  ///
-  /// In en, this message translates to:
-  /// **'Aspect Ratio'**
-  String get aspectRatio;
-
-  /// No description provided for @aspectRatioFree.
-  ///
-  /// In en, this message translates to:
-  /// **'Free'**
-  String get aspectRatioFree;
-
-  /// No description provided for @aspectRatioSquare.
-  ///
-  /// In en, this message translates to:
-  /// **'Square'**
-  String get aspectRatioSquare;
-
-  /// No description provided for @aspectRatioPortrait.
-  ///
-  /// In en, this message translates to:
-  /// **'Portrait'**
-  String get aspectRatioPortrait;
-
-  /// No description provided for @aspectRatioLandscape.
-  ///
-  /// In en, this message translates to:
-  /// **'Landscape'**
-  String get aspectRatioLandscape;
-
-  /// No description provided for @aspectRatioMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Aspect Ratio: {ratio}'**
-  String aspectRatioMode(String ratio);
-
-  /// No description provided for @documentOcrResult.
-  ///
-  /// In en, this message translates to:
-  /// **'OCR Result'**
-  String get documentOcrResult;
-
-  /// No description provided for @extractedFields.
-  ///
-  /// In en, this message translates to:
-  /// **'Extracted Fields'**
-  String get extractedFields;
-
-  /// No description provided for @fullText.
-  ///
-  /// In en, this message translates to:
-  /// **'Full Text'**
-  String get fullText;
-
-  /// No description provided for @documentSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Document saved.'**
-  String get documentSaved;
-
-  /// No description provided for @useExtractedData.
-  ///
-  /// In en, this message translates to:
-  /// **'Use Extracted Data'**
-  String get useExtractedData;
-
-  /// No description provided for @copyToClipboard.
-  ///
-  /// In en, this message translates to:
-  /// **'Copied to clipboard.'**
-  String get copyToClipboard;
-
-  /// No description provided for @documentType.
-  ///
-  /// In en, this message translates to:
-  /// **'Document Type'**
-  String get documentType;
-
-  /// No description provided for @saveDocument.
-  ///
-  /// In en, this message translates to:
-  /// **'Save Document'**
-  String get saveDocument;
-
-  /// No description provided for @fieldName.
-  ///
-  /// In en, this message translates to:
-  /// **'Field Name'**
-  String get fieldName;
-
-  /// No description provided for @done.
-  ///
-  /// In en, this message translates to:
-  /// **'Done'**
-  String get done;
-
-  /// No description provided for @yes.
-  ///
-  /// In en, this message translates to:
-  /// **'Yes'**
-  String get yes;
-
-  /// No description provided for @no.
-  ///
-  /// In en, this message translates to:
-  /// **'No'**
-  String get no;
-
-  /// No description provided for @ok.
-  ///
-  /// In en, this message translates to:
-  /// **'OK'**
-  String get ok;
-
-  /// Button text to go back.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get back;
-
-  /// No description provided for @save.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
-
-  /// No description provided for @welcomeMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome to the app!'**
-  String get welcomeMessage;
-
-  /// No description provided for @copiedToClipboard.
-  ///
-  /// In en, this message translates to:
-  /// **'Copied to clipboard'**
-  String get copiedToClipboard;
-
-  /// No description provided for @fillForm.
-  ///
-  /// In en, this message translates to:
-  /// **'Fill Form'**
-  String get fillForm;
-
-  /// No description provided for @chooseUseInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose how to use this information:'**
-  String get chooseUseInfo;
-
-  /// No description provided for @fillPassengerFlight.
-  ///
-  /// In en, this message translates to:
-  /// **'Fill passenger and flight info'**
-  String get fillPassengerFlight;
-
-  /// No description provided for @ocrResults.
-  ///
-  /// In en, this message translates to:
-  /// **'OCR Results'**
-  String get ocrResults;
-
-  /// No description provided for @noFieldsExtracted.
-  ///
-  /// In en, this message translates to:
-  /// **'No fields were extracted from the document.'**
-  String get noFieldsExtracted;
-
-  /// No description provided for @extractedInformation.
-  ///
-  /// In en, this message translates to:
-  /// **'Extracted Information'**
-  String get extractedInformation;
-
-  /// No description provided for @rawOcrText.
-  ///
-  /// In en, this message translates to:
-  /// **'Raw OCR Text'**
-  String get rawOcrText;
-
-  /// No description provided for @copyAllText.
-  ///
-  /// In en, this message translates to:
-  /// **'Copy all text'**
-  String get copyAllText;
-
-  /// No description provided for @claims.
-  ///
-  /// In en, this message translates to:
-  /// **'Claims'**
-  String get claims;
-
-  /// Displayed when there are no claims yet on the dashboard
-  ///
-  /// In en, this message translates to:
-  /// **'No Claims Yet'**
-  String get noClaimsYet;
-
-  /// Instructions for starting a compensation claim when no claims exist
-  ///
-  /// In en, this message translates to:
-  /// **'Start your compensation claim by selecting a flight from the EU Eligible Flights section'**
-  String get startCompensationClaimInstructions;
-
-  /// No description provided for @active.
-  ///
-  /// In en, this message translates to:
-  /// **'Active'**
-  String get active;
-
-  /// No description provided for @actionRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Action Required'**
-  String get actionRequired;
-
-  /// No description provided for @completed.
-  ///
-  /// In en, this message translates to:
-  /// **'Completed'**
-  String get completed;
-
-  /// No description provided for @profileInfoCardTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Your profile contains your personal and contact information. This is used to process your flight compensation claims and keep you updated.'**
-  String get profileInfoCardTitle;
-
-  /// No description provided for @accountSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Account Settings'**
-  String get accountSettings;
-
-  /// No description provided for @accessibilityOptions.
-  ///
-  /// In en, this message translates to:
-  /// **'Accessibility Options'**
-  String get accessibilityOptions;
-
-  /// No description provided for @configureAccessibilityDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Configure high contrast, large text, and screen reader support'**
-  String get configureAccessibilityDescription;
-
-  /// No description provided for @configureNotificationsDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Configure how you receive claim updates'**
-  String get configureNotificationsDescription;
-
-  /// Tip for keeping profile information current
-  ///
-  /// In en, this message translates to:
-  /// **'Keep Your Profile Up-to-date'**
-  String get tipProfileUpToDate;
-
-  /// Tip indicating privacy of profile information
-  ///
-  /// In en, this message translates to:
-  /// **'Your Information is Private'**
-  String get tipInformationPrivate;
-
-  /// Label for contact details section in profile
-  ///
-  /// In en, this message translates to:
-  /// **'Contact Details'**
-  String get tipContactDetails;
-
-  /// Label for accessibility settings section in profile
-  ///
-  /// In en, this message translates to:
-  /// **'Accessibility Settings'**
-  String get tipAccessibilitySettings;
-
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
-
-  /// No description provided for @next.
-  ///
-  /// In en, this message translates to:
-  /// **'Next'**
-  String get next;
-
-  /// No description provided for @previous.
-  ///
-  /// In en, this message translates to:
-  /// **'Previous'**
-  String get previous;
-
-  /// No description provided for @arrivalsAt.
-  ///
-  /// In en, this message translates to:
-  /// **'Arrivals at {airport}'**
-  String arrivalsAt(String airport);
-
-  /// No description provided for @filterByAirline.
-  ///
-  /// In en, this message translates to:
-  /// **'Filter by airline'**
-  String get filterByAirline;
-
-  /// No description provided for @flightStatusDelayed.
-  ///
-  /// In en, this message translates to:
-  /// **'Delayed'**
-  String get flightStatusDelayed;
-
-  /// No description provided for @flightStatusCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelled'**
-  String get flightStatusCancelled;
-
-  /// No description provided for @flightStatusDiverted.
-  ///
-  /// In en, this message translates to:
-  /// **'Diverted'**
-  String get flightStatusDiverted;
-
-  /// No description provided for @flightStatusOnTime.
-  ///
-  /// In en, this message translates to:
-  /// **'On time'**
-  String get flightStatusOnTime;
-
-  /// No description provided for @flight.
-  ///
-  /// In en, this message translates to:
-  /// **'Flight'**
-  String get flight;
-
-  /// No description provided for @flights.
-  ///
-  /// In en, this message translates to:
-  /// **'Flights'**
-  String get flights;
-
-  /// No description provided for @myFlights.
-  ///
-  /// In en, this message translates to:
-  /// **'My Flights'**
-  String get myFlights;
-
-  /// No description provided for @findFlight.
-  ///
-  /// In en, this message translates to:
-  /// **'Find Flight'**
-  String get findFlight;
-
-  /// Label for flight date field.
-  ///
-  /// In en, this message translates to:
-  /// **'Flight Date:'**
-  String get flightDate;
-
-  /// Button label for checking compensation eligibility
-  ///
-  /// In en, this message translates to:
-  /// **'Check Compensation Eligibility'**
-  String get checkCompensationEligibility;
-
-  /// No description provided for @supportingDocumentsHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Attach boarding passes, tickets, and other documents to strengthen your claim.'**
-  String get supportingDocumentsHint;
-
-  /// No description provided for @scanDocument.
-  ///
-  /// In en, this message translates to:
-  /// **'Scan Document'**
-  String get scanDocument;
-
-  /// No description provided for @uploadDocument.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload Document'**
-  String get uploadDocument;
-
-  /// No description provided for @scanDocumentHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Use camera to auto-fill form'**
-  String get scanDocumentHint;
-
-  /// No description provided for @uploadDocumentHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Select from device storage'**
-  String get uploadDocumentHint;
-
-  /// No description provided for @noDocumentsYet.
-  ///
-  /// In en, this message translates to:
-  /// **'No documents attached yet'**
-  String get noDocumentsYet;
-
-  /// No description provided for @enterFlightNumberFirst.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter a flight number first'**
-  String get enterFlightNumberFirst;
-
-  /// No description provided for @viewAll.
-  ///
-  /// In en, this message translates to:
-  /// **'View All'**
-  String get viewAll;
-
-  /// No description provided for @documentScanner.
-  ///
-  /// In en, this message translates to:
-  /// **'Document Scanner'**
-  String get documentScanner;
-
-  /// No description provided for @profileInformation.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile Information'**
-  String get profileInformation;
-
-  /// No description provided for @editPersonalInformation.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit your personal information'**
-  String get editPersonalInformation;
-
-  /// No description provided for @editPersonalAndContactInformation.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit your personal and contact information'**
-  String get editPersonalAndContactInformation;
-
-  /// No description provided for @configureAccessibilityOptions.
-  ///
-  /// In en, this message translates to:
-  /// **'Configure accessibility options for the app'**
-  String get configureAccessibilityOptions;
-
-  /// No description provided for @configureHighContrastLargeTextAndScreenReaderSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Configure high contrast, large text, and screen reader support'**
-  String get configureHighContrastLargeTextAndScreenReaderSupport;
-
-  /// No description provided for @applicationPreferences.
-  ///
-  /// In en, this message translates to:
-  /// **'Application Preferences'**
-  String get applicationPreferences;
-
-  /// No description provided for @notificationSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Notification Settings'**
-  String get notificationSettings;
-
-  /// No description provided for @configureNotificationPreferences.
-  ///
-  /// In en, this message translates to:
-  /// **'Configure notification preferences'**
-  String get configureNotificationPreferences;
-
-  /// No description provided for @configureHowYouReceiveClaimUpdates.
-  ///
-  /// In en, this message translates to:
-  /// **'Configure how you receive claim updates'**
-  String get configureHowYouReceiveClaimUpdates;
-
-  /// No description provided for @language.
-  ///
-  /// In en, this message translates to:
-  /// **'Language'**
-  String get language;
-
-  /// No description provided for @changeApplicationLanguage.
-  ///
-  /// In en, this message translates to:
-  /// **'Change application language'**
-  String get changeApplicationLanguage;
-
-  /// No description provided for @selectYourPreferredLanguage.
-  ///
-  /// In en, this message translates to:
-  /// **'Select your preferred language'**
-  String get selectYourPreferredLanguage;
-
-  /// No description provided for @tipsAndReminders.
-  ///
-  /// In en, this message translates to:
-  /// **'Tips & Reminders'**
-  String get tipsAndReminders;
-
-  /// No description provided for @importantTipsAboutProfileInformation.
-  ///
-  /// In en, this message translates to:
-  /// **'Important tips about your profile information'**
-  String get importantTipsAboutProfileInformation;
-
-  /// No description provided for @noClaimsYetTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No Claims Yet'**
-  String get noClaimsYetTitle;
-
-  /// No description provided for @noClaimsYetSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Start your compensation claim by selecting a flight from the EU Eligible Flights section'**
-  String get noClaimsYetSubtitle;
-
-  /// No description provided for @extractingText.
-  ///
-  /// In en, this message translates to:
-  /// **'Extracting text and identifying fields'**
-  String get extractingText;
-
-  /// No description provided for @scanInstructions.
-  ///
-  /// In en, this message translates to:
-  /// **'Position your document within the frame and take a photo'**
-  String get scanInstructions;
-
-  /// No description provided for @formFilledWithScannedData.
-  ///
-  /// In en, this message translates to:
-  /// **'Form filled with scanned document data'**
-  String get formFilledWithScannedData;
-
-  /// No description provided for @flightDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Flight Details'**
-  String get flightDetails;
-
-  /// No description provided for @phoneNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Phone Number'**
-  String get phoneNumber;
-
-  /// No description provided for @required.
-  ///
-  /// In en, this message translates to:
-  /// **'Required'**
-  String get required;
-
-  /// No description provided for @submit.
-  ///
-  /// In en, this message translates to:
-  /// **'Submit'**
-  String get submit;
-
-  /// No description provided for @submissionChecklist.
-  ///
-  /// In en, this message translates to:
-  /// **'Submission Checklist'**
-  String get submissionChecklist;
-
-  /// No description provided for @documentAttached.
-  ///
-  /// In en, this message translates to:
-  /// **'Document Attached'**
-  String get documentAttached;
-
-  /// No description provided for @compensationClaimForm.
-  ///
-  /// In en, this message translates to:
-  /// **'Compensation Claim Form'**
-  String get compensationClaimForm;
-
-  /// No description provided for @prefilledFromProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Prefilled from your profile'**
-  String get prefilledFromProfile;
-
-  /// No description provided for @flightSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Flight Search'**
-  String get flightSearch;
-
-  /// No description provided for @searchFlightNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Search using flight number'**
-  String get searchFlightNumber;
-
-  /// No description provided for @delayedFlightDetected.
-  ///
-  /// In en, this message translates to:
-  /// **'Delayed Flight Detected'**
-  String get delayedFlightDetected;
-
-  /// No description provided for @flightDetected.
-  ///
-  /// In en, this message translates to:
-  /// **'Flight Detected'**
-  String get flightDetected;
-
-  /// No description provided for @flightLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Flight:'**
-  String get flightLabel;
-
-  /// No description provided for @fromAirport.
-  ///
-  /// In en, this message translates to:
-  /// **'From:'**
-  String get fromAirport;
-
-  /// No description provided for @toAirport.
-  ///
-  /// In en, this message translates to:
-  /// **'To:'**
-  String get toAirport;
-
-  /// No description provided for @statusLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Status:'**
-  String get statusLabel;
-
-  /// No description provided for @delayedEligible.
-  ///
-  /// In en, this message translates to:
-  /// **'Delayed and potentially eligible'**
-  String get delayedEligible;
-
-  /// No description provided for @startClaim.
-  ///
-  /// In en, this message translates to:
-  /// **'Start Claim'**
-  String get startClaim;
-
-  /// Title shown when a claim cannot be found.
-  ///
-  /// In en, this message translates to:
-  /// **'Claim Not Found'**
-  String get claimNotFound;
-
-  /// Description shown when a claim cannot be found.
-  ///
-  /// In en, this message translates to:
-  /// **'The requested claim could not be found. It may have been deleted.'**
-  String get claimNotFoundDesc;
-
-  /// Button label to return to the dashboard from a not found screen.
-  ///
-  /// In en, this message translates to:
-  /// **'Back to Dashboard'**
-  String get backToDashboard;
-
-  /// No description provided for @euWideEligibleFlights.
-  ///
-  /// In en, this message translates to:
-  /// **'EU-wide Compensation Eligible Flights'**
-  String get euWideEligibleFlights;
-
-  /// No description provided for @submitNewClaim.
-  ///
-  /// In en, this message translates to:
-  /// **'Submit New Claim'**
-  String get submitNewClaim;
-
-  /// Label for reason field.
-  ///
-  /// In en, this message translates to:
-  /// **'Reason for Claim:'**
-  String get reasonForClaim;
-
-  /// No description provided for @flightDateHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the date of your flight'**
-  String get flightDateHint;
-
-  /// No description provided for @continueToAttachments.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue to Attachments'**
-  String get continueToAttachments;
-
-  /// Validation message for empty flight number
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter a flight number'**
-  String get pleaseEnterFlightNumber;
-
-  /// No description provided for @pleaseEnterArrivalAirport.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter an arrival airport'**
-  String get pleaseEnterArrivalAirport;
-
-  /// No description provided for @pleaseEnterReason.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter a reason'**
-  String get pleaseEnterReason;
-
-  /// No description provided for @pleaseSelectFlightDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Please select a flight date.'**
-  String get pleaseSelectFlightDate;
-
-  /// No description provided for @claimDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Claim Details'**
-  String get claimDetails;
-
-  /// No description provided for @refresh.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh'**
-  String get refresh;
-
-  /// No description provided for @errorLoadingClaim.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading claim'**
-  String get errorLoadingClaim;
-
-  /// Button label for retry action
-  ///
-  /// In en, this message translates to:
-  /// **'Retry'**
-  String get retry;
-
-  /// No description provided for @unknownError.
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown error'**
-  String get unknownError;
-
-  /// No description provided for @requiredFieldsCompleted.
-  ///
-  /// In en, this message translates to:
-  /// **'All required fields are completed.'**
-  String get requiredFieldsCompleted;
-
-  /// No description provided for @scanningDocumentsNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Scanning documents can pre-fill some fields.'**
-  String get scanningDocumentsNote;
-
-  /// Tip about checking eligibility in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Check EU Regulation 261/2004 eligibility before claiming.'**
-  String get tipCheckEligibility;
-
-  /// Tip about double-checking details in the quick claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Double-check all details before submitting your claim.'**
-  String get tipDoubleCheckDetails;
-
-  /// Tooltip text for the FAQ help button
-  ///
-  /// In en, this message translates to:
-  /// **'View FAQ help'**
-  String get tooltipFaqHelp;
-
-  /// Error message for form submission failure
-  ///
-  /// In en, this message translates to:
-  /// **'Error submitting form: {errorMessage}. Please check your connection and try again.'**
-  String formSubmissionError(String errorMessage);
-
-  /// Error message for network error
-  ///
-  /// In en, this message translates to:
-  /// **'Network error. Please check your internet connection.'**
-  String get networkError;
-
-  /// Generic error message
-  ///
-  /// In en, this message translates to:
-  /// **'An unexpected error occurred. Please try again later.'**
-  String get generalError;
-
-  /// Error message for unauthenticated user submitting a claim
-  ///
-  /// In en, this message translates to:
-  /// **'You must be logged in to submit a claim.'**
-  String get loginRequiredForClaim;
-
-  /// Title for the Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Quick Claim'**
-  String get quickClaimTitle;
-
-  /// Info banner text for the Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'For EU-eligible flights. Fill in basic info for a quick preliminary check.'**
-  String get quickClaimInfoBanner;
-
-  /// Helper text for flight number input in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Usually a 2-letter airline code and digits, e.g. LH1234'**
-  String get flightNumberHintQuickClaim;
-
-  /// Helper text for departure airport input in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. FRA for Frankfurt, LHR for London Heathrow'**
-  String get departureAirportHintQuickClaim;
-
-  /// Helper text for arrival airport input in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. JFK for New York, CDG for Paris'**
-  String get arrivalAirportHintQuickClaim;
-
-  /// Label for the reason field in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Reason for Claim'**
-  String get reasonForClaimLabel;
-
-  /// Helper text for the reason field in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Provide details about what happened with your flight'**
-  String get reasonForClaimHint;
-
-  /// Label for the optional compensation amount field
-  ///
-  /// In en, this message translates to:
-  /// **'Compensation Amount (optional)'**
-  String get compensationAmountOptionalLabel;
-
-  /// Helper text for the compensation amount field
-  ///
-  /// In en, this message translates to:
-  /// **'If you know the amount you are eligible for, enter it here'**
-  String get compensationAmountHint;
-
-  /// Title for the EU-wide compensation eligible flights screen
-  ///
-  /// In en, this message translates to:
-  /// **'EU-wide Compensation'**
-  String get euWideCompensationTitle;
-
-  /// Button to filter flights from the last 72 hours
-  ///
-  /// In en, this message translates to:
-  /// **'Last 72 hours'**
-  String get last72HoursButton;
-
-  /// Label for scheduled time in flight lists
+  /// Label for scheduled flight time
   ///
   /// In en, this message translates to:
   /// **'Scheduled:'**
   String get scheduledLabel;
 
-  /// Label for flight status in EU-wide flight list
+  /// Text for minutes unit
   ///
   /// In en, this message translates to:
-  /// **'Status:'**
-  String get statusLabelEuList;
+  /// **'minutes'**
+  String get minutes;
 
-  /// Label for potential compensation amount in flight lists
+  /// Label for aircraft information
   ///
   /// In en, this message translates to:
-  /// **'Potential Compensation:'**
-  String get potentialCompensationLabel;
+  /// **'Aircraft:'**
+  String get aircraftLabel;
 
-  /// Button to pre-fill compensation form from flight details
+  /// Button text for pre-filling compensation form
   ///
   /// In en, this message translates to:
   /// **'Pre-fill Compensation Form'**
-  String get prefillCompensationFormButton;
+  String get prefillCompensationForm;
 
-  /// Label for the 'Active' tab in claims dashboard
+  /// Button label for confirming and sending an email
   ///
   /// In en, this message translates to:
-  /// **'Active'**
-  String get claimsTabActive;
+  /// **'Confirm and Send'**
+  String get confirmAndSend;
 
-  /// Label for the 'Action Required' tab in claims dashboard
+  /// Error message when email details cannot be loaded
   ///
   /// In en, this message translates to:
-  /// **'Action Required'**
-  String get claimsTabActionRequired;
+  /// **'Error loading email details'**
+  String get errorLoadingEmailDetails;
 
-  /// Label for the 'Completed' tab in claims dashboard
+  /// Message when no email information is available
   ///
   /// In en, this message translates to:
-  /// **'Completed'**
-  String get claimsTabCompleted;
+  /// **'No email information available'**
+  String get noEmailInfo;
 
-  /// Dialog title for successful operations
+  /// Title for the final confirmation screen
   ///
   /// In en, this message translates to:
-  /// **'Success!'**
-  String get dialogTitleSuccess;
+  /// **'Final Confirmation'**
+  String get finalConfirmation;
 
-  /// Dialog content for successful claim submission
+  /// Text explaining where the claim will be sent
   ///
   /// In en, this message translates to:
-  /// **'Your claim has been submitted successfully.'**
-  String get dialogContentClaimSubmitted;
+  /// **'Your claim will be sent to:'**
+  String get claimWillBeSentTo;
 
-  /// Label for OK button in dialogs
+  /// Text explaining that a copy will be sent to the user's email
   ///
   /// In en, this message translates to:
-  /// **'OK'**
-  String get dialogButtonOK;
+  /// **'A copy will be sent to your email:'**
+  String get copyToYourEmail;
 
-  /// Title for the document management screen
+  /// Button label for previewing email before sending
   ///
   /// In en, this message translates to:
-  /// **'Document Management'**
-  String get documentManagementTitle;
+  /// **'Preview Email'**
+  String get previewEmail;
 
-  /// Title for the document management screen when a flight is specified
+  /// Button label for confirming and sending email
   ///
   /// In en, this message translates to:
-  /// **'Documents for flight'**
-  String get documentsForFlightTitle;
+  /// **'Confirm and Send Email'**
+  String get confirmAndSendEmail;
 
-  /// Error message when documents fail to load
+  /// Label for departure airport field
   ///
   /// In en, this message translates to:
-  /// **'Error Loading Documents'**
-  String get errorLoadingDocuments;
+  /// **'Departure Airport'**
+  String get departureAirport;
 
-  /// Tooltip for the add document button
+  /// Label for arrival airport field
   ///
   /// In en, this message translates to:
-  /// **'Add Document'**
-  String get addDocumentTooltip;
+  /// **'Arrival Airport'**
+  String get arrivalAirport;
 
-  /// Title for the delete document confirmation dialog
+  /// Label for reason for claim field
   ///
   /// In en, this message translates to:
-  /// **'Delete Document?'**
-  String get deleteDocumentTitle;
+  /// **'Reason for Claim'**
+  String get reasonForClaim;
 
-  /// Message for the delete document confirmation dialog
+  /// Label for attachments section
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete'**
-  String get deleteDocumentMessage;
+  /// **'Attachments'**
+  String get attachments;
 
-  /// Label for delete button
+  /// Button label to proceed to confirmation screen
   ///
   /// In en, this message translates to:
-  /// **'Delete'**
-  String get delete;
+  /// **'Proceed to Confirmation'**
+  String get proceedToConfirmation;
 
-  /// Error message when user is not logged in
+  /// Message shown when the email app is opened
   ///
   /// In en, this message translates to:
-  /// **'You must be logged in to perform this action.'**
-  String get errorMustBeLoggedIn;
+  /// **'Your email app has been opened'**
+  String emailAppOpenedMessage(String email);
 
-  /// Error message when claim submission fails
+  /// Error message shown when claim submission fails
   ///
   /// In en, this message translates to:
   /// **'Failed to submit claim. Please try again.'**
-  String get errorFailedToSubmitClaim;
+  String errorFailedToSubmitClaim(String error);
 
-  /// Dialog title for error messages
+  /// Generic unknown error message
   ///
   /// In en, this message translates to:
-  /// **'Error'**
-  String get dialogTitleError;
+  /// **'Unknown error'**
+  String get unknownError;
 
-  /// Validation error message for flight number field
+  /// Button label to retry an action
   ///
   /// In en, this message translates to:
-  /// **'Flight number is required.'**
-  String get validatorFlightNumberRequired;
+  /// **'Retry'**
+  String get retry;
 
-  /// Tooltip for flight number field in Quick Claim screen
+  /// Title shown when a claim is not found
   ///
   /// In en, this message translates to:
-  /// **'Enter the flight number as shown on your ticket or booking'**
-  String get tooltipFlightNumberQuickClaim;
+  /// **'Claim Not Found'**
+  String get claimNotFound;
 
-  /// Tooltip for flight date field in Quick Claim screen
+  /// Description shown when a claim is not found
   ///
   /// In en, this message translates to:
-  /// **'Date when your flight was scheduled to depart'**
-  String get tooltipFlightDateQuickClaim;
+  /// **'The requested claim could not be found or may have been deleted'**
+  String get claimNotFoundDesc;
 
-  /// Validation error message for departure airport field
+  /// Button label to go back to dashboard
   ///
   /// In en, this message translates to:
-  /// **'Departure airport is required.'**
-  String get validatorDepartureAirportRequired;
+  /// **'Back to Dashboard'**
+  String get backToDashboard;
 
-  /// Tooltip for departure airport field in Quick Claim screen
+  /// Title for the claim review screen
   ///
   /// In en, this message translates to:
-  /// **'Enter the 3-letter IATA code for the departure airport'**
-  String get tooltipDepartureAirportQuickClaim;
+  /// **'Review Your Claim'**
+  String get reviewYourClaim;
 
-  /// Validation error message for arrival airport field
+  /// Header for reviewing claim details
   ///
   /// In en, this message translates to:
-  /// **'Arrival airport is required.'**
-  String get validatorArrivalAirportRequired;
+  /// **'Review Claim Details'**
+  String get reviewClaimDetails;
 
-  /// Tooltip for arrival airport field in Quick Claim screen
+  /// Label for flight number field
   ///
   /// In en, this message translates to:
-  /// **'Enter the 3-letter IATA code for the arrival airport'**
-  String get tooltipArrivalAirportQuickClaim;
+  /// **'Flight Number'**
+  String get flightNumber;
 
-  /// Hint text for the reason input in Quick Claim screen
+  /// Label for flight date field
   ///
   /// In en, this message translates to:
-  /// **'State why you are claiming: delay, cancellation, denied boarding, etc.'**
-  String get hintTextReasonQuickClaim;
+  /// **'Flight Date'**
+  String get flightDate;
 
-  /// Validation error message for reason field
-  ///
-  /// In en, this message translates to:
-  /// **'Reason for claim is required.'**
-  String get validatorReasonRequired;
-
-  /// Tooltip for reason field in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Explain the reason for your claim in detail'**
-  String get tooltipReasonQuickClaim;
-
-  /// Tooltip for compensation amount field in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Enter the amount if you know what you are eligible for'**
-  String get tooltipCompensationAmountQuickClaim;
-
-  /// Title for tips and reminders section in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Tips and Reminders'**
-  String get tipsAndRemindersTitle;
-
-  /// Tip about data security in Quick Claim screen
-  ///
-  /// In en, this message translates to:
-  /// **'Your data is secure and encrypted.'**
-  String get tipSecureData;
-
-  /// Message shown while a document is being processed by OCR
-  ///
-  /// In en, this message translates to:
-  /// **'Processing document...'**
-  String get processingDocument;
-
-  /// Label for a generic field value in debugging or display
-  ///
-  /// In en, this message translates to:
-  /// **'Field Value'**
-  String get fieldValue;
-
-  /// Error message when a network connection fails
-  ///
-  /// In en, this message translates to:
-  /// **'Connection failed. Please check your network.'**
-  String get errorConnectionFailed;
-
-  /// Label for filtering flights in the last N hours
-  ///
-  /// In en, this message translates to:
-  /// **'Last {hours} hours'**
-  String lastHours(int hours);
-
-  /// Message shown when no flights match the selected filter
+  /// Message shown when no flights match the filter
   ///
   /// In en, this message translates to:
   /// **'No flights matching filter: {filter}'**
   String noFlightsMatchingFilter(String filter);
 
-  /// Tooltip for button to force refresh data
+  /// Label for flight status
   ///
   /// In en, this message translates to:
-  /// **'Force refresh data'**
-  String get forceRefreshData;
+  /// **'Status'**
+  String get statusLabel;
 
-  /// Snackbar message shown when forcing a fresh data load
+  /// Status indicating flight is delayed
   ///
   /// In en, this message translates to:
-  /// **'Forcing a fresh data load...'**
-  String get forcingFreshDataLoad;
+  /// **'Delayed'**
+  String get flightStatusDelayed;
 
-  /// Button label to re-check or retry fetching flights
+  /// Label for potential compensation amount
   ///
   /// In en, this message translates to:
-  /// **'Check again'**
-  String get checkAgain;
+  /// **'Potential Compensation'**
+  String get potentialCompensation;
 
-  /// Title for the screen or section listing EU compensation eligible flights
+  /// Title for claim details screen
   ///
   /// In en, this message translates to:
-  /// **'EU Compensation Eligible Flights'**
+  /// **'Claim Details'**
+  String get claimDetails;
+
+  /// Button label to refresh content
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// Error message when claim loading fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error Loading Claim'**
+  String get errorLoadingClaim;
+
+  /// Title for EU eligible flights screen
+  ///
+  /// In en, this message translates to:
+  /// **'EU-Wide Compensation Eligible Flights'**
   String get euWideCompensationEligibleFlights;
 
-  /// Message shown when no eligible flights are found
+  /// Tooltip for refresh button
   ///
   /// In en, this message translates to:
-  /// **'No eligible flights found'**
-  String get noEligibleFlightsFound;
+  /// **'Force Refresh Data'**
+  String get forceRefreshData;
 
-  /// Description for empty state when no eligible flights are found
+  /// Message when forcing data refresh
   ///
   /// In en, this message translates to:
-  /// **'No flights found in the last {hours} hours.'**
-  String noEligibleFlightsDescription(int hours);
+  /// **'Forcing fresh data load...'**
+  String get forcingFreshDataLoad;
 
-  /// Message shown when there is a problem connecting to the API
+  /// Title for loading screen
   ///
   /// In en, this message translates to:
-  /// **'API connection issue. Please try again.'**
+  /// **'Loading External Data'**
+  String get loadingExternalData;
+
+  /// Message when loading external data
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait while we fetch the latest flight data...'**
+  String get loadingExternalDataDescription;
+
+  /// Time period label for flight list
+  ///
+  /// In en, this message translates to:
+  /// **'Last {hours} Hours'**
+  String lastHours(int hours);
+
+  /// Error message when connection fails
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed'**
+  String get errorConnectionFailed;
+
+  /// Error message for form submission errors
+  ///
+  /// In en, this message translates to:
+  /// **'Form submission error: {error}'**
+  String formSubmissionError(String error);
+
+  /// Title for API connection issue
+  ///
+  /// In en, this message translates to:
+  /// **'API Connection Issue'**
   String get apiConnectionIssue;
 
-  /// Button label for creating a new claim
+  /// Message when no eligible flights are found
   ///
   /// In en, this message translates to:
-  /// **'Create a Claim'**
-  String get createClaim;
+  /// **'No Eligible Flights Found'**
+  String get noEligibleFlightsFound;
 
-  /// Status text for a submitted claim
+  /// Description when no eligible flights are found
   ///
   /// In en, this message translates to:
-  /// **'Submitted'**
-  String get submitted;
+  /// **'No flights eligible for EU compensation were found in the last {hours} hours. Check again later.'**
+  String noEligibleFlightsDescription(int hours);
 
-  /// Status text for a claim that is being reviewed
+  /// Button label to check again
   ///
   /// In en, this message translates to:
-  /// **'Under Review'**
-  String get inReview;
+  /// **'Check Again'**
+  String get checkAgain;
 
-  /// Status text for a claim that is being processed
+  /// Hint text for airline filter
   ///
   /// In en, this message translates to:
-  /// **'Processing'**
-  String get processing;
+  /// **'Filter by airline'**
+  String get filterByAirline;
 
-  /// Status text for a claim that has been approved
+  /// Button label to save document
   ///
   /// In en, this message translates to:
-  /// **'Approved'**
-  String get approved;
+  /// **'Save Document'**
+  String get saveDocument;
 
-  /// Status text for a claim that has been rejected
+  /// Label for field name
   ///
   /// In en, this message translates to:
-  /// **'Rejected'**
-  String get rejected;
+  /// **'Field Name'**
+  String get fieldName;
 
-  /// Status text for a claim that has been paid out
+  /// Label for field value
   ///
   /// In en, this message translates to:
-  /// **'Paid'**
-  String get paid;
+  /// **'Field Value'**
+  String get fieldValue;
 
-  /// Status text for a claim that is under appeal
+  /// Message when no fields are extracted
   ///
   /// In en, this message translates to:
-  /// **'Under Appeal'**
-  String get underAppeal;
+  /// **'No Fields Extracted'**
+  String get noFieldsExtracted;
 
-  /// Text for unknown values
+  /// Message when text is copied to clipboard
   ///
   /// In en, this message translates to:
-  /// **'Unknown'**
-  String get unknown;
+  /// **'Copied to Clipboard'**
+  String get copiedToClipboard;
 
-  /// Title shown when authentication is required
+  /// Generic network error message
   ///
   /// In en, this message translates to:
-  /// **'Authentication Required'**
-  String get authenticationRequired;
+  /// **'Network Error'**
+  String get networkError;
 
-  /// Error message when claims cannot be loaded
+  /// Generic error message
   ///
   /// In en, this message translates to:
-  /// **'Error Loading Claims'**
-  String get errorLoadingClaims;
+  /// **'General Error'**
+  String get generalError;
 
-  /// Message shown when user needs to log in to view claims
+  /// Message indicating login is required to submit a claim
   ///
   /// In en, this message translates to:
-  /// **'Please log in to view your claims dashboard'**
-  String get loginToViewClaimsDashboard;
+  /// **'Login Required for Claim'**
+  String get loginRequiredForClaim;
 
-  /// Button label for login action
+  /// Label for aspect ratio
   ///
   /// In en, this message translates to:
-  /// **'Log In'**
-  String get logIn;
+  /// **'Aspect Ratio'**
+  String get aspectRatio;
 
-  /// Text showing claim for a specific flight with status
+  /// Title for OCR result section
   ///
   /// In en, this message translates to:
-  /// **'Claim for flight {number} - {status}'**
-  String claimForFlight(Object number, Object status);
+  /// **'Document OCR Result'**
+  String get documentOcrResult;
 
-  /// Text showing flight route details with departure and arrival
+  /// Title for extracted fields section
   ///
   /// In en, this message translates to:
-  /// **'Flight {number}: {departure} - {arrival}'**
-  String flightRouteDetails(Object number, Object departure, Object arrival);
+  /// **'Extracted Fields'**
+  String get extractedFields;
 
-  /// Accessibility hint for viewing claim details
+  /// Title for full text section
   ///
   /// In en, this message translates to:
-  /// **'View claim details'**
-  String get viewClaimDetails;
+  /// **'Full Text'**
+  String get fullText;
 
-  /// Label for total compensation amount in dashboard analytics
+  /// Message when document is saved
   ///
   /// In en, this message translates to:
-  /// **'Total Compensation'**
-  String get totalCompensation;
+  /// **'Document Saved'**
+  String get documentSaved;
 
-  /// Label for pending compensation amount in dashboard analytics
+  /// Button label for using extracted data
   ///
   /// In en, this message translates to:
-  /// **'Pending Amount'**
-  String get pendingAmount;
+  /// **'Use Extracted Data'**
+  String get useExtractedData;
 
-  /// Text shown when compensation amount is pending
+  /// Button label for copying to clipboard
   ///
   /// In en, this message translates to:
-  /// **'Pending'**
-  String get pending;
+  /// **'Copy to Clipboard'**
+  String get copyToClipboard;
 
-  /// Title for the claims dashboard screen
+  /// Label for document type
   ///
   /// In en, this message translates to:
-  /// **'Claims Dashboard'**
-  String get claimsDashboard;
+  /// **'Document Type'**
+  String get documentType;
 
-  /// Tooltip for the refresh button on dashboard
+  /// Button label for submitting a claim
   ///
   /// In en, this message translates to:
-  /// **'Refresh Dashboard'**
-  String get refreshDashboard;
+  /// **'Submit Claim'**
+  String get submitClaim;
 
-  /// Title for the claims summary section
+  /// Button label for adding a document
   ///
   /// In en, this message translates to:
-  /// **'Claims Summary'**
-  String get claimsSummary;
+  /// **'Add Document'**
+  String get addDocument;
 
-  /// Label for the total claims count
+  /// Message when a claim is submitted successfully
   ///
   /// In en, this message translates to:
-  /// **'Total Claims'**
-  String get totalClaims;
+  /// **'Claim Submitted Successfully'**
+  String get claimSubmittedSuccessfully;
 
-  /// Title for accessibility settings section
+  /// Message prompting user to complete all fields
   ///
   /// In en, this message translates to:
-  /// **'Accessibility Settings'**
-  String get accessibilitySettings;
+  /// **'Complete All Fields'**
+  String get completeAllFields;
 
-  /// Semantic label for accessibility settings button
+  /// Title for supporting documents section
   ///
   /// In en, this message translates to:
-  /// **'Configure accessibility options'**
-  String get configureAccessibility;
+  /// **'Supporting Documents'**
+  String get supportingDocuments;
 
-  /// Semantic label for notification settings button
+  /// Title for crop document screen
   ///
   /// In en, this message translates to:
-  /// **'Configure notifications'**
-  String get configureNotifications;
+  /// **'Crop Document'**
+  String get cropDocument;
 
-  /// Message indicating notifications feature is in development
+  /// Button label for crop action
   ///
   /// In en, this message translates to:
-  /// **'Notification settings coming soon!'**
-  String get notificationSettingsComingSoon;
+  /// **'Crop'**
+  String get crop;
 
-  /// Label for language selection button
+  /// Button label for rotate action
   ///
   /// In en, this message translates to:
-  /// **'Select Language'**
-  String get selectLanguage;
+  /// **'Rotate'**
+  String get rotate;
 
-  /// Label for button to edit personal information
+  /// Label for airline field
   ///
   /// In en, this message translates to:
-  /// **'Edit Personal Information'**
-  String get editPersonalInfo;
+  /// **'Airline'**
+  String get airline;
 
-  /// Description of what editing personal information allows
+  /// Label for email field
   ///
   /// In en, this message translates to:
-  /// **'Update your personal details, address, and contact information'**
-  String get editPersonalInfoDescription;
+  /// **'Email'**
+  String get email;
 
-  /// Error message shown when signing out fails
+  /// Label for booking reference field
   ///
   /// In en, this message translates to:
-  /// **'Error signing out: {error}'**
-  String errorSigningOut(String error);
+  /// **'Booking Reference'**
+  String get bookingReference;
 
-  /// Label for sign in or sign up button
+  /// Label for additional information field
   ///
   /// In en, this message translates to:
-  /// **'Sign In / Sign Up'**
-  String get signInOrSignUp;
+  /// **'Additional Information'**
+  String get additionalInformation;
 
-  /// Generic name for user when actual name is not available
+  /// Label for optional fields
   ///
   /// In en, this message translates to:
-  /// **'User'**
-  String get genericUser;
+  /// **'Optional'**
+  String get optional;
 
-  /// Label for dismiss button
+  /// Error message for required fields
   ///
   /// In en, this message translates to:
-  /// **'Dismiss'**
-  String get dismiss;
+  /// **'This field is required'**
+  String get thisFieldIsRequired;
 
-  /// Message encouraging user to sign in to track claims
+  /// Error message for missing departure airport
   ///
   /// In en, this message translates to:
-  /// **'Sign in to track your claims'**
-  String get signInToTrackClaims;
+  /// **'Please enter departure airport'**
+  String get pleaseEnterDepartureAirport;
 
-  /// Description of benefits of creating an account
+  /// Button label for uploading documents
   ///
   /// In en, this message translates to:
-  /// **'Create an account to easily track all your compensation claims'**
-  String get createAccountDescription;
+  /// **'Upload Documents'**
+  String get uploadDocuments;
 
-  /// Button label to proceed to attachments screen
+  /// Text for yes button/response
   ///
   /// In en, this message translates to:
-  /// **'Continue to Attachments'**
-  String get continueToAttachmentsButton;
+  /// **'Yes'**
+  String get yes;
 
-  /// Button label to proceed to review screen
+  /// Text for no button/response
   ///
   /// In en, this message translates to:
-  /// **'Continue to Review'**
-  String get continueToReview;
+  /// **'No'**
+  String get no;
 
-  /// Label for country field
+  /// Text for ok button
   ///
   /// In en, this message translates to:
-  /// **'Country'**
-  String get country;
+  /// **'OK'**
+  String get ok;
 
-  /// Label for privacy settings section
+  /// Text for back button
   ///
   /// In en, this message translates to:
-  /// **'Privacy Settings'**
-  String get privacySettings;
+  /// **'Back'**
+  String get back;
 
-  /// Label for consent to share data switch
+  /// Text for save button
   ///
   /// In en, this message translates to:
-  /// **'Consent to Share Data'**
-  String get consentToShareData;
+  /// **'Save'**
+  String get save;
 
-  /// Description for consent to share data
+  /// Title for language selection screen
   ///
   /// In en, this message translates to:
-  /// **'Required for processing your claims'**
-  String get requiredForProcessing;
+  /// **'Language Selection'**
+  String get languageSelection;
 
-  /// Label for receive notifications switch
+  /// Label for passenger name field
   ///
   /// In en, this message translates to:
-  /// **'Receive Notifications'**
-  String get receiveNotifications;
+  /// **'Passenger Name'**
+  String get passengerName;
 
-  /// Description for receive notifications
+  /// Title for passenger details section
   ///
   /// In en, this message translates to:
-  /// **'Get updates about your claims'**
-  String get getClaimUpdates;
+  /// **'Passenger Details'**
+  String get passengerDetails;
 
-  /// Button label to save profile changes
+  /// Title of the app
   ///
   /// In en, this message translates to:
-  /// **'Save Profile'**
-  String get saveProfile;
+  /// **'Flight Compensation'**
+  String get appTitle;
 
-  /// Label for passport number field
+  /// Welcome message shown on home screen
   ///
   /// In en, this message translates to:
-  /// **'Passport Number'**
-  String get passportNumber;
+  /// **'Welcome'**
+  String get welcomeMessage;
 
-  /// Label for nationality field
+  /// Label for home tab/button
   ///
   /// In en, this message translates to:
-  /// **'Nationality'**
-  String get nationality;
+  /// **'Home'**
+  String get home;
 
-  /// Label for date of birth field
+  /// Label for settings tab/button
   ///
   /// In en, this message translates to:
-  /// **'Date of Birth'**
-  String get dateOfBirth;
+  /// **'Settings'**
+  String get settings;
 
-  /// Hint text for date format
+  /// Error message for required fields
   ///
   /// In en, this message translates to:
-  /// **'DD/MM/YYYY'**
-  String get dateFormat;
+  /// **'Required'**
+  String get required;
 
-  /// Label for address field
+  /// Label for email address field
   ///
   /// In en, this message translates to:
-  /// **'Address'**
-  String get address;
+  /// **'Email Address'**
+  String get emailAddress;
 
-  /// Label for city field
+  /// Error message shown when document deletion fails
   ///
   /// In en, this message translates to:
-  /// **'City'**
-  String get city;
+  /// **'Failed to delete document'**
+  String get documentDeleteFailed;
 
-  /// Label for postal code field
+  /// Label for upload new document button
   ///
   /// In en, this message translates to:
-  /// **'Postal Code'**
-  String get postalCode;
+  /// **'Upload New'**
+  String get uploadNew;
 
-  /// Error message when profile cannot be loaded
+  /// Label for continue button
   ///
   /// In en, this message translates to:
-  /// **'Error loading profile'**
-  String get errorLoadingProfile;
+  /// **'Continue'**
+  String get continueAction;
 
-  /// Success message when profile is saved
+  /// Title for compensation claim form screen
   ///
   /// In en, this message translates to:
-  /// **'Profile saved successfully'**
-  String get profileSaved;
+  /// **'Compensation Claim Form'**
+  String get compensationClaimForm;
 
-  /// Title for profile edit screen
+  /// Label for flight information
   ///
   /// In en, this message translates to:
-  /// **'Edit Profile'**
-  String get editProfile;
+  /// **'Flight'**
+  String get flight;
 
-  /// Information about keeping profile information accurate
+  /// Header for passenger information section
   ///
   /// In en, this message translates to:
-  /// **'Please ensure your profile information is accurate'**
-  String get profileAccuracyInfo;
-
-  /// Instruction to keep profile information current
-  ///
-  /// In en, this message translates to:
-  /// **'Keep your profile up to date'**
-  String get keepProfileUpToDate;
-
-  /// Statement about profile privacy
-  ///
-  /// In en, this message translates to:
-  /// **'We protect your privacy and data'**
-  String get profilePrivacy;
-
-  /// Explanation about importance of correct contact details
-  ///
-  /// In en, this message translates to:
-  /// **'Correct contact details help with compensation'**
-  String get correctContactDetails;
+  /// **'Passenger Information'**
+  String get passengerInformation;
 
   /// Label for full name field
   ///
@@ -1774,73 +718,7 @@ abstract class AppLocalizations {
   /// **'Full Name'**
   String get fullName;
 
-  /// Title for document attachment screen
-  ///
-  /// In en, this message translates to:
-  /// **'Attach Documents'**
-  String get attachDocuments;
-
-  /// Message shown when a document is being uploaded
-  ///
-  /// In en, this message translates to:
-  /// **'Uploading document...'**
-  String get uploadingDocument;
-
-  /// Message shown when user has no documents
-  ///
-  /// In en, this message translates to:
-  /// **'You have no documents.'**
-  String get noDocuments;
-
-  /// Button label to upload first document
-  ///
-  /// In en, this message translates to:
-  /// **'Upload First Document'**
-  String get uploadFirstDocument;
-
-  /// Button label to upload a new document
-  ///
-  /// In en, this message translates to:
-  /// **'Upload New'**
-  String get uploadNew;
-
-  /// Success message when document is uploaded
-  ///
-  /// In en, this message translates to:
-  /// **'Document uploaded successfully!'**
-  String get documentUploadSuccess;
-
-  /// Error message when document upload fails
-  ///
-  /// In en, this message translates to:
-  /// **'Upload failed. Please try again.'**
-  String get uploadFailed;
-
-  /// Label for button to continue to the next screen
-  ///
-  /// In en, this message translates to:
-  /// **'Continue'**
-  String get continueAction;
-
-  /// Label for claim attachment item
-  ///
-  /// In en, this message translates to:
-  /// **'Claim Attachment'**
-  String get claimAttachment;
-
-  /// Label for button to preview email
-  ///
-  /// In en, this message translates to:
-  /// **'Preview Email'**
-  String get previewEmail;
-
-  /// Message shown in place of PDF preview
-  ///
-  /// In en, this message translates to:
-  /// **'PDF preview would be shown here.'**
-  String get pdfPreviewMessage;
-
-  /// Label for button to download PDF
+  /// Label for download PDF button
   ///
   /// In en, this message translates to:
   /// **'Download PDF'**
@@ -1852,7 +730,7 @@ abstract class AppLocalizations {
   /// **'File preview not available'**
   String get filePreviewNotAvailable;
 
-  /// Title for document deletion confirmation dialog
+  /// Title for delete document confirmation dialog
   ///
   /// In en, this message translates to:
   /// **'Delete Document'**
@@ -1864,233 +742,1076 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this document?'**
   String get deleteDocumentConfirmation;
 
-  /// Success message after document deletion
+  /// Label for cancel button
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// Label for delete button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Message shown when document is deleted successfully
   ///
   /// In en, this message translates to:
   /// **'Document deleted successfully'**
   String get documentDeletedSuccess;
 
-  /// Error message when document deletion fails
+  /// Title for document attachment screen
   ///
   /// In en, this message translates to:
-  /// **'Failed to delete document'**
-  String get documentDeleteFailed;
+  /// **'Attach Documents'**
+  String get attachDocuments;
 
-  /// The label for the 'other' document type.
+  /// Text shown when a document is being uploaded
   ///
   /// In en, this message translates to:
-  /// **'other'**
+  /// **'Uploading document...'**
+  String get uploadingDocument;
+
+  /// Text shown when no documents have been uploaded
+  ///
+  /// In en, this message translates to:
+  /// **'No documents uploaded yet'**
+  String get noDocuments;
+
+  /// Button text to upload the first document
+  ///
+  /// In en, this message translates to:
+  /// **'Upload First Document'**
+  String get uploadFirstDocument;
+
+  /// Default name for claim attachments
+  ///
+  /// In en, this message translates to:
+  /// **'Claim Attachment'**
+  String get claimAttachment;
+
+  /// Label for other document type
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
   String get other;
 
-  /// Title for the claim review screen.
+  /// Message shown when viewing a PDF preview
   ///
   /// In en, this message translates to:
-  /// **'Step 1: Review Your Claim'**
-  String get reviewYourClaim;
+  /// **'PDF Preview'**
+  String get pdfPreviewMessage;
 
-  /// Instructions for reviewing claim details.
+  /// Title for tips and reminders section
   ///
   /// In en, this message translates to:
-  /// **'Please review the details of your claim before proceeding.'**
-  String get reviewClaimDetails;
+  /// **'Tips & Reminders'**
+  String get tipsAndRemindersTitle;
 
-  /// Label for attachments section.
+  /// Tip about data security
   ///
   /// In en, this message translates to:
-  /// **'Attachments:'**
-  String get attachments;
+  /// **'Your data is secure and encrypted'**
+  String get tipSecureData;
 
-  /// Button text to proceed to confirmation screen.
+  /// Tip to check eligibility first
   ///
   /// In en, this message translates to:
-  /// **'Proceed to Confirmation'**
-  String get proceedToConfirmation;
+  /// **'Check eligibility before submitting a claim'**
+  String get tipCheckEligibility;
 
-  /// Title for the claim confirmation screen.
+  /// Tip to verify flight details
   ///
   /// In en, this message translates to:
-  /// **'Step 2: Confirm & Send'**
-  String get confirmAndSend;
+  /// **'Double-check all flight details before submission'**
+  String get tipDoubleCheckDetails;
 
-  /// Error message when email details cannot be loaded.
+  /// Message shown when document upload is successful
   ///
   /// In en, this message translates to:
-  /// **'Error: Could not load email details.'**
-  String get errorLoadingEmailDetails;
+  /// **'Document uploaded successfully'**
+  String get documentUploadSuccess;
 
-  /// Error message when email information is missing.
+  /// Message shown when document upload fails
   ///
   /// In en, this message translates to:
-  /// **'Could not find email information for the user or airline.'**
-  String get noEmailInfo;
+  /// **'Upload failed. Please try again.'**
+  String get uploadFailed;
 
-  /// Title for final confirmation section.
+  /// Helper text for reason for claim field
   ///
   /// In en, this message translates to:
-  /// **'Final Confirmation'**
-  String get finalConfirmation;
+  /// **'Describe why you are making this claim'**
+  String get reasonForClaimHint;
 
-  /// Label for airline email.
+  /// Validation message when reason for claim is empty
   ///
   /// In en, this message translates to:
-  /// **'The claim will be sent to:'**
-  String get claimWillBeSentTo;
+  /// **'Reason for claim is required'**
+  String get validatorReasonRequired;
 
-  /// Label for user email.
+  /// Tooltip for reason field in quick claim form
   ///
   /// In en, this message translates to:
-  /// **'A copy will be sent to your email:'**
-  String get copyToYourEmail;
+  /// **'Explain why you believe you are entitled to compensation'**
+  String get tooltipReasonQuickClaim;
 
-  /// Button text for confirming and sending email in claim confirmation screen
+  /// Label for optional compensation amount field
   ///
   /// In en, this message translates to:
-  /// **'Confirm and Send Email'**
-  String get confirmAndSendEmail;
+  /// **'Requested Compensation Amount (Optional)'**
+  String get compensationAmountOptionalLabel;
 
-  /// Title for the Flight Compensation Checker screen
+  /// Helper text for compensation amount field
   ///
   /// In en, this message translates to:
-  /// **'Flight Compensation Checker'**
-  String get flightCompensationCheckerTitle;
+  /// **'Enter amount if you have a specific request'**
+  String get compensationAmountHint;
 
-  /// Header text for the EU261 eligibility checker
+  /// Tooltip for compensation amount in quick claim form
   ///
   /// In en, this message translates to:
-  /// **'Check if your flight is eligible for EU261 compensation'**
-  String get checkEligibilityForEu261;
+  /// **'You can specify a compensation amount or leave it blank'**
+  String get tooltipCompensationAmountQuickClaim;
 
-  /// Placeholder text for flight number input field
+  /// Button text to proceed to review screen
   ///
   /// In en, this message translates to:
-  /// **'Flight Number (e.g., BA123)'**
-  String get flightNumberPlaceholder;
+  /// **'Continue to Review'**
+  String get continueToReview;
 
-  /// Placeholder text for optional date input field
+  /// Tooltip for departure airport field in quick claim form
   ///
   /// In en, this message translates to:
-  /// **'Date (YYYY-MM-DD, optional)'**
-  String get dateOptionalPlaceholder;
+  /// **'Enter the airport you departed from'**
+  String get tooltipDepartureAirportQuickClaim;
 
-  /// Hint text for date field
+  /// Helper text for arrival airport field in quick claim form
   ///
   /// In en, this message translates to:
-  /// **'Leave empty for today'**
-  String get leaveDateEmptyForToday;
+  /// **'Enter airport code or name (e.g. LHR, London Heathrow)'**
+  String get arrivalAirportHintQuickClaim;
 
-  /// Error text for error messages
+  /// Validation message when arrival airport is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Arrival airport is required'**
+  String get validatorArrivalAirportRequired;
+
+  /// Tooltip for arrival airport field in quick claim form
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the airport you arrived at'**
+  String get tooltipArrivalAirportQuickClaim;
+
+  /// Label for reason for claim field
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for Claim'**
+  String get reasonForClaimLabel;
+
+  /// Hint text for reason field in quick claim form
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your claim reason here'**
+  String get hintTextReasonQuickClaim;
+
+  /// Helper text for flight number field in quick claim form
+  ///
+  /// In en, this message translates to:
+  /// **'Enter flight number (e.g. LH123)'**
+  String get flightNumberHintQuickClaim;
+
+  /// Validation message when flight number is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Flight number is required'**
+  String get validatorFlightNumberRequired;
+
+  /// Tooltip for flight number field in quick claim form
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the flight number for your claim'**
+  String get tooltipFlightNumberQuickClaim;
+
+  /// Tooltip for flight date field in quick claim form
+  ///
+  /// In en, this message translates to:
+  /// **'Select the date of your flight'**
+  String get tooltipFlightDateQuickClaim;
+
+  /// Helper text for departure airport field in quick claim form
+  ///
+  /// In en, this message translates to:
+  /// **'Enter airport code or name (e.g. LHR, London Heathrow)'**
+  String get departureAirportHintQuickClaim;
+
+  /// Validation message when departure airport is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Departure airport is required'**
+  String get validatorDepartureAirportRequired;
+
+  /// Status label for a claim that is under appeal
+  ///
+  /// In en, this message translates to:
+  /// **'Under Appeal'**
+  String get underAppeal;
+
+  /// Status label for a claim with unknown status
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Status'**
+  String get unknown;
+
+  /// Error message shown when trying to access the claim form without being logged in
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to submit a claim'**
+  String get errorMustBeLoggedIn;
+
+  /// Title for error dialog boxes
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get dialogTitleError;
+
+  /// OK button text for dialog boxes
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get dialogButtonOK;
+
+  /// Title for the quick claim screen
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Claim Form'**
+  String get quickClaimTitle;
+
+  /// Tooltip for FAQ help button
+  ///
+  /// In en, this message translates to:
+  /// **'View Frequently Asked Questions'**
+  String get tooltipFaqHelp;
+
+  /// Information banner text at the top of quick claim form
+  ///
+  /// In en, this message translates to:
+  /// **'Fill out this form to submit a quick compensation claim for your flight. We\'ll help you through the process.'**
+  String get quickClaimInfoBanner;
+
+  /// Button label for creating a new claim
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Claim'**
+  String get createClaim;
+
+  /// Status label for a submitted claim
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get submitted;
+
+  /// Status label for a claim being reviewed
+  ///
+  /// In en, this message translates to:
+  /// **'In Review'**
+  String get inReview;
+
+  /// Status label for a claim requiring action from the user
+  ///
+  /// In en, this message translates to:
+  /// **'Action Required'**
+  String get actionRequired;
+
+  /// Status label for a claim being processed
+  ///
+  /// In en, this message translates to:
+  /// **'Processing'**
+  String get processing;
+
+  /// Status label for an approved claim
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get approved;
+
+  /// Status label for a rejected claim
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get rejected;
+
+  /// Status label for a paid claim
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get paid;
+
+  /// Format for displaying flight route details
+  ///
+  /// In en, this message translates to:
+  /// **'{departure} to {arrival}'**
+  String flightRouteDetails(String departure, String arrival);
+
+  /// Message shown when authentication is required to view claims
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication Required'**
+  String get authenticationRequired;
+
+  /// Error message when claims cannot be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading claims'**
+  String get errorLoadingClaims;
+
+  /// Message prompting user to log in to view claims dashboard
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to view your claims dashboard'**
+  String get loginToViewClaimsDashboard;
+
+  /// Button label for logging in
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get logIn;
+
+  /// Message shown when user has no claims
+  ///
+  /// In en, this message translates to:
+  /// **'No Claims Yet'**
+  String get noClaimsYet;
+
+  /// Instructions for starting a new compensation claim
+  ///
+  /// In en, this message translates to:
+  /// **'Start by creating a new compensation claim for your flight. We\'ll guide you through the process.'**
+  String get startCompensationClaimInstructions;
+
+  /// Title for the claims dashboard screen
+  ///
+  /// In en, this message translates to:
+  /// **'Claims Dashboard'**
+  String get claimsDashboard;
+
+  /// Tooltip for dashboard refresh button
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Dashboard'**
+  String get refreshDashboard;
+
+  /// Title for claims summary section
+  ///
+  /// In en, this message translates to:
+  /// **'Claims Summary'**
+  String get claimsSummary;
+
+  /// Label for total claims count
+  ///
+  /// In en, this message translates to:
+  /// **'Total Claims'**
+  String get totalClaims;
+
+  /// Label for total compensation amount
+  ///
+  /// In en, this message translates to:
+  /// **'Total Compensation'**
+  String get totalCompensation;
+
+  /// Label for pending compensation amount
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Amount'**
+  String get pendingAmount;
+
+  /// Title shown when no claims exist in a category
+  ///
+  /// In en, this message translates to:
+  /// **'No Claims in this Category'**
+  String get noClaimsYetTitle;
+
+  /// Status label for pending compensation
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// Semantic label for viewing claim details
+  ///
+  /// In en, this message translates to:
+  /// **'View claim details'**
+  String get viewClaimDetails;
+
+  /// Semantic description of a claim item
+  ///
+  /// In en, this message translates to:
+  /// **'Claim for flight {flightNumber} - {status}'**
+  String claimForFlight(String flightNumber, String status);
+
+  /// Format for displaying flight route details with flight number
+  ///
+  /// In en, this message translates to:
+  /// **'{flightNumber}: {departure} to {arrival} {airline}'**
+  String flightRouteDetailsWithNumber(
+      String flightNumber,
+      String departure,
+      String arrival,
+      String number,
+      String airline,
+      String departureAirport,
+      String arrivalAirport,
+      String date,
+      String time);
+
+  /// Description for notification configuration
+  ///
+  /// In en, this message translates to:
+  /// **'Receive updates about claim status and important information'**
+  String get configureNotificationsDescription;
+
+  /// Message indicating notification feature is coming soon
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings coming soon!'**
+  String get notificationSettingsComingSoon;
+
+  /// Label for language change option
+  ///
+  /// In en, this message translates to:
+  /// **'Change Application Language'**
+  String get changeApplicationLanguage;
+
+  /// Label for language selection button
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguage;
+
+  /// Title for tips and reminders section
+  ///
+  /// In en, this message translates to:
+  /// **'Tips and Reminders'**
+  String get tipsAndReminders;
+
+  /// Tip about keeping profile updated
+  ///
+  /// In en, this message translates to:
+  /// **'• Keep your profile up-to-date for faster claim processing.'**
+  String get tipProfileUpToDate;
+
+  /// Tip about privacy of information
+  ///
+  /// In en, this message translates to:
+  /// **'• Your information is kept private and secure.'**
+  String get tipInformationPrivate;
+
+  /// Tip about importance of correct contact details
+  ///
+  /// In en, this message translates to:
+  /// **'• Correct contact details help with compensation.'**
+  String get tipContactDetails;
+
+  /// Tip about accessibility settings
+  ///
+  /// In en, this message translates to:
+  /// **'• Configure accessibility settings to customize your experience.'**
+  String get tipAccessibilitySettings;
+
+  /// Tab label for active claims
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// Tab label for completed claims
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @genericUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Generic User'**
+  String get genericUser;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get signOut;
+
+  /// No description provided for @errorSigningOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Error signing out: {error}'**
+  String errorSigningOut(String error);
+
+  /// Auto-generated for profileInformation
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Information'**
+  String get profileInformation;
+
+  /// No description provided for @profileInfoCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get profileInfoCardTitle;
+
+  /// No description provided for @accountSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Settings'**
+  String get accountSettings;
+
+  /// No description provided for @editPersonalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Personal Information'**
+  String get editPersonalInfo;
+
+  /// No description provided for @editPersonalInfoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your name, email, and other personal details'**
+  String get editPersonalInfoDescription;
+
+  /// No description provided for @accessibilitySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility Settings'**
+  String get accessibilitySettings;
+
+  /// No description provided for @configureAccessibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Accessibility'**
+  String get configureAccessibility;
+
+  /// No description provided for @accessibilityOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility Options'**
+  String get accessibilityOptions;
+
+  /// No description provided for @configureAccessibilityDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust text size, contrast, and other accessibility features'**
+  String get configureAccessibilityDescription;
+
+  /// No description provided for @notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettings;
+
+  /// No description provided for @configureNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Notifications'**
+  String get configureNotifications;
+
+  /// Auto-generated for eu261Rights
+  ///
+  /// In en, this message translates to:
+  /// **'EU261 Rights'**
+  String get eu261Rights;
+
+  /// Auto-generated for dontLetAirlinesWin
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t Let Airlines Win'**
+  String get dontLetAirlinesWin;
+
+  /// Auto-generated for submitClaimAnyway
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Claim Anyway'**
+  String get submitClaimAnyway;
+
+  /// No description provided for @newClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'New Claim'**
+  String get newClaim;
+
+  /// No description provided for @notLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Logged In'**
+  String get notLoggedIn;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signIn;
+
+  /// No description provided for @checkFlightEligibilityButtonText.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Flight Eligibility'**
+  String get checkFlightEligibilityButtonText;
+
+  /// No description provided for @euEligibleFlightsButtonText.
+  ///
+  /// In en, this message translates to:
+  /// **'EU Eligible Flights'**
+  String get euEligibleFlightsButtonText;
+
+  /// No description provided for @welcomeUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {name} ({role})'**
+  String welcomeUser(String name, String role, Object userName);
+
+  /// No description provided for @errorFormSubmissionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Error submitting form: {errorMessage}. Please check your connection and try again.'**
+  String errorFormSubmissionFailed(String errorMessage);
+
+  /// No description provided for @contactAirlineForClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Airline for Claim'**
+  String get contactAirlineForClaim;
+
+  /// No description provided for @flightMightNotBeEligible.
+  ///
+  /// In en, this message translates to:
+  /// **'Flight Might Not Be Eligible'**
+  String get flightMightNotBeEligible;
+
+  /// No description provided for @knowYourRights.
+  ///
+  /// In en, this message translates to:
+  /// **'Know Your Rights'**
+  String get knowYourRights;
+
+  /// No description provided for @airlineDataDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Airline Data Disclaimer'**
+  String get airlineDataDisclaimer;
+
+  /// No description provided for @error.
   ///
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
 
-  /// Format for displaying flight info with number and airline
-  ///
-  /// In en, this message translates to:
-  /// **'Flight {flightNumber} - {airline}'**
-  String flightInfoFormat(String flightNumber, String airline);
-
-  /// Status label
+  /// No description provided for @status.
   ///
   /// In en, this message translates to:
   /// **'Status'**
   String get status;
 
-  /// From label for departure airport
+  /// No description provided for @from.
   ///
   /// In en, this message translates to:
   /// **'From'**
   String get from;
 
-  /// To label for arrival airport
+  /// No description provided for @to.
   ///
   /// In en, this message translates to:
   /// **'To'**
   String get to;
 
-  /// Delay label
+  /// No description provided for @delay.
   ///
   /// In en, this message translates to:
   /// **'Delay'**
   String get delay;
 
-  /// Format for displaying minutes
+  /// No description provided for @flightEligibleForCompensation.
+  ///
+  /// In en, this message translates to:
+  /// **'Flight Eligible For Compensation'**
+  String get flightEligibleForCompensation;
+
+  /// No description provided for @flightInfoFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Flight {flightCode} on {flightDate}'**
+  String flightInfoFormat(String flightCode, String flightDate);
+
+  /// No description provided for @minutesFormat.
   ///
   /// In en, this message translates to:
   /// **'{minutes} minutes'**
   String minutesFormat(int minutes);
 
-  /// Message shown when flight is eligible for compensation
+  /// No description provided for @flightCompensationCheckerTitle.
   ///
   /// In en, this message translates to:
-  /// **'Your flight is eligible for compensation!'**
-  String get flightEligibleForCompensation;
+  /// **'Flight Compensation Checker'**
+  String get flightCompensationCheckerTitle;
 
-  /// Message shown when flight is not eligible for compensation
+  /// No description provided for @checkEligibilityForEu261.
   ///
   /// In en, this message translates to:
-  /// **'Your flight is not eligible for compensation.'**
-  String get flightNotEligibleForCompensation;
+  /// **'Check Eligibility for EU 261 Compensation'**
+  String get checkEligibilityForEu261;
 
-  /// Label for potential compensation amount
+  /// No description provided for @flightNumberPlaceholder.
   ///
   /// In en, this message translates to:
-  /// **'Potential Compensation:'**
-  String get potentialCompensation;
+  /// **'Flight Number (e.g., LO123)'**
+  String get flightNumberPlaceholder;
 
-  /// Instruction for claiming compensation
+  /// No description provided for @pleaseEnterFlightNumber.
   ///
   /// In en, this message translates to:
-  /// **'Contact the airline to claim your compensation under EU Regulation 261/2004.'**
-  String get contactAirlineForClaim;
+  /// **'Please enter a flight number'**
+  String get pleaseEnterFlightNumber;
 
-  /// Prefix for showing reason for ineligibility
+  /// No description provided for @dateOptionalPlaceholder.
   ///
   /// In en, this message translates to:
-  /// **'Reason: '**
-  String get reasonPrefix;
+  /// **'Flight Date (optional)'**
+  String get dateOptionalPlaceholder;
 
-  /// Reason for ineligibility due to short delay
+  /// No description provided for @leaveDateEmptyForToday.
   ///
   /// In en, this message translates to:
-  /// **'Flight delay is less than 3 hours'**
-  String get delayLessThan3Hours;
+  /// **'Leave empty for today\'s date'**
+  String get leaveDateEmptyForToday;
 
-  /// Reason for ineligibility due to jurisdiction
+  /// No description provided for @checkCompensationEligibility.
   ///
   /// In en, this message translates to:
-  /// **'Flight is not under EU jurisdiction'**
-  String get notUnderEuJurisdiction;
+  /// **'Check Compensation Eligibility'**
+  String get checkCompensationEligibility;
 
-  /// Default reason when specific reason is not available
+  /// No description provided for @continueToAttachmentsButton.
   ///
   /// In en, this message translates to:
-  /// **'Unknown reason'**
-  String get unknownReason;
+  /// **'Continue to Attachments'**
+  String get continueToAttachmentsButton;
 
-  /// Button text for reviewing and confirming the claim before submission
+  /// No description provided for @flightNotFoundError.
   ///
   /// In en, this message translates to:
-  /// **'Review and Confirm'**
-  String get reviewAndConfirm;
+  /// **'Flight not found'**
+  String get flightNotFoundError;
 
-  /// Header text for the confirmation step asking user to verify claim details
+  /// No description provided for @invalidFlightNumberError.
   ///
   /// In en, this message translates to:
-  /// **'Please confirm that these details are correct:'**
-  String get pleaseConfirmDetails;
+  /// **'Invalid flight number'**
+  String get invalidFlightNumberError;
 
-  /// Message shown after email app is opened.
+  /// No description provided for @networkTimeoutError.
   ///
   /// In en, this message translates to:
-  /// **'Your email app has been opened. Please send the email to finalize your claim.'**
-  String get emailAppOpenedMessage;
+  /// **'Network timeout, please try again'**
+  String get networkTimeoutError;
 
-  /// Error message when email app cannot be opened.
+  /// No description provided for @serverError.
   ///
   /// In en, this message translates to:
-  /// **'Could not open email app. Please send your claim manually to {email}.'**
-  String emailAppErrorMessage(String email);
+  /// **'Server error'**
+  String get serverError;
+
+  /// No description provided for @rateLimitError.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests, please try again later'**
+  String get rateLimitError;
+
+  /// No description provided for @generalFlightCheckError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error checking flight eligibility'**
+  String get generalFlightCheckError;
+
+  /// Auto-generated for receiveNotifications
+  ///
+  /// In en, this message translates to:
+  /// **'Receive Notifications'**
+  String get receiveNotifications;
+
+  /// Auto-generated for getClaimUpdates
+  ///
+  /// In en, this message translates to:
+  /// **'Get Claim Updates'**
+  String get getClaimUpdates;
+
+  /// Auto-generated for saveProfile
+  ///
+  /// In en, this message translates to:
+  /// **'Save Profile'**
+  String get saveProfile;
+
+  /// Auto-generated for firstName
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstName;
+
+  /// Auto-generated for lastName
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastName;
+
+  /// Auto-generated for name
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// Auto-generated for phone
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phone;
+
+  /// Auto-generated for address
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// Auto-generated for city
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get city;
+
+  /// Auto-generated for country
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get country;
+
+  /// Auto-generated for postalCode
+  ///
+  /// In en, this message translates to:
+  /// **'Postal Code'**
+  String get postalCode;
+
+  /// Auto-generated for pleaseSelectFlightDate
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a flight date'**
+  String get pleaseSelectFlightDate;
+
+  /// Auto-generated for submitNewClaim
+  ///
+  /// In en, this message translates to:
+  /// **'Submit New Claim'**
+  String get submitNewClaim;
+
+  /// Auto-generated for pleaseEnterArrivalAirport
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter arrival airport'**
+  String get pleaseEnterArrivalAirport;
+
+  /// Auto-generated for pleaseEnterReason
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter reason for claim'**
+  String get pleaseEnterReason;
+
+  /// Auto-generated for flightDateHint
+  ///
+  /// In en, this message translates to:
+  /// **'Select flight date'**
+  String get flightDateHint;
+
+  /// Auto-generated for number
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get number;
+
+  /// Auto-generated for welcomeUser3
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {name} ({role} at {company})'**
+  String welcomeUser3(String name, String role, String company);
+
+  /// Auto-generated for phoneNumber
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// Auto-generated for passportNumber
+  ///
+  /// In en, this message translates to:
+  /// **'Passport Number'**
+  String get passportNumber;
+
+  /// Auto-generated for nationality
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get nationality;
+
+  /// Auto-generated for dateOfBirth
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get dateOfBirth;
+
+  /// Auto-generated for dateFormat
+  ///
+  /// In en, this message translates to:
+  /// **'DD/MM/YYYY'**
+  String get dateFormat;
+
+  /// Auto-generated for privacySettings
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Settings'**
+  String get privacySettings;
+
+  /// Auto-generated for consentToShareData
+  ///
+  /// In en, this message translates to:
+  /// **'I consent to share my data for claim processing'**
+  String get consentToShareData;
+
+  /// Auto-generated for requiredForProcessing
+  ///
+  /// In en, this message translates to:
+  /// **'Required for processing your claim'**
+  String get requiredForProcessing;
+
+  /// Auto-generated for claims
+  ///
+  /// In en, this message translates to:
+  /// **'Claims'**
+  String get claims;
+
+  /// Auto-generated for errorLoadingProfile
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading profile'**
+  String get errorLoadingProfile;
+
+  /// Auto-generated for profileSaved
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaved;
+
+  /// Auto-generated for editProfile
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfile;
+
+  /// Auto-generated for profileAccuracyInfo
+  ///
+  /// In en, this message translates to:
+  /// **'Please ensure your profile information is accurate for claim processing'**
+  String get profileAccuracyInfo;
+
+  /// Auto-generated for keepProfileUpToDate
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your profile up to date'**
+  String get keepProfileUpToDate;
+
+  /// Auto-generated for profilePrivacy
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is secure and only used for claim processing'**
+  String get profilePrivacy;
+
+  /// Auto-generated for correctContactDetails
+  ///
+  /// In en, this message translates to:
+  /// **'Ensure contact details are correct'**
+  String get correctContactDetails;
+
+  /// Title for email preview dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Your Compensation Email is Ready!'**
+  String get emailReadyToSend;
+
+  /// Instructions for copying email content
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the email details below and paste them into your email app'**
+  String get emailCopyInstructions;
+
+  /// Label for CC (carbon copy) email field
+  ///
+  /// In en, this message translates to:
+  /// **'CC'**
+  String get cc;
+
+  /// Label for email subject field
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get subject;
+
+  /// Label for email body section
+  ///
+  /// In en, this message translates to:
+  /// **'Email Body'**
+  String get emailBody;
+
+  /// Instructions header for email sending steps
+  ///
+  /// In en, this message translates to:
+  /// **'How to send this email:'**
+  String get howToSendEmail;
+
+  /// First step in email sending instructions
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \"Copy Email\" below'**
+  String get emailStep1;
+
+  /// Second step in email sending instructions
+  ///
+  /// In en, this message translates to:
+  /// **'Open your email app (Gmail, Outlook, etc.)'**
+  String get emailStep2;
+
+  /// Third step in email sending instructions
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new email'**
+  String get emailStep3;
+
+  /// Fourth step in email sending instructions
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the copied content'**
+  String get emailStep4;
+
+  /// Fifth step in email sending instructions
+  ///
+  /// In en, this message translates to:
+  /// **'Send your compensation claim!'**
+  String get emailStep5;
+
+  /// Button text to copy email content
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Email'**
+  String get copyEmail;
+
+  /// Success message when email is copied
+  ///
+  /// In en, this message translates to:
+  /// **'Email copied to clipboard!'**
+  String get emailCopiedSuccess;
 }
 
 class _AppLocalizationsDelegate

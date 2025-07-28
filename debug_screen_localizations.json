@@ -1,0 +1,41 @@
+{
+  "saveDocument": "Save Document",
+  "@saveDocument": {
+    "description": "Button label to save document"
+  },
+  
+  "fieldName": "Field Name",
+  "@fieldName": {
+    "description": "Label for field name"
+  },
+  
+  "fieldValue": "Field Value",
+  "@fieldValue": {
+    "description": "Label for field value"
+  },
+  
+  "noFieldsExtracted": "No Fields Extracted",
+  "@noFieldsExtracted": {
+    "description": "Message when no fields are extracted"
+  },
+  
+  "copiedToClipboard": "Copied to Clipboard",
+  "@copiedToClipboard": {
+    "description": "Message when text is copied to clipboard"
+  },
+  
+  "networkError": "Network Error",
+  "@networkError": {
+    "description": "Generic network error message"
+  },
+  
+  "generalError": "General Error",
+  "@generalError": {
+    "description": "Generic error message"
+  },
+  
+  "loginRequiredForClaim": "Login Required for Claim",
+  "@loginRequiredForClaim": {
+    "description": "Message indicating login is required to submit a claim"
+  }
+}

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:f35_flight_compensation/models/flight_document.dart';
 import 'package:f35_flight_compensation/viewmodels/document_viewmodel.dart';
 import 'package:f35_flight_compensation/screens/document_upload_screen.dart';
-import 'package:f35_flight_compensation/l10n/app_localizations.dart'; // Changed from flutter_gen
+import '../l10n2/app_localizations.dart';
 
 class DocumentManagementScreen extends StatefulWidget {
   final String? flightNumber;
@@ -77,6 +77,7 @@ class _DocumentManagementScreenState extends State<DocumentManagementScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'document_management_fab',
         onPressed: () {
           Navigator.push(
             context,

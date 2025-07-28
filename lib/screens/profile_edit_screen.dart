@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Keep for User type, but not for instance
+import '../core/app_localizations_patch.dart';
 import 'package:get_it/get_it.dart';
-import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../viewmodels/auth_viewmodel.dart';
-import '../models/user_profile.dart';
-// import '../services/firestore_service.dart'; // Temporarily disabled
-import '../utils/translation_helper.dart';
+import '../services/auth_service_firebase.dart';
 import '../utils/translation_initializer.dart';
 
 
@@ -73,25 +71,38 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   Future<void> _loadProfile() async {
     setState(() => _loading = true);
     try {
-      final user = _authViewModel.currentUser; // Use AuthViewModel
-      if (user == null) {
-        setState(() => _loading = false);
-        return;
-      }
-
-      // TODO: Re-implement profile loading with the new service architecture
+      // Load profile data from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      
       if (mounted) {
         setState(() {
-          // For now, just use the display name from the auth provider
-          _nameController.text = user.displayName ?? '';
+          // Load all saved profile data
+          _nameController.text = prefs.getString('profile_displayName') ?? '';
+          _phoneController.text = prefs.getString('profile_phone') ?? '';
+          _passportController.text = prefs.getString('profile_passport') ?? '';
+          _nationalityController.text = prefs.getString('profile_nationality') ?? '';
+          _dobController.text = prefs.getString('profile_dateOfBirth') ?? '';
+          _addressController.text = prefs.getString('profile_address') ?? '';
+          _cityController.text = prefs.getString('profile_city') ?? '';
+          _postalController.text = prefs.getString('profile_postalCode') ?? '';
+          _countryController.text = prefs.getString('profile_country') ?? '';
+          _consentData = prefs.getBool('profile_consentData') ?? false;
+          _consentNotifications = prefs.getBool('profile_consentNotifications') ?? false;
+          
           _loading = false;
         });
+        
+        print('Profile data loaded from SharedPreferences:');
+        print('- Display Name: ${_nameController.text}');
+        print('- Phone: ${_phoneController.text}');
+        print('- All fields loaded successfully');
       }
     } catch (e) {
+      print('Error loading profile: $e');
       if (mounted) {
         setState(() => _loading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.errorLoadingProfile))
+          SnackBar(content: Text(context.l10n.errorLoadingProfile))
         );
       }
     }
@@ -99,16 +110,81 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
-    final user = _authViewModel.currentUser; // Use AuthViewModel
-    if (user == null) return;
-
-    // TODO: Re-implement profile saving with the new service architecture
-    // final profile = UserProfile(...);
-    // await NewProfileService().setUserProfile(profile);
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(AppLocalizations.of(context)!.profileSaved)
-    ));
+    
+    try {
+      // Show loading indicator
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              ),
+              const SizedBox(width: 16),
+              const Text('Saving profile...'),
+            ],
+          ),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+      
+      // Save profile data using SharedPreferences for persistence
+      final prefs = await SharedPreferences.getInstance();
+      
+      // Save each field to SharedPreferences
+      await prefs.setString('profile_displayName', _nameController.text.trim());
+      await prefs.setString('profile_phone', _phoneController.text.trim());
+      await prefs.setString('profile_passport', _passportController.text.trim());
+      await prefs.setString('profile_nationality', _nationalityController.text.trim());
+      await prefs.setString('profile_dateOfBirth', _dobController.text.trim());
+      await prefs.setString('profile_address', _addressController.text.trim());
+      await prefs.setString('profile_city', _cityController.text.trim());
+      await prefs.setString('profile_postalCode', _postalController.text.trim());
+      await prefs.setString('profile_country', _countryController.text.trim());
+      await prefs.setBool('profile_consentData', _consentData);
+      await prefs.setBool('profile_consentNotifications', _consentNotifications);
+      
+      print('Profile data saved to SharedPreferences:');
+      print('- Display Name: ${_nameController.text.trim()}');
+      print('- Phone: ${_phoneController.text.trim()}');
+      print('- All fields saved successfully');
+      
+      // Also try to update AuthService display name if possible
+      try {
+        final authService = GetIt.instance<FirebaseAuthService>();
+        if (authService.currentUser != null) {
+          // Try to update Firebase user display name if available
+          await authService.currentUser!.updateDisplayName(_nameController.text.trim());
+          print('Firebase display name updated successfully');
+        }
+      } catch (e) {
+        print('Could not update Firebase display name (this is OK in dev mode): $e');
+      }
+      
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.profileSaved),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      
+      // Navigate back to profile screen
+      Navigator.of(context).pop();
+      
+    } catch (e) {
+      print('Error saving profile: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving profile: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   @override
@@ -117,7 +193,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.editProfile)),
+      appBar: AppBar(title: Text(context.l10n.editProfile)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -136,7 +212,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      AppLocalizations.of(context)!.profileAccuracyInfo,
+                      context.l10n.profileAccuracyInfo,
                       style: TextStyle(color: Colors.blue[900]),
                     ),
                   ),
@@ -155,13 +231,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.tipsAndReminders,
+                    context.l10n.tipsAndReminders,
                     style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
                   ),
                   const SizedBox(height: 6),
-                  Text('• ${AppLocalizations.of(context)!.keepProfileUpToDate}'),
-                  Text('• ${AppLocalizations.of(context)!.profilePrivacy}'),
-                  Text('• ${AppLocalizations.of(context)!.correctContactDetails}'),
+                  Text('• ${context.l10n.keepProfileUpToDate}'),
+                  Text('• ${context.l10n.profilePrivacy}'),
+                  Text('• ${context.l10n.correctContactDetails}'),
                 ],
               ),
             ),
@@ -172,29 +248,29 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 children: [
                   TextFormField(
                     controller: _nameController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fullName),
-                    validator: (v) => v == null || v.isEmpty ? AppLocalizations.of(context)!.required : null,
+                    decoration: InputDecoration(labelText: context.l10n.fullName),
+                    validator: (v) => v == null || v.isEmpty ? context.l10n.required : null,
                   ),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.phoneNumber),
-                    validator: (v) => v == null || v.isEmpty ? AppLocalizations.of(context)!.required : null,
+                    decoration: InputDecoration(labelText: context.l10n.phoneNumber),
+                    validator: (v) => v == null || v.isEmpty ? context.l10n.required : null,
                   ),
                   TextFormField(
                     controller: _passportController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.passportNumber),
+                    decoration: InputDecoration(labelText: context.l10n.passportNumber),
                   ),
                   TextFormField(
                     controller: _nationalityController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.nationality),
+                    decoration: InputDecoration(labelText: context.l10n.nationality),
                   ),
                   // Date of Birth with date picker
                   TextFormField(
                     controller: _dobController,
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.dateOfBirth,
+                      labelText: context.l10n.dateOfBirth,
                       prefixIcon: const Icon(Icons.calendar_today),
-                      hintText: AppLocalizations.of(context)!.dateFormat,
+                      hintText: context.l10n.dateFormat,
                     ),
                     readOnly: true, // Prevent keyboard from appearing
                     onTap: () async {
@@ -216,19 +292,19 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   ),
                   TextFormField(
                     controller: _addressController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.address),
+                    decoration: InputDecoration(labelText: context.l10n.address),
                   ),
                   TextFormField(
                     controller: _cityController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.city),
+                    decoration: InputDecoration(labelText: context.l10n.city),
                   ),
                   TextFormField(
                     controller: _postalController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.postalCode),
+                    decoration: InputDecoration(labelText: context.l10n.postalCode),
                   ),
                   TextFormField(
                     controller: _countryController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.country),
+                    decoration: InputDecoration(labelText: context.l10n.country),
                   ),
                   const SizedBox(height: 16),
                   
@@ -245,19 +321,19 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 16, top: 12),
                           child: Text(
-                            AppLocalizations.of(context)!.privacySettings,
+                            context.l10n.privacySettings,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         SwitchListTile(
-                          title: Text(AppLocalizations.of(context)!.consentToShareData),
-                          subtitle: Text(AppLocalizations.of(context)!.requiredForProcessing),
+                          title: Text(context.l10n.consentToShareData),
+                          subtitle: Text(context.l10n.requiredForProcessing),
                           value: _consentData,
                           onChanged: (v) => setState(() => _consentData = v),
                         ),
                         SwitchListTile(
-                          title: Text(AppLocalizations.of(context)!.receiveNotifications),
-                          subtitle: Text(AppLocalizations.of(context)!.getClaimUpdates),
+                          title: Text(context.l10n.receiveNotifications),
+                          subtitle: Text(context.l10n.getClaimUpdates),
                           value: _consentNotifications,
                           onChanged: (v) => setState(() => _consentNotifications = v),
                         ),
@@ -276,7 +352,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         foregroundColor: Colors.white,
                       ),
                       label: Text(
-                        AppLocalizations.of(context)!.saveProfile,
+                        context.l10n.saveProfile,
                         style: const TextStyle(fontWeight: FontWeight.bold)
                       ),
                     ),

@@ -1,0 +1,46 @@
+{
+  "unknownError": "Unknown error",
+  "@unknownError": {
+    "description": "Generic unknown error message"
+  },
+  
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button label to retry an action"
+  },
+  
+  "claimNotFound": "Claim Not Found",
+  "@claimNotFound": {
+    "description": "Title shown when a claim is not found"
+  },
+  
+  "claimNotFoundDesc": "The requested claim could not be found or may have been deleted",
+  "@claimNotFoundDesc": {
+    "description": "Description shown when a claim is not found"
+  },
+  
+  "backToDashboard": "Back to Dashboard",
+  "@backToDashboard": {
+    "description": "Button label to go back to dashboard"
+  },
+  
+  "reviewYourClaim": "Review Your Claim",
+  "@reviewYourClaim": {
+    "description": "Title for the claim review screen"
+  },
+  
+  "reviewClaimDetails": "Review Claim Details",
+  "@reviewClaimDetails": {
+    "description": "Header for reviewing claim details"
+  },
+  
+  "flightNumber": "Flight Number",
+  "@flightNumber": {
+    "description": "Label for flight number field"
+  },
+  
+  "flightDate": "Flight Date",
+  "@flightDate": {
+    "description": "Label for flight date field"
+  }
+}

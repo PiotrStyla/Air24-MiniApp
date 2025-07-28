@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:flutter/services.dart';
-import 'package:f35_flight_compensation/l10n/app_localizations.dart';
 import 'package:crop_image/crop_image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -40,7 +40,7 @@ class _DocumentCropScreenState extends State<DocumentCropScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.cropDocument),
@@ -115,7 +115,7 @@ class _DocumentCropScreenState extends State<DocumentCropScreen> {
     }
     
     // Show a snackbar with the current aspect ratio mode
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = context.l10n;
     final String aspectRatioText = controller.aspectRatio == null
         ? localizations.aspectRatioFree
         : controller.aspectRatio == 1.0

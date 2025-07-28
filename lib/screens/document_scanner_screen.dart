@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:provider/provider.dart';
-import 'package:f35_flight_compensation/l10n/app_localizations.dart';
 import '../core/services/service_initializer.dart';
 import '../models/document_ocr_result.dart';
 import '../viewmodels/document_scanner_viewmodel.dart';
@@ -57,7 +57,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
             );
           }
           
-          final localizations = AppLocalizations.of(context)!;
+          final localizations = context.l10n;
           return Scaffold(
             appBar: AppBar(
               title: Text(localizations.documentScanner),
@@ -81,7 +81,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
   Widget _buildLoadingIndicator() {
     return Center(
       child: Builder(builder: (context) {
-        final localizations = AppLocalizations.of(context)!;
+        final localizations = context.l10n;
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

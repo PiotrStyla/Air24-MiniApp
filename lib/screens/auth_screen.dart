@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
-import '../services/auth_service.dart';
+import '../services/auth_service_firebase.dart';
 import '../widgets/google_logo.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => AuthViewModel(
-        Provider.of<AuthService>(context, listen: false),
+        Provider.of<FirebaseAuthService>(context, listen: false),
       ),
       child: Consumer<AuthViewModel>(
         builder: (context, viewModel, _) {
@@ -286,7 +286,10 @@ class _AuthScreenState extends State<AuthScreen> {
                             onPressed: viewModel.isLoading 
                               ? null 
                               : () async {
+                                  print('🔴 AUTH_SCREEN: Google Sign-In button pressed!');
+                                  print('🔴 AUTH_SCREEN: About to call viewModel.signInWithGoogle()');
                                   final success = await viewModel.signInWithGoogle();
+                                  print('🔴 AUTH_SCREEN: viewModel.signInWithGoogle() returned: $success');
                                   // The Navigator.pop(context) was removed from here.
                                   // AuthGate handles navigation automatically on auth state change.
                                 },

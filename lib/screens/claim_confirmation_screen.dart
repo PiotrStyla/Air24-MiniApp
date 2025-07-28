@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import '../core/app_localizations_patch.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../models/claim.dart';
-import '../services/airline_procedure_service.dart';
-import '../services/auth_service.dart';
-import '../services/claim_submission_service.dart';
 import 'package:get_it/get_it.dart';
-import '../l10n2/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
+import '../models/claim.dart';
+import '../services/claim_submission_service.dart';
+import '../services/email_service.dart';
+import '../services/auth_service_firebase.dart';
+import '../services/airline_procedure_service.dart';
+import '../widgets/secure_email_preview_dialog.dart';
 
 class ClaimConfirmationScreen extends StatefulWidget {
   final Claim claim;
+  final String? userEmail;
 
-  const ClaimConfirmationScreen({Key? key, required this.claim}) : super(key: key);
+  const ClaimConfirmationScreen({Key? key, required this.claim, this.userEmail}) : super(key: key);
 
   @override
   State<ClaimConfirmationScreen> createState() => _ClaimConfirmationScreenState();
@@ -28,11 +32,15 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
 
   Future<Map<String, String?>> _fetchEmailDetails() async {
     try {
-      final authService = GetIt.instance<AuthService>();
-      String userEmail = 'user@example.com'; // Default fallback
+      // Use the passed email parameter first, then fallback to AuthService
+      String userEmail = widget.userEmail ?? 'dev@example.com'; // Use passed email or fallback
       
-      if (authService.currentUser?.email != null) {
-        userEmail = authService.currentUser!.email!;
+      // If no email was passed, try to get it from AuthService
+      if (widget.userEmail == null) {
+        final authService = GetIt.instance<FirebaseAuthService>();
+        if (authService.currentUser?.email != null) {
+          userEmail = authService.currentUser!.email!;
+        }
       }
       
       // Extract airline IATA code using proper validation
@@ -190,29 +198,143 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
   }
 
   Future<void> _sendClaimEmail(String airlineEmail, String userEmail) async {
-    final claimSubmissionService = context.read<ClaimSubmissionService>();
-    final mailtoUri = claimSubmissionService.constructClaimMailtoUri(
-      claim: widget.claim,
-      airlineEmail: airlineEmail,
-      userEmail: userEmail,
-    );
-
-    if (await canLaunchUrl(mailtoUri)) {
-      await launchUrl(mailtoUri);
-      // After launching, save the claim to the database
-      await claimSubmissionService.submitClaim(widget.claim);
+    try {
+      // Show loading indicator
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.emailAppOpenedMessage)),
+        SnackBar(
+          content: Row(
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 16),
+              const Text('Opening email app...'),
+            ],
+          ),
+          duration: const Duration(seconds: 2),
+        ),
       );
+
+      // Create EmailService instance
+      final emailService = EmailService();
+      
+      // Get current locale for localized email template
+      final locale = Localizations.localeOf(context).languageCode;
+      
+      // Get the actual user name using the new async method from AuthService
+      final authService = GetIt.instance<FirebaseAuthService>();
+      final userName = await authService.getUserDisplayNameAsync();
+      
+      print('Email signature using name: "$userName" (from AuthService async method)');
+      
+      // Generate professional email content using EmailService
+      final emailBody = emailService.generateCompensationEmailBody(
+        passengerName: userName, // Use actual user name from profile
+        flightNumber: widget.claim.flightNumber,
+        flightDate: widget.claim.flightDate.toString().split(' ')[0], // Format date
+        departureAirport: widget.claim.departureAirport,
+        arrivalAirport: widget.claim.arrivalAirport,
+        delayReason: widget.claim.reason,
+        compensationAmount: widget.claim.compensationAmount.toString(),
+        locale: locale,
+      );
+      
+      // Generate subject line based on locale
+      String subject;
+      switch (locale) {
+        case 'de':
+          subject = 'Entschädigungsanspruch Flug ${widget.claim.flightNumber} - EU261';
+          break;
+        case 'es':
+          subject = 'Reclamación de Compensación Vuelo ${widget.claim.flightNumber} - EU261';
+          break;
+        default:
+          subject = 'Flight Compensation Claim ${widget.claim.flightNumber} - EU261';
+      }
+      
+      // Send email using EmailService
+      final bool emailLaunched = await emailService.sendClaimEmail(
+        toEmail: airlineEmail,
+        ccEmail: userEmail,
+        subject: subject,
+        body: emailBody,
+      );
+      
+      if (emailLaunched) {
+        // Email app opened successfully
+        final claimSubmissionService = context.read<ClaimSubmissionService>();
+        
+        // Save the claim to the database
+        await claimSubmissionService.submitClaim(widget.claim);
+        
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.emailAppOpenedMessage(userEmail)),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        // Email app not available - show better email composition experience
+        await _showEmailCompositionDialog(
+          context,
+          airlineEmail,
+          userEmail,
+          subject,
+          emailBody,
+        );
+        
+        // Submit the claim regardless since user has the email content
+        final claimSubmissionService = context.read<ClaimSubmissionService>();
+        await claimSubmissionService.submitClaim(widget.claim);
+      }
+      
       // Pop all the way back to the root
       Navigator.of(context).popUntil((route) => route.isFirst);
-    } else {
+    } catch (e) {
+      print('Error sending claim email: $e');
+      
+      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.emailAppErrorMessage(airlineEmail))),
+        SnackBar(
+          content: Text(
+            context.l10n.errorFailedToSubmitClaim(e.toString()),
+          ),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+          action: SnackBarAction(
+            label: 'Retry',
+            onPressed: () {
+              _sendClaimEmail(airlineEmail, userEmail);
+            },
+          ),
+        ),
       );
     }
   }
   
+  /// Show secure email preview dialog with backend email sending
+  Future<void> _showEmailCompositionDialog(
+    BuildContext context,
+    String toEmail,
+    String ccEmail,
+    String subject,
+    String body,
+  ) async {
+    await showDialog(
+      context: context,
+      builder: (context) => SecureEmailPreviewDialog(
+        toEmail: toEmail,
+        ccEmail: ccEmail.isNotEmpty ? ccEmail : null,
+        subject: subject,
+        body: body,
+      ),
+    );
+  }
+
   /// Preview the claim email content before sending
   void _previewClaimEmail(String airlineEmail, String userEmail) {
     print('_previewClaimEmail called with: $airlineEmail, $userEmail');
@@ -236,7 +358,7 @@ I am writing to claim compensation under EC Regulation 261/2004 for the flight d
 Please find my details and the flight information above for your processing.$attachmentsSection
 
 Sincerely,
-${GetIt.instance<AuthService>().currentUser?.displayName ?? 'Awaiting your reply'}
+${GetIt.instance<FirebaseAuthService>().currentUser?.displayName ?? 'Awaiting your reply'}
 ''';
       
       final subject = 'Flight Compensation Claim - Flight ${widget.claim.flightNumber}';
@@ -361,7 +483,7 @@ ${GetIt.instance<AuthService>().currentUser?.displayName ?? 'Awaiting your reply
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.confirmAndSend),
+        title: Text(context.l10n.confirmAndSend),
       ),
       body: FutureBuilder<Map<String, String?>>(
         future: _emailDetailsFuture,
@@ -370,14 +492,14 @@ ${GetIt.instance<AuthService>().currentUser?.displayName ?? 'Awaiting your reply
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError || !snapshot.hasData) {
-            return Center(child: Text(AppLocalizations.of(context)!.errorLoadingEmailDetails));
+            return Center(child: Text(context.l10n.errorLoadingEmailDetails));
           }
 
           final userEmail = snapshot.data?['userEmail'];
           final airlineEmail = snapshot.data?['airlineEmail'];
 
           if (userEmail == null || airlineEmail == null) {
-            return Center(child: Text(AppLocalizations.of(context)!.noEmailInfo));
+            return Center(child: Text(context.l10n.noEmailInfo));
           }
 
           return Padding(
@@ -391,12 +513,12 @@ ${GetIt.instance<AuthService>().currentUser?.displayName ?? 'Awaiting your reply
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context)!.finalConfirmation, style: Theme.of(context).textTheme.titleLarge),
+                        Text(context.l10n.finalConfirmation, style: Theme.of(context).textTheme.titleLarge),
                         const SizedBox(height: 16),
-                        Text(AppLocalizations.of(context)!.claimWillBeSentTo, style: Theme.of(context).textTheme.titleMedium),
+                        Text(context.l10n.claimWillBeSentTo, style: Theme.of(context).textTheme.titleMedium),
                         Text(airlineEmail, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         const SizedBox(height: 16),
-                        Text(AppLocalizations.of(context)!.copyToYourEmail, style: Theme.of(context).textTheme.titleMedium),
+                        Text(context.l10n.copyToYourEmail, style: Theme.of(context).textTheme.titleMedium),
                         Text(userEmail, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                       ],
                     ),
@@ -408,7 +530,7 @@ ${GetIt.instance<AuthService>().currentUser?.displayName ?? 'Awaiting your reply
                     Expanded(
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.preview),
-                        label: Text(AppLocalizations.of(context)!.previewEmail),
+                        label: Text(context.l10n.previewEmail),
                         style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
                         onPressed: () {
                           print('Preview button pressed');
@@ -420,7 +542,7 @@ ${GetIt.instance<AuthService>().currentUser?.displayName ?? 'Awaiting your reply
                     Expanded(
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.send),
-                        label: Text(AppLocalizations.of(context)!.confirmAndSendEmail),
+                        label: Text(context.l10n.confirmAndSendEmail),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           padding: const EdgeInsets.symmetric(vertical: 16),
