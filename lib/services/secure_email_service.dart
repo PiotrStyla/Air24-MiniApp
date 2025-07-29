@@ -45,8 +45,8 @@ class EmailSendResult {
 /// Secure service for sending emails via backend endpoint
 /// Uses third-party email service (Resend) through Firebase Cloud Function
 class SecureEmailService {
-  // Backend endpoint URL - using local development server for testing
-  static const String _backendUrl = 'http://localhost:3000/api/sendEmail';
+  // Backend endpoint URL - using production Vercel backend
+  static const String _backendUrl = 'https://vercel-backend-48xxuuouf-piotrstylas-projects.vercel.app/api/sendEmail';
   
   // Timeout for HTTP requests
   static const Duration _requestTimeout = Duration(seconds: 30);

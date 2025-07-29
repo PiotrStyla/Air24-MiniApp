@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart'; // Import for safe l10n extension
 import '../models/claim.dart';
-import '../models/flight.dart';
 import '../services/auth_service_firebase.dart';
 import '../core/services/service_initializer.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
-import 'claim_attachment_screen.dart';
+import 'claim_review_screen.dart';
 import 'faq_screen.dart';
 
 class QuickClaimScreen extends StatefulWidget {
@@ -104,7 +103,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
       // Navigate to the attachment screen first (standard claim flow)
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ClaimAttachmentScreen(claim: claim),
+          builder: (context) => ClaimReviewScreen(claim: claim),
         ),
       );
     }

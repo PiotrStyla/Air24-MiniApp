@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart';
 import 'package:intl/intl.dart';
 import '../models/claim.dart';
-import 'claim_attachment_screen.dart';
+import 'claim_review_screen.dart';
 
 class ClaimSubmissionScreen extends StatefulWidget {
   final Claim? initialClaim;
@@ -101,7 +101,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
 
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ClaimAttachmentScreen(claim: newClaim),
+          builder: (context) => ClaimReviewScreen(claim: newClaim),
         ),
       );
     }

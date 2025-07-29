@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart'; // Import for safe l10n extension
 import '../models/claim.dart';
-import 'claim_attachment_screen.dart';
+import 'claim_review_screen.dart';
 
 class CompensationClaimFormScreen extends StatefulWidget {
   final Map<String, dynamic> flightData;
@@ -73,11 +73,11 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
       print('Claim object created successfully');
       print('Navigating to ClaimConfirmationScreen...');
 
-      // Navigate to the attachments screen first (complete flow: form → attachments → confirmation)
+      // Navigate directly to review screen (streamlined flow: form → review with attachments → email preview → send)
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ClaimAttachmentScreen(
+          builder: (context) => ClaimReviewScreen(
             claim: claim,
             userEmail: _emailController.text.trim(), // Pass the user's email from the form
           ),
