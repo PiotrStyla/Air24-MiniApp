@@ -78,5 +78,21 @@
     "compensation_amount_eur": 250,
     "eligible_for_compensation": true,
     "is_eu_carrier": true
+  },
+  {
+    "flight_number": "TES123",
+    "airline": "Test Airline",
+    "airline_iata": "TES",
+    "departure_airport": "WAW",
+    "departure_airport_name": "Warsaw Chopin Airport",
+    "departure_date": "2025-07-29",
+    "arrival_airport": "CDG",
+    "arrival_airport_name": "Charles de Gaulle Airport",
+    "status": "Delayed",
+    "delay_minutes": 180,
+    "distance_km": 1365,
+    "compensation_amount_eur": 250,
+    "eligible_for_compensation": true,
+    "is_eu_carrier": true
   }
 ]

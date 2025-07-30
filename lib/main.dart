@@ -24,6 +24,7 @@ import 'core/accessibility/accessibility_service.dart';
 import 'services/auth_service_firebase.dart';
 import 'services/document_storage_service.dart';
 import 'services/localization_service.dart';
+import 'services/push_notification_service.dart';
 import 'utils/translation_initializer.dart';
 
 import 'screens/main_navigation.dart';
@@ -34,6 +35,7 @@ import 'screens/claim_submission_screen.dart';
 import 'screens/flight_compensation_checker_screen.dart';
 import 'screens/accessibility_settings_screen.dart';
 import 'screens/language_selection_screen.dart';
+import 'screens/push_notification_test_screen.dart';
 
 // REMOVED: The old emergency extension has been replaced by the more comprehensive implementation in app_localizations_patch.dart
 
@@ -75,6 +77,14 @@ Future<void> _initializeApp() async {
 
   // Initialize services asynchronously
   await ServiceInitializer.initAsync();
+  
+  // Initialize push notifications after Firebase and services are ready
+  try {
+    await PushNotificationService.initialize();
+    debugPrint('✅ Push notifications initialized successfully');
+  } catch (e) {
+    debugPrint('❌ Failed to initialize push notifications: $e');
+  }
   
   // Ensure all translations are properly loaded at startup
   TranslationInitializer.ensureAllTranslations();
@@ -172,6 +182,7 @@ class F35FlightCompensationApp extends StatelessWidget {
                   '/accessibility-settings': (context) => const AccessibilitySettingsScreen(),
                   '/language-selection': (context) => const LanguageSelectionScreen(),
                   '/claim-submission': (context) => const ClaimSubmissionScreen(),
+                  '/push-notification-test': (context) => const PushNotificationTestScreen(),
                 },
               );
             },

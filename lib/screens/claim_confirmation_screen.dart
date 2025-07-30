@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:flutter/services.dart';
 import '../models/claim.dart';
 import '../services/claim_submission_service.dart';
@@ -279,17 +279,51 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         );
       } else {
         // Email app not available - show better email composition experience
-        await _showEmailCompositionDialog(
+        final emailSent = await _showEmailCompositionDialog(
           context,
           airlineEmail,
-          userEmail,
+          userEmail, // CC email
           subject,
           emailBody,
+          userEmail, // User email for reply-to functionality
         );
         
-        // Submit the claim regardless since user has the email content
-        final claimSubmissionService = context.read<ClaimSubmissionService>();
-        await claimSubmissionService.submitClaim(widget.claim);
+        if (emailSent) {
+          // Email was sent successfully - submit the claim
+          final claimSubmissionService = context.read<ClaimSubmissionService>();
+          await claimSubmissionService.submitClaim(widget.claim);
+          
+          // Show success message and navigate back
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Claim submitted successfully!',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+                backgroundColor: Colors.green.shade600,
+                duration: const Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            );
+          }
+        } else {
+          // Email sending failed or was cancelled
+          throw Exception('Email sending was cancelled or failed');
+        }
       }
       
       // Pop all the way back to the root
@@ -317,22 +351,25 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
   }
   
   /// Show secure email preview dialog with backend email sending
-  Future<void> _showEmailCompositionDialog(
+  Future<bool> _showEmailCompositionDialog(
     BuildContext context,
     String toEmail,
     String ccEmail,
     String subject,
     String body,
+    String userEmail, // User's email for reply-to functionality
   ) async {
-    await showDialog(
+    final result = await showDialog<bool>(
       context: context,
       builder: (context) => SecureEmailPreviewDialog(
         toEmail: toEmail,
         ccEmail: ccEmail.isNotEmpty ? ccEmail : null,
         subject: subject,
         body: body,
+        userEmail: userEmail, // Pass user email for reply-to functionality
       ),
     );
+    return result ?? false; // Return false if dialog was dismissed without result
   }
 
   /// Preview the claim email content before sending

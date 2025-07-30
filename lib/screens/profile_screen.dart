@@ -219,11 +219,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: context.l10n.notificationSettings,
                     semanticLabel: context.l10n.configureNotifications,
                     onTap: () {
-                      // Show a toast message that this will be implemented in a future update
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                content: Text(context.l10n.notificationSettingsComingSoon),
-                        duration: const Duration(seconds: 2),
-                      ));
+                      // Navigate to push notification test screen
+                      Navigator.of(context).pushNamed('/push-notification-test');
                     },
                     child: Row(
                       children: [

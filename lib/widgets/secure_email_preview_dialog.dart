@@ -8,6 +8,7 @@ class SecureEmailPreviewDialog extends StatefulWidget {
   final String? ccEmail;
   final String subject;
   final String body;
+  final String? userEmail; // User's email for reply-to functionality
 
   const SecureEmailPreviewDialog({
     Key? key,
@@ -15,6 +16,7 @@ class SecureEmailPreviewDialog extends StatefulWidget {
     this.ccEmail,
     required this.subject,
     required this.body,
+    this.userEmail,
   }) : super(key: key);
 
   @override
@@ -279,6 +281,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
         ccEmail: (widget.ccEmail != null && widget.ccEmail!.isNotEmpty) ? widget.ccEmail : null,
         subject: widget.subject,
         body: widget.body,
+        userEmail: widget.userEmail, // Pass user email for reply-to functionality
       );
 
       if (mounted) {

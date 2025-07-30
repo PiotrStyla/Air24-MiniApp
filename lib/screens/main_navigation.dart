@@ -4,9 +4,9 @@ import '../core/emergency_null_safety.dart';
 
 // Screens
 import 'home_screen.dart';
-import 'profile_screen.dart';
-import 'claim_dashboard_screen.dart';
+import 'package:f35_flight_compensation/screens/enhanced_claim_dashboard_screen.dart';
 import 'quick_claim_screen.dart';
+import 'profile_screen.dart';
 
 // Core
 import '../core/services/service_initializer.dart';
@@ -65,7 +65,7 @@ class _MainNavigationState extends State<MainNavigation> {
     // Define screens inside build to pass the correct context for localization
     final List<Widget> screens = [
       HomeScreen(),
-      const ClaimDashboardScreen(),
+      const EnhancedClaimDashboardScreen(),
       const ProfileScreen(),
     ];
 

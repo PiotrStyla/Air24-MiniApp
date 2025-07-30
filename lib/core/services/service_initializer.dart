@@ -18,6 +18,9 @@ import 'package:f35_flight_compensation/services/manual_localization_service.dar
 import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
 import 'package:f35_flight_compensation/services/claim_submission_service.dart';
 import 'package:f35_flight_compensation/services/claim_validation_service.dart';
+import 'package:f35_flight_compensation/services/push_notification_service.dart';
+import 'package:f35_flight_compensation/services/enhanced_claims_service.dart';
+import 'package:f35_flight_compensation/services/secure_email_service.dart';
 import 'package:f35_flight_compensation/core/error/error_handler.dart';
 import 'package:f35_flight_compensation/viewmodels/auth_viewmodel.dart';
 import 'package:f35_flight_compensation/viewmodels/document_viewmodel.dart';
@@ -42,6 +45,13 @@ class ServiceInitializer {
         _locator.registerLazySingleton<AviationStackService>(() => AviationStackService(baseUrl: 'http://api.aviationstack.com/v1'));
     _locator.registerLazySingleton<DocumentOcrService>(() => DocumentOcrService());
     _locator.registerLazySingleton<NotificationService>(() => NotificationService());
+    _locator.registerLazySingleton<PushNotificationService>(() => PushNotificationService());
+    _locator.registerLazySingleton<SecureEmailService>(() => SecureEmailService());
+    _locator.registerLazySingleton<EnhancedClaimsService>(() => 
+      EnhancedClaimsService(
+        _locator.get<ClaimTrackingService>(),
+        _locator.get<SecureEmailService>(),
+      ));
     _locator.registerLazySingleton<FlightPredictionService>(() => FlightPredictionService());
     _locator.registerLazySingleton<ErrorHandler>(() => ErrorHandler());
     // Use MockClaimTrackingService in development mode if Firebase is not available

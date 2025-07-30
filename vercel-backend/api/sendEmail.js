@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
   try {
     // Validate request body
-    const { to, subject, body, cc, bcc, replyTo, attachments } = req.body;
+    const { to, subject, body, cc, bcc, replyTo, attachments, userEmail } = req.body;
 
     if (!to || !subject || !body) {
       return res.status(400).json({
@@ -36,6 +36,9 @@ module.exports = async (req, res) => {
         code: 'MISSING_FIELDS'
       });
     }
+
+    // If userEmail is provided, use it as reply-to (unless replyTo is explicitly set)
+    const finalReplyTo = replyTo || userEmail;
 
     // Validate email addresses
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -61,7 +64,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    if (replyTo && !emailRegex.test(replyTo)) {
+    if (finalReplyTo && !emailRegex.test(finalReplyTo)) {
       return res.status(400).json({
         error: 'Invalid reply-to email address',
         code: 'INVALID_REPLY_TO_EMAIL'
@@ -80,7 +83,7 @@ module.exports = async (req, res) => {
     // Add optional fields
     if (cc) emailData.cc = [cc];
     if (bcc) emailData.bcc = [bcc];
-    if (replyTo) emailData.reply_to = [replyTo];
+    if (finalReplyTo) emailData.reply_to = [finalReplyTo];
 
     // Add attachments if provided
     if (attachments && Array.isArray(attachments) && attachments.length > 0) {
@@ -94,6 +97,7 @@ module.exports = async (req, res) => {
     console.log('📧 Sending email via Resend API...');
     console.log('To:', to);
     console.log('Subject:', subject);
+    console.log('Reply-To:', finalReplyTo || 'Not set');
     console.log('Has attachments:', !!(attachments && attachments.length > 0));
 
     // Send email using Resend

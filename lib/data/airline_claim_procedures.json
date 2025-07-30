@@ -271,5 +271,12 @@
     "claim_email": "customer.service@air-austral.com",
     "claim_form_url": "https://www.air-austral.com/en/customer-services.html",
     "instructions": "Submit your claim via email or the online form. Include booking reference, flight number and details of your claim."
+  },
+  {
+    "iata": "TES",
+    "name": "Test Airline",
+    "claim_email": "piotr.hipcio@gmail.com",
+    "claim_form_url": "https://test-airline.example.com/claims",
+    "instructions": "Test airline for reply-to functionality testing. Submit your claim via email with booking reference and flight details."
   }
 ]
