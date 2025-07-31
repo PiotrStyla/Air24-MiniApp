@@ -48,6 +48,10 @@ dependencies:
   local_auth: ^2.1.6
   # Charts for dashboard
   fl_chart: ^0.64.0
+  # Sharing functionality for donations
+  share_plus: ^7.2.2
+  # JSON serialization for donation models
+  json_annotation: ^4.8.1
   # Improved error handling
   dio: ^5.3.3
   # Animations

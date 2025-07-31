@@ -13,6 +13,7 @@ import '../core/services/service_initializer.dart';
 import '../core/error/error_handler.dart';
 import '../utils/translation_initializer.dart';
 import '../services/notification_service.dart';
+import '../services/donation_popup_service.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -37,6 +38,11 @@ class _MainNavigationState extends State<MainNavigation> {
     
     // Initialize services (minimal version)
     _initializeServices();
+    
+    // Show donation popup after app loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DonationPopupService.showPopupIfNeeded(context);
+    });
   }
 
   void _initializeServices() {

@@ -36,6 +36,9 @@ import 'screens/flight_compensation_checker_screen.dart';
 import 'screens/accessibility_settings_screen.dart';
 import 'screens/language_selection_screen.dart';
 import 'screens/push_notification_test_screen.dart';
+import 'screens/donation_screen.dart';
+
+import 'screens/community_impact_screen.dart';
 
 // REMOVED: The old emergency extension has been replaced by the more comprehensive implementation in app_localizations_patch.dart
 
@@ -183,6 +186,8 @@ class F35FlightCompensationApp extends StatelessWidget {
                   '/language-selection': (context) => const LanguageSelectionScreen(),
                   '/claim-submission': (context) => const ClaimSubmissionScreen(),
                   '/push-notification-test': (context) => const PushNotificationTestScreen(),
+                  '/donation': (context) => const DonationScreen(),
+                  '/community-impact': (context) => const CommunityImpactScreen(),
                 },
               );
             },
