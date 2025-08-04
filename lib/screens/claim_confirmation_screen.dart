@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import '../models/claim.dart';
 import '../services/claim_submission_service.dart';
 import '../services/email_service.dart';
+import '../services/secure_email_service.dart';
 import '../services/auth_service_firebase.dart';
 import '../services/airline_procedure_service.dart';
 import '../widgets/secure_email_preview_dialog.dart';
@@ -217,19 +218,31 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         ),
       );
 
-      // Create EmailService instance
-      final emailService = EmailService();
+      // Create SecureEmailService instance for localized email generation
+      final emailService = SecureEmailService();
       
-      // Get current locale for localized email template
-      final locale = Localizations.localeOf(context).languageCode;
+      // Get current locale for localized email template (user's app language preference)
+      final fullLocale = Localizations.localeOf(context);
+      final locale = fullLocale.languageCode;
       
       // Get the actual user name using the new async method from AuthService
       final authService = GetIt.instance<FirebaseAuthService>();
       final userName = await authService.getUserDisplayNameAsync();
       
-      print('Email signature using name: "$userName" (from AuthService async method)');
+      print('🌍 Full locale detected: $fullLocale');
+      print('📧 Language code extracted: "$locale"');
+      print('👤 Generating email for user: "$userName"');
+      print('✈️ Flight: ${widget.claim.flightNumber}');
       
-      // Generate professional email content using EmailService
+      // Debug: Check if locale is supported
+      final supportedLanguages = ['en', 'de', 'es', 'fr', 'pl', 'pt'];
+      final isSupported = supportedLanguages.contains(locale);
+      print('🔍 Is language "$locale" supported? $isSupported');
+      if (!isSupported) {
+        print('⚠️ Language "$locale" not supported, will fallback to English');
+      }
+      
+      // Generate professional email content using SecureEmailService with user's language preference
       final emailBody = emailService.generateCompensationEmailBody(
         passengerName: userName, // Use actual user name from profile
         flightNumber: widget.claim.flightNumber,
@@ -238,10 +251,10 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         arrivalAirport: widget.claim.arrivalAirport,
         delayReason: widget.claim.reason,
         compensationAmount: widget.claim.compensationAmount.toString(),
-        locale: locale,
+        locale: locale, // Use user's app language preference
       );
       
-      // Generate subject line based on locale
+      // Generate subject line based on user's app language preference
       String subject;
       switch (locale) {
         case 'de':
@@ -250,17 +263,29 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         case 'es':
           subject = 'Reclamación de Compensación Vuelo ${widget.claim.flightNumber} - EU261';
           break;
+        case 'fr':
+          subject = 'Demande d\'indemnisation Vol ${widget.claim.flightNumber} - EU261';
+          break;
+        case 'pl':
+          subject = 'Roszczenie o odszkodowanie Lot ${widget.claim.flightNumber} - EU261';
+          break;
+        case 'pt':
+          subject = 'Reclamação de Compensação Voo ${widget.claim.flightNumber} - EU261';
+          break;
         default:
           subject = 'Flight Compensation Claim ${widget.claim.flightNumber} - EU261';
       }
       
-      // Send email using EmailService
-      final bool emailLaunched = await emailService.sendClaimEmail(
+      // Send email using SecureEmailService
+      final result = await emailService.sendEmail(
         toEmail: airlineEmail,
         ccEmail: userEmail,
         subject: subject,
         body: emailBody,
+        userEmail: userEmail, // For reply-to functionality
       );
+      
+      final bool emailLaunched = result.success;
       
       if (emailLaunched) {
         // Email app opened successfully
@@ -373,32 +398,66 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
   }
 
   /// Preview the claim email content before sending
-  void _previewClaimEmail(String airlineEmail, String userEmail) {
+  void _previewClaimEmail(String airlineEmail, String userEmail) async {
     print('_previewClaimEmail called with: $airlineEmail, $userEmail');
     try {
-      // Directly create email content without dependency on provider
-      final attachmentsSection = widget.claim.attachmentUrls.isNotEmpty
-        ? '\n\nSupporting Documents:\n${widget.claim.attachmentUrls.map((url) => '- $url').join('\n')}'
-        : '';
-
-      final emailContent = '''
-Dear Sir or Madam,
-
-I am writing to claim compensation under EC Regulation 261/2004 for the flight detailed below:
-
-- Flight Number: ${widget.claim.flightNumber}
-- Flight Date: ${widget.claim.flightDate.toIso8601String().split('T').first}
-- Departure Airport: ${widget.claim.departureAirport}
-- Arrival Airport: ${widget.claim.arrivalAirport}
-- Reason for Claim: ${widget.claim.reason}
-
-Please find my details and the flight information above for your processing.$attachmentsSection
-
-Sincerely,
-${GetIt.instance<FirebaseAuthService>().currentUser?.displayName ?? 'Awaiting your reply'}
-''';
+      // Create SecureEmailService instance for localized email generation
+      final emailService = SecureEmailService();
       
-      final subject = 'Flight Compensation Claim - Flight ${widget.claim.flightNumber}';
+      // Get current locale for localized email template (user's app language preference)
+      final fullLocale = Localizations.localeOf(context);
+      final locale = fullLocale.languageCode;
+      
+      // Get the actual user name using the new async method from AuthService
+      final authService = GetIt.instance<FirebaseAuthService>();
+      final userName = await authService.getUserDisplayNameAsync();
+      
+      print('🌍 Full locale detected: $fullLocale');
+      print('📧 Language code extracted: "$locale"');
+      print('👤 Generating email for user: "$userName"');
+      print('✈️ Flight: ${widget.claim.flightNumber}');
+      
+      // Debug: Check if locale is supported
+      final supportedLanguages = ['en', 'de', 'es', 'fr', 'pl', 'pt'];
+      final isSupported = supportedLanguages.contains(locale);
+      print('🔍 Is language "$locale" supported? $isSupported');
+      if (!isSupported) {
+        print('⚠️ Language "$locale" not supported, will fallback to English');
+      }
+      
+      // Generate professional email content using SecureEmailService with user's language preference
+      final emailContent = emailService.generateCompensationEmailBody(
+        passengerName: userName, // Use actual user name from profile
+        flightNumber: widget.claim.flightNumber,
+        flightDate: widget.claim.flightDate.toString().split(' ')[0], // Format date
+        departureAirport: widget.claim.departureAirport,
+        arrivalAirport: widget.claim.arrivalAirport,
+        delayReason: widget.claim.reason,
+        compensationAmount: widget.claim.compensationAmount.toString(),
+        locale: locale, // Use user's app language preference
+      );
+      
+      // Generate subject line based on user's app language preference
+      String subject;
+      switch (locale) {
+        case 'de':
+          subject = 'Entschädigungsanspruch Flug ${widget.claim.flightNumber} - EU261';
+          break;
+        case 'es':
+          subject = 'Reclamación de Compensación Vuelo ${widget.claim.flightNumber} - EU261';
+          break;
+        case 'fr':
+          subject = 'Demande d\'indemnisation Vol ${widget.claim.flightNumber} - EU261';
+          break;
+        case 'pl':
+          subject = 'Roszczenie o odszkodowanie Lot ${widget.claim.flightNumber} - EU261';
+          break;
+        case 'pt':
+          subject = 'Reclamação de Compensação Voo ${widget.claim.flightNumber} - EU261';
+          break;
+        default:
+          subject = 'Flight Compensation Claim ${widget.claim.flightNumber} - EU261';
+      }
       
       showDialog(
       context: context,

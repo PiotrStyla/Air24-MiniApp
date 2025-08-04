@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/donation_screen.dart';
 import '../services/donation_popup_service.dart';
+import '../core/app_localizations_patch.dart'; // Import for safe l10n extension
 
 /// Beautiful popup that promotes the donation system at app startup
 class DonationPopup extends StatefulWidget {
@@ -122,7 +123,7 @@ class _DonationPopupState extends State<DonationPopup>
                           children: [
                             const SizedBox(width: 32), // Balance the close button
                             Text(
-                              '💝 Support Our Mission',
+                              '💝 ${context.l10n.supportOurMission}',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -304,9 +305,9 @@ class _DonationPopupState extends State<DonationPopup>
                                   child: Container(
                                     alignment: Alignment.center,
                                     padding: const EdgeInsets.symmetric(vertical: 16),
-                                    child: const Text(
-                                      '💝 Support Our Mission',
-                                      style: TextStyle(
+                                    child: Text(
+                                      '💝 ${context.l10n.supportOurMission}',
+                                      style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,

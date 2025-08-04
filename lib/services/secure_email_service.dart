@@ -217,6 +217,7 @@ class SecureEmailService {
     required String compensationAmount,
     required String locale,
   }) {
+    debugPrint('🔧 SecureEmailService: Generating email template for locale: "$locale"');
     switch (locale.toLowerCase()) {
       case 'de':
         return _generateGermanEmailTemplate(
@@ -230,6 +231,36 @@ class SecureEmailService {
         );
       case 'es':
         return _generateSpanishEmailTemplate(
+          passengerName: passengerName,
+          flightNumber: flightNumber,
+          flightDate: flightDate,
+          departureAirport: departureAirport,
+          arrivalAirport: arrivalAirport,
+          delayReason: delayReason,
+          compensationAmount: compensationAmount,
+        );
+      case 'fr':
+        return _generateFrenchEmailTemplate(
+          passengerName: passengerName,
+          flightNumber: flightNumber,
+          flightDate: flightDate,
+          departureAirport: departureAirport,
+          arrivalAirport: arrivalAirport,
+          delayReason: delayReason,
+          compensationAmount: compensationAmount,
+        );
+      case 'pl':
+        return _generatePolishEmailTemplate(
+          passengerName: passengerName,
+          flightNumber: flightNumber,
+          flightDate: flightDate,
+          departureAirport: departureAirport,
+          arrivalAirport: arrivalAirport,
+          delayReason: delayReason,
+          compensationAmount: compensationAmount,
+        );
+      case 'pt':
+        return _generatePortugueseEmailTemplate(
           passengerName: passengerName,
           flightNumber: flightNumber,
           flightDate: flightDate,
@@ -473,5 +504,104 @@ Gracias por su atención a este asunto.
 Atentamente,
 $passengerName
 ''';
+  }
+
+  /// Generate French email template
+  String _generateFrenchEmailTemplate({
+    required String passengerName,
+    required String flightNumber,
+    required String flightDate,
+    required String departureAirport,
+    required String arrivalAirport,
+    required String delayReason,
+    required String compensationAmount,
+  }) {
+    return '''Objet: Demande d'indemnisation selon le Règlement UE 261/2004 - Vol $flightNumber
+
+Mesdames, Messieurs,
+
+Je vous écris pour demander une indemnisation conformément au Règlement européen 261/2004 concernant les droits des passagers aériens.
+
+Mon vol a subi un retard/une annulation qui me donne droit à une compensation financière selon la réglementation européenne en vigueur.
+
+Détails du vol :
+- Nom du passager : $passengerName
+- Numéro de vol : $flightNumber
+- Date : $flightDate
+- Itinéraire : $departureAirport vers $arrivalAirport
+- Raison du retard : $delayReason
+
+Je demande une compensation de $compensationAmount euros conformément au Règlement UE 261/2004.
+
+Je vous prie de traiter cette demande dans les plus brefs délais et vous remercie par avance de votre coopération.
+
+Cordialement,
+$passengerName''';
+  }
+
+  /// Generate Polish email template
+  String _generatePolishEmailTemplate({
+    required String passengerName,
+    required String flightNumber,
+    required String flightDate,
+    required String departureAirport,
+    required String arrivalAirport,
+    required String delayReason,
+    required String compensationAmount,
+  }) {
+    return '''Temat: Roszczenie o odszkodowanie zgodnie z Rozporządzeniem UE 261/2004 - Lot $flightNumber
+
+Szanowni Państwo,
+
+Piszę w sprawie wniosku o odszkodowanie zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (WE) nr 261/2004 dotyczącym praw pasażerów w transporcie lotniczym.
+
+Mój lot został opóźniony/odwołany, co zgodnie z prawem europejskim uprawnia mnie do otrzymania rekompensaty finansowej.
+
+Szczegóły lotu:
+- Imię i nazwisko pasażera: $passengerName
+- Numer lotu: $flightNumber
+- Data: $flightDate
+- Trasa: $departureAirport do $arrivalAirport
+- Przyczyna opóźnienia: $delayReason
+
+Żądam odszkodowania w wysokości $compensationAmount euro zgodnie z Rozporządzeniem UE 261/2004.
+
+Proszę o rozpatrzenie mojego wniosku w możliwie najkrótszym czasie.
+
+Z poważaniem,
+$passengerName''';
+  }
+
+  /// Generate Portuguese email template
+  String _generatePortugueseEmailTemplate({
+    required String passengerName,
+    required String flightNumber,
+    required String flightDate,
+    required String departureAirport,
+    required String arrivalAirport,
+    required String delayReason,
+    required String compensationAmount,
+  }) {
+    return '''Assunto: Reclamação de Compensação de acordo com o Regulamento UE 261/2004 - Voo $flightNumber
+
+Exmos. Senhores,
+
+Venho por este meio solicitar compensação de acordo com o Regulamento (CE) n.º 261/2004 do Parlamento Europeu e do Conselho relativo aos direitos dos passageiros no transporte aéreo.
+
+O meu voo foi atrasado/cancelado, o que, de acordo com a legislação europeia, me dá direito a receber compensação financeira.
+
+Detalhes do voo:
+- Nome do passageiro: $passengerName
+- Número do voo: $flightNumber
+- Data: $flightDate
+- Rota: $departureAirport para $arrivalAirport
+- Motivo do atraso: $delayReason
+
+Solicito compensação no valor de $compensationAmount euros de acordo com o Regulamento UE 261/2004.
+
+Peço que considerem o meu pedido no menor prazo possível.
+
+Com os melhores cumprimentos,
+$passengerName''';
   }
 }

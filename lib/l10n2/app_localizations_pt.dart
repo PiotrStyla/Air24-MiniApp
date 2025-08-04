@@ -18,7 +18,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get minutes => 'TODO: Translate \'minutes\'';
 
   @override
-  String get aircraftLabel => 'TODO: Translate \'Aircraft:\'';
+  String get aircraftLabel => 'Aeronave:';
 
   @override
   String get prefillCompensationForm =>
@@ -28,30 +28,25 @@ class AppLocalizationsPt extends AppLocalizations {
   String get confirmAndSend => 'TODO: Translate \'Confirm and Send\'';
 
   @override
-  String get errorLoadingEmailDetails =>
-      'TODO: Translate \'Error loading email details\'';
+  String get errorLoadingEmailDetails => 'Erro ao carregar detalhes do email';
 
   @override
-  String get noEmailInfo =>
-      'TODO: Translate \'No email information available\'';
+  String get noEmailInfo => 'Nenhuma informação de email disponível';
 
   @override
-  String get finalConfirmation => 'TODO: Translate \'Final Confirmation\'';
+  String get finalConfirmation => 'Confirmação Final';
 
   @override
-  String get claimWillBeSentTo =>
-      'TODO: Translate \'Your claim will be sent to:\'';
+  String get claimWillBeSentTo => 'A sua reclamação será enviada para:';
 
   @override
-  String get copyToYourEmail =>
-      'TODO: Translate \'A copy will be sent to your email:\'';
+  String get copyToYourEmail => 'Uma cópia será enviada para o seu email:';
 
   @override
-  String get previewEmail => 'TODO: Translate \'Preview Email\'';
+  String get previewEmail => 'Pré-visualizar Email';
 
   @override
-  String get confirmAndSendEmail =>
-      'TODO: Translate \'Confirm and Send Email\'';
+  String get confirmAndSendEmail => 'Confirmar e Enviar Email';
 
   @override
   String get departureAirport => 'Aeroporto de Partida';
@@ -60,27 +55,26 @@ class AppLocalizationsPt extends AppLocalizations {
   String get arrivalAirport => 'Aeroporto de Chegada';
 
   @override
-  String get reasonForClaim => 'TODO: Translate \'Reason for Claim\'';
+  String get reasonForClaim => 'Motivo da Reclamação';
 
   @override
-  String get attachments => 'TODO: Translate \'Attachments\'';
+  String get attachments => 'Anexos';
 
   @override
-  String get proceedToConfirmation =>
-      'TODO: Translate \'Proceed to Confirmation\'';
+  String get proceedToConfirmation => 'Prosseguir para Confirmação';
 
   @override
   String emailAppOpenedMessage(String email) {
-    return 'TODO: Translate \'Your email app has been opened\'';
+    return 'A sua aplicação de email foi aberta';
   }
 
   @override
   String errorFailedToSubmitClaim(String error) {
-    return 'TODO: Translate \'Failed to submit claim. Please try again.\'';
+    return 'Falha ao submeter reclamação. Tente novamente.';
   }
 
   @override
-  String get unknownError => 'TODO: Translate \'Unknown error\'';
+  String get unknownError => 'Erro desconhecido';
 
   @override
   String get retry => 'Tentar novamente';
@@ -96,10 +90,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get backToDashboard => 'Voltar ao painel';
 
   @override
-  String get reviewYourClaim => 'TODO: Translate \'Review Your Claim\'';
+  String get reviewYourClaim => 'Rever a Sua Reclamação';
 
   @override
-  String get reviewClaimDetails => 'TODO: Translate \'Review Claim Details\'';
+  String get reviewClaimDetails => 'Rever Detalhes da Reclamação';
 
   @override
   String get flightNumber => 'Número do Voo';
@@ -119,17 +113,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get flightStatusDelayed => 'Atrasado';
 
   @override
-  String get potentialCompensation =>
-      'TODO: Translate \'Potential Compensation\'';
+  String get potentialCompensation => 'Compensação Potencial';
 
   @override
-  String get claimDetails => 'TODO: Translate \'Claim Details\'';
+  String get claimDetails => 'Detalhes da Reclamação';
 
   @override
-  String get refresh => 'TODO: Translate \'Refresh\'';
+  String get refresh => 'Atualizar';
 
   @override
-  String get errorLoadingClaim => 'TODO: Translate \'Error Loading Claim\'';
+  String get errorLoadingClaim => 'Erro ao Carregar Reclamação';
 
   @override
   String get euWideCompensationEligibleFlights =>
@@ -143,7 +136,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Forçando uma nova atualização de dados...';
 
   @override
-  String get loadingExternalData => 'TODO: Translate \'Loading External Data\'';
+  String get loadingExternalData => 'Carregando Dados Externos';
 
   @override
   String get loadingExternalDataDescription =>
@@ -966,4 +959,134 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get emailCopiedSuccess => 'Email copied to clipboard!';
+
+  @override
+  String get supportOurMission => 'Apoie Nossa Missão';
+
+  @override
+  String get helpKeepAppFree =>
+      'Ajude-nos a manter este aplicativo gratuito e apoiar cuidados paliativos';
+
+  @override
+  String get yourContributionMakesDifference =>
+      'Sua contribuição faz a diferença';
+
+  @override
+  String get hospiceFoundation => 'Hospice Foundation';
+
+  @override
+  String get appDevelopment => 'App Development';
+
+  @override
+  String get comfortCareForPatients => 'Comfort and care for patients';
+
+  @override
+  String get newFeaturesAndImprovements => 'Novos recursos e melhorias';
+
+  @override
+  String get chooseYourSupportAmount => 'Choose your support amount:';
+
+  @override
+  String get totalDonation => 'Total Donation';
+
+  @override
+  String get donationSummary => 'Donation Summary';
+
+  @override
+  String get choosePaymentMethod => 'Escolha o método de pagamento:';
+
+  @override
+  String get paymentMethod => 'Método de Pagamento';
+
+  @override
+  String get creditDebitCard => 'Cartão de Crédito/Débito';
+
+  @override
+  String get visaMastercardAmericanExpress =>
+      'Visa, Mastercard, American Express';
+
+  @override
+  String get payWithPayPalAccount => 'Pagar com sua conta PayPal';
+
+  @override
+  String get applePay => 'Apple Pay';
+
+  @override
+  String get notAvailableOnThisDevice => 'Not available on this device';
+
+  @override
+  String get googlePay => 'Google Pay';
+
+  @override
+  String get quickAndSecure => 'Rápido e seguro';
+
+  @override
+  String get smallSupport => 'Pequeno Apoio';
+
+  @override
+  String get goodSupport => 'Bom Apoio';
+
+  @override
+  String get greatSupport => 'Grande Apoio';
+
+  @override
+  String yourAmountHelps(String amount) {
+    return 'Seu $amount ajuda:';
+  }
+
+  @override
+  String get hospicePatientCare => 'Cuidados com pacientes de hospício';
+
+  @override
+  String get appImprovements => 'Melhorias do aplicativo';
+
+  @override
+  String continueWithAmount(String amount) {
+    return 'Continuar com $amount';
+  }
+
+  @override
+  String get selectAnAmount => 'Select an amount';
+
+  @override
+  String get maybeLater => 'Talvez mais tarde';
+
+  @override
+  String get securePaymentInfo =>
+      'Secure payment • No hidden fees • Tax receipt';
+
+  @override
+  String get learnMoreHospiceFoundation =>
+      'Saiba mais sobre a Fundação Hospício: fundacja-hospicjum.org';
+
+  @override
+  String get touchIdOrFaceId => 'Touch ID ou Face ID';
+
+  @override
+  String get continueToPayment => 'Continuar para Pagamento';
+
+  @override
+  String get selectAPaymentMethod => 'Selecione um método de pagamento';
+
+  @override
+  String get securePayment => 'Pagamento Seguro';
+
+  @override
+  String get paymentSecurityInfo =>
+      'Suas informações de pagamento são criptografadas e seguras. Não armazenamos os detalhes do seu pagamento.';
+
+  @override
+  String get taxReceiptEmail => 'O recibo fiscal será enviado para o seu email';
+
+  @override
+  String get visaMastercardAmex => 'Visa, Mastercard, American Express';
+
+  @override
+  String get notAvailableOnDevice => 'Não disponível neste dispositivo';
+
+  @override
+  String get comfortAndCareForPatients => 'Conforto e cuidado para pacientes';
+
+  @override
+  String get chooseSupportAmount => 'Escolha o valor do seu apoio:';
 }

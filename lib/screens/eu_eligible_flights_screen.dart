@@ -6,6 +6,7 @@ import '../models/claim.dart';
 
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:intl/intl.dart';
+import 'dart:math' as math;
 
 
 class EUEligibleFlightsScreen extends StatefulWidget {
@@ -139,14 +140,142 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   }
 
   int _estimateFlightDistance(Map<String, dynamic> flight) {
-    // Default distance categories for compensation calculation
-    if (flight['isLongHaul'] == true) {
-      return 4000; // Long-haul flight
-    } else if (flight['isMediumHaul'] == true) {
-      return 2500; // Medium-haul flight
-    } else {
-      return 1000; // Assume short-haul flight
+    try {
+      final departureIata = flight['departure_airport_iata']?.toString() ?? '';
+      final arrivalIata = flight['arrival_airport_iata']?.toString() ?? '';
+      
+      if (departureIata.isEmpty || arrivalIata.isEmpty) {
+        return 1000; // Default to short-haul if no airport data
+      }
+      
+      // Calculate distance based on airport coordinates
+      final distance = _calculateAirportDistance(departureIata, arrivalIata);
+      return distance;
+    } catch (e) {
+      foundation.debugPrint('Error estimating flight distance: $e');
+      return 1000; // Default to short-haul on error
     }
+  }
+  
+  int _calculateAirportDistance(String departureIata, String arrivalIata) {
+    // Major European and international airport coordinates (lat, lng)
+    final Map<String, List<double>> airportCoordinates = {
+      // Major EU hubs
+      'LHR': [51.4700, -0.4543],   // London Heathrow
+      'CDG': [49.0097, 2.5479],    // Paris Charles de Gaulle
+      'FRA': [50.0379, 8.5622],    // Frankfurt
+      'AMS': [52.3105, 4.7683],    // Amsterdam Schiphol
+      'MAD': [40.4839, -3.5680],   // Madrid
+      'FCO': [41.8003, 12.2389],   // Rome Fiumicino
+      'MUC': [48.3537, 11.7750],   // Munich
+      'ZUR': [47.4647, 8.5492],    // Zurich
+      'VIE': [48.1103, 16.5697],   // Vienna
+      'CPH': [55.6180, 12.6506],   // Copenhagen
+      'ARN': [59.6519, 17.9186],   // Stockholm Arlanda
+      'OSL': [60.1939, 11.1004],   // Oslo
+      'HEL': [60.3172, 24.9633],   // Helsinki
+      'WAW': [52.1657, 20.9671],   // Warsaw
+      'PRG': [50.1008, 14.2632],   // Prague
+      'BUD': [47.4298, 19.2611],   // Budapest
+      'ATH': [37.9364, 23.9445],   // Athens
+      'LIS': [38.7813, -9.1363],   // Lisbon
+      'BCN': [41.2974, 2.0833],    // Barcelona
+      'MXP': [45.6306, 8.7281],    // Milan Malpensa
+      'DUB': [53.4213, -6.2701],   // Dublin
+      'BRU': [50.9014, 4.4844],    // Brussels
+      
+      // Additional European airports
+      'LGW': [51.1481, -0.1903],   // London Gatwick
+      'STN': [51.8860, 0.2389],    // London Stansted
+      'LTN': [51.8747, -0.3683],   // London Luton
+      'ORY': [48.7233, 2.3794],    // Paris Orly
+      'DUS': [51.2895, 6.7668],    // Düsseldorf
+      'HAM': [53.6304, 9.9882],    // Hamburg
+      'STR': [48.6899, 9.2219],    // Stuttgart
+      'CGN': [50.8659, 7.1427],    // Cologne
+      'NUE': [49.4987, 11.0669],   // Nuremberg
+      'TXL': [52.5597, 13.2877],   // Berlin Tegel (historical)
+      'SXF': [52.3800, 13.5225],   // Berlin Schönefeld
+      'BER': [52.3667, 13.5033],   // Berlin Brandenburg
+      
+      // Major non-EU destinations (for reference)
+      'JFK': [40.6413, -73.7781],  // New York JFK
+      'LAX': [33.9425, -118.4081], // Los Angeles
+      'NRT': [35.7720, 140.3929],  // Tokyo Narita
+      'SIN': [1.3644, 103.9915],   // Singapore
+      'DXB': [25.2532, 55.3657],   // Dubai
+      'DOH': [25.2731, 51.6080],   // Doha
+      'IST': [41.2753, 28.7519],   // Istanbul
+      'SVO': [55.9726, 37.4146],   // Moscow Sheremetyevo
+      'PEK': [40.0799, 116.6031],  // Beijing
+      'HKG': [22.3080, 113.9185],  // Hong Kong
+    };
+    
+    final depCoords = airportCoordinates[departureIata];
+    final arrCoords = airportCoordinates[arrivalIata];
+    
+    if (depCoords == null || arrCoords == null) {
+      // Fallback: estimate based on common route patterns
+      return _estimateDistanceByRoute(departureIata, arrivalIata);
+    }
+    
+    // Calculate great circle distance using Haversine formula
+    final distance = _haversineDistance(
+      depCoords[0], depCoords[1], 
+      arrCoords[0], arrCoords[1]
+    );
+    
+    return distance.round();
+  }
+  
+  double _haversineDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371; // Earth's radius in kilometers
+    
+    final double dLat = _degreesToRadians(lat2 - lat1);
+    final double dLon = _degreesToRadians(lon2 - lon1);
+    
+    final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_degreesToRadians(lat1)) * math.cos(_degreesToRadians(lat2)) *
+        math.sin(dLon / 2) * math.sin(dLon / 2);
+    
+    final double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+    
+    return earthRadius * c;
+  }
+  
+  double _degreesToRadians(double degrees) {
+    return degrees * (math.pi / 180);
+  }
+  
+  int _estimateDistanceByRoute(String departureIata, String arrivalIata) {
+    // Fallback estimation based on common route patterns
+    final Set<String> longHaulDestinations = {
+      'JFK', 'LAX', 'ORD', 'DFW', 'ATL', 'MIA', 'YYZ', 'YVR', // North America
+      'NRT', 'ICN', 'PVG', 'PEK', 'HKG', 'SIN', 'BKK', 'DEL', // Asia
+      'SYD', 'MEL', 'AKL', // Oceania
+      'JNB', 'CAI', 'ADD', // Africa
+      'GRU', 'EZE', 'SCL', 'BOG', 'LIM', // South America
+    };
+    
+    final Set<String> mediumHaulDestinations = {
+      'IST', 'SVO', 'LED', 'KBP', // Eastern Europe/Russia
+      'DXB', 'DOH', 'AUH', 'KWI', 'RUH', // Middle East
+      'CAI', 'TUN', 'CMN', 'ALG', // North Africa
+      'TLV', 'AMM', 'BEY', // Levant
+    };
+    
+    if (longHaulDestinations.contains(departureIata) || 
+        longHaulDestinations.contains(arrivalIata)) {
+      return 8000; // Long-haul
+    }
+    
+    if (mediumHaulDestinations.contains(departureIata) || 
+        mediumHaulDestinations.contains(arrivalIata)) {
+      return 2500; // Medium-haul
+    }
+    
+    // Default to short-haul for intra-European flights
+    return 1200;
   }
 
 

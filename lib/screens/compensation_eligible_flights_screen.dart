@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/aviation_stack_service.dart';
-import 'claim_submission_screen.dart' as claim_submission;
-import 'dart:io';
+import '../core/app_localizations_patch.dart';
 
 class CompensationEligibleFlightsScreen extends StatefulWidget {
   final String airportIcao;
@@ -414,7 +413,7 @@ class _CompensationEligibleFlightsScreenState extends State<CompensationEligible
                                     Icon(Icons.flight, size: 16, color: Colors.blueGrey),
                                     SizedBox(width: 4),
                                     Text(
-                                      'Aircraft: ${aircraftModel.isNotEmpty ? aircraftModel : a['aircraft']?['model'] ?? 'Unknown'}',
+                                      '${context.l10n.aircraftLabel} ${aircraftModel.isNotEmpty ? aircraftModel : a['aircraft']?['model'] ?? context.l10n.unknown}',
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],

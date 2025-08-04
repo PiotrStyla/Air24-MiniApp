@@ -59,7 +59,7 @@ class _DonationScreenState extends State<DonationScreen>
       create: (_) => DonationViewModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Support Our Mission'),
+          title: Text(context.l10n.supportOurMission),
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
@@ -131,7 +131,7 @@ class _DonationScreenState extends State<DonationScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Support Our Mission',
+            context.l10n.supportOurMission,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.grey[800],
@@ -139,7 +139,7 @@ class _DonationScreenState extends State<DonationScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'Help us keep this app free and support hospice care',
+            context.l10n.helpKeepAppFree,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: Colors.grey[600],
             ),
@@ -166,7 +166,7 @@ class _DonationScreenState extends State<DonationScreen>
       child: Column(
         children: [
           Text(
-            'Your contribution makes a difference',
+            context.l10n.yourContributionMakesDifference,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
               color: Colors.grey[800],
@@ -179,8 +179,8 @@ class _DonationScreenState extends State<DonationScreen>
               Expanded(
                 child: _buildSplitCard(
                   icon: Icons.local_hospital,
-                  title: '50% → Hospice Foundation',
-                  subtitle: 'Comfort care for patients',
+                  title: '50% → ${context.l10n.hospiceFoundation}',
+                  subtitle: context.l10n.comfortCareForPatients,
                   color: Colors.red.shade400,
                 ),
               ),
@@ -188,8 +188,8 @@ class _DonationScreenState extends State<DonationScreen>
               Expanded(
                 child: _buildSplitCard(
                   icon: Icons.phone_android,
-                  title: '50% → App Development',
-                  subtitle: 'New features & improvements',
+                  title: '50% → ${context.l10n.appDevelopment}',
+                  subtitle: context.l10n.newFeaturesAndImprovements,
                   color: Colors.blue.shade400,
                 ),
               ),
@@ -253,7 +253,7 @@ class _DonationScreenState extends State<DonationScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Choose your support amount:',
+          context.l10n.chooseYourSupportAmount,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
             color: Colors.grey[800],
@@ -318,7 +318,7 @@ class _DonationScreenState extends State<DonationScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              amount.label,
+              _getLocalizedAmountLabel(amount),
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -362,7 +362,7 @@ class _DonationScreenState extends State<DonationScreen>
               Icon(Icons.track_changes, color: Colors.green.shade600),
               const SizedBox(width: 8),
               Text(
-                'Your ${_selectedAmount!.formattedAmount} helps:',
+                context.l10n.yourAmountHelps(_selectedAmount!.formattedAmount),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Colors.green.shade700,
@@ -374,14 +374,14 @@ class _DonationScreenState extends State<DonationScreen>
           _buildImpactRow(
             icon: Icons.local_hospital,
             amount: _selectedAmount!.formattedHospiceAmount,
-            description: 'Hospice patient care',
+            description: context.l10n.hospicePatientCare,
             color: Colors.red.shade400,
           ),
           const SizedBox(height: 8),
           _buildImpactRow(
             icon: Icons.phone_android,
             amount: _selectedAmount!.formattedAppAmount,
-            description: 'App improvements',
+            description: context.l10n.appImprovements,
             color: Colors.blue.shade400,
           ),
         ],
@@ -420,6 +420,18 @@ class _DonationScreenState extends State<DonationScreen>
     );
   }
 
+  /// Get localized label for donation amount
+  String _getLocalizedAmountLabel(DonationAmount amount) {
+    switch (amount) {
+      case DonationAmount.small:
+        return context.l10n.smallSupport;
+      case DonationAmount.good:
+        return context.l10n.goodSupport;
+      case DonationAmount.great:
+        return context.l10n.greatSupport;
+    }
+  }
+
   /// Build action buttons
   Widget _buildActionButtons() {
     return Column(
@@ -445,8 +457,8 @@ class _DonationScreenState extends State<DonationScreen>
                 const SizedBox(width: 8),
                 Text(
                   _selectedAmount != null 
-                      ? 'Continue with ${_selectedAmount!.formattedAmount}'
-                      : 'Select an amount',
+                      ? context.l10n.continueWithAmount(_selectedAmount!.formattedAmount)
+                      : context.l10n.selectAnAmount,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -460,7 +472,7 @@ class _DonationScreenState extends State<DonationScreen>
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
-            'Maybe Later',
+            context.l10n.maybeLater,
             style: TextStyle(
               color: Colors.grey[600],
               fontSize: 16,
@@ -487,7 +499,7 @@ class _DonationScreenState extends State<DonationScreen>
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Secure payment • No hidden fees • Tax receipt provided',
+                  context.l10n.securePaymentInfo,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey[600],
@@ -503,7 +515,7 @@ class _DonationScreenState extends State<DonationScreen>
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Learn more about Hospice Foundation: fundacja-hospicjum.org',
+                  context.l10n.learnMoreHospiceFoundation,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey[600],

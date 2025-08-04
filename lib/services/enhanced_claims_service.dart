@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import '../models/claim.dart';
 import '../services/claim_tracking_service.dart';
 import '../services/push_notification_service.dart';
 import '../services/secure_email_service.dart';
 import '../services/auth_service_firebase.dart';
+
+import '../services/localization_service.dart';
 import '../core/services/service_initializer.dart';
 
 /// Enhanced claims service that integrates with notifications and email
@@ -151,9 +154,26 @@ class EnhancedClaimsService extends ChangeNotifier {
         isSuccess: true,
       );
       
-      // Prepare email content
-      final emailSubject = 'Flight Compensation Claim - ${claim.flightNumber}';
-      final emailBody = _generateCompensationEmailBody(claim, customMessage);
+      // Prepare email content with user's preferred language
+      // Get user's language preference from stored locale settings
+      final localizationService = GetIt.instance.get<LocalizationService>();
+      final currentLocale = localizationService.currentLocale;
+      final language = currentLocale.languageCode; // Use stored language preference
+      
+      debugPrint('🌍 EnhancedClaimsService: Using language "$language" for email generation');
+      debugPrint('📧 Current locale: $currentLocale');
+      
+      final emailSubject = _getLocalizedEmailSubject(claim.flightNumber, language);
+      final emailBody = _emailService.generateCompensationEmailBody(
+        passengerName: await _getCurrentUserName(),
+        flightNumber: claim.flightNumber,
+        flightDate: claim.flightDate.toLocal().toString().split(' ')[0],
+        departureAirport: claim.departureAirport,
+        arrivalAirport: claim.arrivalAirport,
+        delayReason: claim.reason,
+        compensationAmount: claim.compensationAmount.toStringAsFixed(0),
+        locale: language, // Use user's stored app language preference
+      );
       
       // Send email using secure email service
       final result = await _emailService.sendEmail(
@@ -296,30 +316,7 @@ class EnhancedClaimsService extends ChangeNotifier {
     });
   }
   
-  /// Generate compensation email body
-  String _generateCompensationEmailBody(Claim claim, String? customMessage) {
-    return '''
-Dear ${claim.airlineName} Customer Service,
 
-I am writing to request compensation for my delayed/cancelled flight under EU Regulation 261/2004.
-
-Flight Details:
-- Flight Number: ${claim.flightNumber}
-- Date: ${claim.flightDate.toLocal().toString().split(' ')[0]}
-- Route: ${claim.departureAirport} → ${claim.arrivalAirport}
-- Booking Reference: ${claim.bookingReference}
-- Reason: ${claim.reason}
-
-According to EU Regulation 261/2004, I am entitled to compensation of €${claim.compensationAmount.toStringAsFixed(0)} for this disruption.
-
-${customMessage ?? 'I would appreciate your prompt attention to this matter and look forward to receiving the compensation within the statutory timeframe.'}
-
-Please confirm receipt of this claim and provide an estimated timeframe for resolution.
-
-Best regards,
-[Passenger Name]
-''';
-  }
   
   /// Get airline email address
   String _getAirlineEmail(String airlineName) {
@@ -335,6 +332,39 @@ Best regards,
       return authService.currentUser?.email ?? 'user@example.com';
     } catch (e) {
       return 'user@example.com';
+    }
+  }
+
+  /// Get current user name for email personalization
+  Future<String> _getCurrentUserName() async {
+    try {
+      final authService = ServiceInitializer.get<FirebaseAuthService>();
+      return authService.userDisplayName ?? 'Passenger';
+    } catch (e) {
+      return 'Passenger';
+    }
+  }
+
+  /// Extract airline code from flight number (e.g., "LH123" -> "LH")
+  String _extractAirlineCode(String flightNumber) {
+    // Extract airline code from flight number
+    final match = RegExp(r'^([A-Z]{2,3})').firstMatch(flightNumber.toUpperCase());
+    return match?.group(1) ?? 'XX'; // Default to 'XX' if no match
+  }
+
+  /// Get localized email subject based on language
+  String _getLocalizedEmailSubject(String flightNumber, String language) {
+    switch (language) {
+      case 'de':
+        return 'Entschädigungsanspruch nach EU-Verordnung 261/2004 - Flug $flightNumber';
+      case 'es':
+        return 'Reclamación de compensación según el Reglamento UE 261/2004 - Vuelo $flightNumber';
+      case 'fr':
+        return 'Demande d\'indemnisation selon le Règlement UE 261/2004 - Vol $flightNumber';
+      case 'pl':
+        return 'Roszczenie o odszkodowanie zgodnie z Rozporządzeniem UE 261/2004 - Lot $flightNumber';
+      default:
+        return 'Flight Compensation Claim under EU Regulation 261/2004 - Flight $flightNumber';
     }
   }
   

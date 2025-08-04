@@ -9,49 +9,45 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get euCompensation => 'TODO: Translate \'EU Compensation\'';
+  String get euCompensation => 'Indemnisation UE';
 
   @override
-  String get scheduledLabel => 'TODO: Translate \'Scheduled:\'';
+  String get scheduledLabel => 'Prévu :';
 
   @override
-  String get minutes => 'TODO: Translate \'minutes\'';
+  String get minutes => 'minutes';
 
   @override
-  String get aircraftLabel => 'TODO: Translate \'Aircraft:\'';
+  String get aircraftLabel => 'Aéronef:';
 
   @override
   String get prefillCompensationForm =>
-      'TODO: Translate \'Pre-fill Compensation Form\'';
+      'Pré-remplir le formulaire d\'indemnisation';
 
   @override
-  String get confirmAndSend => 'TODO: Translate \'Confirm and Send\'';
+  String get confirmAndSend => 'Confirmer et Envoyer';
 
   @override
   String get errorLoadingEmailDetails =>
-      'TODO: Translate \'Error loading email details\'';
+      'Erreur lors du chargement des détails de l\'email';
 
   @override
-  String get noEmailInfo =>
-      'TODO: Translate \'No email information available\'';
+  String get noEmailInfo => 'Aucune information d\'email disponible';
 
   @override
-  String get finalConfirmation => 'TODO: Translate \'Final Confirmation\'';
+  String get finalConfirmation => 'Confirmation Finale';
 
   @override
-  String get claimWillBeSentTo =>
-      'TODO: Translate \'Your claim will be sent to:\'';
+  String get claimWillBeSentTo => 'Votre réclamation sera envoyée à :';
 
   @override
-  String get copyToYourEmail =>
-      'TODO: Translate \'A copy will be sent to your email:\'';
+  String get copyToYourEmail => 'Une copie sera envoyée à votre email :';
 
   @override
-  String get previewEmail => 'TODO: Translate \'Preview Email\'';
+  String get previewEmail => 'Aperçu de l\'Email';
 
   @override
-  String get confirmAndSendEmail =>
-      'TODO: Translate \'Confirm and Send Email\'';
+  String get confirmAndSendEmail => 'Confirmer et Envoyer l\'Email';
 
   @override
   String get departureAirport => 'Aéroport de Départ';
@@ -60,30 +56,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get arrivalAirport => 'Aéroport d\'Arrivée';
 
   @override
-  String get reasonForClaim => 'TODO: Translate \'Reason for Claim\'';
+  String get reasonForClaim => 'Motif de la Réclamation';
 
   @override
-  String get attachments => 'TODO: Translate \'Attachments\'';
+  String get attachments => 'Pièces Jointes';
 
   @override
-  String get proceedToConfirmation =>
-      'TODO: Translate \'Proceed to Confirmation\'';
+  String get proceedToConfirmation => 'Procéder à la Confirmation';
 
   @override
   String emailAppOpenedMessage(String email) {
-    return 'TODO: Translate \'Your email app has been opened\'';
+    return 'Votre application email a été ouverte';
   }
 
   @override
   String errorFailedToSubmitClaim(String error) {
-    return 'TODO: Translate \'Failed to submit claim. Please try again.\'';
+    return 'Échec de la soumission de la réclamation. Veuillez réessayer.';
   }
 
   @override
-  String get unknownError => 'TODO: Translate \'Unknown error\'';
+  String get unknownError => 'Erreur inconnue';
 
   @override
-  String get retry => 'TODO: Translate \'Retry\'';
+  String get retry => 'Réessayer';
 
   @override
   String get claimNotFound => 'Réclamation introuvable';
@@ -96,10 +91,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get backToDashboard => 'Retour au tableau de bord';
 
   @override
-  String get reviewYourClaim => 'TODO: Translate \'Review Your Claim\'';
+  String get reviewYourClaim => 'Examiner Votre Réclamation';
 
   @override
-  String get reviewClaimDetails => 'TODO: Translate \'Review Claim Details\'';
+  String get reviewClaimDetails => 'Examiner les Détails de la Réclamation';
 
   @override
   String get flightNumber => 'Numéro de Vol';
@@ -119,17 +114,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get flightStatusDelayed => 'Retardé';
 
   @override
-  String get potentialCompensation =>
-      'TODO: Translate \'Potential Compensation\'';
+  String get potentialCompensation => 'Indemnisation Potentielle';
 
   @override
-  String get claimDetails => 'TODO: Translate \'Claim Details\'';
+  String get claimDetails => 'Détails de la Réclamation';
 
   @override
-  String get refresh => 'TODO: Translate \'Refresh\'';
+  String get refresh => 'Actualiser';
 
   @override
-  String get errorLoadingClaim => 'TODO: Translate \'Error Loading Claim\'';
+  String get errorLoadingClaim => 'Erreur lors du Chargement de la Réclamation';
 
   @override
   String get euWideCompensationEligibleFlights =>
@@ -490,7 +484,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get underAppeal => 'TODO: Translate \'Under Appeal\'';
 
   @override
-  String get unknown => 'TODO: Translate \'Unknown Status\'';
+  String get unknown => 'Inconnu';
 
   @override
   String get errorMustBeLoggedIn =>
@@ -974,4 +968,135 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get emailCopiedSuccess => 'Email copied to clipboard!';
+
+  @override
+  String get supportOurMission => 'Soutenez Notre Mission';
+
+  @override
+  String get helpKeepAppFree =>
+      'Aidez-nous à garder cette application gratuite et à soutenir les soins palliatifs';
+
+  @override
+  String get yourContributionMakesDifference =>
+      'Votre contribution fait la différence';
+
+  @override
+  String get hospiceFoundation => 'Hospice Foundation';
+
+  @override
+  String get appDevelopment => 'App Development';
+
+  @override
+  String get comfortCareForPatients => 'Comfort and care for patients';
+
+  @override
+  String get newFeaturesAndImprovements =>
+      'Nouvelles fonctionnalités et améliorations';
+
+  @override
+  String get chooseYourSupportAmount => 'Choose your support amount:';
+
+  @override
+  String get totalDonation => 'Total Donation';
+
+  @override
+  String get donationSummary => 'Donation Summary';
+
+  @override
+  String get choosePaymentMethod => 'Choisissez une méthode de paiement:';
+
+  @override
+  String get paymentMethod => 'Méthode de Paiement';
+
+  @override
+  String get creditDebitCard => 'Carte de Crédit/Débit';
+
+  @override
+  String get visaMastercardAmericanExpress =>
+      'Visa, Mastercard, American Express';
+
+  @override
+  String get payWithPayPalAccount => 'Payez avec votre compte PayPal';
+
+  @override
+  String get applePay => 'Apple Pay';
+
+  @override
+  String get notAvailableOnThisDevice => 'Not available on this device';
+
+  @override
+  String get googlePay => 'Google Pay';
+
+  @override
+  String get quickAndSecure => 'Rapide et sécurisé';
+
+  @override
+  String get smallSupport => 'Petit Soutien';
+
+  @override
+  String get goodSupport => 'Bon Soutien';
+
+  @override
+  String get greatSupport => 'Grand Soutien';
+
+  @override
+  String yourAmountHelps(String amount) {
+    return 'Votre $amount aide:';
+  }
+
+  @override
+  String get hospicePatientCare => 'Soins aux patients en hospice';
+
+  @override
+  String get appImprovements => 'Améliorations de l\'application';
+
+  @override
+  String continueWithAmount(String amount) {
+    return 'Continuer avec $amount';
+  }
+
+  @override
+  String get selectAnAmount => 'Select an amount';
+
+  @override
+  String get maybeLater => 'Peut-être plus tard';
+
+  @override
+  String get securePaymentInfo =>
+      'Secure payment • No hidden fees • Tax receipt';
+
+  @override
+  String get learnMoreHospiceFoundation =>
+      'En savoir plus sur la Fondation Hospice: fundacja-hospicjum.org';
+
+  @override
+  String get touchIdOrFaceId => 'Touch ID ou Face ID';
+
+  @override
+  String get continueToPayment => 'Continuer vers le Paiement';
+
+  @override
+  String get selectAPaymentMethod => 'Sélectionnez une méthode de paiement';
+
+  @override
+  String get securePayment => 'Paiement Sécurisé';
+
+  @override
+  String get paymentSecurityInfo =>
+      'Vos informations de paiement sont chiffrées et sécurisées. Nous ne stockons pas les détails de votre paiement.';
+
+  @override
+  String get taxReceiptEmail => 'Le reçu fiscal sera envoyé à votre email';
+
+  @override
+  String get visaMastercardAmex => 'Visa, Mastercard, American Express';
+
+  @override
+  String get notAvailableOnDevice => 'Non disponible sur cet appareil';
+
+  @override
+  String get comfortAndCareForPatients => 'Confort et soins pour les patients';
+
+  @override
+  String get chooseSupportAmount => 'Choisissez votre montant de soutien:';
 }

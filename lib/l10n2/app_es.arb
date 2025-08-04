@@ -1479,23 +1479,23 @@
   "@aircraftLabel": {
     "description": "Label for aircraft information"
   },
-  "prefillCompensationForm": "TODO: Translate 'Pre-fill Compensation Form'",
+  "prefillCompensationForm": "Rellenar Formulario de Compensación",
   "@prefillCompensationForm": {
     "description": "Button text for pre-filling compensation form"
   },
-  "loadingExternalData": "TODO: Translate 'Loading External Data'",
+  "loadingExternalData": "Cargando Datos Externos",
   "@loadingExternalData": {
     "description": "Title for loading screen"
   },
-  "loadingExternalDataDescription": "TODO: Translate 'Please wait while we fetch the latest flight data...'",
+  "loadingExternalDataDescription": "Por favor espere mientras obtenemos los últimos datos de vuelo...",
   "@loadingExternalDataDescription": {
     "description": "Message when loading external data"
   },
-  "emailAddress": "TODO: Translate 'Email Address'",
+  "emailAddress": "Dirección de Email",
   "@emailAddress": {
     "description": "Label for email address field"
   },
-  "passengerInformation": "TODO: Translate 'Passenger Information'",
+  "passengerInformation": "Información del Pasajero",
   "@passengerInformation": {
     "description": "Header for passenger information section"
   },
@@ -1603,5 +1603,261 @@
   },
   "@claims": {
     "description": "Auto-generated for claims"
+  },
+  "supportOurMission": "Apoya Nuestra Misión",
+  "@supportOurMission": {
+    "description": "Title for donation screen"
+  },
+  "helpKeepAppFree": "Ayúdanos a mantener esta aplicación gratuita y apoya el cuidado de hospicio",
+  "@helpKeepAppFree": {
+    "description": "Subtitle for donation screen"
+  },
+  "yourContributionMakesDifference": "Tu contribución marca la diferencia",
+  "@yourContributionMakesDifference": {
+    "description": "Section title for donation impact"
+  },
+  "hospiceFoundation": "Fundación de Hospicio",
+  "@hospiceFoundation": {
+    "description": "Label for hospice foundation donation split"
+  },
+  "appDevelopment": "Desarrollo de la Aplicación",
+  "@appDevelopment": {
+    "description": "Label for app development donation split"
+  },
+  "comfortCareForPatients": "Comodidad y cuidado para pacientes",
+  "@comfortCareForPatients": {
+    "description": "Description for hospice foundation"
+  },
+  "newFeaturesAndImprovements": "Nuevas funciones y mejoras",
+  "@newFeaturesAndImprovements": {
+    "description": "Description for app development"
+  },
+  "chooseYourSupportAmount": "Elige tu cantidad de apoyo:",
+  "@chooseYourSupportAmount": {
+    "description": "Label for amount selection"
+  },
+  "totalDonation": "Donación Total",
+  "@totalDonation": {
+    "description": "Label for total donation amount"
+  },
+  "donationSummary": "Resumen de Donación",
+  "@donationSummary": {
+    "description": "Title for donation summary section"
+  },
+  "choosePaymentMethod": "Elige método de pago:",
+  "@choosePaymentMethod": {
+    "description": "Label for payment method selection"
+  },
+  "paymentMethod": "Método de Pago",
+  "@paymentMethod": {
+    "description": "Title for payment method screen"
+  },
+  "creditDebitCard": "Tarjeta de Crédito/Débito",
+  "@creditDebitCard": {
+    "description": "Credit/debit card payment option"
+  },
+  "visaMastercardAmericanExpress": "Visa, Mastercard, American Express",
+  "@visaMastercardAmericanExpress": {
+    "description": "Supported card types"
+  },
+  "payWithPayPalAccount": "Pagar con cuenta PayPal",
+  "@payWithPayPalAccount": {
+    "description": "PayPal payment description"
+  },
+  "applePay": "Apple Pay",
+  "@applePay": {
+    "description": "Apple Pay payment option"
+  },
+  "notAvailableOnThisDevice": "No disponible en este dispositivo",
+  "@notAvailableOnThisDevice": {
+    "description": "Message for unavailable payment methods"
+  },
+  "googlePay": "Google Pay",
+  "@googlePay": {
+    "description": "Google Pay payment option"
+  },
+  "quickAndSecure": "Rápido y seguro",
+  "@quickAndSecure": {
+    "description": "Google Pay description"
+  },
+  "smallSupport": "Apoyo Pequeño",
+  "@smallSupport": {
+    "description": "Label for small donation amount"
+  },
+  "goodSupport": "Buen Apoyo",
+  "@goodSupport": {
+    "description": "Label for good donation amount"
+  },
+  "greatSupport": "Gran Apoyo",
+  "@greatSupport": {
+    "description": "Label for great donation amount"
+  },
+  "yourAmountHelps": "Tu {amount} ayuda:",
+  "@yourAmountHelps": {
+    "description": "Impact preview title showing how donation amount helps",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "hospicePatientCare": "Cuidado de pacientes de hospicio",
+  "@hospicePatientCare": {
+    "description": "Description for hospice patient care impact"
+  },
+  "appImprovements": "Mejoras de la aplicaci\u00f3n",
+  "@appImprovements": {
+    "description": "Description for app improvements impact"
+  },
+  "continueWithAmount": "Continuar con {amount}",
+  "@continueWithAmount": {
+    "description": "Continue button text with donation amount",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "selectAnAmount": "Selecciona una cantidad",
+  "@selectAnAmount": {
+    "description": "Button text when no amount is selected"
+  },
+  "maybeLater": "Tal vez m\u00e1s tarde",
+  "@maybeLater": {
+    "description": "Maybe later button text"
+  },
+  "securePaymentInfo": "Pago seguro \u2022 Sin tarifas ocultas \u2022 Recibo fiscal",
+  "@securePaymentInfo": {
+    "description": "Security and payment information text"
+  },
+  "learnMoreHospiceFoundation": "Aprende m\u00e1s sobre la Fundaci\u00f3n de Hospicio: fundacja-hospicjum.org",
+  "@learnMoreHospiceFoundation": {
+    "description": "Information text about hospice foundation with website link"
+  },
+  "touchIdOrFaceId": "Touch ID o Face ID",
+  "@touchIdOrFaceId": {
+    "description": "Apple Pay authentication description"
+  },
+  "continueToPayment": "Continuar al Pago",
+  "@continueToPayment": {
+    "description": "Continue to payment button text"
+  },
+  "selectAPaymentMethod": "Selecciona un m\u00e9todo de pago",
+  "@selectAPaymentMethod": {
+    "description": "Button text when no payment method is selected"
+  },
+  "securePayment": "Pago Seguro",
+  "@securePayment": {
+    "description": "Secure payment title"
+  },
+  "paymentSecurityInfo": "Tu informaci\u00f3n de pago est\u00e1 cifrada y segura. No almacenamos los detalles de tu pago.",
+  "@paymentSecurityInfo": {
+    "description": "Payment security information text"
+  },
+  "taxReceiptEmail": "El recibo fiscal ser\u00e1 enviado a tu email",
+  "@taxReceiptEmail": {
+    "description": "Tax receipt email notification text"
+  },
+  "paymentMethod": "M\u00e9todo de Pago",
+  "@paymentMethod": {
+    "description": "Payment method screen title"
+  },
+  "choosePaymentMethod": "Elige m\u00e9todo de pago:",
+  "@choosePaymentMethod": {
+    "description": "Choose payment method section title"
+  },
+  "creditDebitCard": "Tarjeta de Cr\u00e9dito/D\u00e9bito",
+  "@creditDebitCard": {
+    "description": "Credit/Debit card payment method title"
+  },
+  "visaMastercardAmex": "Visa, Mastercard, American Express",
+  "@visaMastercardAmex": {
+    "description": "Credit card types description"
+  },
+  "payWithPayPalAccount": "Pagar con tu cuenta de PayPal",
+  "@payWithPayPalAccount": {
+    "description": "PayPal payment description"
+  },
+  "quickAndSecure": "R\u00e1pido y seguro",
+  "@quickAndSecure": {
+    "description": "Google Pay description"
+  },
+  "notAvailableOnDevice": "No disponible en este dispositivo",
+  "@notAvailableOnDevice": {
+    "description": "Message when payment method is not available on device"
+  },
+  "supportOurMission": "Apoya Nuestra Misi\u00f3n",
+  "@supportOurMission": {
+    "description": "Support our mission screen title"
+  },
+  "helpKeepAppFree": "Ay\u00fadanos a mantener esta aplicaci\u00f3n gratuita y apoyar el cuidado de hospicio",
+  "@helpKeepAppFree": {
+    "description": "Support mission description"
+  },
+  "yourContributionMakesDifference": "Tu contribuci\u00f3n marca la diferencia",
+  "@yourContributionMakesDifference": {
+    "description": "Contribution impact message"
+  },
+  "comfortAndCareForPatients": "Comodidad y cuidado para pacientes",
+  "@comfortAndCareForPatients": {
+    "description": "Hospice foundation description"
+  },
+  "newFeaturesAndImprovements": "Nuevas caracter\u00edsticas y mejoras",
+  "@newFeaturesAndImprovements": {
+    "description": "App development description"
+  },
+  "chooseSupportAmount": "Elige tu cantidad de apoyo:",
+  "@chooseSupportAmount": {
+    "description": "Choose support amount instruction"
+  },
+  "hospicePatientCare": "Cuidado de pacientes de hospicio",
+  "@hospicePatientCare": {
+    "description": "Hospice patient care description"
+  },
+  "appImprovements": "Mejoras de la aplicaci\u00f3n",
+  "@appImprovements": {
+    "description": "App improvements description"
+  },
+  "maybeLater": "Tal vez m\u00e1s tarde",
+  "@maybeLater": {
+    "description": "Maybe later button text"
+  },
+  "continueWithAmount": "Continuar con {amount}",
+  "@continueWithAmount": {
+    "description": "Continue with amount button text",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "yourAmountHelps": "Tu {amount} ayuda:",
+  "@yourAmountHelps": {
+    "description": "Your amount helps text",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "smallSupport": "Apoyo Pequeño",
+  "@smallSupport": {
+    "description": "Small support amount label"
+  },
+  "goodSupport": "Buen Apoyo",
+  "@goodSupport": {
+    "description": "Good support amount label"
+  },
+  "greatSupport": "Gran Apoyo",
+  "@greatSupport": {
+    "description": "Great support amount label"
+  },
+  "aircraftLabel": "Aeronave:",
+  "@aircraftLabel": {
+    "description": "Aircraft label for flight details"
+  },
+  "unknown": "Desconocido",
+  "@unknown": {
+    "description": "Unknown value placeholder"
   }
 }

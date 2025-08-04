@@ -18,11 +18,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get minutes => 'TODO: Translate \'minutes\'';
 
   @override
-  String get aircraftLabel => 'TODO: Translate \'Aircraft:\'';
+  String get aircraftLabel => 'Aeronave:';
 
   @override
-  String get prefillCompensationForm =>
-      'TODO: Translate \'Pre-fill Compensation Form\'';
+  String get prefillCompensationForm => 'Rellenar Formulario de Compensación';
 
   @override
   String get confirmAndSend => 'Confirmar y enviar';
@@ -137,11 +136,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get forcingFreshDataLoad => 'Forzando una nueva carga de datos...';
 
   @override
-  String get loadingExternalData => 'TODO: Translate \'Loading External Data\'';
+  String get loadingExternalData => 'Cargando Datos Externos';
 
   @override
   String get loadingExternalDataDescription =>
-      'TODO: Translate \'Please wait while we fetch the latest flight data...\'';
+      'Por favor espere mientras obtenemos los últimos datos de vuelo...';
 
   @override
   String lastHours(int hours) {
@@ -313,7 +312,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get required => 'Obligatorio';
 
   @override
-  String get emailAddress => 'TODO: Translate \'Email Address\'';
+  String get emailAddress => 'Dirección de Email';
 
   @override
   String get documentDeleteFailed => 'Error al eliminar el documento';
@@ -332,8 +331,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get flight => 'Vuelo';
 
   @override
-  String get passengerInformation =>
-      'TODO: Translate \'Passenger Information\'';
+  String get passengerInformation => 'Información del Pasajero';
 
   @override
   String get fullName => 'Nombre Completo';
@@ -954,4 +952,134 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get emailCopiedSuccess => '¡Email copiado al portapapeles!';
+
+  @override
+  String get supportOurMission => 'Apoya Nuestra Misión';
+
+  @override
+  String get helpKeepAppFree =>
+      'Ayúdanos a mantener esta aplicación gratuita y apoyar el cuidado de hospicio';
+
+  @override
+  String get yourContributionMakesDifference =>
+      'Tu contribución marca la diferencia';
+
+  @override
+  String get hospiceFoundation => 'Fundación de Hospicio';
+
+  @override
+  String get appDevelopment => 'Desarrollo de la Aplicación';
+
+  @override
+  String get comfortCareForPatients => 'Comodidad y cuidado para pacientes';
+
+  @override
+  String get newFeaturesAndImprovements => 'Nuevas características y mejoras';
+
+  @override
+  String get chooseYourSupportAmount => 'Elige tu cantidad de apoyo:';
+
+  @override
+  String get totalDonation => 'Donación Total';
+
+  @override
+  String get donationSummary => 'Resumen de Donación';
+
+  @override
+  String get choosePaymentMethod => 'Elige método de pago:';
+
+  @override
+  String get paymentMethod => 'Método de Pago';
+
+  @override
+  String get creditDebitCard => 'Tarjeta de Crédito/Débito';
+
+  @override
+  String get visaMastercardAmericanExpress =>
+      'Visa, Mastercard, American Express';
+
+  @override
+  String get payWithPayPalAccount => 'Pagar con tu cuenta de PayPal';
+
+  @override
+  String get applePay => 'Apple Pay';
+
+  @override
+  String get notAvailableOnThisDevice => 'No disponible en este dispositivo';
+
+  @override
+  String get googlePay => 'Google Pay';
+
+  @override
+  String get quickAndSecure => 'Rápido y seguro';
+
+  @override
+  String get smallSupport => 'Apoyo Pequeño';
+
+  @override
+  String get goodSupport => 'Buen Apoyo';
+
+  @override
+  String get greatSupport => 'Gran Apoyo';
+
+  @override
+  String yourAmountHelps(String amount) {
+    return 'Tu $amount ayuda:';
+  }
+
+  @override
+  String get hospicePatientCare => 'Cuidado de pacientes de hospicio';
+
+  @override
+  String get appImprovements => 'Mejoras de la aplicación';
+
+  @override
+  String continueWithAmount(String amount) {
+    return 'Continuar con $amount';
+  }
+
+  @override
+  String get selectAnAmount => 'Selecciona una cantidad';
+
+  @override
+  String get maybeLater => 'Tal vez más tarde';
+
+  @override
+  String get securePaymentInfo =>
+      'Pago seguro • Sin tarifas ocultas • Recibo fiscal';
+
+  @override
+  String get learnMoreHospiceFoundation =>
+      'Aprende más sobre la Fundación de Hospicio: fundacja-hospicjum.org';
+
+  @override
+  String get touchIdOrFaceId => 'Touch ID o Face ID';
+
+  @override
+  String get continueToPayment => 'Continuar al Pago';
+
+  @override
+  String get selectAPaymentMethod => 'Selecciona un método de pago';
+
+  @override
+  String get securePayment => 'Pago Seguro';
+
+  @override
+  String get paymentSecurityInfo =>
+      'Tu información de pago está cifrada y segura. No almacenamos los detalles de tu pago.';
+
+  @override
+  String get taxReceiptEmail => 'El recibo fiscal será enviado a tu email';
+
+  @override
+  String get visaMastercardAmex => 'Visa, Mastercard, American Express';
+
+  @override
+  String get notAvailableOnDevice => 'No disponible en este dispositivo';
+
+  @override
+  String get comfortAndCareForPatients => 'Comodidad y cuidado para pacientes';
+
+  @override
+  String get chooseSupportAmount => 'Elige tu cantidad de apoyo:';
 }

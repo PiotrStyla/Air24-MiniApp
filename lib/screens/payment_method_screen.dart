@@ -55,7 +55,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
       create: (_) => DonationViewModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Payment Method'),
+          title: Text(context.l10n.paymentMethod),
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
@@ -107,7 +107,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
               Icon(Icons.favorite, color: Colors.blue.shade600),
               const SizedBox(width: 8),
               Text(
-                'Donation Summary',
+                context.l10n.donationSummary,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Colors.blue.shade700,
@@ -117,20 +117,20 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
           ),
           const SizedBox(height: 16),
           _buildSummaryRow(
-            'Total Donation',
+            context.l10n.totalDonation,
             widget.selectedAmount.formattedAmount,
             isTotal: true,
           ),
           const SizedBox(height: 8),
           _buildSummaryRow(
-            '→ Hospice Foundation',
+            '→ ${context.l10n.hospiceFoundation}',
             widget.selectedAmount.formattedHospiceAmount,
             icon: Icons.local_hospital,
             color: Colors.red.shade400,
           ),
           const SizedBox(height: 8),
           _buildSummaryRow(
-            '→ App Development',
+            '→ ${context.l10n.appDevelopment}',
             widget.selectedAmount.formattedAppAmount,
             icon: Icons.phone_android,
             color: Colors.blue.shade400,
@@ -182,7 +182,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Choose payment method:',
+          context.l10n.choosePaymentMethod,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
             color: Colors.grey[800],
@@ -192,8 +192,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
         _buildPaymentMethodCard(
           method: PaymentMethod.card,
           icon: Icons.credit_card,
-          title: 'Credit/Debit Card',
-          subtitle: 'Visa, Mastercard, American Express',
+          title: context.l10n.creditDebitCard,
+          subtitle: context.l10n.visaMastercardAmex,
           color: Colors.blue.shade500,
         ),
         const SizedBox(height: 12),
@@ -201,7 +201,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
           method: PaymentMethod.paypal,
           icon: Icons.account_balance_wallet,
           title: 'PayPal',
-          subtitle: 'Pay with your PayPal account',
+          subtitle: context.l10n.payWithPayPalAccount,
           color: Colors.orange.shade500,
         ),
         const SizedBox(height: 12),
@@ -209,7 +209,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
           method: PaymentMethod.applePay,
           icon: Icons.phone_iphone,
           title: 'Apple Pay',
-          subtitle: 'Touch ID or Face ID',
+          subtitle: context.l10n.touchIdOrFaceId,
           color: Colors.grey.shade800,
           isAvailable: Theme.of(context).platform == TargetPlatform.iOS,
         ),
@@ -218,7 +218,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
           method: PaymentMethod.googlePay,
           icon: Icons.android,
           title: 'Google Pay',
-          subtitle: 'Quick and secure',
+          subtitle: context.l10n.quickAndSecure,
           color: Colors.green.shade500,
           isAvailable: Theme.of(context).platform == TargetPlatform.android,
         ),
@@ -338,8 +338,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
                 const SizedBox(width: 8),
                 Text(
                   _selectedPaymentMethod != null 
-                      ? 'Continue to Payment'
-                      : 'Select a payment method',
+                      ? context.l10n.continueToPayment
+                      : context.l10n.selectAPaymentMethod,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -380,7 +380,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
               Icon(Icons.security, color: Colors.green.shade600, size: 20),
               const SizedBox(width: 8),
               Text(
-                'Secure Payment',
+                context.l10n.securePayment,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -391,7 +391,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'Your payment information is encrypted and secure. We do not store your payment details.',
+            context.l10n.paymentSecurityInfo,
             style: TextStyle(
               fontSize: 14,
               color: Colors.green.shade700,
@@ -404,7 +404,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen>
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Tax receipt will be sent to your email',
+                  context.l10n.taxReceiptEmail,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.green.shade600,

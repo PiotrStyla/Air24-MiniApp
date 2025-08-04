@@ -18,7 +18,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get minutes => 'TODO: Translate \'minutes\'';
 
   @override
-  String get aircraftLabel => 'Samolot';
+  String get aircraftLabel => 'Samolot:';
 
   @override
   String get prefillCompensationForm => 'Wypełnij formularz automatycznie';
@@ -954,4 +954,134 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get emailCopiedSuccess => 'Email copied to clipboard!';
+
+  @override
+  String get supportOurMission => 'Wesprzyj naszą misję';
+
+  @override
+  String get helpKeepAppFree =>
+      'Pomóż nam utrzymać tę aplikację bezpłatną i wesprzyj opiekę hospicyjną';
+
+  @override
+  String get yourContributionMakesDifference => 'Twoja darowizna ma znaczenie';
+
+  @override
+  String get hospiceFoundation => 'Fundacja Hospicyjna';
+
+  @override
+  String get appDevelopment => 'Rozwój Aplikacji';
+
+  @override
+  String get comfortCareForPatients => 'Opieka i komfort dla pacjentów';
+
+  @override
+  String get newFeaturesAndImprovements => 'Nowe funkcje i ulepszenia';
+
+  @override
+  String get chooseYourSupportAmount => 'Wybierz kwotę wsparcia:';
+
+  @override
+  String get totalDonation => 'Całkowita Darowizna';
+
+  @override
+  String get donationSummary => 'Podsumowanie Darowizny';
+
+  @override
+  String get choosePaymentMethod => 'Wybierz metodę płatności:';
+
+  @override
+  String get paymentMethod => 'Metoda płatności';
+
+  @override
+  String get creditDebitCard => 'Karta kredytowa/debetowa';
+
+  @override
+  String get visaMastercardAmericanExpress =>
+      'Visa, Mastercard, American Express';
+
+  @override
+  String get payWithPayPalAccount => 'Płać za pomocą konta PayPal';
+
+  @override
+  String get applePay => 'Apple Pay';
+
+  @override
+  String get notAvailableOnThisDevice => 'Niedostępne na tym urządzeniu';
+
+  @override
+  String get googlePay => 'Google Pay';
+
+  @override
+  String get quickAndSecure => 'Szybko i bezpiecznie';
+
+  @override
+  String get smallSupport => 'Małe Wsparcie';
+
+  @override
+  String get goodSupport => 'Dobre Wsparcie';
+
+  @override
+  String get greatSupport => 'Świetne Wsparcie';
+
+  @override
+  String yourAmountHelps(String amount) {
+    return 'Twoje $amount pomaga:';
+  }
+
+  @override
+  String get hospicePatientCare => 'Opieka nad pacjentami hospicjum';
+
+  @override
+  String get appImprovements => 'Ulepszenia aplikacji';
+
+  @override
+  String continueWithAmount(String amount) {
+    return 'Kontynuuj z $amount';
+  }
+
+  @override
+  String get selectAnAmount => 'Wybierz kwotę';
+
+  @override
+  String get maybeLater => 'Może później';
+
+  @override
+  String get securePaymentInfo =>
+      'Bezpieczna płatność • Brak ukrytych opłat • Paragon podatkowy';
+
+  @override
+  String get learnMoreHospiceFoundation =>
+      'Dowiedz się więcej o Fundacji Hospicyjnej: fundacja-hospicjum.org';
+
+  @override
+  String get touchIdOrFaceId => 'Touch ID lub Face ID';
+
+  @override
+  String get continueToPayment => 'Przejdź do płatności';
+
+  @override
+  String get selectAPaymentMethod => 'Wybierz metodę płatności';
+
+  @override
+  String get securePayment => 'Bezpieczna płatność';
+
+  @override
+  String get paymentSecurityInfo =>
+      'Twoje informacje płatnicze są zaszyfrowane i bezpieczne. Nie przechowujemy szczegółów Twojej płatności.';
+
+  @override
+  String get taxReceiptEmail =>
+      'Paragon podatkowy zostanie wysłany na Twój email';
+
+  @override
+  String get visaMastercardAmex => 'Visa, Mastercard, American Express';
+
+  @override
+  String get notAvailableOnDevice => 'Niedostępne na tym urządzeniu';
+
+  @override
+  String get comfortAndCareForPatients => 'Komfort i opieka dla pacjentów';
+
+  @override
+  String get chooseSupportAmount => 'Wybierz kwotę wsparcia:';
 }

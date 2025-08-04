@@ -1403,5 +1403,261 @@
   },
   "@claims": {
     "description": "Auto-generated for claims"
+  },
+  "supportOurMission": "Wspieraj Naszą Misję",
+  "@supportOurMission": {
+    "description": "Title for donation screen"
+  },
+  "helpKeepAppFree": "Pomóż nam utrzymać tę aplikację bezpłatną i wspieraj opiekę hospicyjną",
+  "@helpKeepAppFree": {
+    "description": "Subtitle for donation screen"
+  },
+  "yourContributionMakesDifference": "Twój wkład ma znaczenie",
+  "@yourContributionMakesDifference": {
+    "description": "Section title for donation impact"
+  },
+  "hospiceFoundation": "Fundacja Hospicyjna",
+  "@hospiceFoundation": {
+    "description": "Label for hospice foundation donation split"
+  },
+  "appDevelopment": "Rozwój Aplikacji",
+  "@appDevelopment": {
+    "description": "Label for app development donation split"
+  },
+  "comfortCareForPatients": "Opieka i komfort dla pacjentów",
+  "@comfortCareForPatients": {
+    "description": "Description for hospice foundation"
+  },
+  "newFeaturesAndImprovements": "Nowe funkcje i ulepszenia",
+  "@newFeaturesAndImprovements": {
+    "description": "Description for app development"
+  },
+  "chooseYourSupportAmount": "Wybierz kwotę wsparcia:",
+  "@chooseYourSupportAmount": {
+    "description": "Label for amount selection"
+  },
+  "totalDonation": "Całkowita Darowizna",
+  "@totalDonation": {
+    "description": "Label for total donation amount"
+  },
+  "donationSummary": "Podsumowanie Darowizny",
+  "@donationSummary": {
+    "description": "Title for donation summary section"
+  },
+  "choosePaymentMethod": "Wybierz metodę płatności:",
+  "@choosePaymentMethod": {
+    "description": "Label for payment method selection"
+  },
+  "paymentMethod": "Metoda Płatności",
+  "@paymentMethod": {
+    "description": "Title for payment method screen"
+  },
+  "creditDebitCard": "Karta Kredytowa/Debetowa",
+  "@creditDebitCard": {
+    "description": "Credit/debit card payment option"
+  },
+  "visaMastercardAmericanExpress": "Visa, Mastercard, American Express",
+  "@visaMastercardAmericanExpress": {
+    "description": "Supported card types"
+  },
+  "payWithPayPalAccount": "Płać za pomocą konta PayPal",
+  "@payWithPayPalAccount": {
+    "description": "PayPal payment description"
+  },
+  "applePay": "Apple Pay",
+  "@applePay": {
+    "description": "Apple Pay payment option"
+  },
+  "notAvailableOnThisDevice": "Niedostępne na tym urządzeniu",
+  "@notAvailableOnThisDevice": {
+    "description": "Message for unavailable payment methods"
+  },
+  "googlePay": "Google Pay",
+  "@googlePay": {
+    "description": "Google Pay payment option"
+  },
+  "quickAndSecure": "Szybko i bezpiecznie",
+  "@quickAndSecure": {
+    "description": "Google Pay description"
+  },
+  "smallSupport": "Małe Wsparcie",
+  "@smallSupport": {
+    "description": "Label for small donation amount"
+  },
+  "goodSupport": "Dobre Wsparcie",
+  "@goodSupport": {
+    "description": "Label for good donation amount"
+  },
+  "greatSupport": "Wielkie Wsparcie",
+  "@greatSupport": {
+    "description": "Label for great donation amount"
+  },
+  "yourAmountHelps": "Twoje {amount} pomaga:",
+  "@yourAmountHelps": {
+    "description": "Impact preview title showing how donation amount helps",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "hospicePatientCare": "Opieka nad pacjentami hospicjum",
+  "@hospicePatientCare": {
+    "description": "Description for hospice patient care impact"
+  },
+  "appImprovements": "Ulepszenia aplikacji",
+  "@appImprovements": {
+    "description": "Description for app improvements impact"
+  },
+  "continueWithAmount": "Kontynuuj z {amount}",
+  "@continueWithAmount": {
+    "description": "Continue button text with donation amount",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "selectAnAmount": "Wybierz kwot\u0119",
+  "@selectAnAmount": {
+    "description": "Button text when no amount is selected"
+  },
+  "maybeLater": "Mo\u017ce p\u00f3\u017aniej",
+  "@maybeLater": {
+    "description": "Maybe later button text"
+  },
+  "securePaymentInfo": "Bezpieczna p\u0142atno\u015b\u0107 \u2022 Brak ukrytych op\u0142at \u2022 Paragon podatkowy",
+  "@securePaymentInfo": {
+    "description": "Security and payment information text"
+  },
+  "learnMoreHospiceFoundation": "Dowiedz się więcej o Fundacji Hospicyjnej: fundacja-hospicjum.org",
+  "@learnMoreHospiceFoundation": {
+    "description": "Information text about hospice foundation with website link"
+  },
+  "payWithPayPalAccount": "Płać za pomocą konta PayPal",
+  "@payWithPayPalAccount": {
+    "description": "PayPal payment description"
+  },
+  "touchIdOrFaceId": "Touch ID lub Face ID",
+  "@touchIdOrFaceId": {
+    "description": "Apple Pay authentication description"
+  },
+  "continueToPayment": "Przejdź do płatności",
+  "@continueToPayment": {
+    "description": "Continue to payment button text"
+  },
+  "selectAPaymentMethod": "Wybierz metodę płatności",
+  "@selectAPaymentMethod": {
+    "description": "Button text when no payment method is selected"
+  },
+  "securePayment": "Bezpieczna płatność",
+  "@securePayment": {
+    "description": "Secure payment title"
+  },
+  "paymentSecurityInfo": "Twoje informacje płatnicze są zaszyfrowane i bezpieczne. Nie przechowujemy szczegółów Twojej płatności.",
+  "@paymentSecurityInfo": {
+    "description": "Payment security information text"
+  },
+  "taxReceiptEmail": "Paragon podatkowy zostanie wysłany na Twój email",
+  "@taxReceiptEmail": {
+    "description": "Tax receipt email notification text"
+  },
+  "paymentMethod": "Metoda płatności",
+  "@paymentMethod": {
+    "description": "Payment method screen title"
+  },
+  "choosePaymentMethod": "Wybierz metodę płatności:",
+  "@choosePaymentMethod": {
+    "description": "Choose payment method section title"
+  },
+  "creditDebitCard": "Karta kredytowa/debetowa",
+  "@creditDebitCard": {
+    "description": "Credit/Debit card payment method title"
+  },
+  "visaMastercardAmex": "Visa, Mastercard, American Express",
+  "@visaMastercardAmex": {
+    "description": "Credit card types description"
+  },
+  "quickAndSecure": "Szybko i bezpiecznie",
+  "@quickAndSecure": {
+    "description": "Google Pay description"
+  },
+  "notAvailableOnDevice": "Niedost\u0119pne na tym urz\u0105dzeniu",
+  "@notAvailableOnDevice": {
+    "description": "Message when payment method is not available on device"
+  },
+  "supportOurMission": "Wesprzyj nasz\u0105 misj\u0119",
+  "@supportOurMission": {
+    "description": "Support our mission screen title"
+  },
+  "helpKeepAppFree": "Pom\u00f3\u017c nam utrzyma\u0107 t\u0119 aplikacj\u0119 bezp\u0142atn\u0105 i wesprzyj opiek\u0119 hospicyjn\u0105",
+  "@helpKeepAppFree": {
+    "description": "Support mission description"
+  },
+  "yourContributionMakesDifference": "Twoja darowizna ma znaczenie",
+  "@yourContributionMakesDifference": {
+    "description": "Contribution impact message"
+  },
+  "comfortAndCareForPatients": "Komfort i opieka dla pacjent\u00f3w",
+  "@comfortAndCareForPatients": {
+    "description": "Hospice foundation description"
+  },
+  "newFeaturesAndImprovements": "Nowe funkcje i ulepszenia",
+  "@newFeaturesAndImprovements": {
+    "description": "App development description"
+  },
+  "chooseSupportAmount": "Wybierz kwot\u0119 wsparcia:",
+  "@chooseSupportAmount": {
+    "description": "Choose support amount instruction"
+  },
+  "hospicePatientCare": "Opieka nad pacjentami hospicjum",
+  "@hospicePatientCare": {
+    "description": "Hospice patient care description"
+  },
+  "appImprovements": "Ulepszenia aplikacji",
+  "@appImprovements": {
+    "description": "App improvements description"
+  },
+  "maybeLater": "Mo\u017ce p\u00f3\u017aniej",
+  "@maybeLater": {
+    "description": "Maybe later button text"
+  },
+  "continueWithAmount": "Kontynuuj z {amount}",
+  "@continueWithAmount": {
+    "description": "Continue with amount button text",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "yourAmountHelps": "Twoje {amount} pomaga:",
+  "@yourAmountHelps": {
+    "description": "Your amount helps text",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "smallSupport": "Małe Wsparcie",
+  "@smallSupport": {
+    "description": "Small support amount label"
+  },
+  "goodSupport": "Dobre Wsparcie",
+  "@goodSupport": {
+    "description": "Good support amount label"
+  },
+  "greatSupport": "Świetne Wsparcie",
+  "@greatSupport": {
+    "description": "Great support amount label"
+  },
+  "aircraftLabel": "Samolot:",
+  "@aircraftLabel": {
+    "description": "Aircraft label for flight details"
+  },
+  "unknown": "Nieznany",
+  "@unknown": {
+    "description": "Unknown value placeholder"
   }
 }

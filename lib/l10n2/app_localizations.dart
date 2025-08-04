@@ -124,7 +124,7 @@ abstract class AppLocalizations {
   /// **'minutes'**
   String get minutes;
 
-  /// Label for aircraft information
+  /// Aircraft label for flight details
   ///
   /// In en, this message translates to:
   /// **'Aircraft:'**
@@ -958,10 +958,10 @@ abstract class AppLocalizations {
   /// **'Under Appeal'**
   String get underAppeal;
 
-  /// Status label for a claim with unknown status
+  /// Unknown value placeholder
   ///
   /// In en, this message translates to:
-  /// **'Unknown Status'**
+  /// **'Unknown'**
   String get unknown;
 
   /// Error message shown when trying to access the claim form without being logged in
@@ -1812,6 +1812,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Email copied to clipboard!'**
   String get emailCopiedSuccess;
+
+  /// Support our mission screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Support Our Mission'**
+  String get supportOurMission;
+
+  /// Support mission description
+  ///
+  /// In en, this message translates to:
+  /// **'Help us keep this app free and support hospice care'**
+  String get helpKeepAppFree;
+
+  /// Contribution impact message
+  ///
+  /// In en, this message translates to:
+  /// **'Your contribution makes a difference'**
+  String get yourContributionMakesDifference;
+
+  /// Label for hospice foundation donation split
+  ///
+  /// In en, this message translates to:
+  /// **'Hospice Foundation'**
+  String get hospiceFoundation;
+
+  /// Label for app development donation split
+  ///
+  /// In en, this message translates to:
+  /// **'App Development'**
+  String get appDevelopment;
+
+  /// Description for hospice foundation
+  ///
+  /// In en, this message translates to:
+  /// **'Comfort and care for patients'**
+  String get comfortCareForPatients;
+
+  /// App development description
+  ///
+  /// In en, this message translates to:
+  /// **'New features and improvements'**
+  String get newFeaturesAndImprovements;
+
+  /// Label for amount selection
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your support amount:'**
+  String get chooseYourSupportAmount;
+
+  /// Label for total donation amount
+  ///
+  /// In en, this message translates to:
+  /// **'Total Donation'**
+  String get totalDonation;
+
+  /// Title for donation summary section
+  ///
+  /// In en, this message translates to:
+  /// **'Donation Summary'**
+  String get donationSummary;
+
+  /// Choose payment method section title
+  ///
+  /// In en, this message translates to:
+  /// **'Choose payment method:'**
+  String get choosePaymentMethod;
+
+  /// Payment method screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethod;
+
+  /// Credit/Debit card payment method title
+  ///
+  /// In en, this message translates to:
+  /// **'Credit/Debit Card'**
+  String get creditDebitCard;
+
+  /// Supported card types
+  ///
+  /// In en, this message translates to:
+  /// **'Visa, Mastercard, American Express'**
+  String get visaMastercardAmericanExpress;
+
+  /// PayPal payment description
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with your PayPal account'**
+  String get payWithPayPalAccount;
+
+  /// Apple Pay payment option
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Pay'**
+  String get applePay;
+
+  /// Message for unavailable payment methods
+  ///
+  /// In en, this message translates to:
+  /// **'Not available on this device'**
+  String get notAvailableOnThisDevice;
+
+  /// Google Pay payment option
+  ///
+  /// In en, this message translates to:
+  /// **'Google Pay'**
+  String get googlePay;
+
+  /// Google Pay description
+  ///
+  /// In en, this message translates to:
+  /// **'Quick and secure'**
+  String get quickAndSecure;
+
+  /// Label for small donation amount
+  ///
+  /// In en, this message translates to:
+  /// **'Small Support'**
+  String get smallSupport;
+
+  /// Label for good donation amount
+  ///
+  /// In en, this message translates to:
+  /// **'Good Support'**
+  String get goodSupport;
+
+  /// Great support amount label
+  ///
+  /// In en, this message translates to:
+  /// **'Great Support'**
+  String get greatSupport;
+
+  /// Impact preview title showing how donation amount helps
+  ///
+  /// In en, this message translates to:
+  /// **'Your {amount} helps:'**
+  String yourAmountHelps(String amount);
+
+  /// Hospice patient care description
+  ///
+  /// In en, this message translates to:
+  /// **'Hospice patient care'**
+  String get hospicePatientCare;
+
+  /// App improvements description
+  ///
+  /// In en, this message translates to:
+  /// **'App improvements'**
+  String get appImprovements;
+
+  /// Continue button text with donation amount
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with {amount}'**
+  String continueWithAmount(String amount);
+
+  /// Button text when no amount is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Select an amount'**
+  String get selectAnAmount;
+
+  /// Maybe later button text
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe Later'**
+  String get maybeLater;
+
+  /// Security and payment information text
+  ///
+  /// In en, this message translates to:
+  /// **'Secure payment • No hidden fees • Tax receipt'**
+  String get securePaymentInfo;
+
+  /// Information text about hospice foundation with website link
+  ///
+  /// In en, this message translates to:
+  /// **'Learn more about Hospice Foundation: fundacja-hospicjum.org'**
+  String get learnMoreHospiceFoundation;
+
+  /// Apple Pay authentication description
+  ///
+  /// In en, this message translates to:
+  /// **'Touch ID or Face ID'**
+  String get touchIdOrFaceId;
+
+  /// Continue to payment button text
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to Payment'**
+  String get continueToPayment;
+
+  /// Button text when no payment method is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Select a payment method'**
+  String get selectAPaymentMethod;
+
+  /// Secure payment title
+  ///
+  /// In en, this message translates to:
+  /// **'Secure Payment'**
+  String get securePayment;
+
+  /// Payment security information text
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment information is encrypted and secure. We do not store your payment details.'**
+  String get paymentSecurityInfo;
+
+  /// Tax receipt email notification text
+  ///
+  /// In en, this message translates to:
+  /// **'Tax receipt will be sent to your email'**
+  String get taxReceiptEmail;
+
+  /// Credit card types description
+  ///
+  /// In en, this message translates to:
+  /// **'Visa, Mastercard, American Express'**
+  String get visaMastercardAmex;
+
+  /// Message when payment method is not available on device
+  ///
+  /// In en, this message translates to:
+  /// **'Not available on this device'**
+  String get notAvailableOnDevice;
+
+  /// Hospice foundation description
+  ///
+  /// In en, this message translates to:
+  /// **'Comfort and care for patients'**
+  String get comfortAndCareForPatients;
+
+  /// Choose support amount instruction
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your support amount:'**
+  String get chooseSupportAmount;
 }
 
 class _AppLocalizationsDelegate

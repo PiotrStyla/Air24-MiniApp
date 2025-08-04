@@ -239,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Support Our Mission Card
                   AccessibleCard(
-                    title: 'Support Our Mission',
+                    title: context.l10n.supportOurMission,
                     semanticLabel: 'Support the app and hospice care with a donation',
                     onTap: () {
                       Navigator.of(context).push(
@@ -283,7 +283,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Support Our Mission',
+                                  context.l10n.supportOurMission,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -292,7 +292,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'Help keep this app free & support hospice care',
+                                  context.l10n.helpKeepAppFree,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey[600],

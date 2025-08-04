@@ -9,7 +9,19 @@
     "emailStep4",
     "emailStep5",
     "copyEmail",
-    "emailCopiedSuccess"
+    "emailCopiedSuccess",
+    "hospiceFoundation",
+    "appDevelopment",
+    "comfortCareForPatients",
+    "chooseYourSupportAmount",
+    "totalDonation",
+    "donationSummary",
+    "visaMastercardAmericanExpress",
+    "applePay",
+    "notAvailableOnThisDevice",
+    "googlePay",
+    "selectAnAmount",
+    "securePaymentInfo"
   ],
 
   "fr": [
@@ -25,7 +37,19 @@
     "emailStep4",
     "emailStep5",
     "copyEmail",
-    "emailCopiedSuccess"
+    "emailCopiedSuccess",
+    "hospiceFoundation",
+    "appDevelopment",
+    "comfortCareForPatients",
+    "chooseYourSupportAmount",
+    "totalDonation",
+    "donationSummary",
+    "visaMastercardAmericanExpress",
+    "applePay",
+    "notAvailableOnThisDevice",
+    "googlePay",
+    "selectAnAmount",
+    "securePaymentInfo"
   ],
 
   "pl": [
@@ -57,6 +81,18 @@
     "emailStep4",
     "emailStep5",
     "copyEmail",
-    "emailCopiedSuccess"
+    "emailCopiedSuccess",
+    "hospiceFoundation",
+    "appDevelopment",
+    "comfortCareForPatients",
+    "chooseYourSupportAmount",
+    "totalDonation",
+    "donationSummary",
+    "visaMastercardAmericanExpress",
+    "applePay",
+    "notAvailableOnThisDevice",
+    "googlePay",
+    "selectAnAmount",
+    "securePaymentInfo"
   ]
 }

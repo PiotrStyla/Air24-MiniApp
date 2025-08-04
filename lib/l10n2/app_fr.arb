@@ -475,71 +475,71 @@
   "@euEligibleFlightsButtonText": {
     "description": "Texte du bouton pour afficher les vols éligibles dans l'UE"
   },
-  "euCompensation": "TODO: Translate 'EU Compensation'",
+  "euCompensation": "Indemnisation UE",
   "@euCompensation": {
     "description": "Label for EU compensation tag on eligible flights"
   },
-  "scheduledLabel": "TODO: Translate 'Scheduled:'",
+  "scheduledLabel": "Prévu :",
   "@scheduledLabel": {
     "description": "Label for scheduled flight time"
   },
-  "minutes": "TODO: Translate 'minutes'",
+  "minutes": "minutes",
   "@minutes": {
     "description": "Text for minutes unit"
   },
-  "aircraftLabel": "TODO: Translate 'Aircraft:'",
+  "aircraftLabel": "Avion :",
   "@aircraftLabel": {
     "description": "Label for aircraft information"
   },
-  "prefillCompensationForm": "TODO: Translate 'Pre-fill Compensation Form'",
+  "prefillCompensationForm": "Pré-remplir le formulaire d'indemnisation",
   "@prefillCompensationForm": {
     "description": "Button text for pre-filling compensation form"
   },
-  "confirmAndSend": "TODO: Translate 'Confirm and Send'",
+  "confirmAndSend": "Confirmer et Envoyer",
   "@confirmAndSend": {
     "description": "Button label for confirming and sending an email"
   },
-  "errorLoadingEmailDetails": "TODO: Translate 'Error loading email details'",
+  "errorLoadingEmailDetails": "Erreur lors du chargement des détails de l'email",
   "@errorLoadingEmailDetails": {
     "description": "Error message when email details cannot be loaded"
   },
-  "noEmailInfo": "TODO: Translate 'No email information available'",
+  "noEmailInfo": "Aucune information d'email disponible",
   "@noEmailInfo": {
     "description": "Message when no email information is available"
   },
-  "finalConfirmation": "TODO: Translate 'Final Confirmation'",
+  "finalConfirmation": "Confirmation Finale",
   "@finalConfirmation": {
     "description": "Title for the final confirmation screen"
   },
-  "claimWillBeSentTo": "TODO: Translate 'Your claim will be sent to:'",
+  "claimWillBeSentTo": "Votre réclamation sera envoyée à :",
   "@claimWillBeSentTo": {
     "description": "Text explaining where the claim will be sent"
   },
-  "copyToYourEmail": "TODO: Translate 'A copy will be sent to your email:'",
+  "copyToYourEmail": "Une copie sera envoyée à votre email :",
   "@copyToYourEmail": {
     "description": "Text explaining that a copy will be sent to the user's email"
   },
-  "previewEmail": "TODO: Translate 'Preview Email'",
+  "previewEmail": "Aperçu de l'Email",
   "@previewEmail": {
     "description": "Button label for previewing email before sending"
   },
-  "confirmAndSendEmail": "TODO: Translate 'Confirm and Send Email'",
+  "confirmAndSendEmail": "Confirmer et Envoyer l'Email",
   "@confirmAndSendEmail": {
     "description": "Button label for confirming and sending email"
   },
-  "reasonForClaim": "TODO: Translate 'Reason for Claim'",
+  "reasonForClaim": "Motif de la Réclamation",
   "@reasonForClaim": {
     "description": "Label for reason for claim field"
   },
-  "attachments": "TODO: Translate 'Attachments'",
+  "attachments": "Pièces Jointes",
   "@attachments": {
     "description": "Label for attachments section"
   },
-  "proceedToConfirmation": "TODO: Translate 'Proceed to Confirmation'",
+  "proceedToConfirmation": "Procéder à la Confirmation",
   "@proceedToConfirmation": {
     "description": "Button label to proceed to confirmation screen"
   },
-  "emailAppOpenedMessage": "TODO: Translate 'Your email app has been opened'",
+  "emailAppOpenedMessage": "Votre application email a été ouverte",
   "@emailAppOpenedMessage": {
     "description": "Message shown when the email app is opened",
     "placeholders": {
@@ -548,7 +548,7 @@
       }
     }
   },
-  "errorFailedToSubmitClaim": "TODO: Translate 'Failed to submit claim. Please try again.'",
+  "errorFailedToSubmitClaim": "Échec de la soumission de la réclamation. Veuillez réessayer.",
   "@errorFailedToSubmitClaim": {
     "description": "Error message shown when claim submission fails",
     "placeholders": {
@@ -557,19 +557,19 @@
       }
     }
   },
-  "unknownError": "TODO: Translate 'Unknown error'",
+  "unknownError": "Erreur inconnue",
   "@unknownError": {
     "description": "Generic unknown error message"
   },
-  "retry": "TODO: Translate 'Retry'",
+  "retry": "Réessayer",
   "@retry": {
     "description": "Button label to retry an action"
   },
-  "reviewYourClaim": "TODO: Translate 'Review Your Claim'",
+  "reviewYourClaim": "Examiner Votre Réclamation",
   "@reviewYourClaim": {
     "description": "Title for the claim review screen"
   },
-  "reviewClaimDetails": "TODO: Translate 'Review Claim Details'",
+  "reviewClaimDetails": "Examiner les Détails de la Réclamation",
   "@reviewClaimDetails": {
     "description": "Header for reviewing claim details"
   },
@@ -583,19 +583,19 @@
       }
     }
   },
-  "potentialCompensation": "TODO: Translate 'Potential Compensation'",
+  "potentialCompensation": "Indemnisation Potentielle",
   "@potentialCompensation": {
     "description": "Label for potential compensation amount"
   },
-  "claimDetails": "TODO: Translate 'Claim Details'",
+  "claimDetails": "Détails de la Réclamation",
   "@claimDetails": {
     "description": "Title for claim details screen"
   },
-  "refresh": "TODO: Translate 'Refresh'",
+  "refresh": "Actualiser",
   "@refresh": {
     "description": "Button label to refresh content"
   },
-  "errorLoadingClaim": "TODO: Translate 'Error Loading Claim'",
+  "errorLoadingClaim": "Erreur lors du Chargement de la Réclamation",
   "@errorLoadingClaim": {
     "description": "Error message when claim loading fails"
   },
@@ -1229,5 +1229,135 @@
   "correctContactDetails": "Ensure contact details are correct",
   "@correctContactDetails": {
     "description": "Auto-generated for correctContactDetails"
+  },
+  "learnMoreHospiceFoundation": "En savoir plus sur la Fondation Hospice: fundacja-hospicjum.org",
+  "@learnMoreHospiceFoundation": {
+    "description": "Information text about hospice foundation with website link"
+  },
+  "touchIdOrFaceId": "Touch ID ou Face ID",
+  "@touchIdOrFaceId": {
+    "description": "Apple Pay authentication description"
+  },
+  "continueToPayment": "Continuer vers le Paiement",
+  "@continueToPayment": {
+    "description": "Continue to payment button text"
+  },
+  "selectAPaymentMethod": "Sélectionnez une méthode de paiement",
+  "@selectAPaymentMethod": {
+    "description": "Button text when no payment method is selected"
+  },
+  "securePayment": "Paiement Sécurisé",
+  "@securePayment": {
+    "description": "Secure payment title"
+  },
+  "paymentSecurityInfo": "Vos informations de paiement sont chiffrées et sécurisées. Nous ne stockons pas les détails de votre paiement.",
+  "@paymentSecurityInfo": {
+    "description": "Payment security information text"
+  },
+  "taxReceiptEmail": "Le reçu fiscal sera envoyé à votre email",
+  "@taxReceiptEmail": {
+    "description": "Tax receipt email notification text"
+  },
+  "paymentMethod": "Méthode de Paiement",
+  "@paymentMethod": {
+    "description": "Payment method screen title"
+  },
+  "choosePaymentMethod": "Choisissez une méthode de paiement:",
+  "@choosePaymentMethod": {
+    "description": "Choose payment method section title"
+  },
+  "creditDebitCard": "Carte de Crédit/Débit",
+  "@creditDebitCard": {
+    "description": "Credit/Debit card payment method title"
+  },
+  "visaMastercardAmex": "Visa, Mastercard, American Express",
+  "@visaMastercardAmex": {
+    "description": "Credit card types description"
+  },
+  "payWithPayPalAccount": "Payez avec votre compte PayPal",
+  "@payWithPayPalAccount": {
+    "description": "PayPal payment description"
+  },
+  "quickAndSecure": "Rapide et sécurisé",
+  "@quickAndSecure": {
+    "description": "Google Pay description"
+  },
+  "notAvailableOnDevice": "Non disponible sur cet appareil",
+  "@notAvailableOnDevice": {
+    "description": "Message when payment method is not available on device"
+  },
+  "supportOurMission": "Soutenez Notre Mission",
+  "@supportOurMission": {
+    "description": "Support our mission screen title"
+  },
+  "helpKeepAppFree": "Aidez-nous à garder cette application gratuite et à soutenir les soins palliatifs",
+  "@helpKeepAppFree": {
+    "description": "Support mission description"
+  },
+  "yourContributionMakesDifference": "Votre contribution fait la différence",
+  "@yourContributionMakesDifference": {
+    "description": "Contribution impact message"
+  },
+  "comfortAndCareForPatients": "Confort et soins pour les patients",
+  "@comfortAndCareForPatients": {
+    "description": "Hospice foundation description"
+  },
+  "newFeaturesAndImprovements": "Nouvelles fonctionnalités et améliorations",
+  "@newFeaturesAndImprovements": {
+    "description": "App development description"
+  },
+  "chooseSupportAmount": "Choisissez votre montant de soutien:",
+  "@chooseSupportAmount": {
+    "description": "Choose support amount instruction"
+  },
+  "hospicePatientCare": "Soins aux patients en hospice",
+  "@hospicePatientCare": {
+    "description": "Hospice patient care description"
+  },
+  "appImprovements": "Améliorations de l'application",
+  "@appImprovements": {
+    "description": "App improvements description"
+  },
+  "maybeLater": "Peut-être plus tard",
+  "@maybeLater": {
+    "description": "Maybe later button text"
+  },
+  "continueWithAmount": "Continuer avec {amount}",
+  "@continueWithAmount": {
+    "description": "Continue with amount button text",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "yourAmountHelps": "Votre {amount} aide:",
+  "@yourAmountHelps": {
+    "description": "Your amount helps text",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "smallSupport": "Petit Soutien",
+  "@smallSupport": {
+    "description": "Small support amount label"
+  },
+  "goodSupport": "Bon Soutien",
+  "@goodSupport": {
+    "description": "Good support amount label"
+  },
+  "greatSupport": "Grand Soutien",
+  "@greatSupport": {
+    "description": "Great support amount label"
+  },
+  "aircraftLabel": "A\u00e9ronef:",
+  "@aircraftLabel": {
+    "description": "Aircraft label for flight details"
+  },
+  "unknown": "Inconnu",
+  "@unknown": {
+    "description": "Unknown value placeholder"
   }
 }

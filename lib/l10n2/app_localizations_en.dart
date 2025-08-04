@@ -463,7 +463,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get underAppeal => 'Under Appeal';
 
   @override
-  String get unknown => 'Unknown Status';
+  String get unknown => 'Unknown';
 
   @override
   String get errorMustBeLoggedIn => 'You must be logged in to submit a claim';
@@ -928,4 +928,134 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailCopiedSuccess => 'Email copied to clipboard!';
+
+  @override
+  String get supportOurMission => 'Support Our Mission';
+
+  @override
+  String get helpKeepAppFree =>
+      'Help us keep this app free and support hospice care';
+
+  @override
+  String get yourContributionMakesDifference =>
+      'Your contribution makes a difference';
+
+  @override
+  String get hospiceFoundation => 'Hospice Foundation';
+
+  @override
+  String get appDevelopment => 'App Development';
+
+  @override
+  String get comfortCareForPatients => 'Comfort and care for patients';
+
+  @override
+  String get newFeaturesAndImprovements => 'New features and improvements';
+
+  @override
+  String get chooseYourSupportAmount => 'Choose your support amount:';
+
+  @override
+  String get totalDonation => 'Total Donation';
+
+  @override
+  String get donationSummary => 'Donation Summary';
+
+  @override
+  String get choosePaymentMethod => 'Choose payment method:';
+
+  @override
+  String get paymentMethod => 'Payment Method';
+
+  @override
+  String get creditDebitCard => 'Credit/Debit Card';
+
+  @override
+  String get visaMastercardAmericanExpress =>
+      'Visa, Mastercard, American Express';
+
+  @override
+  String get payWithPayPalAccount => 'Pay with your PayPal account';
+
+  @override
+  String get applePay => 'Apple Pay';
+
+  @override
+  String get notAvailableOnThisDevice => 'Not available on this device';
+
+  @override
+  String get googlePay => 'Google Pay';
+
+  @override
+  String get quickAndSecure => 'Quick and secure';
+
+  @override
+  String get smallSupport => 'Small Support';
+
+  @override
+  String get goodSupport => 'Good Support';
+
+  @override
+  String get greatSupport => 'Great Support';
+
+  @override
+  String yourAmountHelps(String amount) {
+    return 'Your $amount helps:';
+  }
+
+  @override
+  String get hospicePatientCare => 'Hospice patient care';
+
+  @override
+  String get appImprovements => 'App improvements';
+
+  @override
+  String continueWithAmount(String amount) {
+    return 'Continue with $amount';
+  }
+
+  @override
+  String get selectAnAmount => 'Select an amount';
+
+  @override
+  String get maybeLater => 'Maybe Later';
+
+  @override
+  String get securePaymentInfo =>
+      'Secure payment • No hidden fees • Tax receipt';
+
+  @override
+  String get learnMoreHospiceFoundation =>
+      'Learn more about Hospice Foundation: fundacja-hospicjum.org';
+
+  @override
+  String get touchIdOrFaceId => 'Touch ID or Face ID';
+
+  @override
+  String get continueToPayment => 'Continue to Payment';
+
+  @override
+  String get selectAPaymentMethod => 'Select a payment method';
+
+  @override
+  String get securePayment => 'Secure Payment';
+
+  @override
+  String get paymentSecurityInfo =>
+      'Your payment information is encrypted and secure. We do not store your payment details.';
+
+  @override
+  String get taxReceiptEmail => 'Tax receipt will be sent to your email';
+
+  @override
+  String get visaMastercardAmex => 'Visa, Mastercard, American Express';
+
+  @override
+  String get notAvailableOnDevice => 'Not available on this device';
+
+  @override
+  String get comfortAndCareForPatients => 'Comfort and care for patients';
+
+  @override
+  String get chooseSupportAmount => 'Choose your support amount:';
 }

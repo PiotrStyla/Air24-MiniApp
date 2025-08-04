@@ -1411,5 +1411,135 @@
   },
   "@claims": {
     "description": "Auto-generated for claims"
+  },
+  "learnMoreHospiceFoundation": "Mehr über die Hospiz-Stiftung erfahren: fundacja-hospicjum.org",
+  "@learnMoreHospiceFoundation": {
+    "description": "Information text about hospice foundation with website link"
+  },
+  "touchIdOrFaceId": "Touch ID oder Face ID",
+  "@touchIdOrFaceId": {
+    "description": "Apple Pay authentication description"
+  },
+  "continueToPayment": "Zur Zahlung fortfahren",
+  "@continueToPayment": {
+    "description": "Continue to payment button text"
+  },
+  "selectAPaymentMethod": "Wählen Sie eine Zahlungsmethode",
+  "@selectAPaymentMethod": {
+    "description": "Button text when no payment method is selected"
+  },
+  "securePayment": "Sichere Zahlung",
+  "@securePayment": {
+    "description": "Secure payment title"
+  },
+  "paymentSecurityInfo": "Ihre Zahlungsinformationen sind verschlüsselt und sicher. Wir speichern keine Zahlungsdetails.",
+  "@paymentSecurityInfo": {
+    "description": "Payment security information text"
+  },
+  "taxReceiptEmail": "Die Steuerquittung wird an Ihre E-Mail gesendet",
+  "@taxReceiptEmail": {
+    "description": "Tax receipt email notification text"
+  },
+  "paymentMethod": "Zahlungsmethode",
+  "@paymentMethod": {
+    "description": "Payment method screen title"
+  },
+  "choosePaymentMethod": "Zahlungsmethode wählen:",
+  "@choosePaymentMethod": {
+    "description": "Choose payment method section title"
+  },
+  "creditDebitCard": "Kredit-/Debitkarte",
+  "@creditDebitCard": {
+    "description": "Credit/Debit card payment method title"
+  },
+  "visaMastercardAmex": "Visa, Mastercard, American Express",
+  "@visaMastercardAmex": {
+    "description": "Credit card types description"
+  },
+  "payWithPayPalAccount": "Mit Ihrem PayPal-Konto bezahlen",
+  "@payWithPayPalAccount": {
+    "description": "PayPal payment description"
+  },
+  "quickAndSecure": "Schnell und sicher",
+  "@quickAndSecure": {
+    "description": "Google Pay description"
+  },
+  "notAvailableOnDevice": "Auf diesem Ger\u00e4t nicht verf\u00fcgbar",
+  "@notAvailableOnDevice": {
+    "description": "Message when payment method is not available on device"
+  },
+  "supportOurMission": "Unterst\u00fctzen Sie unsere Mission",
+  "@supportOurMission": {
+    "description": "Support our mission screen title"
+  },
+  "helpKeepAppFree": "Helfen Sie uns, diese App kostenlos zu halten und Hospizpflege zu unterst\u00fctzen",
+  "@helpKeepAppFree": {
+    "description": "Support mission description"
+  },
+  "yourContributionMakesDifference": "Ihr Beitrag macht einen Unterschied",
+  "@yourContributionMakesDifference": {
+    "description": "Contribution impact message"
+  },
+  "comfortAndCareForPatients": "Komfort und Pflege f\u00fcr Patienten",
+  "@comfortAndCareForPatients": {
+    "description": "Hospice foundation description"
+  },
+  "newFeaturesAndImprovements": "Neue Funktionen und Verbesserungen",
+  "@newFeaturesAndImprovements": {
+    "description": "App development description"
+  },
+  "chooseSupportAmount": "W\u00e4hlen Sie Ihren Unterst\u00fctzungsbetrag:",
+  "@chooseSupportAmount": {
+    "description": "Choose support amount instruction"
+  },
+  "hospicePatientCare": "Hospiz-Patientenpflege",
+  "@hospicePatientCare": {
+    "description": "Hospice patient care description"
+  },
+  "appImprovements": "App-Verbesserungen",
+  "@appImprovements": {
+    "description": "App improvements description"
+  },
+  "maybeLater": "Vielleicht sp\u00e4ter",
+  "@maybeLater": {
+    "description": "Maybe later button text"
+  },
+  "continueWithAmount": "Weiter mit {amount}",
+  "@continueWithAmount": {
+    "description": "Continue with amount button text",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "yourAmountHelps": "Ihre {amount} helfen:",
+  "@yourAmountHelps": {
+    "description": "Your amount helps text",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "smallSupport": "Kleine Unterst\u00fctzung",
+  "@smallSupport": {
+    "description": "Small support amount label"
+  },
+  "goodSupport": "Gute Unterst\u00fctzung",
+  "@goodSupport": {
+    "description": "Good support amount label"
+  },
+  "greatSupport": "Gro\u00dfe Unterst\u00fctzung",
+  "@greatSupport": {
+    "description": "Great support amount label"
+  },
+  "aircraftLabel": "Flugzeug:",
+  "@aircraftLabel": {
+    "description": "Aircraft label for flight details"
+  },
+  "unknown": "Unbekannt",
+  "@unknown": {
+    "description": "Unknown value placeholder"
   }
 }
