@@ -7,6 +7,50 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:445502709010:android:af0233c411c251cb2667cb",
+        "android_client_info": {
+          "package_name": "app.air24.flightcompensation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445502709010-dvd4jfbbd4jes4le27qke9p60ju03trn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.air24.flightcompensation",
+            "certificate_hash": "82b6a53cc427b72c67e09e95314245f1a770bb08"
+          }
+        },
+        {
+          "client_id": "445502709010-eshqvs40cvvp166tqkjhs5pkvqno0rsq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7KBknrq-wODQGwLRM6TIvVzT3GfQb2Kg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445502709010-eshqvs40cvvp166tqkjhs5pkvqno0rsq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "445502709010-t97uh4g0hdu7d90inpqcsrtcobm5tt9a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.f35FlightCompensation"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:445502709010:android:5d4ddd41072a6f6b2667cb",
         "android_client_info": {
           "package_name": "com.example.f35_flight_compensation"

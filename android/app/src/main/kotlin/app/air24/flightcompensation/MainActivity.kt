@@ -1,4 +1,4 @@
-package com.example.f35_flight_compensation
+package app.air24.flightcompensation
 
 import io.flutter.embedding.android.FlutterActivity
 
