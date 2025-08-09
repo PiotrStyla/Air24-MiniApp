@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:f35_flight_compensation/services/push_notification_service.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PushNotificationTestScreen extends StatefulWidget {
   const PushNotificationTestScreen({super.key});
@@ -34,8 +35,78 @@ class _PushNotificationTestScreenState extends State<PushNotificationTestScreen>
     } catch (e) {
       setState(() {
         _fcmToken = 'Error loading token: $e';
+        _permissionGranted = false;
       });
     }
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    try {
+      // Request notification permission
+      final status = await Permission.notification.request();
+      
+      if (status.isGranted) {
+        // Permission granted, reload status
+        await _loadNotificationStatus();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Notification permission granted!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else if (status.isDenied) {
+        // Permission denied
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Notification permission denied. You can enable it in system settings.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+      } else if (status.isPermanentlyDenied) {
+        // Permission permanently denied, show settings dialog
+        _showSettingsDialog();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error requesting permission: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Notification Permission Required'),
+          content: const Text(
+            'Notifications are permanently disabled. To enable notifications, please go to your device settings and allow notifications for this app.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                openAppSettings();
+              },
+              child: const Text('Open Settings'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _testClaimUpdateNotification() async {
@@ -108,7 +179,27 @@ class _PushNotificationTestScreenState extends State<PushNotificationTestScreen>
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 8),
-                    Text('Permission Granted: ${_permissionGranted ? "Yes" : "No"}'),
+                    Row(
+                      children: [
+                        Text('Permission Granted: ${_permissionGranted ? "Yes" : "No"}'),
+                        const SizedBox(width: 8),
+                        Icon(
+                          _permissionGranted ? Icons.check_circle : Icons.error,
+                          color: _permissionGranted ? Colors.green : Colors.red,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                    if (!_permissionGranted) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        'Notifications are disabled. Grant permission to test notifications.',
+                        style: TextStyle(
+                          color: Colors.orange[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 8),
                     Text('FCM Token:'),
                     const SizedBox(height: 4),
@@ -135,8 +226,21 @@ class _PushNotificationTestScreenState extends State<PushNotificationTestScreen>
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
+            if (!_permissionGranted) ...[
+              ElevatedButton.icon(
+                onPressed: _requestNotificationPermission,
+                icon: const Icon(Icons.notifications),
+                label: const Text('Request Notification Permission'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.all(16),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
             ElevatedButton.icon(
-              onPressed: _testClaimUpdateNotification,
+              onPressed: _permissionGranted ? _testClaimUpdateNotification : null,
               icon: const Icon(Icons.update),
               label: const Text('Test Claim Update'),
               style: ElevatedButton.styleFrom(
@@ -145,7 +249,7 @@ class _PushNotificationTestScreenState extends State<PushNotificationTestScreen>
             ),
             const SizedBox(height: 12),
             ElevatedButton.icon(
-              onPressed: _testEmailStatusNotification,
+              onPressed: _permissionGranted ? _testEmailStatusNotification : null,
               icon: const Icon(Icons.email),
               label: const Text('Test Email Status'),
               style: ElevatedButton.styleFrom(
@@ -154,7 +258,7 @@ class _PushNotificationTestScreenState extends State<PushNotificationTestScreen>
             ),
             const SizedBox(height: 12),
             ElevatedButton.icon(
-              onPressed: _testDeadlineReminderNotification,
+              onPressed: _permissionGranted ? _testDeadlineReminderNotification : null,
               icon: const Icon(Icons.schedule),
               label: const Text('Test Deadline Reminder'),
               style: ElevatedButton.styleFrom(

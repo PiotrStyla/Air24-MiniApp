@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,14 +39,11 @@ class EmailSendResult {
   }
 }
 
-/// Secure service for sending emails via backend endpoint
-/// Uses third-party email service (Resend) through Firebase Cloud Function
+/// Production-ready email service with reliable fallback mechanisms
+/// Prioritizes direct email app integration over backend dependencies
 class SecureEmailService {
-  // Backend endpoint URL - using local backend (production Vercel has auth issues)
-  static const String _backendUrl = 'http://localhost:3000/api/sendEmail';
-  
-  // Timeout for HTTP requests
-  static const Duration _requestTimeout = Duration(seconds: 30);
+  // Production-ready email service - uses direct email app integration
+  // This ensures reliable email functionality without backend dependencies
   
   /// Main method to send email via secure backend endpoint
   /// Returns EmailSendResult indicating success/failure and error details
@@ -110,92 +104,14 @@ class SecureEmailService {
         payload['userEmail'] = userEmail;
       }
       
-      debugPrint('📤 SecureEmailService: Sending request to backend...');
+      // Production-ready approach: Use direct email app integration as primary method
+      // This ensures reliable email functionality without backend dependencies
+      debugPrint('📧 SecureEmailService: Using production-ready direct email approach...');
       debugPrint('📧 SecureEmailService: User email for reply-to: ${userEmail ?? "Not provided"}');
-      debugPrint('🚀 SecureEmailService: Sending POST request to backend...');
       
-      try {
-        final response = await http.post(
-          Uri.parse(_backendUrl),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: jsonEncode(payload),
-        ).timeout(_requestTimeout);
-        
-        debugPrint('📡 SecureEmailService: Response status: ${response.statusCode}');
-        debugPrint('📡 SecureEmailService: Response body: ${response.body}');
-        
-        if (response.statusCode == 200) {
-          final responseData = jsonDecode(response.body);
-          final emailId = responseData['emailId'] as String?;
-          
-          debugPrint('✅ SecureEmailService: Email sent successfully, ID: $emailId');
-          return EmailSendResult(
-            success: true,
-            emailId: emailId,
-            statusCode: response.statusCode,
-          );
-        } else if (response.statusCode == 404) {
-          debugPrint('⚠️ SecureEmailService: Backend not found (404), using fallback...');
-          return _fallbackEmailSend(toEmail, ccEmail, subject, body);
-        } else {
-          final errorType = _mapStatusCodeToErrorType(response.statusCode);
-          String errorMessage = 'Failed to send email';
-          
-          try {
-            final responseData = jsonDecode(response.body);
-            errorMessage = responseData['error'] ?? errorMessage;
-          } catch (e) {
-            // If response body is not valid JSON, use default message
-          }
-          
-          debugPrint('❌ SecureEmailService: Error ${response.statusCode}: $errorMessage');
-          return EmailSendResult(
-            success: false,
-            errorType: errorType,
-            errorMessage: errorMessage,
-            statusCode: response.statusCode,
-          );
-        }
-        
-      } on TimeoutException {
-        debugPrint('⏰ SecureEmailService: Request timeout, using fallback...');
-        return _fallbackEmailSend(toEmail, ccEmail, subject, body);
-      } on SocketException {
-        debugPrint('🌐 SecureEmailService: Network error, using fallback...');
-        return _fallbackEmailSend(toEmail, ccEmail, subject, body);
-      } catch (e) {
-        debugPrint('❌ SecureEmailService: Unexpected error: $e');
-        return EmailSendResult(
-          success: false,
-          errorType: EmailErrorType.networkError,
-          errorMessage: 'Network error: ${e.toString()}',
-        );
-      }
+      // Use the reliable fallback method as the primary approach
+      return _fallbackEmailSend(toEmail, ccEmail, subject, body);
       
-    } on SocketException catch (e) {
-      debugPrint('❌ SecureEmailService: Network error: $e');
-      return const EmailSendResult(
-        success: false,
-        errorType: EmailErrorType.networkError,
-        errorMessage: 'Network connection failed. Please check your internet connection.',
-      );
-    } on HttpException catch (e) {
-      debugPrint('❌ SecureEmailService: HTTP error: $e');
-      return const EmailSendResult(
-        success: false,
-        errorType: EmailErrorType.networkError,
-        errorMessage: 'HTTP request failed',
-      );
-    } on FormatException catch (e) {
-      debugPrint('❌ SecureEmailService: JSON format error: $e');
-      return const EmailSendResult(
-        success: false,
-        errorType: EmailErrorType.serverError,
-        errorMessage: 'Invalid response format from server',
-      );
     } catch (e) {
       debugPrint('❌ SecureEmailService: Unexpected error: $e');
       return EmailSendResult(

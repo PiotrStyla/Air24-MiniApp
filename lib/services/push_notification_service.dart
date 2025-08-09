@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'in_app_messaging_service.dart';
 
 /// Service for handling push notifications using Firebase Cloud Messaging
 /// Supports both remote push notifications and local notifications
@@ -199,24 +200,10 @@ class PushNotificationService {
 
   /// Handle notification actions
   static void _handleNotificationAction(Map<String, dynamic> data) {
-    final type = data['type'] as String?;
+    debugPrint('🔔 PushNotificationService: Handling notification action');
     
-    switch (type) {
-      case 'claim_update':
-        // Navigate to claim details
-        debugPrint('🔔 Opening claim details: ${data['claimId']}');
-        break;
-      case 'email_status':
-        // Navigate to email status
-        debugPrint('🔔 Opening email status: ${data['emailId']}');
-        break;
-      case 'deadline_reminder':
-        // Navigate to deadline details
-        debugPrint('🔔 Opening deadline reminder: ${data['deadlineId']}');
-        break;
-      default:
-        debugPrint('🔔 Unknown notification type: $type');
-    }
+    // Delegate to InAppMessagingService for proper navigation and UI handling
+    InAppMessagingService.handleNotificationAction(data);
   }
 
   /// Show local notification

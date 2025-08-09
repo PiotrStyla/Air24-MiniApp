@@ -19,6 +19,7 @@ import 'package:f35_flight_compensation/core/accessibility/accessibility_service
 import 'package:f35_flight_compensation/services/claim_submission_service.dart';
 import 'package:f35_flight_compensation/services/claim_validation_service.dart';
 import 'package:f35_flight_compensation/services/push_notification_service.dart';
+import 'package:f35_flight_compensation/services/in_app_messaging_service.dart';
 import 'package:f35_flight_compensation/services/enhanced_claims_service.dart';
 import 'package:f35_flight_compensation/services/secure_email_service.dart';
 import 'package:f35_flight_compensation/services/donation_service.dart';
@@ -47,6 +48,7 @@ class ServiceInitializer {
     _locator.registerLazySingleton<DocumentOcrService>(() => DocumentOcrService());
     _locator.registerLazySingleton<NotificationService>(() => NotificationService());
     _locator.registerLazySingleton<PushNotificationService>(() => PushNotificationService());
+    _locator.registerLazySingleton<InAppMessagingService>(() => InAppMessagingService());
     _locator.registerLazySingleton<SecureEmailService>(() => SecureEmailService());
     _locator.registerLazySingleton<DonationService>(() => DonationService());
     _locator.registerLazySingleton<EnhancedClaimsService>(() => 

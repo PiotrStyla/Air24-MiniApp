@@ -25,6 +25,7 @@ import 'services/auth_service_firebase.dart';
 import 'services/document_storage_service.dart';
 import 'services/localization_service.dart';
 import 'services/push_notification_service.dart';
+import 'services/in_app_messaging_service.dart';
 import 'utils/translation_initializer.dart';
 
 import 'screens/main_navigation.dart';
@@ -84,6 +85,7 @@ Future<void> _initializeApp() async {
   // Initialize push notifications after Firebase and services are ready
   try {
     await PushNotificationService.initialize();
+    await InAppMessagingService.initialize();
     debugPrint('✅ Push notifications initialized successfully');
   } catch (e) {
     debugPrint('❌ Failed to initialize push notifications: $e');
@@ -142,6 +144,7 @@ class F35FlightCompensationApp extends StatelessWidget {
               // Key ensures full app rebuild when localization changes
               return MaterialApp(
                 key: ValueKey(localizationService.currentLocale.toString()),
+                navigatorKey: InAppMessagingService.navigatorKey,
                 title: 'Flight Compensation Assistant',
                 theme: theme,
                 // Add localization support
