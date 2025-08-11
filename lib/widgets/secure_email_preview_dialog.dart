@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../core/app_localizations_patch.dart';
 import '../services/secure_email_service.dart';
+import '../services/push_notification_service.dart';
 
 /// A dialog that shows the email content and provides secure email sending
 class SecureEmailPreviewDialog extends StatefulWidget {
@@ -29,26 +29,32 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 500, maxHeight: 700),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
+    return WillPopScope(
+      onWillPop: () async {
+        // Ensure system back closes only this dialog and returns to the app
+        Navigator.of(context).pop(false);
+        return false;
+      },
+      child: Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 500, maxHeight: 700),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
                 ),
-              ),
-              child: Column(
-                children: [
+                child: Column(
+                  children: [
                   Icon(
                     Icons.email_outlined,
                     size: 48,
@@ -73,9 +79,9 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                       color: Colors.grey.shade600,
                     ),
                   ),
-                ],
+                  ],
+                ),
               ),
-            ),
             
             // Content
             Expanded(
@@ -233,6 +239,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
           ],
         ),
       ),
+      ),
     );
   }
 
@@ -276,6 +283,38 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
     try {
       debugPrint('🚀 SecureEmailPreviewDialog: Starting secure email send...');
       
+      // Show brief guidance while launching external email app
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Opening email app...'),
+                    SizedBox(height: 2),
+                    Text(
+                      'Tip: to return, use your device Back gesture (not the Gmail arrow).',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      
       final result = await _emailService.sendEmail(
         toEmail: widget.toEmail,
         ccEmail: (widget.ccEmail != null && widget.ccEmail!.isNotEmpty) ? widget.ccEmail : null,
@@ -291,6 +330,15 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
 
         if (result.success) {
           debugPrint('✅ SecureEmailPreviewDialog: Email sent successfully');
+          // Send a local notification to help user return to the app
+          try {
+            await PushNotificationService.sendReturnToAppReminder(
+              title: 'Return to Flight Compensation',
+              body: 'Tap to come back and finish your claim.',
+            );
+          } catch (e) {
+            debugPrint('ℹ️ Local notification not available on this platform: $e');
+          }
           _showSuccessMessage();
         } else {
           debugPrint('❌ SecureEmailPreviewDialog: Email send failed: ${result.errorMessage}');

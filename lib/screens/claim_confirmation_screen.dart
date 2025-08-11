@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart';
-import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:flutter/services.dart';
 import '../models/claim.dart';
 import '../services/claim_submission_service.dart';
-import '../services/email_service.dart';
 import '../services/secure_email_service.dart';
 import '../services/auth_service_firebase.dart';
 import '../services/airline_procedure_service.dart';
+import '../services/push_notification_service.dart';
 import '../widgets/secure_email_preview_dialog.dart';
 
 class ClaimConfirmationScreen extends StatefulWidget {
@@ -200,23 +198,39 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
 
   Future<void> _sendClaimEmail(String airlineEmail, String userEmail) async {
     try {
-      // Show loading indicator
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-              const SizedBox(width: 16),
-              const Text('Opening email app...'),
-            ],
+      // Show loading + guidance before launching external email app
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Opening email app...'),
+                      SizedBox(height: 2),
+                      Text(
+                        'Tip: to return, use your device Back gesture (not the Gmail arrow).',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            duration: const Duration(seconds: 4),
           ),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+        );
+      }
 
       // Create SecureEmailService instance for localized email generation
       final emailService = SecureEmailService();
@@ -289,19 +303,31 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
       
       if (emailLaunched) {
         // Email app opened successfully
-        final claimSubmissionService = context.read<ClaimSubmissionService>();
+        final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
         
         // Save the claim to the database
         await claimSubmissionService.submitClaim(widget.claim);
         
         // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.emailAppOpenedMessage(userEmail)),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.emailAppOpenedMessage(userEmail)),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+
+        // Send a local notification to help user return to the app (ignore failures on web)
+        try {
+          await PushNotificationService.sendReturnToAppReminder(
+            title: 'Return to Flight Compensation',
+            body: 'Tap to come back and finish your claim.',
+          );
+        } catch (e) {
+          debugPrint('ℹ️ Local notification not available on this platform: $e');
+        }
       } else {
         // Email app not available - show better email composition experience
         final emailSent = await _showEmailCompositionDialog(
@@ -315,7 +341,7 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         
         if (emailSent) {
           // Email was sent successfully - submit the claim
-          final claimSubmissionService = context.read<ClaimSubmissionService>();
+          final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
           await claimSubmissionService.submitClaim(widget.claim);
           
           // Show success message and navigate back
@@ -346,32 +372,39 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
             );
           }
         } else {
-          // Email sending failed or was cancelled
-          throw Exception('Email sending was cancelled or failed');
+          // Email sending was cancelled or failed: inform the user without error state
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Email composition cancelled. No message was sent.'),
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
+          return;
         }
       }
-      
-      // Pop all the way back to the root
-      Navigator.of(context).popUntil((route) => route.isFirst);
     } catch (e) {
       print('Error sending claim email: $e');
       
-      // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.l10n.errorFailedToSubmitClaim(e.toString()),
+      // Show error message only if still mounted (avoid false red snackbar when app backgrounded)
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              context.l10n.errorFailedToSubmitClaim(e.toString()),
+            ),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: 'Retry',
+              onPressed: () {
+                _sendClaimEmail(airlineEmail, userEmail);
+              },
+            ),
           ),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
-          action: SnackBarAction(
-            label: 'Retry',
-            onPressed: () {
-              _sendClaimEmail(airlineEmail, userEmail);
-            },
-          ),
-        ),
-      );
+        );
+      }
     }
   }
   
@@ -461,9 +494,14 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
       
       showDialog(
       context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Container(
+      builder: (context) => WillPopScope(
+        onWillPop: () async {
+          Navigator.of(context).pop();
+          return false;
+        },
+        child: Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Container(
           padding: const EdgeInsets.all(20),
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.9,
@@ -566,7 +604,8 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
           ),
         ),
       ),
-    );
+    ),
+  );
     } catch (e) {
       print('Error showing email preview: $e');
       ScaffoldMessenger.of(context).showSnackBar(
