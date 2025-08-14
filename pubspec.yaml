@@ -69,6 +69,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^3.0.1
+  flutter_launcher_icons: ^0.14.4
   test: ^1.24.9
 
 flutter:
@@ -89,3 +90,19 @@ flutter:
     - lib/l10n2/app_fr.arb
     - lib/l10n2/app_pl.arb
     - lib/l10n2/app_pt.arb
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/icons/app_icon.png
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: assets/icons/app_icon.png
+  windows:
+    generate: true
+    image_path: assets/icons/app_icon.png
+    icon_size: 256
+  macos:
+    generate: true
+    image_path: assets/icons/app_icon.png
