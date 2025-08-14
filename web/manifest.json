@@ -1,6 +1,6 @@
 {
-    "name": "f35_flight_compensation",
-    "short_name": "f35_flight_compensation",
+    "name": "Air24",
+    "short_name": "Air24",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

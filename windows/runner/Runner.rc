@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "f35_flight_compensation" "\0"
+            VALUE "FileDescription", "Air24" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "f35_flight_compensation" "\0"
+            VALUE "InternalName", "Air24" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "f35_flight_compensation.exe" "\0"
-            VALUE "ProductName", "f35_flight_compensation" "\0"
+            VALUE "OriginalFilename", "Air24.exe" "\0"
+            VALUE "ProductName", "Air24" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
