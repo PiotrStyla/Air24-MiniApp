@@ -54,7 +54,7 @@ class FirebaseAuthService extends ChangeNotifier {
       
       // Set initial user from Firebase
       _currentUser = _auth.currentUser;
-      debugPrint('✅ FirebaseAuthService: Current user set: ${_currentUser?.email ?? 'None'}');
+      debugPrint('✅ FirebaseAuthService: Current user set (email suppressed): ${_currentUser != null}');
       
       // Initialize debug-mode credential store if needed
       if (kDebugMode) {
@@ -101,7 +101,7 @@ class FirebaseAuthService extends ChangeNotifier {
       );
       
       if (existingCredential != null) {
-        debugPrint('⚠️ FirebaseAuthService: Debug credential already exists for $normalizedEmail');
+        debugPrint('⚠️ FirebaseAuthService: Debug credential already exists (email suppressed)');
         return false; // Email already exists
       }
       
@@ -116,7 +116,7 @@ class FirebaseAuthService extends ChangeNotifier {
       
       // Save updated credentials
       await prefs.setString('debug_credentials', jsonEncode(credentials));
-      debugPrint('✅ FirebaseAuthService: Added debug credential for $normalizedEmail');
+      debugPrint('✅ FirebaseAuthService: Added debug credential (email suppressed)');
       return true;
     } catch (e) {
       debugPrint('❌ FirebaseAuthService: Failed to add debug credential: $e');
@@ -159,7 +159,7 @@ class FirebaseAuthService extends ChangeNotifier {
       );
       
       if (index == -1) {
-        debugPrint('⚠️ FirebaseAuthService: Debug credential not found for $normalizedEmail');
+        debugPrint('⚠️ FirebaseAuthService: Debug credential not found (email suppressed)');
         return false;
       }
       
@@ -168,7 +168,7 @@ class FirebaseAuthService extends ChangeNotifier {
       
       // Save updated credentials
       await prefs.setString('debug_credentials', jsonEncode(credentials));
-      debugPrint('✅ FirebaseAuthService: Updated debug credential for $normalizedEmail');
+      debugPrint('✅ FirebaseAuthService: Updated debug credential (email suppressed)');
       return true;
     } catch (e) {
       debugPrint('❌ FirebaseAuthService: Failed to update debug credential: $e');
@@ -182,7 +182,7 @@ class FirebaseAuthService extends ChangeNotifier {
       final credential = await _getDebugCredential(email);
       
       if (credential == null) {
-        debugPrint('⚠️ FirebaseAuthService: No debug credential found for $email');
+        debugPrint('⚠️ FirebaseAuthService: No debug credential found (email suppressed)');
         return false;
       }
       
@@ -251,14 +251,14 @@ class FirebaseAuthService extends ChangeNotifier {
   
   /// Sign in with email and password
   Future<UserCredential> signInWithEmail(String email, String password) async {
-    debugPrint('🔑 FirebaseAuthService: Attempting email sign-in: $email');
+    debugPrint('🔑 FirebaseAuthService: Attempting email sign-in (email suppressed)');
     
     // Normalize email to prevent case-sensitivity issues
     final String trimmedEmail = email.trim().toLowerCase();
     final String trimmedPassword = password.trim();
     
     // Check if we're in debug mode first for consistent dev experience
-    if (kDebugMode) {
+    if (kDebugMode && isFirebaseUnavailable) {
       debugPrint('🔑 FirebaseAuthService: DEBUG MODE sign-in attempt');
       try {
         // Try to authenticate with debug credential store
@@ -407,7 +407,7 @@ class FirebaseAuthService extends ChangeNotifier {
   
   /// Create a new account with email and password
   Future<UserCredential> createUserWithEmail(String email, String password) async {
-    debugPrint('📝 FirebaseAuthService: Creating new account: $email');
+    debugPrint('📝 FirebaseAuthService: Creating new account (email suppressed)');
     
     // Normalize email to prevent case-sensitivity issues
     final String trimmedEmail = email.trim().toLowerCase();
@@ -541,8 +541,7 @@ class FirebaseAuthService extends ChangeNotifier {
         
         // Log detailed account information for debugging
         if (googleUser != null) {
-          debugPrint('📋 Account info - ID: ${googleUser.id}, Display Name: ${googleUser.displayName}');
-          debugPrint('📋 Email: ${googleUser.email}, Photo URL exists: ${googleUser.photoUrl != null}');
+          debugPrint('📋 Account info retrieved (values suppressed); photo URL exists: ${googleUser.photoUrl != null}');
         }
         
         if (googleUser == null) {
@@ -553,7 +552,7 @@ class FirebaseAuthService extends ChangeNotifier {
           );
         }
         
-        debugPrint('✅👤 Google Account Selected: ${googleUser.displayName} (${googleUser.email})');
+        debugPrint('✅👤 Google Account Selected (values suppressed)');
         
         // Step 3: Always require biometric authentication with direct hardware access
         try {
@@ -744,7 +743,7 @@ class FirebaseAuthService extends ChangeNotifier {
       notifyListeners();
       
       if (_currentUser != null) {
-        debugPrint('🎉🎉 SUCCESS: Google Sign-In completed for ${_currentUser!.email}');
+        debugPrint('🎉🎉 SUCCESS: Google Sign-In completed (email suppressed)');
       } else {
         debugPrint('⚠️ WARNING: Sign-in succeeded but current user is null');
       }
@@ -784,7 +783,7 @@ class FirebaseAuthService extends ChangeNotifier {
 
   /// Send password reset email
   Future<void> resetPassword(String email) async {
-    debugPrint('📧 FirebaseAuthService: Sending password reset email: $email');
+    debugPrint('📧 FirebaseAuthService: Sending password reset email (email suppressed)');
     
     final String trimmedEmail = email.trim().toLowerCase();
     
@@ -805,7 +804,7 @@ class FirebaseAuthService extends ChangeNotifier {
   
   /// Process auth state changes
   Future<void> _onAuthStateChanged(User? user) async {
-    debugPrint('🔄 FirebaseAuthService: Auth state changed: ${user?.email ?? 'Signed out'}');
+    debugPrint('🔄 FirebaseAuthService: Auth state changed: user present? ${user != null}');
     _currentUser = user;
     notifyListeners();
   }
@@ -830,7 +829,30 @@ class FirebaseAuthService extends ChangeNotifier {
         await prefs.remove('user_display_name');
         await prefs.remove('user_email');
         await prefs.remove('user_photo_url');
-        debugPrint('🗑️ Cleared all user data from SharedPreferences');
+        // Clear profile data (PII)
+        await prefs.remove('profile_displayName');
+        await prefs.remove('profile_phone');
+        await prefs.remove('profile_passport');
+        await prefs.remove('profile_nationality');
+        await prefs.remove('profile_dateOfBirth');
+        await prefs.remove('profile_address');
+        await prefs.remove('profile_city');
+        await prefs.remove('profile_postalCode');
+        await prefs.remove('profile_country');
+        await prefs.remove('profile_consentData');
+        await prefs.remove('profile_consentNotifications');
+        // Clear manual Google cached data
+        await prefs.remove('manual_google_id');
+        await prefs.remove('manual_google_email');
+        await prefs.remove('manual_google_name');
+        await prefs.remove('manual_google_photo');
+        // Clear any other Google cache keys used
+        await prefs.remove('google_sign_in_account');
+        await prefs.remove('google_account_email');
+        await prefs.remove('google_account_id');
+        // Clear any pending email keys
+        await prefs.remove('pending_verification_email');
+        debugPrint('🗑️ Cleared all user and profile data from SharedPreferences');
       } catch (e) {
         debugPrint('⚠️ FirebaseAuthService: Failed to clear preferences: $e');
       }

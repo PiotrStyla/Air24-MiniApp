@@ -9,23 +9,23 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
-  String get euCompensation => 'TODO: Translate \'EU Compensation\'';
+  String get euCompensation => 'Compensação UE';
 
   @override
-  String get scheduledLabel => 'TODO: Translate \'Scheduled:\'';
+  String get scheduledLabel => 'Programado:';
 
   @override
-  String get minutes => 'TODO: Translate \'minutes\'';
+  String get minutes => 'minutos';
 
   @override
   String get aircraftLabel => 'Aeronave:';
 
   @override
   String get prefillCompensationForm =>
-      'TODO: Translate \'Pre-fill Compensation Form\'';
+      'Pré-preencher Formulário de Compensação';
 
   @override
-  String get confirmAndSend => 'TODO: Translate \'Confirm and Send\'';
+  String get confirmAndSend => 'Confirmar e Enviar';
 
   @override
   String get errorLoadingEmailDetails => 'Erro ao carregar detalhes do email';
@@ -56,6 +56,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get reasonForClaim => 'Motivo da Reclamação';
+
+  @override
+  String get flightCancellationReason =>
+      'Cancelamento de voo - solicitando compensação sob o regulamento EU261 por voo cancelado';
+
+  @override
+  String get flightDelayReason =>
+      'Atraso de voo superior a 3 horas - solicitando compensação sob o regulamento EU261 por atraso significativo';
+
+  @override
+  String get flightDiversionReason =>
+      'Desvio de voo - solicitando compensação sob o regulamento EU261 por voo desviado';
+
+  @override
+  String get eu261CompensationReason =>
+      'Solicitando compensação sob o regulamento EU261 por interrupção de voo';
 
   @override
   String get attachments => 'Anexos';
@@ -405,15 +421,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get reasonForClaimHint =>
-      'TODO: Translate \'Describe why you are making this claim\'';
+      'Descreva porque está a apresentar esta reclamação';
 
   @override
-  String get validatorReasonRequired =>
-      'TODO: Translate \'Reason for claim is required\'';
+  String get validatorReasonRequired => 'O motivo da reclamação é obrigatório';
 
   @override
   String get tooltipReasonQuickClaim =>
-      'TODO: Translate \'Explain why you believe you are entitled to compensation\'';
+      'Explique porque considera ter direito a indemnização';
 
   @override
   String get compensationAmountOptionalLabel =>
@@ -447,11 +462,11 @@ class AppLocalizationsPt extends AppLocalizations {
       'TODO: Translate \'Enter the airport you arrived at\'';
 
   @override
-  String get reasonForClaimLabel => 'TODO: Translate \'Reason for Claim\'';
+  String get reasonForClaimLabel => 'Motivo da Reclamação';
 
   @override
   String get hintTextReasonQuickClaim =>
-      'TODO: Translate \'Describe your claim reason here\'';
+      'Descreva aqui o motivo da sua reclamação';
 
   @override
   String get flightNumberHintQuickClaim =>
@@ -1089,4 +1104,56 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get chooseSupportAmount => 'Escolha o valor do seu apoio:';
+
+  @override
+  String get emailReadyTitle => 'Your Compensation Email is Ready to Send!';
+
+  @override
+  String get emailWillBeSentSecurely =>
+      'Your email will be sent securely through our backend service';
+
+  @override
+  String get toLabel => 'To:';
+
+  @override
+  String get ccLabel => 'CC:';
+
+  @override
+  String get subjectLabel => 'Subject:';
+
+  @override
+  String get emailBodyLabel => 'Email Body:';
+
+  @override
+  String get secureTransmissionNotice =>
+      'Your email will be sent securely using encrypted transmission';
+
+  @override
+  String get sendingEllipsis => 'Sending...';
+
+  @override
+  String get sendEmailSecurely => 'Send Email Securely';
+
+  @override
+  String get openingEmailApp => 'Opening email app...';
+
+  @override
+  String get tipReturnBackGesture =>
+      'Tip: to return, use your device Back gesture (not the Gmail arrow).';
+
+  @override
+  String get returnToAppTitle => 'Return to Flight Compensation';
+
+  @override
+  String get returnToAppBody => 'Tap to come back and finish your claim.';
+
+  @override
+  String get errorFailedToSendEmail => 'Failed to send email';
+
+  @override
+  String get unexpectedErrorSendingEmail =>
+      'Unexpected error occurred while sending email';
+
+  @override
+  String get emailSentSuccessfully => 'Email sent successfully!';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 /// Types of email sending errors
 enum EmailErrorType {
@@ -57,8 +58,8 @@ class SecureEmailService {
     String? userEmail, // User's email for reply-to functionality
   }) async {
     debugPrint('🚀 SecureEmailService: Starting sendEmail...');
-    debugPrint('📧 SecureEmailService: To: $toEmail');
-    debugPrint('📧 SecureEmailService: Subject: $subject');
+    debugPrint('📧 SecureEmailService: To (suppressed)');
+    debugPrint('📧 SecureEmailService: Subject present? ${subject.isNotEmpty}');
     
     try {
       // Validate email addresses
@@ -107,7 +108,7 @@ class SecureEmailService {
       // Production-ready approach: Use direct email app integration as primary method
       // This ensures reliable email functionality without backend dependencies
       debugPrint('📧 SecureEmailService: Using production-ready direct email approach...');
-      debugPrint('📧 SecureEmailService: User email for reply-to: ${userEmail ?? "Not provided"}');
+      debugPrint('📧 SecureEmailService: Reply-to provided? ${userEmail?.isNotEmpty == true}');
       
       // Use the reliable fallback method as the primary approach
       return _fallbackEmailSend(toEmail, ccEmail, subject, body);
@@ -134,6 +135,8 @@ class SecureEmailService {
     required String locale,
   }) {
     debugPrint('🔧 SecureEmailService: Generating email template for locale: "$locale"');
+    // Format amount once and reuse in all templates (no decimals, locale-aware separators)
+    final formattedAmount = _formatAmountNumber(compensationAmount, locale);
     switch (locale.toLowerCase()) {
       case 'de':
         return _generateGermanEmailTemplate(
@@ -143,7 +146,7 @@ class SecureEmailService {
           departureAirport: departureAirport,
           arrivalAirport: arrivalAirport,
           delayReason: delayReason,
-          compensationAmount: compensationAmount,
+          compensationAmount: formattedAmount,
         );
       case 'es':
         return _generateSpanishEmailTemplate(
@@ -153,7 +156,7 @@ class SecureEmailService {
           departureAirport: departureAirport,
           arrivalAirport: arrivalAirport,
           delayReason: delayReason,
-          compensationAmount: compensationAmount,
+          compensationAmount: formattedAmount,
         );
       case 'fr':
         return _generateFrenchEmailTemplate(
@@ -163,7 +166,7 @@ class SecureEmailService {
           departureAirport: departureAirport,
           arrivalAirport: arrivalAirport,
           delayReason: delayReason,
-          compensationAmount: compensationAmount,
+          compensationAmount: formattedAmount,
         );
       case 'pl':
         return _generatePolishEmailTemplate(
@@ -173,7 +176,7 @@ class SecureEmailService {
           departureAirport: departureAirport,
           arrivalAirport: arrivalAirport,
           delayReason: delayReason,
-          compensationAmount: compensationAmount,
+          compensationAmount: formattedAmount,
         );
       case 'pt':
         return _generatePortugueseEmailTemplate(
@@ -183,7 +186,7 @@ class SecureEmailService {
           departureAirport: departureAirport,
           arrivalAirport: arrivalAirport,
           delayReason: delayReason,
-          compensationAmount: compensationAmount,
+          compensationAmount: formattedAmount,
         );
       default:
         return _generateEnglishEmailTemplate(
@@ -193,8 +196,21 @@ class SecureEmailService {
           departureAirport: departureAirport,
           arrivalAirport: arrivalAirport,
           delayReason: delayReason,
-          compensationAmount: compensationAmount,
+          compensationAmount: formattedAmount,
         );
+    }
+  }
+
+  /// Format a numeric amount (given as string) without decimals, with locale-aware grouping
+  String _formatAmountNumber(String amount, String locale) {
+    try {
+      final value = double.tryParse(amount) ?? 0;
+      final intValue = value.round();
+      final formatter = NumberFormat.decimalPattern(locale);
+      return formatter.format(intValue);
+    } catch (_) {
+      // Fallback: strip trailing .0 if present
+      return amount.endsWith('.0') ? amount.substring(0, amount.length - 2) : amount;
     }
   }
   
@@ -231,7 +247,7 @@ class SecureEmailService {
       }
       
       final Uri emailUri = Uri.parse(mailtoUrl.toString());
-      debugPrint('🚀 SecureEmailService: Launching email app with: $emailUri');
+      debugPrint('🚀 SecureEmailService: Launching email app (URI suppressed)');
       
       // Launch email app with pre-filled content
       final bool launched = await launchUrl(emailUri);
@@ -325,7 +341,7 @@ Flight Details:
 - Flight Date: $flightDate
 - Route: $departureAirport to $arrivalAirport
 - Reason for Claim: $delayReason
-- Compensation Amount: $compensationAmount
+- Compensation Amount: €$compensationAmount
 
 According to EU Regulation 261/2004, I am entitled to compensation for this flight disruption. I request that you process my claim and provide the compensation amount within the legally required timeframe.
 

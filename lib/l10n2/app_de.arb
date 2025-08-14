@@ -894,6 +894,22 @@
   "@reasonForClaim": {
     "description": "Beschriftung für das Feld zur Angabe des Grundes für den Anspruch"
   },
+  "flightCancellationReason": "Flugannullierung - Antrag auf Entschädigung gemäß EU-Verordnung 261 für annullierten Flug",
+  "@flightCancellationReason": {
+    "description": "Auto-filled reason for flight cancellation claims"
+  },
+  "flightDelayReason": "Flugverspätung über 3 Stunden - Antrag auf Entschädigung gemäß EU-Verordnung 261 für erhebliche Verspätung",
+  "@flightDelayReason": {
+    "description": "Auto-filled reason for flight delay claims"
+  },
+  "flightDiversionReason": "Flugumleitung - Antrag auf Entschädigung gemäß EU-Verordnung 261 für umgeleiteten Flug",
+  "@flightDiversionReason": {
+    "description": "Auto-filled reason for flight diversion claims"
+  },
+  "eu261CompensationReason": "Antrag auf Entschädigung gemäß EU-Verordnung 261 für Flugstörung",
+  "@eu261CompensationReason": {
+    "description": "Default auto-filled reason for EU261 compensation claims"
+  },
   "flightDateHint": "Flugdatum (JJJJ-MM-TT)",
   "@flightDateHint": {
     "description": "Hinweis für das Flugdatum-Eingabefeld"
@@ -1260,7 +1276,7 @@
   "@euEligibleFlightsButtonText": {
     "description": "Schaltflächentext zum Anzeigen von EU-berechtigten Flügen"
   },
-  "euCompensation": "TODO: Translate 'EU Compensation'",
+  "euCompensation": "EU-Entschädigung",
   "@euCompensation": {
     "description": "Label for EU compensation tag on eligible flights"
   },

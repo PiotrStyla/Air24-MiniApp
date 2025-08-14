@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/secure_email_service.dart';
 import '../services/push_notification_service.dart';
+import '../core/app_localizations_patch.dart';
 
 /// A dialog that shows the email content and provides secure email sending
 class SecureEmailPreviewDialog extends StatefulWidget {
@@ -11,13 +12,13 @@ class SecureEmailPreviewDialog extends StatefulWidget {
   final String? userEmail; // User's email for reply-to functionality
 
   const SecureEmailPreviewDialog({
-    Key? key,
+    super.key,
     required this.toEmail,
     this.ccEmail,
     required this.subject,
     required this.body,
     this.userEmail,
-  }) : super(key: key);
+  });
 
   @override
   State<SecureEmailPreviewDialog> createState() => _SecureEmailPreviewDialogState();
@@ -29,11 +30,13 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Ensure system back closes only this dialog and returns to the app
-        Navigator.of(context).pop(false);
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        // Ensure system back closes only this dialog and returns to the app with a `false` result
+        if (!didPop) {
+          Navigator.of(context).pop(false);
+        }
       },
       child: Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -62,7 +65,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Your Compensation Email is Ready to Send!',
+                    context.l10n.emailReadyTitle,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -72,7 +75,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Your email will be sent securely through our backend service',
+                    context.l10n.emailWillBeSentSecurely,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
@@ -91,18 +94,18 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Email Details
-                    _buildEmailField('To:', widget.toEmail),
+                    _buildEmailField(context.l10n.toLabel, widget.toEmail),
                     const SizedBox(height: 12),
                     if (widget.ccEmail != null && widget.ccEmail!.isNotEmpty) ...[
-                      _buildEmailField('CC:', widget.ccEmail!),
+                      _buildEmailField(context.l10n.ccLabel, widget.ccEmail!),
                       const SizedBox(height: 12),
                     ],
-                    _buildEmailField('Subject:', widget.subject),
+                    _buildEmailField(context.l10n.subjectLabel, widget.subject),
                     const SizedBox(height: 16),
                     
                     // Email Body
                     Text(
-                      'Email Body:',
+                      context.l10n.emailBodyLabel,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -165,7 +168,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'Your email will be sent securely using encrypted transmission',
+                            context.l10n.secureTransmissionNotice,
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.blue.shade700,
@@ -189,7 +192,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: const Text('Cancel'),
+                          child: Text(context.l10n.cancel),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -218,7 +221,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    const Text('Sending...'),
+                                    Text(context.l10n.sendingEllipsis),
                                   ],
                                 )
                               : Row(
@@ -226,7 +229,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                                   children: [
                                     const Icon(Icons.send, size: 18),
                                     const SizedBox(width: 8),
-                                    const Text('Send Email Securely'),
+                                    Text(context.l10n.sendEmailSecurely),
                                   ],
                                 ),
                         ),
@@ -288,23 +291,23 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
         SnackBar(
           content: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              SizedBox(
+            children: [
+              const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Opening email app...'),
-                    SizedBox(height: 2),
+                    Text(context.l10n.openingEmailApp),
+                    const SizedBox(height: 2),
                     Text(
-                      'Tip: to return, use your device Back gesture (not the Gmail arrow).',
-                      style: TextStyle(fontSize: 12),
+                      context.l10n.tipReturnBackGesture,
+                      style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
@@ -333,8 +336,8 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
           // Send a local notification to help user return to the app
           try {
             await PushNotificationService.sendReturnToAppReminder(
-              title: 'Return to Flight Compensation',
-              body: 'Tap to come back and finish your claim.',
+              title: context.l10n.returnToAppTitle,
+              body: context.l10n.returnToAppBody,
             );
           } catch (e) {
             debugPrint('ℹ️ Local notification not available on this platform: $e');
@@ -342,7 +345,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
           _showSuccessMessage();
         } else {
           debugPrint('❌ SecureEmailPreviewDialog: Email send failed: ${result.errorMessage}');
-          _showErrorMessage(result.errorMessage ?? 'Failed to send email');
+          _showErrorMessage(result.errorMessage ?? context.l10n.errorFailedToSendEmail);
         }
       }
     } catch (e) {
@@ -351,7 +354,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
         setState(() {
           _isSending = false;
         });
-        _showErrorMessage('Unexpected error occurred while sending email');
+        _showErrorMessage(context.l10n.unexpectedErrorSendingEmail);
       }
     }
   }
@@ -367,9 +370,9 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
               size: 20,
             ),
             const SizedBox(width: 8),
-            const Text(
-              'Email sent successfully!',
-              style: TextStyle(fontWeight: FontWeight.w500),
+            Text(
+              context.l10n.emailSentSuccessfully,
+              style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -416,7 +419,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
           borderRadius: BorderRadius.circular(8),
         ),
         action: SnackBarAction(
-          label: 'Retry',
+          label: context.l10n.retry,
           textColor: Colors.white,
           onPressed: _sendEmailSecurely,
         ),

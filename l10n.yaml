@@ -1,7 +1,9 @@
 arb-dir: lib/l10n2
 template-arb-file: app_en.arb
-# output-localization-file: app_localizations.dart
-# output-dir: lib/l10n
+# Keep generated files alongside ARB sources
+output-localization-file: app_localizations.dart
+output-dir: lib/l10n2
+synthetic-package: false
 # output-dir defaults to lib/generated for non-synthetic
 # nullable-getter defaults to false
 untranslated-messages-file: untranslated_messages.txt

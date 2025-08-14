@@ -1,8 +1,10 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:f35_flight_compensation/core/services/service_initializer.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 import '../models/claim_status.dart';
 
 /// Service for handling push notifications and local notifications
@@ -111,7 +113,8 @@ class NotificationService {
   
   /// Subscribe to topics based on user data
   Future<void> _subscribeToTopics() async {
-    final user = FirebaseAuth.instance.currentUser;
+    final authService = ServiceInitializer.get<FirebaseAuthService>();
+    final user = authService.currentUser;
     if (user != null) {
       // Subscribe to user-specific topic
       await _firebaseMessaging.subscribeToTopic('user_${user.uid}');
@@ -212,7 +215,7 @@ class NotificationService {
   /// Register device token with backend
   Future<void> saveDeviceToken() async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
+      final user = ServiceInitializer.get<FirebaseAuthService>().currentUser;
       if (user == null) return;
       
       final token = await _firebaseMessaging.getToken();
@@ -230,7 +233,7 @@ class NotificationService {
   
   /// Unsubscribe from topics when user logs out
   Future<void> unsubscribeFromTopics() async {
-    final user = FirebaseAuth.instance.currentUser;
+    final user = ServiceInitializer.get<FirebaseAuthService>().currentUser;
     if (user != null) {
       await _firebaseMessaging.unsubscribeFromTopic('user_${user.uid}');
       await _firebaseMessaging.unsubscribeFromTopic('all_users');

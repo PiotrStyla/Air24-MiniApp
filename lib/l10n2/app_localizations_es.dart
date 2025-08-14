@@ -9,13 +9,13 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get euCompensation => 'TODO: Translate \'EU Compensation\'';
+  String get euCompensation => 'Compensación UE';
 
   @override
   String get scheduledLabel => 'Programado';
 
   @override
-  String get minutes => 'TODO: Translate \'minutes\'';
+  String get minutes => 'minutos';
 
   @override
   String get aircraftLabel => 'Aeronave:';
@@ -57,6 +57,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reasonForClaim => 'Motivo de la reclamación';
+
+  @override
+  String get flightCancellationReason =>
+      'Cancelación de vuelo - solicitando compensación bajo la regulación EU261 por vuelo cancelado';
+
+  @override
+  String get flightDelayReason =>
+      'Retraso de vuelo superior a 3 horas - solicitando compensación bajo la regulación EU261 por retraso significativo';
+
+  @override
+  String get flightDiversionReason =>
+      'Desvío de vuelo - solicitando compensación bajo la regulación EU261 por vuelo desviado';
+
+  @override
+  String get eu261CompensationReason =>
+      'Solicitando compensación bajo la regulación EU261 por interrupción de vuelo';
 
   @override
   String get attachments => 'Archivos adjuntos';
@@ -1082,4 +1098,56 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chooseSupportAmount => 'Elige tu cantidad de apoyo:';
+
+  @override
+  String get emailReadyTitle => 'Your Compensation Email is Ready to Send!';
+
+  @override
+  String get emailWillBeSentSecurely =>
+      'Your email will be sent securely through our backend service';
+
+  @override
+  String get toLabel => 'To:';
+
+  @override
+  String get ccLabel => 'CC:';
+
+  @override
+  String get subjectLabel => 'Subject:';
+
+  @override
+  String get emailBodyLabel => 'Email Body:';
+
+  @override
+  String get secureTransmissionNotice =>
+      'Your email will be sent securely using encrypted transmission';
+
+  @override
+  String get sendingEllipsis => 'Sending...';
+
+  @override
+  String get sendEmailSecurely => 'Send Email Securely';
+
+  @override
+  String get openingEmailApp => 'Opening email app...';
+
+  @override
+  String get tipReturnBackGesture =>
+      'Tip: to return, use your device Back gesture (not the Gmail arrow).';
+
+  @override
+  String get returnToAppTitle => 'Return to Flight Compensation';
+
+  @override
+  String get returnToAppBody => 'Tap to come back and finish your claim.';
+
+  @override
+  String get errorFailedToSendEmail => 'Failed to send email';
+
+  @override
+  String get unexpectedErrorSendingEmail =>
+      'Unexpected error occurred while sending email';
+
+  @override
+  String get emailSentSuccessfully => 'Email sent successfully!';
 }

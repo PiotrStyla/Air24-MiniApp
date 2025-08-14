@@ -21,7 +21,42 @@
     "notAvailableOnThisDevice",
     "googlePay",
     "selectAnAmount",
-    "securePaymentInfo"
+    "securePaymentInfo",
+    "emailReadyTitle",
+    "emailWillBeSentSecurely",
+    "toLabel",
+    "ccLabel",
+    "subjectLabel",
+    "emailBodyLabel",
+    "secureTransmissionNotice",
+    "sendingEllipsis",
+    "sendEmailSecurely",
+    "openingEmailApp",
+    "tipReturnBackGesture",
+    "returnToAppTitle",
+    "returnToAppBody",
+    "errorFailedToSendEmail",
+    "unexpectedErrorSendingEmail",
+    "emailSentSuccessfully"
+  ],
+
+  "es": [
+    "emailReadyTitle",
+    "emailWillBeSentSecurely",
+    "toLabel",
+    "ccLabel",
+    "subjectLabel",
+    "emailBodyLabel",
+    "secureTransmissionNotice",
+    "sendingEllipsis",
+    "sendEmailSecurely",
+    "openingEmailApp",
+    "tipReturnBackGesture",
+    "returnToAppTitle",
+    "returnToAppBody",
+    "errorFailedToSendEmail",
+    "unexpectedErrorSendingEmail",
+    "emailSentSuccessfully"
   ],
 
   "fr": [
@@ -49,7 +84,23 @@
     "notAvailableOnThisDevice",
     "googlePay",
     "selectAnAmount",
-    "securePaymentInfo"
+    "securePaymentInfo",
+    "emailReadyTitle",
+    "emailWillBeSentSecurely",
+    "toLabel",
+    "ccLabel",
+    "subjectLabel",
+    "emailBodyLabel",
+    "secureTransmissionNotice",
+    "sendingEllipsis",
+    "sendEmailSecurely",
+    "openingEmailApp",
+    "tipReturnBackGesture",
+    "returnToAppTitle",
+    "returnToAppBody",
+    "errorFailedToSendEmail",
+    "unexpectedErrorSendingEmail",
+    "emailSentSuccessfully"
   ],
 
   "pl": [
@@ -65,7 +116,22 @@
     "emailStep4",
     "emailStep5",
     "copyEmail",
-    "emailCopiedSuccess"
+    "emailCopiedSuccess",
+    "emailReadyTitle",
+    "emailWillBeSentSecurely",
+    "ccLabel",
+    "subjectLabel",
+    "emailBodyLabel",
+    "secureTransmissionNotice",
+    "sendingEllipsis",
+    "sendEmailSecurely",
+    "openingEmailApp",
+    "tipReturnBackGesture",
+    "returnToAppTitle",
+    "returnToAppBody",
+    "errorFailedToSendEmail",
+    "unexpectedErrorSendingEmail",
+    "emailSentSuccessfully"
   ],
 
   "pt": [
@@ -93,6 +159,22 @@
     "notAvailableOnThisDevice",
     "googlePay",
     "selectAnAmount",
-    "securePaymentInfo"
+    "securePaymentInfo",
+    "emailReadyTitle",
+    "emailWillBeSentSecurely",
+    "toLabel",
+    "ccLabel",
+    "subjectLabel",
+    "emailBodyLabel",
+    "secureTransmissionNotice",
+    "sendingEllipsis",
+    "sendEmailSecurely",
+    "openingEmailApp",
+    "tipReturnBackGesture",
+    "returnToAppTitle",
+    "returnToAppBody",
+    "errorFailedToSendEmail",
+    "unexpectedErrorSendingEmail",
+    "emailSentSuccessfully"
   ]
 }

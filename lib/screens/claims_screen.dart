@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/claim.dart';
 import '../core/services/service_initializer.dart';
-import '../services/auth_service.dart';
+import '../services/auth_service_firebase.dart';
 import '../services/claim_tracking_service.dart';
 import 'claim_submission_screen.dart' hide Colors, SizedBox, Container, Text, EdgeInsets, Column, TextStyle;
 import 'claim_detail_screen.dart';
@@ -94,7 +94,7 @@ class ClaimsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = ServiceInitializer.get<AuthService>();
+    final authService = ServiceInitializer.get<FirebaseAuthService>();
     final user = authService.currentUser;
     return Scaffold(
       appBar: AppBar(

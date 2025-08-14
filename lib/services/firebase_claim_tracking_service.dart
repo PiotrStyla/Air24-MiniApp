@@ -1,30 +1,37 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/claim.dart';
 import 'claim_tracking_service.dart';
+import 'auth_service_firebase.dart';
 
 /// Service for tracking claims and their progress using Firebase Firestore.
 class FirebaseClaimTrackingService implements ClaimTrackingService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuthService _authService;
   late final StreamController<List<Claim>> _claimsController;
 
   StreamSubscription? _claimsSubscription;
 
-  FirebaseClaimTrackingService() {
+  FirebaseClaimTrackingService(this._authService) {
     _claimsController = StreamController<List<Claim>>.broadcast();
+    // Listen to auth changes to resubscribe when user logs in/out
+    _authService.addListener(_onAuthChanged);
     _subscribeToClaims();
   }
 
-  String? get _currentUserId => _auth.currentUser?.uid;
+  String? get _currentUserId => _authService.currentUser?.uid;
 
   void _subscribeToClaims() {
-    if (_currentUserId == null) return;
-
+    // Cancel any existing subscription first
     _claimsSubscription?.cancel();
+    // If user is not logged in, emit empty list and return
+    if (_currentUserId == null) {
+      _claimsController.add([]);
+      return;
+    }
+
     _claimsSubscription = _firestore
         .collection('claims')
         .where('userId', isEqualTo: _currentUserId)
@@ -36,6 +43,11 @@ class FirebaseClaimTrackingService implements ClaimTrackingService {
       print('Error listening to claims stream: $error');
       _claimsController.addError(error);
     });
+  }
+
+  void _onAuthChanged() {
+    // Resubscribe whenever auth state changes
+    _subscribeToClaims();
   }
 
   @override
@@ -95,6 +107,7 @@ class FirebaseClaimTrackingService implements ClaimTrackingService {
   @override
   void dispose() {
     _claimsSubscription?.cancel();
+    _authService.removeListener(_onAuthChanged);
     _claimsController.close();
   }
 }

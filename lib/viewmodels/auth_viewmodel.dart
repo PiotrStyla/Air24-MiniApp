@@ -134,6 +134,11 @@ class AuthViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return false;
+    } on AuthException catch (e) {
+      _errorMessage = e.message;
+      _isLoading = false;
+      notifyListeners();
+      return false;
     } catch (e, stackTrace) {
       _errorMessage = 'An unexpected error occurred. Please try again.';
       // Log the error for debugging

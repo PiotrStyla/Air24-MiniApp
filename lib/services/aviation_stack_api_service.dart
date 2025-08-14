@@ -5,7 +5,7 @@ class AviationStackApiService {
   static bool isTestMode = false;
   // TODO: Replace with your own Aviation Stack API key.
   static const String _apiKey = 'YOUR_AVIATION_STACK_API_KEY';
-  static const String _baseUrl = 'http://api.aviationstack.com/v1/';
+  static const String _baseUrl = 'https://api.aviationstack.com/v1/';
 
   static Future<List<Map<String, dynamic>>> findFlightsByFlightNumber({
     required String flightNumber,

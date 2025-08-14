@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:f35_flight_compensation/services/auth_service.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
@@ -38,7 +38,7 @@ Future<T> safeFirebaseOperation<T>(Future<T> Function() operation, T fallbackVal
 
 /// Service for managing flight document storage and retrieval using Firebase.
 class FirebaseDocumentStorageService implements DocumentStorageService {
-  final AuthService _authService;
+  final FirebaseAuthService _authService;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();

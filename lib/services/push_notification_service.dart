@@ -332,6 +332,20 @@ class PushNotificationService {
       debugPrint('❌ Failed to unsubscribe from topic $topic: $e');
     }
   }
+  
+  /// Send a simple reminder notification to help the user return to the app
+  /// Tapping this notification brings the app to foreground without extra dialogs
+  static Future<void> sendReturnToAppReminder({
+    String title = 'Return to Flight Compensation',
+    String body = 'Tap to return to the app.',
+  }) async {
+    await _showLocalNotification(
+      title: title,
+      body: body,
+      data: null, // no payload => just bring app to foreground on tap
+      channelId: 'email_status',
+    );
+  }
 }
 
 /// Background message handler (must be top-level function)

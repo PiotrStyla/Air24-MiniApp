@@ -64,6 +64,22 @@
   "@reasonForClaim": {
     "description": "Label for reason for claim field"
   },
+  "flightCancellationReason": "Flight cancellation - requesting compensation under EU261 regulation for cancelled flight",
+  "@flightCancellationReason": {
+    "description": "Auto-filled reason for flight cancellation claims"
+  },
+  "flightDelayReason": "Flight delay over 3 hours - requesting compensation under EU261 regulation for significant delay",
+  "@flightDelayReason": {
+    "description": "Auto-filled reason for flight delay claims"
+  },
+  "flightDiversionReason": "Flight diversion - requesting compensation under EU261 regulation for diverted flight",
+  "@flightDiversionReason": {
+    "description": "Auto-filled reason for flight diversion claims"
+  },
+  "eu261CompensationReason": "Requesting compensation under EU261 regulation for flight disruption",
+  "@eu261CompensationReason": {
+    "description": "Default auto-filled reason for EU261 compensation claims"
+  },
   "attachments": "Attachments",
   "@attachments": {
     "description": "Label for attachments section"
@@ -1354,5 +1370,77 @@
   "maybeLater": "Maybe Later",
   "@maybeLater": {
     "description": "Maybe later button text"
+  },
+  "emailReadyTitle": "Your Compensation Email is Ready to Send!",
+  "@emailReadyTitle": {
+    "description": "Title shown at top of secure email preview dialog"
+  },
+  "emailWillBeSentSecurely": "Your email will be sent securely through our backend service",
+  "@emailWillBeSentSecurely": {
+    "description": "Subtitle explaining secure sending through backend"
+  },
+  "toLabel": "To:",
+  "@toLabel": {
+    "description": "Label for To field in email preview"
+  },
+  "ccLabel": "CC:",
+  "@ccLabel": {
+    "description": "Label for CC field in email preview"
+  },
+  "subjectLabel": "Subject:",
+  "@subjectLabel": {
+    "description": "Label for Subject field in email preview"
+  },
+  "emailBodyLabel": "Email Body:",
+  "@emailBodyLabel": {
+    "description": "Label for email body preview section"
+  },
+  "secureTransmissionNotice": "Your email will be sent securely using encrypted transmission",
+  "@secureTransmissionNotice": {
+    "description": "Notice about secure, encrypted transmission"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  "sendingEllipsis": "Sending...",
+  "@sendingEllipsis": {
+    "description": "Status text while sending email"
+  },
+  "sendEmailSecurely": "Send Email Securely",
+  "@sendEmailSecurely": {
+    "description": "Primary action button to send email securely"
+  },
+  "openingEmailApp": "Opening email app...",
+  "@openingEmailApp": {
+    "description": "Snackbar text shown while opening external email app"
+  },
+  "tipReturnBackGesture": "Tip: to return, use your device Back gesture (not the Gmail arrow).",
+  "@tipReturnBackGesture": {
+    "description": "Guidance text to help user return to app from email client"
+  },
+  "returnToAppTitle": "Return to Flight Compensation",
+  "@returnToAppTitle": {
+    "description": "Local notification title prompting user to return to app"
+  },
+  "returnToAppBody": "Tap to come back and finish your claim.",
+  "@returnToAppBody": {
+    "description": "Local notification body prompting user to return to app"
+  },
+  "errorFailedToSendEmail": "Failed to send email",
+  "@errorFailedToSendEmail": {
+    "description": "Error message when secure email sending fails"
+  },
+  "unexpectedErrorSendingEmail": "Unexpected error occurred while sending email",
+  "@unexpectedErrorSendingEmail": {
+    "description": "Generic error message when an unexpected error occurs during email sending"
+  },
+  "emailSentSuccessfully": "Email sent successfully!",
+  "@emailSentSuccessfully": {
+    "description": "Success message when email is sent successfully"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry action label"
   }
 }

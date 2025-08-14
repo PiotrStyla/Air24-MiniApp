@@ -935,7 +935,23 @@
   },
   "reasonForClaim": "Motivo de la reclamación",
   "@reasonForClaim": {
-    "description": "Etiqueta para el campo del motivo de la reclamación"
+    "description": "Etiqueta para el campo de motivo de la reclamación"
+  },
+  "flightCancellationReason": "Cancelación de vuelo - solicitando compensación bajo la regulación EU261 por vuelo cancelado",
+  "@flightCancellationReason": {
+    "description": "Motivo auto-rellenado para reclamaciones de cancelación de vuelo"
+  },
+  "flightDelayReason": "Retraso de vuelo superior a 3 horas - solicitando compensación bajo la regulación EU261 por retraso significativo",
+  "@flightDelayReason": {
+    "description": "Motivo auto-rellenado para reclamaciones de retraso de vuelo"
+  },
+  "flightDiversionReason": "Desvío de vuelo - solicitando compensación bajo la regulación EU261 por vuelo desviado",
+  "@flightDiversionReason": {
+    "description": "Motivo auto-rellenado para reclamaciones de desvío de vuelo"
+  },
+  "eu261CompensationReason": "Solicitando compensación bajo la regulación EU261 por interrupción de vuelo",
+  "@eu261CompensationReason": {
+    "description": "Motivo por defecto auto-rellenado para reclamaciones de compensación EU261"
   },
   "flightDateHint": "Seleccionar fecha del vuelo",
   "@flightDateHint": {
@@ -1467,11 +1483,11 @@
   "@euEligibleFlightsButtonText": {
     "description": "Texto del botón para ver vuelos elegibles en la UE"
   },
-  "euCompensation": "TODO: Translate 'EU Compensation'",
+  "euCompensation": "Compensación UE",
   "@euCompensation": {
     "description": "Label for EU compensation tag on eligible flights"
   },
-  "minutes": "TODO: Translate 'minutes'",
+  "minutes": "minutos",
   "@minutes": {
     "description": "Text for minutes unit"
   },

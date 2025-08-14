@@ -59,6 +59,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get reasonForClaim => 'Motif de la Réclamation';
 
   @override
+  String get flightCancellationReason =>
+      'Annulation de vol - demande d\'indemnisation au titre du règlement EU261 pour vol annulé';
+
+  @override
+  String get flightDelayReason =>
+      'Retard de vol supérieur à 3 heures - demande d\'indemnisation au titre du règlement EU261 pour retard important';
+
+  @override
+  String get flightDiversionReason =>
+      'Déroutement de vol - demande d\'indemnisation au titre du règlement EU261 pour vol dérouté';
+
+  @override
+  String get eu261CompensationReason =>
+      'Demande d\'indemnisation au titre du règlement EU261 pour perturbation de vol';
+
+  @override
   String get attachments => 'Pièces Jointes';
 
   @override
@@ -400,69 +416,66 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get documentUploadSuccess =>
-      'TODO: Translate \'Document uploaded successfully\'';
+      'Le document a été téléchargé avec succès';
 
   @override
-  String get uploadFailed =>
-      'TODO: Translate \'Upload failed. Please try again.\'';
+  String get uploadFailed => 'Le téléchargement a échoué. Veuillez réessayer.';
 
   @override
-  String get reasonForClaimHint =>
-      'TODO: Translate \'Describe why you are making this claim\'';
+  String get reasonForClaimHint => 'Décrivez la raison de votre réclamation';
 
   @override
   String get validatorReasonRequired =>
-      'TODO: Translate \'Reason for claim is required\'';
+      'Le motif de la réclamation est obligatoire';
 
   @override
   String get tooltipReasonQuickClaim =>
-      'TODO: Translate \'Explain why you believe you are entitled to compensation\'';
+      'Expliquez pourquoi vous pensez avoir droit à une indemnisation';
 
   @override
   String get compensationAmountOptionalLabel =>
-      'TODO: Translate \'Requested Compensation Amount (Optional)\'';
+      'Montant d\'indemnisation demandé (facultatif)';
 
   @override
   String get compensationAmountHint =>
-      'TODO: Translate \'Enter amount if you have a specific request\'';
+      'Entrez le montant si vous avez une demande spécifique';
 
   @override
   String get tooltipCompensationAmountQuickClaim =>
-      'TODO: Translate \'You can specify a compensation amount or leave it blank\'';
+      'Vous pouvez spécifier un montant d\'indemnisation ou le laisser vide';
 
   @override
-  String get continueToReview => 'TODO: Translate \'Continue to Review\'';
+  String get continueToReview => 'Continuer à la révision';
 
   @override
   String get tooltipDepartureAirportQuickClaim =>
-      'TODO: Translate \'Enter the airport you departed from\'';
+      'Entrez l\'aéroport de départ';
 
   @override
   String get arrivalAirportHintQuickClaim =>
-      'TODO: Translate \'Enter airport code or name (e.g. LHR, London Heathrow)\'';
+      'Entrez le code ou le nom de l\'aéroport d\'arrivée (par exemple LHR, Londres Heathrow)';
 
   @override
   String get validatorArrivalAirportRequired =>
-      'TODO: Translate \'Arrival airport is required\'';
+      'L\'aéroport d\'arrivée est obligatoire';
 
   @override
-  String get tooltipArrivalAirportQuickClaim =>
-      'TODO: Translate \'Enter the airport you arrived at\'';
+  String get tooltipArrivalAirportQuickClaim => 'Entrez l\'aéroport d\'arrivée';
 
   @override
-  String get reasonForClaimLabel => 'TODO: Translate \'Reason for Claim\'';
+  String get reasonForClaimLabel => 'Motif de la réclamation';
 
   @override
   String get hintTextReasonQuickClaim =>
-      'TODO: Translate \'Describe your claim reason here\'';
+      'Décrivez ici le motif de votre réclamation';
 
   @override
   String get flightNumberHintQuickClaim =>
-      'TODO: Translate \'Enter flight number (e.g. LH123)\'';
+      'Entrez le numéro de vol (par exemple LH123)';
 
   @override
   String get validatorFlightNumberRequired =>
-      'TODO: Translate \'Flight number is required\'';
+      'Le numéro de vol est obligatoire';
 
   @override
   String get tooltipFlightNumberQuickClaim =>
@@ -1099,4 +1112,56 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get chooseSupportAmount => 'Choisissez votre montant de soutien:';
+
+  @override
+  String get emailReadyTitle => 'Your Compensation Email is Ready to Send!';
+
+  @override
+  String get emailWillBeSentSecurely =>
+      'Your email will be sent securely through our backend service';
+
+  @override
+  String get toLabel => 'To:';
+
+  @override
+  String get ccLabel => 'CC:';
+
+  @override
+  String get subjectLabel => 'Subject:';
+
+  @override
+  String get emailBodyLabel => 'Email Body:';
+
+  @override
+  String get secureTransmissionNotice =>
+      'Your email will be sent securely using encrypted transmission';
+
+  @override
+  String get sendingEllipsis => 'Sending...';
+
+  @override
+  String get sendEmailSecurely => 'Send Email Securely';
+
+  @override
+  String get openingEmailApp => 'Opening email app...';
+
+  @override
+  String get tipReturnBackGesture =>
+      'Tip: to return, use your device Back gesture (not the Gmail arrow).';
+
+  @override
+  String get returnToAppTitle => 'Return to Flight Compensation';
+
+  @override
+  String get returnToAppBody => 'Tap to come back and finish your claim.';
+
+  @override
+  String get errorFailedToSendEmail => 'Failed to send email';
+
+  @override
+  String get unexpectedErrorSendingEmail =>
+      'Unexpected error occurred while sending email';
+
+  @override
+  String get emailSentSuccessfully => 'Email sent successfully!';
 }

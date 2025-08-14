@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../services/aviation_stack_service.dart';
-import 'dart:io';
 
 class FlightArrivalsScreen extends StatefulWidget {
   final String airportIcao;
@@ -21,7 +20,7 @@ class _FlightArrivalsScreenState extends State<FlightArrivalsScreen> {
   }
 
   Future<List<Map<String, dynamic>>> _loadArrivals() async {
-    _service = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1', pythonBackendUrl: 'YOUR_PYTHON_BACKEND_URL_HERE');
+    _service = AviationStackService(baseUrl: 'https://api.aviationstack.com/v1', pythonBackendUrl: 'YOUR_PYTHON_BACKEND_URL_HERE');
     return _service.getRecentArrivals(airportIcao: widget.airportIcao, minutesBeforeNow: 720);
   }
 

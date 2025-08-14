@@ -531,6 +531,22 @@
   "@reasonForClaim": {
     "description": "Label for reason for claim field"
   },
+  "flightCancellationReason": "Annulation de vol - demande d'indemnisation au titre du règlement EU261 pour vol annulé",
+  "@flightCancellationReason": {
+    "description": "Auto-filled reason for flight cancellation claims"
+  },
+  "flightDelayReason": "Retard de vol supérieur à 3 heures - demande d'indemnisation au titre du règlement EU261 pour retard important",
+  "@flightDelayReason": {
+    "description": "Auto-filled reason for flight delay claims"
+  },
+  "flightDiversionReason": "Déroutement de vol - demande d'indemnisation au titre du règlement EU261 pour vol dérouté",
+  "@flightDiversionReason": {
+    "description": "Auto-filled reason for flight diversion claims"
+  },
+  "eu261CompensationReason": "Demande d'indemnisation au titre du règlement EU261 pour perturbation de vol",
+  "@eu261CompensationReason": {
+    "description": "Default auto-filled reason for EU261 compensation claims"
+  },
   "attachments": "Pièces Jointes",
   "@attachments": {
     "description": "Label for attachments section"
@@ -732,71 +748,71 @@
   "@tipSecureData": {
     "description": "Tip about data security"
   },
-  "documentUploadSuccess": "TODO: Translate 'Document uploaded successfully'",
+  "documentUploadSuccess": "Le document a été téléchargé avec succès",
   "@documentUploadSuccess": {
     "description": "Message shown when document upload is successful"
   },
-  "uploadFailed": "TODO: Translate 'Upload failed. Please try again.'",
+  "uploadFailed": "Le téléchargement a échoué. Veuillez réessayer.",
   "@uploadFailed": {
     "description": "Message shown when document upload fails"
   },
-  "reasonForClaimHint": "TODO: Translate 'Describe why you are making this claim'",
+  "reasonForClaimHint": "Décrivez la raison de votre réclamation",
   "@reasonForClaimHint": {
     "description": "Helper text for reason for claim field"
   },
-  "validatorReasonRequired": "TODO: Translate 'Reason for claim is required'",
+  "validatorReasonRequired": "Le motif de la réclamation est obligatoire",
   "@validatorReasonRequired": {
     "description": "Validation message when reason for claim is empty"
   },
-  "tooltipReasonQuickClaim": "TODO: Translate 'Explain why you believe you are entitled to compensation'",
+  "tooltipReasonQuickClaim": "Expliquez pourquoi vous pensez avoir droit à une indemnisation",
   "@tooltipReasonQuickClaim": {
     "description": "Tooltip for reason field in quick claim form"
   },
-  "compensationAmountOptionalLabel": "TODO: Translate 'Requested Compensation Amount (Optional)'",
+  "compensationAmountOptionalLabel": "Montant d'indemnisation demandé (facultatif)",
   "@compensationAmountOptionalLabel": {
     "description": "Label for optional compensation amount field"
   },
-  "compensationAmountHint": "TODO: Translate 'Enter amount if you have a specific request'",
+  "compensationAmountHint": "Entrez le montant si vous avez une demande spécifique",
   "@compensationAmountHint": {
     "description": "Helper text for compensation amount field"
   },
-  "tooltipCompensationAmountQuickClaim": "TODO: Translate 'You can specify a compensation amount or leave it blank'",
+  "tooltipCompensationAmountQuickClaim": "Vous pouvez spécifier un montant d'indemnisation ou le laisser vide",
   "@tooltipCompensationAmountQuickClaim": {
     "description": "Tooltip for compensation amount in quick claim form"
   },
-  "continueToReview": "TODO: Translate 'Continue to Review'",
+  "continueToReview": "Continuer à la révision",
   "@continueToReview": {
     "description": "Button text to proceed to review screen"
   },
-  "tooltipDepartureAirportQuickClaim": "TODO: Translate 'Enter the airport you departed from'",
+  "tooltipDepartureAirportQuickClaim": "Entrez l'aéroport de départ",
   "@tooltipDepartureAirportQuickClaim": {
     "description": "Tooltip for departure airport field in quick claim form"
   },
-  "arrivalAirportHintQuickClaim": "TODO: Translate 'Enter airport code or name (e.g. LHR, London Heathrow)'",
+  "arrivalAirportHintQuickClaim": "Entrez le code ou le nom de l'aéroport d'arrivée (par exemple LHR, Londres Heathrow)",
   "@arrivalAirportHintQuickClaim": {
     "description": "Helper text for arrival airport field in quick claim form"
   },
-  "validatorArrivalAirportRequired": "TODO: Translate 'Arrival airport is required'",
+  "validatorArrivalAirportRequired": "L'aéroport d'arrivée est obligatoire",
   "@validatorArrivalAirportRequired": {
     "description": "Validation message when arrival airport is empty"
   },
-  "tooltipArrivalAirportQuickClaim": "TODO: Translate 'Enter the airport you arrived at'",
+  "tooltipArrivalAirportQuickClaim": "Entrez l'aéroport d'arrivée",
   "@tooltipArrivalAirportQuickClaim": {
     "description": "Tooltip for arrival airport field in quick claim form"
   },
-  "reasonForClaimLabel": "TODO: Translate 'Reason for Claim'",
+  "reasonForClaimLabel": "Motif de la réclamation",
   "@reasonForClaimLabel": {
     "description": "Label for reason for claim field"
   },
-  "hintTextReasonQuickClaim": "TODO: Translate 'Describe your claim reason here'",
+  "hintTextReasonQuickClaim": "Décrivez ici le motif de votre réclamation",
   "@hintTextReasonQuickClaim": {
     "description": "Hint text for reason field in quick claim form"
   },
-  "flightNumberHintQuickClaim": "TODO: Translate 'Enter flight number (e.g. LH123)'",
+  "flightNumberHintQuickClaim": "Entrez le numéro de vol (par exemple LH123)",
   "@flightNumberHintQuickClaim": {
     "description": "Helper text for flight number field in quick claim form"
   },
-  "validatorFlightNumberRequired": "TODO: Translate 'Flight number is required'",
+  "validatorFlightNumberRequired": "Le numéro de vol est obligatoire",
   "@validatorFlightNumberRequired": {
     "description": "Validation message when flight number is empty"
   },

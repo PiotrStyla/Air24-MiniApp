@@ -31,7 +31,7 @@ import 'utils/translation_initializer.dart';
 import 'screens/main_navigation.dart';
 import 'screens/profile_edit_screen.dart';
 import 'screens/auth_screen.dart'; // Import for AuthScreen
-import 'screens/email_auth_screen.dart'; // Keep for backward compatibility
+// import 'screens/email_auth_screen.dart'; // Deprecated: unified via AuthScreen
 import 'screens/claim_submission_screen.dart';
 import 'screens/flight_compensation_checker_screen.dart';
 import 'screens/accessibility_settings_screen.dart';
@@ -181,8 +181,8 @@ class F35FlightCompensationApp extends StatelessWidget {
 
                   // New improved auth screen
                   '/auth': (context) => const AuthScreen(),
-                  // Keep old auth screen for backward compatibility
-                  '/email-auth': (context) => const EmailAuthScreen(),
+                  // Backward-compatible route now points to the unified AuthScreen
+                  '/email-auth': (context) => const AuthScreen(),
                   '/edit-profile': (context) => const ProfileEditScreen(),
                   '/compensation-checker': (context) => const FlightCompensationCheckerScreen(),
                   '/accessibility-settings': (context) => const AccessibilitySettingsScreen(),

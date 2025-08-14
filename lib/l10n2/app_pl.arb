@@ -416,6 +416,22 @@
   "@reasonForClaim": {
     "description": "Etykieta dla pola powodu reklamacji"
   },
+  "flightCancellationReason": "Odwołanie lotu - wniosek o odszkodowanie na podstawie rozporządzenia UE 261 za odwołany lot",
+  "@flightCancellationReason": {
+    "description": "Auto-filled reason for flight cancellation claims"
+  },
+  "flightDelayReason": "Opóźnienie lotu powyżej 3 godzin - wniosek o odszkodowanie na podstawie rozporządzenia UE 261 za znaczne opóźnienie",
+  "@flightDelayReason": {
+    "description": "Auto-filled reason for flight delay claims"
+  },
+  "flightDiversionReason": "Przekierowanie lotu - wniosek o odszkodowanie na podstawie rozporządzenia UE 261 za przekierowany lot",
+  "@flightDiversionReason": {
+    "description": "Auto-filled reason for flight diversion claims"
+  },
+  "eu261CompensationReason": "Wniosek o odszkodowanie na podstawie rozporządzenia UE 261 za zakłócenie lotu",
+  "@eu261CompensationReason": {
+    "description": "Default auto-filled reason for EU261 compensation claims"
+  },
   "flightDateHint": "Wybierz datę swojego lotu",
   "continueToAttachments": "Przejdź do załączników",
   "pleaseEnterFlightNumber": "Proszę podać numer lotu",
@@ -1187,11 +1203,11 @@
   "@euEligibleFlightsButtonText": {
     "description": "Tekst przycisku do przeglądania lotów kwalifikujących się do odszkodowania w UE"
   },
-  "euCompensation": "TODO: Translate 'EU Compensation'",
+  "euCompensation": "Kompensacja UE",
   "@euCompensation": {
     "description": "Label for EU compensation tag on eligible flights"
   },
-  "minutes": "TODO: Translate 'minutes'",
+  "minutes": "minut",
   "@minutes": {
     "description": "Text for minutes unit"
   },
@@ -1228,7 +1244,7 @@
   "@passengerInformation": {
     "description": "Header for passenger information section"
   },
-  "validatorReasonRequired": "TODO: Translate 'Reason for claim is required'",
+  "validatorReasonRequired": "Powód roszczenia jest wymagany",
   "@validatorReasonRequired": {
     "description": "Validation message when reason for claim is empty"
   },

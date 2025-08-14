@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get_it/get_it.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 import '../services/firestore_service.dart';
 import '../models/user_profile.dart';
 import '../widgets/claim_checklist_widget.dart';
@@ -189,8 +190,9 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
 
   Future<void> _loadUserProfile() async {
     try {
-      // Get the current user from Firebase Auth
-      final user = FirebaseAuth.instance.currentUser;
+      // Get the current user via centralized FirebaseAuthService
+      final authService = GetIt.instance<FirebaseAuthService>();
+      final user = authService.currentUser;
       debugPrint('Current Firebase user: ${user?.email ?? 'No user logged in'}');
       
       if (user != null) {
@@ -649,8 +651,9 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
       });
       
       try {
-        // Get current user
-        final user = FirebaseAuth.instance.currentUser;
+        // Get current user via centralized FirebaseAuthService
+        final authService = GetIt.instance<FirebaseAuthService>();
+        final user = authService.currentUser;
         if (user == null) {
           throw Exception('User not logged in');
         }

@@ -202,6 +202,30 @@ abstract class AppLocalizations {
   /// **'Reason for Claim'**
   String get reasonForClaim;
 
+  /// Auto-filled reason for flight cancellation claims
+  ///
+  /// In en, this message translates to:
+  /// **'Flight cancellation - requesting compensation under EU261 regulation for cancelled flight'**
+  String get flightCancellationReason;
+
+  /// Auto-filled reason for flight delay claims
+  ///
+  /// In en, this message translates to:
+  /// **'Flight delay over 3 hours - requesting compensation under EU261 regulation for significant delay'**
+  String get flightDelayReason;
+
+  /// Auto-filled reason for flight diversion claims
+  ///
+  /// In en, this message translates to:
+  /// **'Flight diversion - requesting compensation under EU261 regulation for diverted flight'**
+  String get flightDiversionReason;
+
+  /// Default auto-filled reason for EU261 compensation claims
+  ///
+  /// In en, this message translates to:
+  /// **'Requesting compensation under EU261 regulation for flight disruption'**
+  String get eu261CompensationReason;
+
   /// Label for attachments section
   ///
   /// In en, this message translates to:
@@ -232,7 +256,7 @@ abstract class AppLocalizations {
   /// **'Unknown error'**
   String get unknownError;
 
-  /// Button label to retry an action
+  /// Retry action label
   ///
   /// In en, this message translates to:
   /// **'Retry'**
@@ -742,7 +766,7 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this document?'**
   String get deleteDocumentConfirmation;
 
-  /// Label for cancel button
+  /// Cancel button label
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
@@ -2052,6 +2076,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose your support amount:'**
   String get chooseSupportAmount;
+
+  /// Title shown at top of secure email preview dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Your Compensation Email is Ready to Send!'**
+  String get emailReadyTitle;
+
+  /// Subtitle explaining secure sending through backend
+  ///
+  /// In en, this message translates to:
+  /// **'Your email will be sent securely through our backend service'**
+  String get emailWillBeSentSecurely;
+
+  /// Label for To field in email preview
+  ///
+  /// In en, this message translates to:
+  /// **'To:'**
+  String get toLabel;
+
+  /// Label for CC field in email preview
+  ///
+  /// In en, this message translates to:
+  /// **'CC:'**
+  String get ccLabel;
+
+  /// Label for Subject field in email preview
+  ///
+  /// In en, this message translates to:
+  /// **'Subject:'**
+  String get subjectLabel;
+
+  /// Label for email body preview section
+  ///
+  /// In en, this message translates to:
+  /// **'Email Body:'**
+  String get emailBodyLabel;
+
+  /// Notice about secure, encrypted transmission
+  ///
+  /// In en, this message translates to:
+  /// **'Your email will be sent securely using encrypted transmission'**
+  String get secureTransmissionNotice;
+
+  /// Status text while sending email
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get sendingEllipsis;
+
+  /// Primary action button to send email securely
+  ///
+  /// In en, this message translates to:
+  /// **'Send Email Securely'**
+  String get sendEmailSecurely;
+
+  /// Snackbar text shown while opening external email app
+  ///
+  /// In en, this message translates to:
+  /// **'Opening email app...'**
+  String get openingEmailApp;
+
+  /// Guidance text to help user return to app from email client
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: to return, use your device Back gesture (not the Gmail arrow).'**
+  String get tipReturnBackGesture;
+
+  /// Local notification title prompting user to return to app
+  ///
+  /// In en, this message translates to:
+  /// **'Return to Flight Compensation'**
+  String get returnToAppTitle;
+
+  /// Local notification body prompting user to return to app
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to come back and finish your claim.'**
+  String get returnToAppBody;
+
+  /// Error message when secure email sending fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send email'**
+  String get errorFailedToSendEmail;
+
+  /// Generic error message when an unexpected error occurs during email sending
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected error occurred while sending email'**
+  String get unexpectedErrorSendingEmail;
+
+  /// Success message when email is sent successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Email sent successfully!'**
+  String get emailSentSuccessfully;
 }
 
 class _AppLocalizationsDelegate

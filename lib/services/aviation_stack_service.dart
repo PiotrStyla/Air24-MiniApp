@@ -29,7 +29,7 @@ class AviationStackService {
   /// Creates an instance of the AviationStackService
   AviationStackService({
     http.Client? httpClient,
-    this.baseUrl = 'http://api.aviationstack.com/v1',
+    this.baseUrl = 'https://api.aviationstack.com/v1',
     this.apiKey = '',
     this.apiKeysFile,
     this.mockMode = false,

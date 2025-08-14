@@ -974,27 +974,27 @@
   "@euEligibleFlightsButtonText": {
     "description": "Texto do botão para ver voos elegíveis na UE"
   },
-  "euCompensation": "TODO: Translate 'EU Compensation'",
+  "euCompensation": "Compensação UE",
   "@euCompensation": {
     "description": "Label for EU compensation tag on eligible flights"
   },
-  "scheduledLabel": "TODO: Translate 'Scheduled:'",
+  "scheduledLabel": "Programado:",
   "@scheduledLabel": {
     "description": "Label for scheduled flight time"
   },
-  "minutes": "TODO: Translate 'minutes'",
+  "minutes": "minutos",
   "@minutes": {
     "description": "Text for minutes unit"
   },
-  "aircraftLabel": "TODO: Translate 'Aircraft:'",
+  "aircraftLabel": "Aeronave:",
   "@aircraftLabel": {
     "description": "Label for aircraft information"
   },
-  "prefillCompensationForm": "TODO: Translate 'Pre-fill Compensation Form'",
+  "prefillCompensationForm": "Pré-preencher Formulário de Compensação",
   "@prefillCompensationForm": {
     "description": "Button text for pre-filling compensation form"
   },
-  "confirmAndSend": "TODO: Translate 'Confirm and Send'",
+  "confirmAndSend": "Confirmar e Enviar",
   "@confirmAndSend": {
     "description": "Button label for confirming and sending an email"
   },
@@ -1028,7 +1028,23 @@
   },
   "reasonForClaim": "Motivo da Reclamação",
   "@reasonForClaim": {
-    "description": "Label for reason for claim field"
+    "description": "Etiqueta para o campo de motivo da reclamação"
+  },
+  "flightCancellationReason": "Cancelamento de voo - solicitando compensação sob o regulamento EU261 por voo cancelado",
+  "@flightCancellationReason": {
+    "description": "Motivo auto-preenchido para reclamações de cancelamento de voo"
+  },
+  "flightDelayReason": "Atraso de voo superior a 3 horas - solicitando compensação sob o regulamento EU261 por atraso significativo",
+  "@flightDelayReason": {
+    "description": "Motivo auto-preenchido para reclamações de atraso de voo"
+  },
+  "flightDiversionReason": "Desvio de voo - solicitando compensação sob o regulamento EU261 por voo desviado",
+  "@flightDiversionReason": {
+    "description": "Motivo auto-preenchido para reclamações de desvio de voo"
+  },
+  "eu261CompensationReason": "Solicitando compensação sob o regulamento EU261 por interrupção de voo",
+  "@eu261CompensationReason": {
+    "description": "Motivo padrão auto-preenchido para reclamações de compensação EU261"
   },
   "attachments": "Anexos",
   "@attachments": {
@@ -1156,15 +1172,15 @@
   "@tipSecureData": {
     "description": "Tip about data security"
   },
-  "reasonForClaimHint": "TODO: Translate 'Describe why you are making this claim'",
+  "reasonForClaimHint": "Descreva porque está a apresentar esta reclamação",
   "@reasonForClaimHint": {
     "description": "Helper text for reason for claim field"
   },
-  "validatorReasonRequired": "TODO: Translate 'Reason for claim is required'",
+  "validatorReasonRequired": "O motivo da reclamação é obrigatório",
   "@validatorReasonRequired": {
     "description": "Validation message when reason for claim is empty"
   },
-  "tooltipReasonQuickClaim": "TODO: Translate 'Explain why you believe you are entitled to compensation'",
+  "tooltipReasonQuickClaim": "Explique porque considera ter direito a indemnização",
   "@tooltipReasonQuickClaim": {
     "description": "Tooltip for reason field in quick claim form"
   },
@@ -1200,11 +1216,11 @@
   "@tooltipArrivalAirportQuickClaim": {
     "description": "Tooltip for arrival airport field in quick claim form"
   },
-  "reasonForClaimLabel": "TODO: Translate 'Reason for Claim'",
+  "reasonForClaimLabel": "Motivo da Reclamação",
   "@reasonForClaimLabel": {
     "description": "Label for reason for claim field"
   },
-  "hintTextReasonQuickClaim": "TODO: Translate 'Describe your claim reason here'",
+  "hintTextReasonQuickClaim": "Descreva aqui o motivo da sua reclamação",
   "@hintTextReasonQuickClaim": {
     "description": "Hint text for reason field in quick claim form"
   },

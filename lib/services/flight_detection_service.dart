@@ -78,7 +78,7 @@ class FlightDetectionService {
         apiKey = 'DEVELOPMENT_PLACEHOLDER_KEY';
         // Continue execution instead of returning
       }
-      final aviationService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
+      final aviationService = AviationStackService(baseUrl: 'https://api.aviationstack.com/v1');
       List<Map<String, dynamic>> arrivals = [];
       try {
         arrivals = await aviationService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
@@ -146,7 +146,7 @@ class FlightDetectionService {
             debugPrint('Using placeholder API key for development: rapidapi_key.txt not found');
             apiKey = 'DEVELOPMENT_PLACEHOLDER_KEY';
           }
-          final aviationService = AviationStackService(baseUrl: 'http://api.aviationstack.com/v1');
+          final aviationService = AviationStackService(baseUrl: 'https://api.aviationstack.com/v1');
           final arrivals = await aviationService.getRecentArrivals(airportIcao: arrAirport.icao, minutesBeforeNow: 120);
           // Find best match: closest departure airport and arrival time
           final nowUtc = DateTime.now().toUtc();

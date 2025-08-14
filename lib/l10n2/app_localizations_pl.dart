@@ -9,13 +9,13 @@ class AppLocalizationsPl extends AppLocalizations {
   AppLocalizationsPl([String locale = 'pl']) : super(locale);
 
   @override
-  String get euCompensation => 'TODO: Translate \'EU Compensation\'';
+  String get euCompensation => 'Kompensacja UE';
 
   @override
   String get scheduledLabel => 'Zaplanowany';
 
   @override
-  String get minutes => 'TODO: Translate \'minutes\'';
+  String get minutes => 'minut';
 
   @override
   String get aircraftLabel => 'Samolot:';
@@ -57,6 +57,22 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get reasonForClaim => 'Powód reklamacji:';
+
+  @override
+  String get flightCancellationReason =>
+      'Odwołanie lotu - wniosek o odszkodowanie na podstawie rozporządzenia UE 261 za odwołany lot';
+
+  @override
+  String get flightDelayReason =>
+      'Opóźnienie lotu powyżej 3 godzin - wniosek o odszkodowanie na podstawie rozporządzenia UE 261 za znaczne opóźnienie';
+
+  @override
+  String get flightDiversionReason =>
+      'Przekierowanie lotu - wniosek o odszkodowanie na podstawie rozporządzenia UE 261 za przekierowany lot';
+
+  @override
+  String get eu261CompensationReason =>
+      'Wniosek o odszkodowanie na podstawie rozporządzenia UE 261 za zakłócenie lotu';
 
   @override
   String get attachments => 'Załączniki:';
@@ -405,8 +421,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Podaj szczegóły dotyczące tego, co stało się z twoim lotem';
 
   @override
-  String get validatorReasonRequired =>
-      'TODO: Translate \'Reason for claim is required\'';
+  String get validatorReasonRequired => 'Powód roszczenia jest wymagany';
 
   @override
   String get tooltipReasonQuickClaim =>
@@ -1084,4 +1099,56 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get chooseSupportAmount => 'Wybierz kwotę wsparcia:';
+
+  @override
+  String get emailReadyTitle => 'Your Compensation Email is Ready to Send!';
+
+  @override
+  String get emailWillBeSentSecurely =>
+      'Your email will be sent securely through our backend service';
+
+  @override
+  String get toLabel => 'Do';
+
+  @override
+  String get ccLabel => 'CC:';
+
+  @override
+  String get subjectLabel => 'Subject:';
+
+  @override
+  String get emailBodyLabel => 'Email Body:';
+
+  @override
+  String get secureTransmissionNotice =>
+      'Your email will be sent securely using encrypted transmission';
+
+  @override
+  String get sendingEllipsis => 'Sending...';
+
+  @override
+  String get sendEmailSecurely => 'Send Email Securely';
+
+  @override
+  String get openingEmailApp => 'Opening email app...';
+
+  @override
+  String get tipReturnBackGesture =>
+      'Tip: to return, use your device Back gesture (not the Gmail arrow).';
+
+  @override
+  String get returnToAppTitle => 'Return to Flight Compensation';
+
+  @override
+  String get returnToAppBody => 'Tap to come back and finish your claim.';
+
+  @override
+  String get errorFailedToSendEmail => 'Failed to send email';
+
+  @override
+  String get unexpectedErrorSendingEmail =>
+      'Unexpected error occurred while sending email';
+
+  @override
+  String get emailSentSuccessfully => 'Email sent successfully!';
 }

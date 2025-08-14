@@ -18,6 +18,7 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
   // Simple controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _reasonController = TextEditingController();
   
   @override
   void initState() {
@@ -28,9 +29,52 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
   }
   
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Auto-fill reason based on flight data (after context is available)
+    if (_reasonController.text.isEmpty) {
+      _autoFillReason();
+    }
+  }
+  
+  /// Auto-fill the reason for claim based on flight data and localize it
+  void _autoFillReason() {
+    print('🔍 Auto-filling reason for claim...');
+    print('📊 Flight data: ${widget.flightData}');
+    
+    String reason = '';
+    
+    // Check flight status to determine reason
+    final flightStatus = widget.flightData['status']?.toString().toLowerCase() ?? '';
+    final delayMinutes = widget.flightData['delay_minutes'] as int? ?? 0;
+    
+    print('✈️ Flight status: "$flightStatus"');
+    print('⏱️ Delay minutes: $delayMinutes');
+    
+    if (flightStatus.contains('cancelled') || flightStatus.contains('canceled')) {
+      reason = context.l10n.flightCancellationReason;
+      print('❌ Using cancellation reason: $reason');
+    } else if (flightStatus.contains('delayed') || delayMinutes > 180) {
+      reason = context.l10n.flightDelayReason;
+      print('⏰ Using delay reason: $reason');
+    } else if (flightStatus.contains('diverted')) {
+      reason = context.l10n.flightDiversionReason;
+      print('🔄 Using diversion reason: $reason');
+    } else {
+      // Default reason for EU261 compensation
+      reason = context.l10n.eu261CompensationReason;
+      print('🇪🇺 Using default EU261 reason: $reason');
+    }
+    
+    _reasonController.text = reason;
+    print('✅ Reason controller text set to: "${_reasonController.text}"');
+  }
+  
+  @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
+    _reasonController.dispose();
     super.dispose();
   }
 
@@ -61,8 +105,8 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
         flightDate: DateTime.tryParse(widget.flightData['flightDate'] ?? '') ?? DateTime.now(),
         departureAirport: widget.flightData['departure'] ?? 'Unknown',
         arrivalAirport: widget.flightData['arrival'] ?? 'Unknown',
-        reason: widget.flightData['forceSubmit'] == true 
-            ? 'Passenger submitted claim despite apparent ineligibility'
+        reason: _reasonController.text.isNotEmpty 
+            ? _reasonController.text 
             : widget.flightData['reason'] ?? 'Compensation claim',
         compensationAmount: (widget.flightData['potentialCompensationAmount'] as num?)?.toDouble() ?? 600.0,
         status: 'pending',
@@ -105,9 +149,18 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                               widget.flightData['flight']?.toString() ?? 
                               'Unknown';
     
-    final String compensation = widget.flightData['compensation_amount_eur'] != null 
-        ? '€${widget.flightData['compensation_amount_eur']}' 
-        : '€250';
+    // Get compensation amount from flight data
+    final double compensationAmount = (widget.flightData['potentialCompensationAmount'] as num?)?.toDouble() ?? 
+                                     (widget.flightData['compensation_amount_eur'] as num?)?.toDouble() ?? 
+                                     600.0;
+    final String compensation = '€${compensationAmount.toInt()}';
+
+    // Ensure auto-fill happens when form is displayed
+    if (_reasonController.text.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _autoFillReason();
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -155,6 +208,52 @@ class _CompensationClaimFormScreenState extends State<CompensationClaimFormScree
                   border: const OutlineInputBorder(),
                 ),
                 validator: (value) => value?.isEmpty == true ? context.l10n.required : null,
+              ),
+              const SizedBox(height: 12),
+              
+              // Compensation Amount Section
+              Text(
+                'Compensation Amount',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 8),
+              
+              TextFormField(
+                initialValue: '€600',
+                decoration: InputDecoration(
+                  labelText: 'Compensation Amount',
+                  border: const OutlineInputBorder(),
+                  helperText: 'Auto-filled based on flight distance and EU261 regulations',
+                  prefixIcon: const Icon(Icons.euro),
+                ),
+                readOnly: true,
+                style: TextStyle(
+                  color: Colors.green.shade700,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 12),
+              
+              // Reason for Claim Section
+              Text(
+                context.l10n.reasonForClaim,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 8),
+              
+              TextFormField(
+                controller: _reasonController,
+                decoration: InputDecoration(
+                  labelText: context.l10n.reasonForClaim,
+                  border: const OutlineInputBorder(),
+                  helperText: context.l10n.reasonForClaimHint,
+                ),
+                maxLines: 3,
+                readOnly: true,
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
+                ),
               ),
               
               const SizedBox(height: 32),

@@ -57,6 +57,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reasonForClaim => 'Reason for Claim';
 
   @override
+  String get flightCancellationReason =>
+      'Flight cancellation - requesting compensation under EU261 regulation for cancelled flight';
+
+  @override
+  String get flightDelayReason =>
+      'Flight delay over 3 hours - requesting compensation under EU261 regulation for significant delay';
+
+  @override
+  String get flightDiversionReason =>
+      'Flight diversion - requesting compensation under EU261 regulation for diverted flight';
+
+  @override
+  String get eu261CompensationReason =>
+      'Requesting compensation under EU261 regulation for flight disruption';
+
+  @override
   String get attachments => 'Attachments';
 
   @override
@@ -1058,4 +1074,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseSupportAmount => 'Choose your support amount:';
+
+  @override
+  String get emailReadyTitle => 'Your Compensation Email is Ready to Send!';
+
+  @override
+  String get emailWillBeSentSecurely =>
+      'Your email will be sent securely through our backend service';
+
+  @override
+  String get toLabel => 'To:';
+
+  @override
+  String get ccLabel => 'CC:';
+
+  @override
+  String get subjectLabel => 'Subject:';
+
+  @override
+  String get emailBodyLabel => 'Email Body:';
+
+  @override
+  String get secureTransmissionNotice =>
+      'Your email will be sent securely using encrypted transmission';
+
+  @override
+  String get sendingEllipsis => 'Sending...';
+
+  @override
+  String get sendEmailSecurely => 'Send Email Securely';
+
+  @override
+  String get openingEmailApp => 'Opening email app...';
+
+  @override
+  String get tipReturnBackGesture =>
+      'Tip: to return, use your device Back gesture (not the Gmail arrow).';
+
+  @override
+  String get returnToAppTitle => 'Return to Flight Compensation';
+
+  @override
+  String get returnToAppBody => 'Tap to come back and finish your claim.';
+
+  @override
+  String get errorFailedToSendEmail => 'Failed to send email';
+
+  @override
+  String get unexpectedErrorSendingEmail =>
+      'Unexpected error occurred while sending email';
+
+  @override
+  String get emailSentSuccessfully => 'Email sent successfully!';
 }

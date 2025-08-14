@@ -44,7 +44,7 @@ class ServiceInitializer {
     _locator.registerSingletonAsync<FirebaseAuthService>(() => FirebaseAuthService.create());
 
     // Register other services as lazy singletons
-        _locator.registerLazySingleton<AviationStackService>(() => AviationStackService(baseUrl: 'http://api.aviationstack.com/v1'));
+        _locator.registerLazySingleton<AviationStackService>(() => AviationStackService(baseUrl: 'https://api.aviationstack.com/v1'));
     _locator.registerLazySingleton<DocumentOcrService>(() => DocumentOcrService());
     _locator.registerLazySingleton<NotificationService>(() => NotificationService());
     _locator.registerLazySingleton<PushNotificationService>(() => PushNotificationService());
@@ -66,7 +66,7 @@ class ServiceInitializer {
           debugPrint('Using MockClaimTrackingService for development');
           return MockClaimTrackingService();
         } else {
-          return FirebaseClaimTrackingService();
+          return FirebaseClaimTrackingService(_locator<FirebaseAuthService>());
         }
       } catch (e) {
         debugPrint('Error initializing ClaimTrackingService, falling back to mock: $e');

@@ -92,10 +92,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           _loading = false;
         });
         
-        print('Profile data loaded from SharedPreferences:');
-        print('- Display Name: ${_nameController.text}');
-        print('- Phone: ${_phoneController.text}');
-        print('- All fields loaded successfully');
+        debugPrint('Profile data loaded from SharedPreferences (values suppressed)');
       }
     } catch (e) {
       print('Error loading profile: $e');
@@ -146,10 +143,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       await prefs.setBool('profile_consentData', _consentData);
       await prefs.setBool('profile_consentNotifications', _consentNotifications);
       
-      print('Profile data saved to SharedPreferences:');
-      print('- Display Name: ${_nameController.text.trim()}');
-      print('- Phone: ${_phoneController.text.trim()}');
-      print('- All fields saved successfully');
+      debugPrint('Profile data saved to SharedPreferences (values suppressed)');
       
       // Also try to update AuthService display name if possible
       try {

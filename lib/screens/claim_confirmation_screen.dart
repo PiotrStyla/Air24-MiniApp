@@ -211,16 +211,16 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Opening email app...'),
-                      SizedBox(height: 2),
+                      Text(context.l10n.openingEmailApp),
+                      const SizedBox(height: 2),
                       Text(
-                        'Tip: to return, use your device Back gesture (not the Gmail arrow).',
-                        style: TextStyle(fontSize: 12),
+                        context.l10n.tipReturnBackGesture,
+                        style: const TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
@@ -322,8 +322,8 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         // Send a local notification to help user return to the app (ignore failures on web)
         try {
           await PushNotificationService.sendReturnToAppReminder(
-            title: 'Return to Flight Compensation',
-            body: 'Tap to come back and finish your claim.',
+            title: context.l10n.returnToAppTitle,
+            body: context.l10n.returnToAppBody,
           );
         } catch (e) {
           debugPrint('ℹ️ Local notification not available on this platform: $e');
@@ -356,9 +356,9 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
                       size: 20,
                     ),
                     const SizedBox(width: 8),
-                    const Text(
-                      'Claim submitted successfully!',
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                    Text(
+                      context.l10n.emailSentSuccessfully,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -372,15 +372,6 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
             );
           }
         } else {
-          // Email sending was cancelled or failed: inform the user without error state
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Email composition cancelled. No message was sent.'),
-                duration: Duration(seconds: 3),
-              ),
-            );
-          }
           return;
         }
       }
@@ -429,191 +420,7 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
     );
     return result ?? false; // Return false if dialog was dismissed without result
   }
-
-  /// Preview the claim email content before sending
-  void _previewClaimEmail(String airlineEmail, String userEmail) async {
-    print('_previewClaimEmail called with: $airlineEmail, $userEmail');
-    try {
-      // Create SecureEmailService instance for localized email generation
-      final emailService = SecureEmailService();
-      
-      // Get current locale for localized email template (user's app language preference)
-      final fullLocale = Localizations.localeOf(context);
-      final locale = fullLocale.languageCode;
-      
-      // Get the actual user name using the new async method from AuthService
-      final authService = GetIt.instance<FirebaseAuthService>();
-      final userName = await authService.getUserDisplayNameAsync();
-      
-      print('🌍 Full locale detected: $fullLocale');
-      print('📧 Language code extracted: "$locale"');
-      print('👤 Generating email for user: "$userName"');
-      print('✈️ Flight: ${widget.claim.flightNumber}');
-      
-      // Debug: Check if locale is supported
-      final supportedLanguages = ['en', 'de', 'es', 'fr', 'pl', 'pt'];
-      final isSupported = supportedLanguages.contains(locale);
-      print('🔍 Is language "$locale" supported? $isSupported');
-      if (!isSupported) {
-        print('⚠️ Language "$locale" not supported, will fallback to English');
-      }
-      
-      // Generate professional email content using SecureEmailService with user's language preference
-      final emailContent = emailService.generateCompensationEmailBody(
-        passengerName: userName, // Use actual user name from profile
-        flightNumber: widget.claim.flightNumber,
-        flightDate: widget.claim.flightDate.toString().split(' ')[0], // Format date
-        departureAirport: widget.claim.departureAirport,
-        arrivalAirport: widget.claim.arrivalAirport,
-        delayReason: widget.claim.reason,
-        compensationAmount: widget.claim.compensationAmount.toString(),
-        locale: locale, // Use user's app language preference
-      );
-      
-      // Generate subject line based on user's app language preference
-      String subject;
-      switch (locale) {
-        case 'de':
-          subject = 'Entschädigungsanspruch Flug ${widget.claim.flightNumber} - EU261';
-          break;
-        case 'es':
-          subject = 'Reclamación de Compensación Vuelo ${widget.claim.flightNumber} - EU261';
-          break;
-        case 'fr':
-          subject = 'Demande d\'indemnisation Vol ${widget.claim.flightNumber} - EU261';
-          break;
-        case 'pl':
-          subject = 'Roszczenie o odszkodowanie Lot ${widget.claim.flightNumber} - EU261';
-          break;
-        case 'pt':
-          subject = 'Reclamação de Compensação Voo ${widget.claim.flightNumber} - EU261';
-          break;
-        default:
-          subject = 'Flight Compensation Claim ${widget.claim.flightNumber} - EU261';
-      }
-      
-      showDialog(
-      context: context,
-      builder: (context) => WillPopScope(
-        onWillPop: () async {
-          Navigator.of(context).pop();
-          return false;
-        },
-        child: Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: Container(
-          padding: const EdgeInsets.all(20),
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.9,
-            maxHeight: MediaQuery.of(context).size.height * 0.8,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Email Preview',
-                      style: Theme.of(context).textTheme.titleLarge,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-              const Divider(),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Text('To: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Expanded(
-                          child: Text(airlineEmail, overflow: TextOverflow.ellipsis),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Text('Cc: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Expanded(
-                          child: Text(userEmail, overflow: TextOverflow.ellipsis),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Text('Subject: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Expanded(
-                          child: Text(subject, overflow: TextOverflow.ellipsis),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text('Message:', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Text(emailContent),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Close'),
-                  ),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.send),
-                    label: const Text('Send Email'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      _sendClaimEmail(airlineEmail, userEmail);
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-    } catch (e) {
-      print('Error showing email preview: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error previewing email content')),
-      );
-    }
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -660,32 +467,17 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
                   ),
                 ),
                 const Spacer(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        icon: const Icon(Icons.preview),
-                        label: Text(context.l10n.previewEmail),
-                        style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-                        onPressed: () {
-                          print('Preview button pressed');
-                          _previewClaimEmail(airlineEmail, userEmail);
-                        },
-                      ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.send),
+                    label: Text(context.l10n.confirmAndSendEmail),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.send),
-                        label: Text(context.l10n.confirmAndSendEmail),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        onPressed: () => _sendClaimEmail(airlineEmail, userEmail),
-                      ),
-                    ),
-                  ],
+                    onPressed: () => _sendClaimEmail(airlineEmail, userEmail),
+                  ),
                 ),
                 const SizedBox(height: 16),
               ],
