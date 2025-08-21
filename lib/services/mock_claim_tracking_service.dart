@@ -71,6 +71,19 @@ class MockClaimTrackingService implements ClaimTrackingService {
   }
 
   @override
+  Future<void> deleteClaim(String claimId) async {
+    // Simulate a tiny delay to resemble async behavior
+    await Future.delayed(const Duration(milliseconds: 50));
+    final index = _claims.indexWhere((c) => c.id == claimId);
+    if (index == -1) {
+      // Nothing to delete; just return silently to mirror non-throwing behavior
+      return;
+    }
+    _claims.removeAt(index);
+    _claimsController.add(List<Claim>.from(_claims));
+  }
+
+  @override
   void dispose() {
     _claimsController.close();
   }

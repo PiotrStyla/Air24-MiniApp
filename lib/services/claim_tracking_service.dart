@@ -18,7 +18,9 @@ abstract class ClaimTrackingService {
   /// Add or update a claim.
   Future<void> saveClaim(Claim claim);
 
+  /// Delete a claim.
+  Future<void> deleteClaim(String claimId);
+
   /// Dispose of any resources used by the service.
   void dispose();
 }
-

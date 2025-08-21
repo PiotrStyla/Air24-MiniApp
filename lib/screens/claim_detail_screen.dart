@@ -63,6 +63,11 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
             tooltip: context.l10n.refresh,
             onPressed: _isLoading ? null : _loadClaimDetails,
           ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'Delete',
+            onPressed: _isLoading ? null : _confirmAndDelete,
+          ),
         ],
       ),
       body: _isLoading
@@ -449,5 +454,39 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _confirmAndDelete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete claim?'),
+        content: const Text('This action cannot be undone. Are you sure you want to delete this claim?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      setState(() { _isLoading = true; });
+      final success = await _viewModel.deleteClaim(widget.claimId);
+      setState(() { _isLoading = false; });
+      if (!mounted) return;
+      if (success) {
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete claim')),
+        );
+      }
+    }
   }
 }

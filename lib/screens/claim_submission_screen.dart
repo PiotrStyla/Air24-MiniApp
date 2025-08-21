@@ -126,7 +126,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
               TextFormField(
                 controller: _airlineNameController,
                 decoration: InputDecoration(labelText: context.l10n.airline),
-                readOnly: true, // This field is pre-filled and not editable
+                validator: (value) => value!.isEmpty ? context.l10n.required : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -173,7 +173,7 @@ class _ClaimSubmissionScreenState extends State<ClaimSubmissionScreen> {
               ElevatedButton(
                 onPressed: () => _submitClaim(),
                 style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: Text(context.l10n.continueToAttachmentsButton),
+                child: Text(context.l10n.continueToReview),
               ),
             ],
           ),

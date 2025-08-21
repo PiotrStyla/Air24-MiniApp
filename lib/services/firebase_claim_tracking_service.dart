@@ -105,6 +105,16 @@ class FirebaseClaimTrackingService implements ClaimTrackingService {
   }
 
   @override
+  Future<void> deleteClaim(String claimId) async {
+    try {
+      await _firestore.collection('claims').doc(claimId).delete();
+    } on FirebaseException catch (e) {
+      print('Error deleting claim: ${e.message}');
+      rethrow;
+    }
+  }
+
+  @override
   void dispose() {
     _claimsSubscription?.cancel();
     _authService.removeListener(_onAuthChanged);

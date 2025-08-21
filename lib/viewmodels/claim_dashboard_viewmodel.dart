@@ -258,6 +258,21 @@ class ClaimDashboardViewModel extends ChangeNotifier {
     }
   }
   
+  /// Delete a claim and refresh dashboard state
+  Future<bool> deleteClaim(String claimId) async {
+    try {
+      await _trackingService.deleteClaim(claimId);
+      _claims.removeWhere((c) => c.id == claimId);
+      _calculateDashboardStats();
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = 'Error deleting claim: $e';
+      debugPrint(_errorMessage);
+      return false;
+    }
+  }
+  
   /// Helper to set loading state
   void _setLoading(bool loading) {
     _isLoading = loading;
