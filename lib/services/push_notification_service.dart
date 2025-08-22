@@ -10,35 +10,36 @@ import 'in_app_messaging_service.dart';
 /// Service for handling push notifications using Firebase Cloud Messaging
 /// Supports both remote push notifications and local notifications
 class PushNotificationService {
-  static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  static final FlutterLocalNotificationsPlugin _localNotifications = 
+  static final FirebaseMessaging _firebaseMessaging =
+      FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
-  
+
   static String? _fcmToken;
   static bool _isInitialized = false;
 
   /// Initialize push notification service
   static Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
     try {
       debugPrint('🔔 PushNotificationService: Initializing...');
-      
+
       // Request notification permissions
       await _requestPermissions();
-      
+
       // Initialize local notifications
       await _initializeLocalNotifications();
-      
+
       // Initialize Firebase messaging
       await _initializeFirebaseMessaging();
-      
+
       // Get FCM token
       await _getFCMToken();
-      
+
       // Set up message handlers
       _setupMessageHandlers();
-      
+
       _isInitialized = true;
       debugPrint('✅ PushNotificationService: Initialized successfully');
     } catch (e) {
@@ -59,7 +60,8 @@ class PushNotificationService {
       sound: true,
     );
 
-    debugPrint('🔔 Notification permission status: ${settings.authorizationStatus}');
+    debugPrint(
+        '🔔 Notification permission status: ${settings.authorizationStatus}');
 
     // Request system notification permissions (Android 13+)
     if (Platform.isAndroid) {
@@ -72,19 +74,19 @@ class PushNotificationService {
   static Future<void> _initializeLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    
+
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
-        );
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS,
-        );
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
 
     await _localNotifications.initialize(
       initializationSettings,
@@ -115,7 +117,8 @@ class PushNotificationService {
       sound: RawResourceAndroidNotificationSound('notification'),
     );
 
-    const AndroidNotificationChannel deadlineChannel = AndroidNotificationChannel(
+    const AndroidNotificationChannel deadlineChannel =
+        AndroidNotificationChannel(
       'deadlines',
       'Deadline Reminders',
       description: 'Important deadline reminders for claims',
@@ -124,15 +127,18 @@ class PushNotificationService {
     );
 
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(claimChannel);
-    
+
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(emailChannel);
-    
+
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(deadlineChannel);
   }
 
@@ -144,6 +150,12 @@ class PushNotificationService {
       badge: true,
       sound: true,
     );
+
+    // Listen for FCM token refresh events to keep token current
+    _firebaseMessaging.onTokenRefresh.listen((token) {
+      _fcmToken = token;
+      debugPrint('🔑 FCM Token refreshed: $token');
+    });
   }
 
   /// Get FCM token for this device
@@ -162,10 +174,10 @@ class PushNotificationService {
   static void _setupMessageHandlers() {
     // Handle messages when app is in foreground
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
-    
+
     // Handle messages when app is in background but not terminated
     FirebaseMessaging.onMessageOpenedApp.listen(_handleBackgroundMessage);
-    
+
     // Handle messages when app is terminated
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
@@ -173,7 +185,7 @@ class PushNotificationService {
   /// Handle notification tap
   static void _onNotificationTapped(NotificationResponse response) {
     debugPrint('🔔 Notification tapped: ${response.payload}');
-    
+
     if (response.payload != null) {
       final data = jsonDecode(response.payload!);
       _handleNotificationAction(data);
@@ -183,7 +195,7 @@ class PushNotificationService {
   /// Handle foreground messages
   static Future<void> _handleForegroundMessage(RemoteMessage message) async {
     debugPrint('🔔 Foreground message received: ${message.messageId}');
-    
+
     // Show local notification when app is in foreground
     await _showLocalNotification(
       title: message.notification?.title ?? 'Flight Compensation',
@@ -201,7 +213,7 @@ class PushNotificationService {
   /// Handle notification actions
   static void _handleNotificationAction(Map<String, dynamic> data) {
     debugPrint('🔔 PushNotificationService: Handling notification action');
-    
+
     // Delegate to InAppMessagingService for proper navigation and UI handling
     InAppMessagingService.handleNotificationAction(data);
   }
@@ -213,10 +225,11 @@ class PushNotificationService {
     Map<String, dynamic>? data,
     String channelId = 'claim_updates',
   }) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'claim_updates',
-      'Claim Updates',
-      channelDescription: 'Notifications about compensation claim status updates',
+    final AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      channelId,
+      _channelNameFor(channelId),
+      channelDescription: _channelDescriptionFor(channelId),
       importance: Importance.high,
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
@@ -230,7 +243,7 @@ class PushNotificationService {
       presentSound: true,
     );
 
-    const NotificationDetails notificationDetails = NotificationDetails(
+    final NotificationDetails notificationDetails = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
     );
@@ -242,6 +255,30 @@ class PushNotificationService {
       notificationDetails,
       payload: data != null ? jsonEncode(data) : null,
     );
+  }
+
+  static String _channelNameFor(String channelId) {
+    switch (channelId) {
+      case 'email_status':
+        return 'Email Status';
+      case 'deadlines':
+        return 'Deadline Reminders';
+      case 'claim_updates':
+      default:
+        return 'Claim Updates';
+    }
+  }
+
+  static String _channelDescriptionFor(String channelId) {
+    switch (channelId) {
+      case 'email_status':
+        return 'Notifications about email sending status';
+      case 'deadlines':
+        return 'Important deadline reminders for claims';
+      case 'claim_updates':
+      default:
+        return 'Notifications about compensation claim status updates';
+    }
   }
 
   // MARK: - Public Notification Methods
@@ -332,7 +369,7 @@ class PushNotificationService {
       debugPrint('❌ Failed to unsubscribe from topic $topic: $e');
     }
   }
-  
+
   /// Send a simple reminder notification to help the user return to the app
   /// Tapping this notification brings the app to foreground without extra dialogs
   static Future<void> sendReturnToAppReminder({
