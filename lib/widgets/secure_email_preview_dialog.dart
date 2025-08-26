@@ -102,6 +102,29 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                     ],
                     _buildEmailField(context.l10n.subjectLabel, widget.subject),
                     const SizedBox(height: 16),
+                    // Attachment guidance (compact)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange.shade200),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.attach_file, color: Colors.orange, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              context.l10n.emailPreviewAttachmentGuidance,
+                              style: TextStyle(fontSize: 12, color: Colors.orange.shade800),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     
                     // Email Body
                     Text(

@@ -1026,6 +1026,10 @@
   "@confirmAndSendEmail": {
     "description": "Button label for confirming and sending email"
   },
+  "emailPreviewAttachmentGuidance": "Você poderá adicionar anexos no próximo passo. Por favor, lembre-se de incluir apenas ficheiros nos formatos JPG, PNG ou PDF.",
+  "@emailPreviewAttachmentGuidance": {
+    "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
+  },
   "reasonForClaim": "Motivo da Reclamação",
   "@reasonForClaim": {
     "description": "Etiqueta para o campo de motivo da reclamação"
@@ -1554,5 +1558,31 @@
   "unknown": "Desconhecido",
   "@unknown": {
     "description": "Unknown value placeholder"
+  },
+  "predictingDelay": "Prevendo atraso…",
+  "@predictingDelay": {
+    "description": "Shown while asynchronously fetching a delay prediction"
+  },
+  "predictionUnavailable": "Previsão indisponível",
+  "@predictionUnavailable": {
+    "description": "Shown when prediction data could not be retrieved"
+  },
+  "delayRiskPercent": "Risco de atraso {risk}%",
+  "@delayRiskPercent": {
+    "description": "Label showing predicted delay probability",
+    "placeholders": {
+      "risk": {
+        "type": "int"
+      }
+    }
+  },
+  "avgMinutesShort": "Méd. {minutes} min",
+  "@avgMinutesShort": {
+    "description": "Short label for average delay time in minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
   }
 }

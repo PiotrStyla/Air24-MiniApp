@@ -27,22 +27,32 @@ class MockLocalizationService extends ChangeNotifier implements LocalizationServ
 
   @override
   String getDisplayLanguage(String languageCode) {
-    return languageNames[languageCode] ?? languageCode;
+    return LocalizationService.languageNames[languageCode] ?? languageCode;
   }
 
   @override
-  Future<void> changeLanguage(Locale locale) async {
+  Future<void> setLocale(Locale locale) async {
     if (!isSupported(locale)) return;
     if (_currentLocale.languageCode == locale.languageCode &&
         _currentLocale.countryCode == locale.countryCode) {
       return;
     }
     _currentLocale = locale;
-    print('[MockLocalizationService] Language changed to: ${locale.languageCode}_${locale.countryCode}');
+    print('[MockLocalizationService] setLocale -> ${locale.languageCode}_${locale.countryCode}');
     notifyListeners();
   }
 
   @override
+  String getString(String key, {String fallback = ''}) {
+    return fallback.isNotEmpty ? fallback : key;
+  }
+
+  @override
+  Future<void> init() async {}
+
+  @override
+  bool get isReady => true;
+
   bool isSupported(Locale locale) {
     return supportedLocales.any((sl) => sl.languageCode == locale.languageCode);
   }

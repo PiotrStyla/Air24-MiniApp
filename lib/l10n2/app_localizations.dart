@@ -184,6 +184,12 @@ abstract class AppLocalizations {
   /// **'Confirm and Send Email'**
   String get confirmAndSendEmail;
 
+  /// Informational text on confirmation screen indicating attachments can be added in next step
+  ///
+  /// In en, this message translates to:
+  /// **'You can add attachments (e.g., tickets, boarding passes) in the next step.'**
+  String get attachmentsInfoNextStep;
+
   /// Label for departure airport field
   ///
   /// In en, this message translates to:
@@ -445,13 +451,13 @@ abstract class AppLocalizations {
   /// Message when no fields are extracted
   ///
   /// In en, this message translates to:
-  /// **'No Fields Extracted'**
+  /// **'No fields extracted'**
   String get noFieldsExtracted;
 
   /// Message when text is copied to clipboard
   ///
   /// In en, this message translates to:
-  /// **'Copied to Clipboard'**
+  /// **'Copied to clipboard'**
   String get copiedToClipboard;
 
   /// Generic network error message
@@ -495,6 +501,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Full Text'**
   String get fullText;
+
+  /// Section header for extracted information
+  ///
+  /// In en, this message translates to:
+  /// **'Extracted Information'**
+  String get extractedInformation;
+
+  /// Title for raw OCR text tab
+  ///
+  /// In en, this message translates to:
+  /// **'Raw OCR Text'**
+  String get rawOcrText;
+
+  /// Tooltip for copying all raw text
+  ///
+  /// In en, this message translates to:
+  /// **'Copy All Text'**
+  String get copyAllText;
+
+  /// Dialog title when choosing how to use extracted data
+  ///
+  /// In en, this message translates to:
+  /// **'Fill Form'**
+  String get fillForm;
+
+  /// Dialog content prompting user choice for using information
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you\'d like to use this information'**
+  String get chooseUseInfo;
+
+  /// Subtitle for compensation claim form option
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in passenger and flight details'**
+  String get fillPassengerFlight;
+
+  /// Dialog option title for flight search
+  ///
+  /// In en, this message translates to:
+  /// **'Flight Search'**
+  String get flightSearch;
+
+  /// Subtitle for flight search option
+  ///
+  /// In en, this message translates to:
+  /// **'Search by flight number'**
+  String get searchFlightNumber;
+
+  /// Tooltip for the done action in AppBar
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
 
   /// Message when document is saved
   ///
@@ -1375,6 +1435,168 @@ abstract class AppLocalizations {
   /// **'Sign In'**
   String get signIn;
 
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get welcomeBack;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your password'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to access your flight compensation claims'**
+  String get signInSubtitle;
+
+  /// No description provided for @signUpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up to track your flight compensation claims'**
+  String get signUpSubtitle;
+
+  /// No description provided for @resetPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email to receive a password reset link'**
+  String get resetPasswordSubtitle;
+
+  /// No description provided for @emailHintExample.
+  ///
+  /// In en, this message translates to:
+  /// **'your.email@example.com'**
+  String get emailHintExample;
+
+  /// Label for password field
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// Label for confirm password field
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// Password placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'********'**
+  String get passwordPlaceholder;
+
+  /// No description provided for @signInWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get signInWithGoogle;
+
+  /// No description provided for @signUpWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up with Google'**
+  String get signUpWithGoogle;
+
+  /// No description provided for @alreadyHaveAccountSignInCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Sign In'**
+  String get alreadyHaveAccountSignInCta;
+
+  /// No description provided for @dontHaveAccountSignUpCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Sign Up'**
+  String get dontHaveAccountSignUpCta;
+
+  /// No description provided for @forgotPasswordQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get forgotPasswordQuestion;
+
+  /// No description provided for @backToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Sign In'**
+  String get backToSignIn;
+
+  /// No description provided for @passwordResetEmailSentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset email sent! Check your inbox.'**
+  String get passwordResetEmailSentMessage;
+
+  /// Validation message for invalid email format in auth
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get authInvalidEmail;
+
+  /// Validation message when password is too short
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get authPasswordMinLength;
+
+  /// Validation message when passwords don't match
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get authPasswordsDoNotMatch;
+
+  /// Validation message when email field is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get authEmailRequired;
+
+  /// Validation message when password field is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get authPasswordRequired;
+
+  /// Generic unexpected error message in authentication
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again.'**
+  String get authUnexpectedError;
+
+  /// Error message when Google sign-in fails
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in failed. Please try again.'**
+  String get authGoogleSignInFailed;
+
+  /// Error message when password reset fails
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset failed. Please try again.'**
+  String get authPasswordResetFailed;
+
+  /// Error message when sign out fails
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out failed. Please try again.'**
+  String get authSignOutFailed;
+
   /// No description provided for @checkFlightEligibilityButtonText.
   ///
   /// In en, this message translates to:
@@ -2172,6 +2394,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Email sent successfully!'**
   String get emailSentSuccessfully;
+
+  /// Shown while asynchronously fetching a delay prediction
+  ///
+  /// In en, this message translates to:
+  /// **'Predicting delay…'**
+  String get predictingDelay;
+
+  /// Shown when prediction data could not be retrieved
+  ///
+  /// In en, this message translates to:
+  /// **'Prediction unavailable'**
+  String get predictionUnavailable;
+
+  /// Label showing predicted delay probability
+  ///
+  /// In en, this message translates to:
+  /// **'Delay risk {risk}%'**
+  String delayRiskPercent(int risk);
+
+  /// Short label for average delay time in minutes
+  ///
+  /// In en, this message translates to:
+  /// **'Avg {minutes} min'**
+  String avgMinutesShort(int minutes);
+
+  /// Title for the attachments guidance panel in the email preview dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get attachmentGuidanceTitle;
+
+  /// Guidance message shown in email preview explaining where to add attachments and which formats are supported
+  ///
+  /// In en, this message translates to:
+  /// **'You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.'**
+  String get emailPreviewAttachmentGuidance;
 }
 
 class _AppLocalizationsDelegate

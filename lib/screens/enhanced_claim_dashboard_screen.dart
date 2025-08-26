@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:f35_flight_compensation/models/claim.dart';
@@ -25,6 +26,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
   
   // Real-time event stream
   List<ClaimEvent> _recentEvents = [];
+  StreamSubscription<ClaimEvent>? _eventsSubscription;
   
   @override
   void initState() {
@@ -39,7 +41,8 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
       _claimsService = ServiceInitializer.get<EnhancedClaimsService>();
       
       // Listen to claim events
-      _claimsService.claimEventsStream.listen((event) {
+      _eventsSubscription = _claimsService.claimEventsStream.listen((event) {
+        if (!mounted) return;
         setState(() {
           _recentEvents.insert(0, event);
           // Keep only last 20 events
@@ -57,8 +60,8 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
   
   @override
   void dispose() {
+    _eventsSubscription?.cancel();
     _tabController.dispose();
-    _claimsService.dispose();
     super.dispose();
   }
 
@@ -665,6 +668,10 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
         break;
       case ClaimEventType.deadlineReminder:
         icon = Icons.schedule;
+        color = Colors.red;
+        break;
+      case ClaimEventType.deleted:
+        icon = Icons.delete_outline;
         color = Colors.red;
         break;
     }

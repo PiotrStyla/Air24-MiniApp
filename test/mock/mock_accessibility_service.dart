@@ -6,6 +6,7 @@ class MockAccessibilityService extends ChangeNotifier implements AccessibilitySe
   bool _mockHighContrast = false;
   bool _mockLargeText = false;
   bool _mockScreenReaderEmphasis = false;
+  bool _didInitialize = false;
 
   @override
   bool get highContrastMode => _mockHighContrast;
@@ -18,13 +19,19 @@ class MockAccessibilityService extends ChangeNotifier implements AccessibilitySe
 
   @override
   Future<void> initialize() async {
-    print('MockAccessibilityService: initialize called');
-    // No actual SharedPreferences access in mock
-    // Simulate loading initial state if necessary for tests
-    // _mockHighContrast = ...
-    // _mockLargeText = ...
-    // _mockScreenReaderEmphasis = ...
-    notifyListeners(); 
+    if (_didInitialize) {
+      print('MockAccessibilityService: initialize() called again - skipping');
+      return;
+    }
+    _didInitialize = true;
+    print('MockAccessibilityService: initialize scheduled notify after frame');
+    // Avoid notifying during build; schedule for next frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Only notify if there are listeners (widget tree still mounted)
+      if (hasListeners) {
+        notifyListeners();
+      }
+    });
   }
 
   @override

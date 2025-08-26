@@ -102,12 +102,13 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
       debugPrint('❌ Document: Error uploading file: $e');
       debugPrint('❌ Document: Stack trace: $stackTrace');
 
-      // If in dev/test mode, create a mock URL so the flow can continue
-      if (kDebugMode) {
+      // Only use mock URL if Firebase is explicitly marked unavailable in debug
+      if (kDebugMode && FirebaseAuthService.isFirebaseUnavailable) {
         final mockUrl = 'https://mock-storage.example.com/documents/${_uuid.v4()}';
-        debugPrint('ℹ️ Document: Using mock URL for testing: $mockUrl');
+        debugPrint('ℹ️ Document: Using mock URL for testing due to Firebase unavailable flag: $mockUrl');
         return mockUrl;
       }
+      debugPrint('⚠️ Document: Not using mock URL; returning null to surface error.');
       return null;
     }
   }
@@ -191,10 +192,10 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
       debugPrint('❌ Document: Error saving document metadata: $e');
       debugPrint('❌ Document: Stack trace: $stackTrace');
 
-      // In development mode, create a mock document so the flow can continue
-      if (kDebugMode) {
+      // Only create a mock document if Firebase is explicitly marked unavailable in debug
+      if (kDebugMode && FirebaseAuthService.isFirebaseUnavailable) {
         final mockId = _uuid.v4();
-        debugPrint('ℹ️ Document: Creating mock document for testing: $mockId');
+        debugPrint('ℹ️ Document: Creating mock document for testing due to Firebase unavailable flag: $mockId');
         return FlightDocument(
           id: mockId,
           userId: userId,
@@ -209,6 +210,7 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
           metadata: metadata,
         );
       }
+      debugPrint('⚠️ Document: Not creating mock document; returning null to surface error.');
       return null;
     }
   }
@@ -235,8 +237,8 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
     } catch (e) {
       debugPrint('❌ Document: Error fetching flight documents: $e');
       
-      // In development mode, return mock documents for testing
-      if (kDebugMode) {
+      // In development mode, return mock documents only if Firebase is explicitly unavailable
+      if (kDebugMode && FirebaseAuthService.isFirebaseUnavailable) {
         return [_createMockDocument(flightNumber)];
       }
       return [];
@@ -264,8 +266,8 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
     } catch (e) {
       debugPrint('❌ Document: Error fetching user documents: $e');
       
-      // In development mode, return mock documents for testing
-      if (kDebugMode) {
+      // In development mode, return mock documents only if Firebase is explicitly unavailable
+      if (kDebugMode && FirebaseAuthService.isFirebaseUnavailable) {
         return [_createMockDocument('AB123'), _createMockDocument('CD456')];
       }
       return [];
@@ -312,8 +314,8 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
     } catch (e) {
       debugPrint('❌ Document: Error deleting document: $e');
       
-      // In development mode, pretend deletion succeeded
-      if (kDebugMode) {
+      // In development mode, pretend deletion succeeded only if Firebase is explicitly unavailable
+      if (kDebugMode && FirebaseAuthService.isFirebaseUnavailable) {
         return true;
       }
       return false;
@@ -365,11 +367,31 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
       case 'ticket':
         return FlightDocumentType.ticket;
       case 'boardingpass':
+      case 'boarding_pass':
         return FlightDocumentType.boardingPass;
-      case 'receipt':
-        return FlightDocumentType.receipt;
-      case 'identification':
-        return FlightDocumentType.identification;
+      case 'bookingconfirmation':
+      case 'booking_confirmation':
+        return FlightDocumentType.bookingConfirmation;
+      case 'eticket':
+      case 'e_ticket':
+        return FlightDocumentType.eTicket;
+      case 'luggagetag':
+      case 'luggage_tag':
+        return FlightDocumentType.luggageTag;
+      case 'delayconfirmation':
+      case 'delay_confirmation':
+        return FlightDocumentType.delayConfirmation;
+      case 'hotelreceipt':
+      case 'hotel_receipt':
+        return FlightDocumentType.hotelReceipt;
+      case 'mealreceipt':
+      case 'meal_receipt':
+        return FlightDocumentType.mealReceipt;
+      case 'transportreceipt':
+      case 'transport_receipt':
+        return FlightDocumentType.transportReceipt;
+      case 'receipt': // legacy generic type
+      case 'identification': // legacy generic type
       case 'other':
         return FlightDocumentType.other;
       default:

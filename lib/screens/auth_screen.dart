@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../core/app_localizations_patch.dart';
 import '../viewmodels/auth_viewmodel.dart';
-import '../services/auth_service_firebase.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 import '../widgets/google_logo.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({Key? key}) : super(key: key);
+  const AuthScreen({super.key});
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -17,6 +18,32 @@ class _AuthScreenState extends State<AuthScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _isSignUp = false;
   bool _isResetPassword = false;
+
+  // Map raw ViewModel error messages to localized strings
+  String _mapAuthError(BuildContext context, String message) {
+    final m = message.trim();
+    if (m == 'Please enter a valid email address') {
+      return context.l10n.authInvalidEmail;
+    } else if (m == 'Password must be at least 6 characters') {
+      return context.l10n.authPasswordMinLength;
+    } else if (m == 'Passwords do not match') {
+      return context.l10n.authPasswordsDoNotMatch;
+    } else if (m == 'Please enter your email') {
+      return context.l10n.authEmailRequired;
+    } else if (m == 'Please enter your password') {
+      return context.l10n.authPasswordRequired;
+    } else if (m == 'An unexpected error occurred. Please try again.') {
+      return context.l10n.authUnexpectedError;
+    } else if (m == 'Google sign-in failed. Please try again.') {
+      return context.l10n.authGoogleSignInFailed;
+    } else if (m == 'Password reset failed. Please try again.') {
+      return context.l10n.authPasswordResetFailed;
+    } else if (m == 'Sign out failed. Please try again.') {
+      return context.l10n.authSignOutFailed;
+    }
+    // Fallback to the raw message for unknown errors
+    return message;
+  }
 
   @override
   void dispose() {
@@ -42,10 +69,10 @@ class _AuthScreenState extends State<AuthScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Text(_isResetPassword 
-                ? 'Reset Password'
+                ? context.l10n.resetPassword
                 : _isSignUp 
-                  ? 'Create Account' 
-                  : 'Sign In'),
+                  ? context.l10n.createAccount 
+                  : context.l10n.signIn),
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
             ),
@@ -83,10 +110,10 @@ class _AuthScreenState extends State<AuthScreen> {
                         // Title
                         Text(
                           _isResetPassword 
-                            ? 'Reset your password'
+                            ? context.l10n.resetPasswordTitle
                             : _isSignUp 
-                              ? 'Create your account' 
-                              : 'Welcome back',
+                              ? context.l10n.createAccount 
+                              : context.l10n.welcomeBack,
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.primary,
@@ -99,10 +126,10 @@ class _AuthScreenState extends State<AuthScreen> {
                         // Subtitle
                         Text(
                           _isResetPassword 
-                            ? 'Enter your email to receive a password reset link'
+                            ? context.l10n.resetPasswordSubtitle
                             : _isSignUp 
-                              ? 'Sign up to track your flight compensation claims' 
-                              : 'Sign in to access your flight compensation claims',
+                              ? context.l10n.signUpSubtitle 
+                              : context.l10n.signInSubtitle,
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: Colors.grey[600],
                           ),
@@ -126,7 +153,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
-                                    viewModel.errorMessage!,
+                                    _mapAuthError(context, viewModel.errorMessage!),
                                     style: TextStyle(color: Colors.red[700]),
                                   ),
                                 ),
@@ -141,8 +168,8 @@ class _AuthScreenState extends State<AuthScreen> {
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
-                            labelText: 'Email',
-                            hintText: 'your.email@example.com',
+                            labelText: context.l10n.email,
+                            hintText: context.l10n.emailHintExample,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -160,8 +187,8 @@ class _AuthScreenState extends State<AuthScreen> {
                           TextFormField(
                             controller: _passwordController,
                             decoration: InputDecoration(
-                              labelText: 'Password',
-                              hintText: '********',
+                              labelText: context.l10n.password,
+                              hintText: context.l10n.passwordPlaceholder,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -189,8 +216,8 @@ class _AuthScreenState extends State<AuthScreen> {
                           TextFormField(
                             controller: _confirmPasswordController,
                             decoration: InputDecoration(
-                              labelText: 'Confirm Password',
-                              hintText: '********',
+                              labelText: context.l10n.confirmPassword,
+                              hintText: context.l10n.passwordPlaceholder,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -232,8 +259,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                   if (success) {
                                     if (mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Password reset email sent! Check your inbox.'),
+                                        SnackBar(
+                                          content: Text(context.l10n.passwordResetEmailSentMessage),
                                           backgroundColor: Colors.green,
                                         ),
                                       );
@@ -254,10 +281,10 @@ class _AuthScreenState extends State<AuthScreen> {
                               },
                           child: Text(
                             _isResetPassword 
-                              ? 'Reset Password'
+                              ? context.l10n.resetPassword
                               : _isSignUp 
-                                ? 'Create Account' 
-                                : 'Sign In',
+                                ? context.l10n.createAccount 
+                                : context.l10n.signIn,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -273,8 +300,8 @@ class _AuthScreenState extends State<AuthScreen> {
                             icon: const GoogleLogo(size: 24),
                             label: Text(
                               _isSignUp 
-                                ? 'Sign up with Google' 
-                                : 'Sign in with Google'
+                                ? context.l10n.signUpWithGoogle 
+                                : context.l10n.signInWithGoogle
                             ),
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(color: Colors.grey.shade300),
@@ -310,8 +337,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                 },
                             child: Text(
                               _isSignUp 
-                                ? 'Already have an account? Sign In' 
-                                : 'Don\'t have an account? Sign Up'
+                                ? context.l10n.alreadyHaveAccountSignInCta 
+                                : context.l10n.dontHaveAccountSignUpCta
                             ),
                           ),
                         
@@ -326,7 +353,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     viewModel.clearError();
                                   });
                                 },
-                            child: const Text('Forgot Password?'),
+                            child: Text(context.l10n.forgotPasswordQuestion),
                           ),
                         
                         // Back to sign in
@@ -340,7 +367,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     viewModel.clearError();
                                   });
                                 },
-                            child: const Text('Back to Sign In'),
+                            child: Text(context.l10n.backToSignIn),
                           ),
                       ],
                     ),

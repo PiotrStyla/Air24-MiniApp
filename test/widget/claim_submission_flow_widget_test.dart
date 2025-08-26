@@ -1,8 +1,8 @@
 import 'dart:io' as io;
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:f35_flight_compensation/main.dart' as app;
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
@@ -13,132 +13,17 @@ import 'package:f35_flight_compensation/services/localization_service.dart';
 import 'package:f35_flight_compensation/services/manual_localization_service.dart';
 import 'package:f35_flight_compensation/services/notification_service.dart';
 import 'package:f35_flight_compensation/core/error/error_handler.dart';
+import 'package:f35_flight_compensation/services/document_storage_service.dart';
+import 'package:f35_flight_compensation/services/mock_document_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:f35_flight_compensation/services/mock_user.dart' as mu;
+import '../mock/unified_mock_auth_service.dart';
+import 'mock_localization_service.dart';
+import 'mock_manual_localization_service.dart';
+import '../mock/mock_accessibility_service.dart';
+import 'mock_notification_service.dart';
 
 // --- Mocks ---
-
-class MockUser extends Mock implements User {
-  @override
-  String get uid => 'test_uid';
-  @override
-  String? get email => 'test@example.com';
-  @override
-  String? get displayName => 'Test User';
-}
-
-// Create a fake FirebaseAuth to pass to the real AuthService constructor,
-// preventing it from calling the real FirebaseAuth.instance.
-class FakeFirebaseAuth extends Mock implements FirebaseAuth {
-  // The real AuthService constructor accesses this stream. We must provide a valid, empty stream
-  // to prevent a null error during the test setup.
-  @override
-  Stream<User?> authStateChanges() => Stream.empty();
-}
-
-// A proper mock for FirebaseAuthService
-class MockAuthService extends ChangeNotifier implements FirebaseAuthService {
-  User? _currentUser;
-
-  MockAuthService({User? currentUser}) : _currentUser = currentUser {}
-
-  @override
-  User? get currentUser => _currentUser;
-  
-  @override
-  bool get isAuthenticated => _currentUser != null;
-  
-  @override
-  String get userDisplayName => _currentUser?.displayName ?? 'Test User';
-
-  // Simulate a user logging in or out and notify listeners
-  void simulateLogin(User? user) {
-    _currentUser = user;
-    notifyListeners();
-  }
-
-  @override
-  Future<void> signOut() async {
-    simulateLogin(null);
-  }
-  
-  @override
-  Future<UserCredential> signInWithEmail(String email, String password) async {
-    // Create a minimal mock implementation that returns something of type UserCredential
-    return MockUserCredential(user: _currentUser);
-  }
-  
-  @override
-  Future<UserCredential> createUserWithEmail(String email, String password) async {
-    return MockUserCredential(user: _currentUser);
-  }
-  
-  @override
-  Future<bool> checkEmailVerified(String email) async {
-    return true;
-  }
-  
-  @override
-  Future<UserCredential> signInWithGoogle() async {
-    return MockUserCredential(user: _currentUser);
-  }
-  
-  @override
-  Future<void> resetPassword(String email) async {}
-  
-  @override
-  Future<String> getUserDisplayNameAsync() async {
-    return _currentUser?.displayName ?? 'Test User';
-  }
-  
-  // This method is static in the original class, so we can't override it properly
-  // Instead, we'll provide a similar factory constructor
-  static Future<MockAuthService> create() async {
-    return MockAuthService();
-  }
-}
-
-// Mock UserCredential for testing
-class MockUserCredential implements UserCredential {
-  @override
-  final User? user;
-  
-  MockUserCredential({this.user});
-  
-  @override
-  AdditionalUserInfo? get additionalUserInfo => null;
-  
-  @override
-  AuthCredential? get credential => null;
-}
-
-class MockLocalizationService extends Mock implements LocalizationService {
-  // Override the getter directly to avoid issues with mockito's 'when()'
-  @override
-  Locale get currentLocale => const Locale('en');
-
-  @override
-  Future<void> initialize() => Future.value();
-
-  @override
-  Future<void> changeLanguage(Locale locale) => Future.value();
-
-  @override
-  Future<void> setLocale(Locale locale) => Future.value();
-}
-
-class MockAccessibilityService extends Mock implements AccessibilityService {
-  // Override the method directly in the mock to avoid compile-time issues with mockito's 'when()'.
-  @override
-  ThemeData getThemeData(ThemeData baseTheme) => ThemeData.light();
-
-  // Override the getter directly to avoid issues with mockito's 'when()'
-  @override
-  bool get largeTextMode => false;
-
-  // Override initialize to return a completed Future, preventing the 'null' cast error.
-  @override
-  Future<void> initialize() => Future.value();
-}
 
 // Mock for HttpClient to prevent network errors for images
 class MockHttpClient extends Mock implements io.HttpClient {
@@ -160,59 +45,63 @@ class MockHttpClient extends Mock implements io.HttpClient {
 class MockHttpClientRequest extends Mock implements io.HttpClientRequest {}
 class MockHttpClientResponse extends Mock implements io.HttpClientResponse {}
 
-class MockNotificationService extends Mock implements NotificationService {
-  @override
-  Future<void> initialize() => Future.value();
-}
+// Using shared MockNotificationService from test/widget/mock_notification_service.dart
 
-class MockErrorHandler extends Mock implements ErrorHandler {
+class MockErrorHandler implements ErrorHandler {
+  final _controller = StreamController<AppError>.broadcast();
+
   @override
-  Future<void> initialize() => Future.value();
+  Stream<AppError> get errorStream => _controller.stream;
 
   @override
   Future<void> handleError(dynamic error, {StackTrace? stackTrace, Map<String, dynamic>? context}) async {
-    // Do nothing in mock
+    _controller.add(AppError(
+      type: ErrorType.unknown,
+      message: error.toString(),
+      originalError: error,
+      stackTrace: stackTrace,
+      context: context,
+    ));
+  }
+
+  @override
+  void showErrorUI(BuildContext context, AppError error) {
+    // no-op in tests
+  }
+
+  @override
+  void dispose() {
+    _controller.close();
   }
 }
-
-class MockManualLocalizationService extends Mock implements ManualLocalizationService {
-  @override
-  Future<void> initialize() => Future.value();
-
-  @override
-  String getString(String key, {String fallback = ''}) {
-    // Return the key as a default for testing, ignoring the fallback for simplicity in this mock.
-    return key;
-  }
-
-  @override
-  Future<void> forceReload(Locale locale) => Future.value();
-
-  @override
-  Future<void> ensureLanguageLoaded(String languageCode) async {
-    // Do nothing in mock
-  }
-}
-
 
 void main() {
-  late MockAuthService mockAuthService;
+  late UnifiedMockAuthService mockAuthService;
   late MockAccessibilityService mockAccessibilityService;
   late MockLocalizationService mockLocalizationService;
   late MockNotificationService mockNotificationService;
   late MockManualLocalizationService mockManualLocalizationService;
   late MockErrorHandler mockErrorHandler;
-  late User mockUser;
+  late MockDocumentStorageService mockDocumentStorageService;
+  late mu.MockUser mockUser;
 
   setUp(() async {
     // Initialize mocks
-    mockUser = MockUser();
-    mockAuthService = MockAuthService(); // Starts logged out
+    mockUser = mu.MockUser(
+      uid: 'widget-test-user',
+      displayName: 'Widget Tester',
+      email: 'widget@test.com',
+      photoURL: null,
+      isAnonymous: false,
+      emailVerified: true,
+    );
+    mockAuthService = UnifiedMockAuthService(); // Starts logged out
     mockAccessibilityService = MockAccessibilityService();
     mockLocalizationService = MockLocalizationService();
     mockNotificationService = MockNotificationService();
     mockManualLocalizationService = MockManualLocalizationService();
     mockErrorHandler = MockErrorHandler();
+    mockDocumentStorageService = MockDocumentStorageService();
 
     // Set up default behaviors for mocks
         // The currentLocale getter is now overridden directly in the MockLocalizationService class.
@@ -231,9 +120,10 @@ void main() {
     // Override all necessary services for the test environment
     // This is the key step: we inject our MockAuthService.
     await ServiceInitializer.overrideForTesting({
-      AuthService: mockAuthService,
+      FirebaseAuthService: mockAuthService,
       AccessibilityService: mockAccessibilityService,
       LocalizationService: mockLocalizationService,
+      DocumentStorageService: mockDocumentStorageService,
       NotificationService: mockNotificationService,
       ManualLocalizationService: mockManualLocalizationService,
       ErrorHandler: mockErrorHandler,

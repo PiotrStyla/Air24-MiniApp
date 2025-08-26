@@ -7,7 +7,7 @@ import '../core/services/service_initializer.dart';
 import '../models/claim.dart';
 import '../models/flight_document.dart';
 import '../viewmodels/document_viewmodel.dart';
-import 'claim_review_screen.dart';
+// Removed navigation back to review; this screen now returns updated claim
 
 /// A wrapper that provides the DocumentViewModel to the attachment view.
 class ClaimAttachmentScreen extends StatelessWidget {
@@ -163,36 +163,25 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.attachDocuments),
+        title: Text(context.l10n.attachments),
       ),
       body: Consumer<DocumentViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.isLoadingInitialData) {
+        builder: (context, vm, _) {
+          if (vm.isLoadingInitialData) {
             return const Center(child: CircularProgressIndicator());
           }
-
-          return Stack(
-            children: [
-              if (viewModel.documents.isEmpty)
-                _buildEmptyState(context)
-              else
-                _buildDocumentList(context, viewModel.documents),
-              if (viewModel.isUploading)
-                Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 16),
-                        Text(context.l10n.uploadingDocument, style: const TextStyle(color: Colors.white, fontSize: 16)),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          );
+          final docs = vm.documents;
+          if (docs.isEmpty) {
+            // Show empty state with ability to upload, along with a persistent action bar
+            return Column(
+              children: [
+                _buildAttachmentGuidancePanel(context),
+                Expanded(child: _buildEmptyState(context)),
+                _buildBottomActionBar(context),
+              ],
+            );
+          }
+          return _buildDocumentList(context, docs);
         },
       ),
     );
@@ -220,6 +209,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
   Widget _buildDocumentList(BuildContext context, List<FlightDocument> documents) {
     return Column(
       children: [
+        _buildAttachmentGuidancePanel(context),
         Expanded(
           child: ListView.builder(
             itemCount: documents.length,
@@ -260,6 +250,36 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         ),
         _buildBottomActionBar(context),
       ],
+    );
+  }
+
+  /// Guidance panel for the attachment step, reusing existing localization keys
+  /// and visual style used elsewhere in the app (e.g., Quick Claim screen).
+  Widget _buildAttachmentGuidancePanel(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.orange.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.tipsAndRemindersTitle,
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
+          ),
+          const SizedBox(height: 6),
+          // New primary guidance about attachments
+          Text(context.l10n.emailPreviewAttachmentGuidance),
+          const SizedBox(height: 6),
+          // Additional tips retained for consistency
+          Text(context.l10n.tipSecureData),
+          Text(context.l10n.tipDoubleCheckDetails),
+        ],
+      ),
     );
   }
 
@@ -559,14 +579,8 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
           ElevatedButton(
             onPressed: () {
               final updatedClaim = widget.claim.copyWith(attachmentUrls: _selectedAttachmentUrls.toList());
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ClaimReviewScreen(
-                    claim: updatedClaim,
-                    userEmail: widget.userEmail, // Pass the user's email through the flow
-                  ),
-                ),
-              );
+              // Return to caller (e.g., confirmation screen) with updated claim
+              Navigator.of(context).pop<Claim>(updatedClaim);
             },
             child: Text(context.l10n.continueAction),
           ),

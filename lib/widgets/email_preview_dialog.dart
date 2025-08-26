@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../core/app_localizations_patch.dart';
 import '../services/secure_email_service.dart';
 
@@ -54,17 +55,7 @@ class _EmailPreviewDialogState extends State<EmailPreviewDialog> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Your Compensation Email is Ready to Send!',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green.shade800,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    context.l10n.emailCopyInstructions,
+                    '${context.l10n.to}:',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.green.shade700,
@@ -108,11 +99,11 @@ class _EmailPreviewDialogState extends State<EmailPreviewDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Email fields in cards
-                    _buildEmailCard(context.l10n.to, toEmail, Icons.person_outline),
+                    _buildEmailCard(context.l10n.to, widget.toEmail, Icons.person_outline),
                     const SizedBox(height: 12),
-                    _buildEmailCard(context.l10n.cc, ccEmail, Icons.copy_outlined),
+                    _buildEmailCard(context.l10n.cc, widget.ccEmail, Icons.copy_outlined),
                     const SizedBox(height: 12),
-                    _buildEmailCard(context.l10n.subject, subject, Icons.subject_outlined),
+                    _buildEmailCard(context.l10n.subject, widget.subject, Icons.subject_outlined),
                     const SizedBox(height: 16),
                     
                     // Email body
@@ -157,7 +148,7 @@ class _EmailPreviewDialogState extends State<EmailPreviewDialog> {
                           Padding(
                             padding: const EdgeInsets.all(16),
                             child: SelectableText(
-                              body,
+                              widget.body,
                               style: const TextStyle(
                                 fontSize: 13,
                                 height: 1.4,
@@ -360,11 +351,11 @@ class _EmailPreviewDialogState extends State<EmailPreviewDialog> {
   Future<void> _copyEmailAndShowSuccess(BuildContext context) async {
     // Create formatted email content
     final emailContent = '''
-To: $toEmail
-CC: $ccEmail
-Subject: $subject
+To: ${widget.toEmail}
+CC: ${widget.ccEmail}
+Subject: ${widget.subject}
 
-$body
+${widget.body}
 ''';
     
     // Copy to clipboard

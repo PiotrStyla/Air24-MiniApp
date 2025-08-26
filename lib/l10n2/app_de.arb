@@ -1557,5 +1557,39 @@
   "unknown": "Unbekannt",
   "@unknown": {
     "description": "Unknown value placeholder"
+  },
+  "predictingDelay": "Verspätung wird prognostiziert…",
+  "@predictingDelay": {
+    "description": "Shown while asynchronously fetching a delay prediction"
+  },
+  "predictionUnavailable": "Vorhersage nicht verfügbar",
+  "@predictionUnavailable": {
+    "description": "Shown when prediction data could not be retrieved"
+  },
+  "delayRiskPercent": "Verspätungsrisiko {risk}%",
+  "@delayRiskPercent": {
+    "description": "Label showing predicted delay probability",
+    "placeholders": {
+      "risk": {
+        "type": "int"
+      }
+    }
+  },
+  "avgMinutesShort": "Ø {minutes} Min",
+  "@avgMinutesShort": {
+    "description": "Short label for average delay time in minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "attachmentGuidanceTitle": "Anhänge",
+  "@attachmentGuidanceTitle": {
+    "description": "Title for the attachments guidance panel in the email preview dialog"
+  },
+  "emailPreviewAttachmentGuidance": "Sie können im nächsten Schritt Anhänge hinzufügen. Bitte denken Sie daran, nur Dateien im JPG-, PNG- oder PDF-Format beizufügen.",
+  "@emailPreviewAttachmentGuidance": {
+    "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
   }
 }

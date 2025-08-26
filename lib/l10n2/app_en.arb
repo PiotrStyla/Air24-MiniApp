@@ -52,6 +52,10 @@
   "@confirmAndSendEmail": {
     "description": "Button label for confirming and sending email"
   },
+  "attachmentsInfoNextStep": "You can add attachments (e.g., tickets, boarding passes) in the next step.",
+  "@attachmentsInfoNextStep": {
+    "description": "Informational text on confirmation screen indicating attachments can be added in next step"
+  },
   "departureAirport": "Departure Airport",
   "@departureAirport": {
     "description": "Label for departure airport field"
@@ -258,11 +262,11 @@
   "@fieldValue": {
     "description": "Label for field value"
   },
-  "noFieldsExtracted": "No Fields Extracted",
+  "noFieldsExtracted": "No fields extracted",
   "@noFieldsExtracted": {
     "description": "Message when no fields are extracted"
   },
-  "copiedToClipboard": "Copied to Clipboard",
+  "copiedToClipboard": "Copied to clipboard",
   "@copiedToClipboard": {
     "description": "Message when text is copied to clipboard"
   },
@@ -293,6 +297,42 @@
   "fullText": "Full Text",
   "@fullText": {
     "description": "Title for full text section"
+  },
+  "extractedInformation": "Extracted Information",
+  "@extractedInformation": {
+    "description": "Section header for extracted information"
+  },
+  "rawOcrText": "Raw OCR Text",
+  "@rawOcrText": {
+    "description": "Title for raw OCR text tab"
+  },
+  "copyAllText": "Copy All Text",
+  "@copyAllText": {
+    "description": "Tooltip for copying all raw text"
+  },
+  "fillForm": "Fill Form",
+  "@fillForm": {
+    "description": "Dialog title when choosing how to use extracted data"
+  },
+  "chooseUseInfo": "Choose how you'd like to use this information",
+  "@chooseUseInfo": {
+    "description": "Dialog content prompting user choice for using information"
+  },
+  "fillPassengerFlight": "Fill in passenger and flight details",
+  "@fillPassengerFlight": {
+    "description": "Subtitle for compensation claim form option"
+  },
+  "flightSearch": "Flight Search",
+  "@flightSearch": {
+    "description": "Dialog option title for flight search"
+  },
+  "searchFlightNumber": "Search by flight number",
+  "@searchFlightNumber": {
+    "description": "Subtitle for flight search option"
+  },
+  "done": "Done",
+  "@done": {
+    "description": "Tooltip for the done action in AppBar"
   },
   "documentSaved": "Document Saved",
   "@documentSaved": {
@@ -870,6 +910,69 @@
   "newClaim": "New Claim",
   "notLoggedIn": "Not Logged In",
   "signIn": "Sign In",
+  "welcomeBack": "Welcome back",
+  "createAccount": "Create Account",
+  "resetPassword": "Reset Password",
+  "resetPasswordTitle": "Reset your password",
+  "signInSubtitle": "Sign in to access your flight compensation claims",
+  "signUpSubtitle": "Sign up to track your flight compensation claims",
+  "resetPasswordSubtitle": "Enter your email to receive a password reset link",
+  "emailHintExample": "your.email@example.com",
+  "password": "Password",
+  "@password": {
+    "description": "Label for password field"
+  },
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {
+    "description": "Label for confirm password field"
+  },
+  "passwordPlaceholder": "********",
+  "@passwordPlaceholder": {
+    "description": "Password placeholder"
+  },
+  "signInWithGoogle": "Sign in with Google",
+  "signUpWithGoogle": "Sign up with Google",
+  "alreadyHaveAccountSignInCta": "Already have an account? Sign In",
+  "dontHaveAccountSignUpCta": "Don't have an account? Sign Up",
+  "forgotPasswordQuestion": "Forgot Password?",
+  "backToSignIn": "Back to Sign In",
+  "passwordResetEmailSentMessage": "Password reset email sent! Check your inbox.",
+  "authInvalidEmail": "Please enter a valid email address",
+  "@authInvalidEmail": {
+    "description": "Validation message for invalid email format in auth"
+  },
+  "authPasswordMinLength": "Password must be at least 6 characters",
+  "@authPasswordMinLength": {
+    "description": "Validation message when password is too short"
+  },
+  "authPasswordsDoNotMatch": "Passwords do not match",
+  "@authPasswordsDoNotMatch": {
+    "description": "Validation message when passwords don't match"
+  },
+  "authEmailRequired": "Please enter your email",
+  "@authEmailRequired": {
+    "description": "Validation message when email field is empty"
+  },
+  "authPasswordRequired": "Please enter your password",
+  "@authPasswordRequired": {
+    "description": "Validation message when password field is empty"
+  },
+  "authUnexpectedError": "An unexpected error occurred. Please try again.",
+  "@authUnexpectedError": {
+    "description": "Generic unexpected error message in authentication"
+  },
+  "authGoogleSignInFailed": "Google sign-in failed. Please try again.",
+  "@authGoogleSignInFailed": {
+    "description": "Error message when Google sign-in fails"
+  },
+  "authPasswordResetFailed": "Password reset failed. Please try again.",
+  "@authPasswordResetFailed": {
+    "description": "Error message when password reset fails"
+  },
+  "authSignOutFailed": "Sign out failed. Please try again.",
+  "@authSignOutFailed": {
+    "description": "Error message when sign out fails"
+  },
   "checkFlightEligibilityButtonText": "Check Flight Eligibility",
   "euEligibleFlightsButtonText": "EU Eligible Flights",
   "welcomeUser": "Welcome, {name} ({role})",
@@ -1442,5 +1545,39 @@
   "retry": "Retry",
   "@retry": {
     "description": "Retry action label"
+  },
+  "predictingDelay": "Predicting delay…",
+  "@predictingDelay": {
+    "description": "Shown while asynchronously fetching a delay prediction"
+  },
+  "predictionUnavailable": "Prediction unavailable",
+  "@predictionUnavailable": {
+    "description": "Shown when prediction data could not be retrieved"
+  },
+  "delayRiskPercent": "Delay risk {risk}%",
+  "@delayRiskPercent": {
+    "description": "Label showing predicted delay probability",
+    "placeholders": {
+      "risk": {
+        "type": "int"
+      }
+    }
+  },
+  "avgMinutesShort": "Avg {minutes} min",
+  "@avgMinutesShort": {
+    "description": "Short label for average delay time in minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "attachmentGuidanceTitle": "Attachments",
+  "@attachmentGuidanceTitle": {
+    "description": "Title for the attachments guidance panel in the email preview dialog"
+  },
+  "emailPreviewAttachmentGuidance": "You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.",
+  "@emailPreviewAttachmentGuidance": {
+    "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
   }
 }

@@ -10,75 +10,82 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:f35_flight_compensation/main.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
-import 'package:f35_flight_compensation/services/auth_service.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
 import 'package:f35_flight_compensation/services/localization_service.dart';
 import 'package:f35_flight_compensation/services/manual_localization_service.dart';
 import 'package:f35_flight_compensation/services/notification_service.dart';
 import 'package:f35_flight_compensation/core/error/error_handler.dart';
+import 'package:f35_flight_compensation/services/document_storage_service.dart';
+import 'package:f35_flight_compensation/services/mock_document_storage_service.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // For User
-import 'package:mockito/mockito.dart'; // For Mock
+// Use ChangeNotifier-based test doubles instead of Mockito
+import 'widget/mock_localization_service.dart';
+import 'widget/mock_manual_localization_service.dart';
+import 'mock/mock_accessibility_service.dart';
 
 // --- Minimal Mocks for widget_test.dart ---
-class MockAuthService extends Mock implements AuthService {
+class MockAuthService extends ChangeNotifier implements FirebaseAuthService {
+  User? _currentUser;
+
+  // Simulate auth state changes
+  void simulateLogin(User? user) {
+    _currentUser = user;
+    notifyListeners();
+  }
+
   @override
-  Stream<User?> get authStateChanges => Stream.value(null); // Default to logged out
+  User? get currentUser => _currentUser;
+
   @override
-  User? get currentUser => null;
+  bool get isAuthenticated => _currentUser != null;
+
+  @override
+  String get userDisplayName => _currentUser?.displayName ?? 'Test User';
+
+  @override
+  Future<String> getUserDisplayNameAsync() async => userDisplayName;
+
+  @override
+  Future<void> signOut() async => simulateLogin(null);
+
+  @override
+  Future<UserCredential> signInWithEmail(String email, String password) async => MockUserCredential(user: _currentUser);
+
+  @override
+  Future<UserCredential> createUserWithEmail(String email, String password) async => MockUserCredential(user: _currentUser);
+
+  @override
+  Future<bool> checkEmailVerified(String email) async => true;
+
+  @override
+  Future<UserCredential> signInWithGoogle() async => MockUserCredential(user: _currentUser);
+
+  @override
+  Future<void> resetPassword(String email) async {}
 }
 
-class MockAccessibilityService extends Mock implements AccessibilityService {
+class MockUserCredential implements UserCredential {
   @override
-  ThemeData getThemeData(ThemeData baseTheme) => baseTheme;
+  final User? user;
+
+  MockUserCredential({this.user});
+
   @override
-  bool get largeTextMode => false;
+  AdditionalUserInfo? get additionalUserInfo => null;
+
   @override
-  Future<void> initialize() => Future.value();
+  AuthCredential? get credential => null;
 }
 
-class MockLocalizationService extends Mock implements LocalizationService {
+class MockNotificationService implements NotificationService {
   @override
-  Locale get currentLocale => const Locale('en');
-  @override
-  Future<void> initialize() => Future.value();
-  @override
-  Future<void> changeLanguage(Locale locale) => Future.value();
-  @override
-  List<Locale> get supportedLocales => [const Locale('en')];
-  @override
-  String getDisplayLanguage(String languageCode) => languageCode;
-  @override
-  bool isSupported(Locale locale) => locale.languageCode == 'en';
+  Future<void> initialize() async {}
 }
 
-class MockManualLocalizationService extends Mock implements ManualLocalizationService {
+class MockErrorHandler implements ErrorHandler {
   @override
-  bool get isReady => true;
-
-  @override
-  Locale get currentLocale => const Locale('en');
-
-  @override
-  Future<void> init() => Future.value();
-
-  @override
-  Future<void> setLocale(Locale locale) => Future.value();
-
-  @override
-  String getString(String key, {String fallback = ''}) => key;
-
-  @override
-  Future<void> ensureLanguageLoaded(String languageCode) => Future.value();
-}
-
-class MockNotificationService extends Mock implements NotificationService {
-  @override
-  Future<void> initialize() => Future.value();
-}
-
-class MockErrorHandler extends Mock implements ErrorHandler {
-  @override
-  Future<void> initialize() => Future.value();
+  Future<void> initialize() async {}
   @override
   Future<void> handleError(dynamic error, {StackTrace? stackTrace, Map<String, dynamic>? context}) async {}
 }
@@ -87,9 +94,10 @@ void main() {
   setUp(() async {
     // Register mock services before each test
     await ServiceInitializer.overrideForTesting({
-      AuthService: MockAuthService(),
+      FirebaseAuthService: MockAuthService(),
       AccessibilityService: MockAccessibilityService(),
       LocalizationService: MockLocalizationService(),
+      DocumentStorageService: MockDocumentStorageService(),
       ManualLocalizationService: MockManualLocalizationService(),
       NotificationService: MockNotificationService(),
       ErrorHandler: MockErrorHandler(),
@@ -111,10 +119,9 @@ void main() {
     // Allow time for AuthGate to process auth state and build its child (e.g., AuthScreen).
     await tester.pumpAndSettle(); 
 
-    // At this point, AuthGate should have built AuthScreen because MockAuthService defaults to logged out.
-    // A more robust test would be to find a specific widget within AuthScreen.
-    // For example, if AuthScreen has a title 'Login' or a specific Key:
-    // expect(find.text('Login'), findsOneWidget); // Assuming AuthScreen shows 'Login'
-    // expect(find.byKey(const Key('authScreenScaffold')), findsOneWidget);
+    // Verify AuthScreen UI renders for logged-out state
+    expect(find.text('Welcome back'), findsOneWidget); // Screen headline
+    expect(find.widgetWithText(ElevatedButton, 'Sign In'), findsOneWidget); // Primary action button
+    expect(find.text('Sign in with Google'), findsOneWidget); // Google button
   });
 }

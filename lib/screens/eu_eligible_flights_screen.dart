@@ -5,6 +5,7 @@ import '../services/flight_prediction_service.dart';
 import 'package:get_it/get_it.dart';
 import 'claim_submission_screen.dart';
 import '../models/claim.dart';
+import '../core/accessibility/accessible_widgets.dart';
 
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:intl/intl.dart';
@@ -33,11 +34,9 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
   Future<List<Map<String, dynamic>>> _loadFlights() async {
     foundation.debugPrint(
         'Attempting to load EU compensation eligible flights for the last $_hoursFilter hours...');
-    final service = AviationStackService(
-      baseUrl: 'https://piotrs.pythonanywhere.com',
-      usingPythonBackend: true,
-      pythonBackendUrl: 'https://piotrs.pythonanywhere.com',
-    );
+    final service = GetIt.I.isRegistered<AviationStackService>()
+        ? GetIt.I<AviationStackService>()
+        : AviationStackService();
 
     try {
       final flights =
@@ -210,6 +209,22 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
 
   int _calculateCompensationAmount(Map<String, dynamic> flight) {
     try {
+      // Prefer server-provided eligibility details when available
+      if (flight.containsKey('eligibility_details') &&
+          flight['eligibility_details'] != null) {
+        final details = flight['eligibility_details'];
+        final dynamic est = details['estimatedCompensation'];
+        if (est is num && est > 0) {
+          return est.toInt();
+        }
+        if (est is String) {
+          final parsed = int.tryParse(est);
+          if (parsed != null && parsed > 0) {
+            return parsed;
+          }
+        }
+      }
+
       if (flight.containsKey('potentialCompensationAmount') &&
           flight['potentialCompensationAmount'] is num &&
           flight['potentialCompensationAmount'] > 0) {
@@ -250,397 +265,388 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
     }
   }
 
-  int _calculateAirportDistance(String departureIata, String arrivalIata) {
-    // Major European and international airport coordinates (lat, lng)
-    final Map<String, List<double>> airportCoordinates = {
-      // Major EU hubs
-      'LHR': [51.4700, -0.4543], // London Heathrow
-      'CDG': [49.0097, 2.5479], // Paris Charles de Gaulle
-      'FRA': [50.0379, 8.5622], // Frankfurt
-      'AMS': [52.3105, 4.7683], // Amsterdam Schiphol
-      'MAD': [40.4839, -3.5680], // Madrid
-      'FCO': [41.8003, 12.2389], // Rome Fiumicino
-      'MUC': [48.3537, 11.7750], // Munich
-      'ZUR': [47.4647, 8.5492], // Zurich
-      'VIE': [48.1103, 16.5697], // Vienna
-      'CPH': [55.6180, 12.6506], // Copenhagen
-      'ARN': [59.6519, 17.9186], // Stockholm Arlanda
-      'OSL': [60.1939, 11.1004], // Oslo
-      'HEL': [60.3172, 24.9633], // Helsinki
-      'WAW': [52.1657, 20.9671], // Warsaw
-      'PRG': [50.1008, 14.2632], // Prague
-      'BUD': [47.4298, 19.2611], // Budapest
-      'ATH': [37.9364, 23.9445], // Athens
-      'LIS': [38.7813, -9.1363], // Lisbon
-      'BCN': [41.2974, 2.0833], // Barcelona
-      'MXP': [45.6306, 8.7281], // Milan Malpensa
-      'DUB': [53.4213, -6.2701], // Dublin
-      'BRU': [50.9014, 4.4844], // Brussels
 
-      // Additional European airports
-      'LGW': [51.1481, -0.1903], // London Gatwick
-      'STN': [51.8860, 0.2389], // London Stansted
-      'LTN': [51.8747, -0.3683], // London Luton
-      'ORY': [48.7233, 2.3794], // Paris Orly
-      'DUS': [51.2895, 6.7668], // Düsseldorf
-      'HAM': [53.6304, 9.9882], // Hamburg
-      'STR': [48.6899, 9.2219], // Stuttgart
-      'CGN': [50.8659, 7.1427], // Cologne
-      'NUE': [49.4987, 11.0669], // Nuremberg
-      'TXL': [52.5597, 13.2877], // Berlin Tegel (historical)
-      'SXF': [52.3800, 13.5225], // Berlin Schönefeld
-      'BER': [52.3667, 13.5033], // Berlin Brandenburg
+int _calculateAirportDistance(String departureIata, String arrivalIata) {
+  // Major European and international airport coordinates (lat, lng)
+  final Map<String, List<double>> airportCoordinates = {
+    // Major EU hubs
+    'LHR': [51.4700, -0.4543], // London Heathrow
+    'CDG': [49.0097, 2.5479], // Paris Charles de Gaulle
+    'FRA': [50.0379, 8.5622], // Frankfurt
+    'AMS': [52.3105, 4.7683], // Amsterdam Schiphol
+    'MAD': [40.4839, -3.5680], // Madrid
+    'FCO': [41.8003, 12.2389], // Rome Fiumicino
+    'MUC': [48.3537, 11.7750], // Munich
+    'ZRH': [47.4647, 8.5492], // Zurich
+    'ZUR': [47.4647, 8.5492], // Zurich (legacy alias)
+    'VIE': [48.1103, 16.5697], // Vienna
+    'CPH': [55.6180, 12.6506], // Copenhagen
+    'ARN': [59.6519, 17.9186], // Stockholm Arlanda
+    'OSL': [60.1939, 11.1004], // Oslo
+    'HEL': [60.3172, 24.9633], // Helsinki
+    'WAW': [52.1657, 20.9671], // Warsaw
+    'PRG': [50.1008, 14.2632], // Prague
+    'BUD': [47.4298, 19.2611], // Budapest
+    'ATH': [37.9364, 23.9445], // Athens
+    'LIS': [38.7813, -9.1363], // Lisbon
+    'BCN': [41.2974, 2.0833], // Barcelona
+    'MXP': [45.6306, 8.7281], // Milan Malpensa
+    'DUB': [53.4213, -6.2701], // Dublin
+    'BRU': [50.9014, 4.4844], // Brussels
 
-      // Major non-EU destinations (for reference)
-      'JFK': [40.6413, -73.7781], // New York JFK
-      'LAX': [33.9425, -118.4081], // Los Angeles
-      'NRT': [35.7720, 140.3929], // Tokyo Narita
-      'SIN': [1.3644, 103.9915], // Singapore
-      'DXB': [25.2532, 55.3657], // Dubai
-      'DOH': [25.2731, 51.6080], // Doha
-      'IST': [41.2753, 28.7519], // Istanbul
-      'SVO': [55.9726, 37.4146], // Moscow Sheremetyevo
-      'PEK': [40.0799, 116.6031], // Beijing
-      'HKG': [22.3080, 113.9185], // Hong Kong
-    };
+    // Additional European airports
+    'LGW': [51.1481, -0.1903], // London Gatwick
+    'STN': [51.8860, 0.2389], // London Stansted
+    'LTN': [51.8747, -0.3683], // London Luton
+    'ORY': [48.7233, 2.3794], // Paris Orly
+    'DUS': [51.2895, 6.7668], // Düsseldorf
+    'HAM': [53.6304, 9.9882], // Hamburg
+    'STR': [48.6899, 9.2219], // Stuttgart
+    'CGN': [50.8659, 7.1427], // Cologne
+    'NUE': [49.4987, 11.0669], // Nuremberg
+    'TXL': [52.5597, 13.2877], // Berlin Tegel (historical)
+    'SXF': [52.3800, 13.5225], // Berlin Schönefeld
+    'BER': [52.3667, 13.5033], // Berlin Brandenburg
 
-    final depCoords = airportCoordinates[departureIata];
-    final arrCoords = airportCoordinates[arrivalIata];
+    // Major non-EU destinations (for reference)
+    'JFK': [40.6413, -73.7781], // New York JFK
+    'LAX': [33.9425, -118.4081], // Los Angeles
+    'NRT': [35.7720, 140.3929], // Tokyo Narita
+    'SIN': [1.3644, 103.9915], // Singapore
+    'DXB': [25.2532, 55.3657], // Dubai
+    'DOH': [25.2731, 51.6080], // Doha
+    'IST': [41.2753, 28.7519], // Istanbul
+    'SVO': [55.9726, 37.4146], // Moscow Sheremetyevo
+    'PEK': [40.0799, 116.6031], // Beijing
+    'HKG': [22.3080, 113.9185], // Hong Kong
+  };
 
-    if (depCoords == null || arrCoords == null) {
-      // Fallback: estimate based on common route patterns
-      return _estimateDistanceByRoute(departureIata, arrivalIata);
-    }
+  final depCoords = airportCoordinates[departureIata];
+  final arrCoords = airportCoordinates[arrivalIata];
 
-    // Calculate great circle distance using Haversine formula
-    final distance = _haversineDistance(
-        depCoords[0], depCoords[1], arrCoords[0], arrCoords[1]);
-
-    return distance.round();
+  if (depCoords == null || arrCoords == null) {
+    // Fallback: estimate based on common route patterns
+    return _estimateDistanceByRoute(departureIata, arrivalIata);
   }
 
-  double _haversineDistance(
-      double lat1, double lon1, double lat2, double lon2) {
-    const double earthRadius = 6371; // Earth's radius in kilometers
+  // Calculate great circle distance using Haversine formula
+  final distance = _haversineDistance(
+      depCoords[0], depCoords[1], arrCoords[0], arrCoords[1]);
 
-    final double dLat = _degreesToRadians(lat2 - lat1);
-    final double dLon = _degreesToRadians(lon2 - lon1);
+  return distance.round();
+}
 
-    final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_degreesToRadians(lat1)) *
-            math.cos(_degreesToRadians(lat2)) *
-            math.sin(dLon / 2) *
-            math.sin(dLon / 2);
+double _haversineDistance(
+    double lat1, double lon1, double lat2, double lon2) {
+  const double earthRadius = 6371; // Earth's radius in kilometers
 
-    final double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+  final double dLat = _degreesToRadians(lat2 - lat1);
+  final double dLon = _degreesToRadians(lon2 - lon1);
 
-    return earthRadius * c;
+  final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+      math.cos(_degreesToRadians(lat1)) *
+          math.cos(_degreesToRadians(lat2)) *
+          math.sin(dLon / 2) *
+          math.sin(dLon / 2);
+
+  final double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+
+  return earthRadius * c;
+}
+
+double _degreesToRadians(double degrees) {
+  return degrees * (math.pi / 180);
+}
+
+int _estimateDistanceByRoute(String departureIata, String arrivalIata) {
+  // Fallback estimation based on common route patterns
+  final Set<String> longHaulDestinations = {
+    'JFK', 'LAX', 'ORD', 'DFW', 'ATL', 'MIA', 'YYZ', 'YVR', // North America
+    'NRT', 'ICN', 'PVG', 'PEK', 'HKG', 'SIN', 'BKK', 'DEL', // Asia
+    'SYD', 'MEL', 'AKL', // Oceania
+    'JNB', 'CAI', 'ADD', // Africa
+    'GRU', 'EZE', 'SCL', 'BOG', 'LIM', // South America
+  };
+
+  final Set<String> mediumHaulDestinations = {
+    'IST', 'SVO', 'LED', 'KBP', // Eastern Europe/Russia
+    'DXB', 'DOH', 'AUH', 'KWI', 'RUH', // Middle East
+    'CAI', 'TUN', 'CMN', 'ALG', // North Africa
+    'TLV', 'AMM', 'BEY', // Levant
+  };
+
+  if (longHaulDestinations.contains(departureIata) ||
+      longHaulDestinations.contains(arrivalIata)) {
+    return 8000; // Long-haul
   }
 
-  double _degreesToRadians(double degrees) {
-    return degrees * (math.pi / 180);
+  if (mediumHaulDestinations.contains(departureIata) ||
+      mediumHaulDestinations.contains(arrivalIata)) {
+    return 2500; // Medium-haul
   }
 
-  int _estimateDistanceByRoute(String departureIata, String arrivalIata) {
-    // Fallback estimation based on common route patterns
-    final Set<String> longHaulDestinations = {
-      'JFK', 'LAX', 'ORD', 'DFW', 'ATL', 'MIA', 'YYZ', 'YVR', // North America
-      'NRT', 'ICN', 'PVG', 'PEK', 'HKG', 'SIN', 'BKK', 'DEL', // Asia
-      'SYD', 'MEL', 'AKL', // Oceania
-      'JNB', 'CAI', 'ADD', // Africa
-      'GRU', 'EZE', 'SCL', 'BOG', 'LIM', // South America
-    };
+  // Default to short-haul for intra-European flights
+  return 1200;
+}
 
-    final Set<String> mediumHaulDestinations = {
-      'IST', 'SVO', 'LED', 'KBP', // Eastern Europe/Russia
-      'DXB', 'DOH', 'AUH', 'KWI', 'RUH', // Middle East
-      'CAI', 'TUN', 'CMN', 'ALG', // North Africa
-      'TLV', 'AMM', 'BEY', // Levant
-    };
-
-    if (longHaulDestinations.contains(departureIata) ||
-        longHaulDestinations.contains(arrivalIata)) {
-      return 8000; // Long-haul
-    }
-
-    if (mediumHaulDestinations.contains(departureIata) ||
-        mediumHaulDestinations.contains(arrivalIata)) {
-      return 2500; // Medium-haul
-    }
-
-    // Default to short-haul for intra-European flights
-    return 1200;
-  }
-
-  Widget _buildErrorWidget(BuildContext context, Object? error) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.cloud_off, size: 60, color: Colors.redAccent),
-            const SizedBox(height: 16),
-            Text(
-              context.l10n.apiConnectionIssue,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              error.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.refresh),
-              label: Text(context.l10n.retry),
-              onPressed: _refreshFlights,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyStateWidget(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.flight_land, size: 80, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              context.l10n.noEligibleFlightsFound,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueGrey[700],
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                context.l10n.noEligibleFlightsDescription(_hoursFilter),
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: Colors.grey[600]),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.refresh),
-              label: Text(context.l10n.checkAgain),
-              onPressed: _refreshFlights,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.l10n.euWideCompensationEligibleFlights,
-          style: const TextStyle(fontSize: 18),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: context.l10n.forceRefreshData,
-            onPressed: () {
-              // Show a snackbar to indicate refresh is happening
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(context.l10n.forcingFreshDataLoad)),
-              );
-              // Re-fetch flights using the primary load function
-              setState(() {
-                _flightsFuture = _loadFlights();
-              });
-            },
+Widget _buildErrorWidget(
+    BuildContext context, Object? error, VoidCallback onRefresh) {
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.cloud_off, size: 60, color: Colors.redAccent),
+          const SizedBox(height: 16),
+          Text(
+            context.l10n.apiConnectionIssue,
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall
+                ?.copyWith(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            error.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 24),
+          AccessibleButton(
+            icon: Icons.refresh,
+            label: context.l10n.retry,
+            semanticLabel: context.l10n.retry,
+            onPressed: onRefresh,
           ),
         ],
       ),
-      body: Column(
+    ),
+  );
+}
+
+Widget _buildEmptyStateWidget(
+    BuildContext context, int hoursFilter, VoidCallback onRefresh) {
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const Icon(Icons.search_off, size: 60, color: Colors.blueGrey),
+          const SizedBox(height: 16),
+          Text(
+            context.l10n.noEligibleFlightsFound,
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall
+                ?.copyWith(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final narrow = constraints.maxWidth < 380;
-                final filterField = TextField(
-                  decoration: InputDecoration(
-                    hintText: context.l10n.filterByAirline,
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _carrierFilter = value;
-                    });
-                  },
-                );
-                final hoursPill = Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      context.l10n.lastHours(_hoursFilter),
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500, color: Colors.grey[700]),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                );
-                if (narrow) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      filterField,
-                      const SizedBox(height: 8),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: hoursPill,
-                      ),
-                    ],
-                  );
-                } else {
-                  return Row(
-                    children: [
-                      Expanded(child: filterField),
-                      const SizedBox(width: 8),
-                      Flexible(child: hoursPill),
-                    ],
-                  );
-                }
-              },
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Text(
+              context.l10n.noEligibleFlightsDescription(hoursFilter),
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.grey[600]),
             ),
           ),
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: _flightsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 20),
-                        Text(
-                          context.l10n.loadingExternalData,
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+          const SizedBox(height: 24),
+          AccessibleButton(
+            icon: Icons.refresh,
+            label: context.l10n.checkAgain,
+            semanticLabel: context.l10n.checkAgain,
+            onPressed: onRefresh,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        context.l10n.euWideCompensationEligibleFlights,
+        style: const TextStyle(fontSize: 18),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          tooltip: context.l10n.forceRefreshData,
+          onPressed: () {
+            // Show a snackbar to indicate refresh is happening
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.l10n.forcingFreshDataLoad)),
+            );
+            // Re-fetch flights using the primary load function
+            setState(() {
+              _flightsFuture = _loadFlights();
+            });
+          },
+        ),
+      ],
+    ),
+    body: Column(
+      children: [
+        Padding(
+          padding:
+              const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final narrow = constraints.maxWidth < 380;
+              final filterField = TextField(
+                decoration: InputDecoration(
+                  hintText: context.l10n.filterByAirline,
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _carrierFilter = value;
+                  });
+                },
+              );
+              final hoursPill = Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    context.l10n.lastHours(_hoursFilter),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500, color: Colors.grey[700]),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              );
+              if (narrow) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    filterField,
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: hoursPill,
+                    ),
+                  ],
+                );
+              } else {
+                return Row(
+                  children: [
+                    Expanded(child: filterField),
+                    const SizedBox(width: 8),
+                    Flexible(child: hoursPill),
+                  ],
+                );
+              }
+            },
+          ),
+        ),
+        Expanded(
+          child: FutureBuilder<List<Map<String, dynamic>>>(
+            future: _flightsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 20),
+                      Text(
+                        context.l10n.loadingExternalData,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          context.l10n.loadingExternalDataDescription,
+                          style: TextStyle(color: Colors.grey[600]),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: Text(
-                            context.l10n.loadingExternalDataDescription,
-                            style: TextStyle(color: Colors.grey[600]),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-                if (snapshot.hasError) {
-                  return _buildErrorWidget(context, snapshot.error);
-                }
+              if (snapshot.hasError) {
+                return _buildErrorWidget(context, snapshot.error, _refreshFlights);
+              }
 
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return _buildEmptyStateWidget(context);
-                }
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return _buildEmptyStateWidget(context, _hoursFilter, _refreshFlights);
+              }
 
-                final allFlights = snapshot.data!;
+              final allFlights = snapshot.data!;
 
-                // Apply filters
-                final List<Map<String, dynamic>> filteredFlights =
-                    allFlights.where((flight) {
+              // Apply filters
+              final List<Map<String, dynamic>> filteredFlights =
+                  allFlights.where((flight) {
+                final airlineName =
+                    flight['airline_name']?.toString().toLowerCase() ?? '';
+                final passesCarrierFilter = _carrierFilter.isEmpty ||
+                    airlineName.contains(_carrierFilter.toLowerCase());
+                return passesCarrierFilter;
+              }).toList();
+
+              return ListView.separated(
+                padding: EdgeInsets.zero,
+                itemCount: filteredFlights.length,
+                separatorBuilder: (context, index) =>
+                    const Divider(height: 1),
+                itemBuilder: (context, idx) {
+                  final flight = filteredFlights[idx];
+
                   final airlineName =
-                      flight['airline_name']?.toString().toLowerCase() ?? '';
-                  final passesCarrierFilter = _carrierFilter.isEmpty ||
-                      airlineName.contains(_carrierFilter.toLowerCase());
-                  return passesCarrierFilter;
-                }).toList();
-
-                if (filteredFlights.isEmpty) {
-                  return Center(
-                    child: Text(
-                        context.l10n.noFlightsMatchingFilter(_carrierFilter)),
-                  );
-                }
-
-                return ListView.separated(
-                  padding: EdgeInsets.zero,
-                  itemCount: filteredFlights.length,
-                  separatorBuilder: (context, index) =>
-                      const Divider(height: 1),
-                  itemBuilder: (context, idx) {
-                    final flight = filteredFlights[idx];
-
-                    final airlineName =
-                        flight['airline_name']?.toString() ?? 'Unknown';
-                    final flightNumber =
-                        flight['flight_iata']?.toString() ?? '';
-                    final aircraftModel =
-                        flight['aircraft_registration']?.toString() ??
-                            'Unknown';
-                    final departureTimeStr =
-                        flight['departure_scheduled_time']?.toString();
-                    final departureTime =
-                        (departureTimeStr?.isNotEmpty ?? false)
-                            ? DateTime.parse(departureTimeStr!)
-                            : null;
-                    final delayMinutes = flight['delay_minutes'] ?? 0;
-
-                    // Determine compensation based on flight data
-                    int compensationAmount = 0;
-                    if (flight.containsKey('eligibility_details') &&
-                        flight['eligibility_details'] != null &&
-                        flight['eligibility_details']
-                                ['estimatedCompensation'] !=
-                            null) {
-                      compensationAmount = flight['eligibility_details']
-                          ['estimatedCompensation'];
-                    } else {
-                      // Fallback compensation calculation
-                      final distance = flight['distance'] as int? ??
-                          _estimateFlightDistance(flight);
-                      if (distance <= 1500) {
-                        compensationAmount = 250;
-                      } else if (distance <= 3500) {
-                        compensationAmount = 400;
-                      } else {
-                        compensationAmount = 600;
-                      }
+                      flight['airline_name']?.toString() ?? 'Unknown';
+                  final flightNumber =
+                      flight['flight_iata']?.toString() ?? '';
+                  final aircraftModel =
+                      flight['aircraft_registration']?.toString() ??
+                          'Unknown';
+                  final departureTimeStr =
+                      flight['departure_scheduled_time']?.toString();
+                  DateTime? departureTime;
+                  if ((departureTimeStr?.isNotEmpty ?? false)) {
+                    try {
+                      departureTime = DateTime.parse(departureTimeStr!);
+                    } catch (_) {
+                      departureTime = null;
                     }
+                  } else {
+                    departureTime = null;
+                  }
+                  final int delayMinutes = (flight['delay_minutes'] is num)
+                      ? (flight['delay_minutes'] as num).toInt()
+                      : int.tryParse(
+                            flight['delay_minutes']?.toString() ?? '') ??
+                          0;
+
+                  // Determine compensation based on flight data
+                  final int compensationAmount =
+                      _calculateCompensationAmount(flight);
 
                     // Format title with flight number and airline
                     String titleText = flightNumber.isNotEmpty
@@ -733,48 +739,52 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 4),
-                                      // Status with delay
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.info_outline,
-                                              size: 14, color: Colors.black54),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Text(
-                                              "${context.l10n.statusLabel} ${context.l10n.flightStatusDelayed} - $delayMinutes ${context.l10n.minutes}",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: delayMinutes >= 180
-                                                    ? Colors.red
-                                                    : Colors.orange,
-                                                fontWeight: FontWeight.w500,
+                                      if (delayMinutes > 0) ...[
+                                        const SizedBox(height: 4),
+                                        // Status with delay
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.info_outline,
+                                                size: 14, color: Colors.black54),
+                                            const SizedBox(width: 4),
+                                            Expanded(
+                                              child: Text(
+                                                "${context.l10n.statusLabel} ${context.l10n.flightStatusDelayed} - $delayMinutes ${context.l10n.minutes}",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: delayMinutes >= 180
+                                                      ? Colors.red
+                                                      : Colors.orange,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 4),
-                                      // Compensation amount
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.euro,
-                                              size: 14, color: Colors.green),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Text(
-                                              "${context.l10n.potentialCompensation} €$compensationAmount",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.green[700],
-                                                fontWeight: FontWeight.bold,
+                                          ],
+                                        ),
+                                      ],
+                                      if (compensationAmount > 0) ...[
+                                        const SizedBox(height: 4),
+                                        // Compensation amount
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.euro,
+                                                size: 14, color: Colors.green),
+                                            const SizedBox(width: 4),
+                                            Expanded(
+                                              child: Text(
+                                                "${context.l10n.potentialCompensation} €$compensationAmount",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.green[700],
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                          ],
+                                        ),
+                                      ],
                                       const SizedBox(height: 4),
                                       // Aircraft model
                                       Row(
@@ -797,17 +807,17 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                           if (snap.connectionState ==
                                               ConnectionState.waiting) {
                                             return Row(
-                                              children: const [
-                                                SizedBox(
+                                              children: [
+                                                const SizedBox(
                                                   width: 16,
                                                   height: 16,
                                                   child:
                                                       CircularProgressIndicator(
                                                           strokeWidth: 2),
                                                 ),
-                                                SizedBox(width: 6),
+                                                const SizedBox(width: 6),
                                                 Text(
-                                                  'Predicting delay…',
+                                                  context.l10n.predictingDelay,
                                                   style: TextStyle(
                                                       fontSize: 14,
                                                       color: Colors.black54),
@@ -817,13 +827,13 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                           }
                                           if (!snap.hasData) {
                                             return Row(
-                                              children: const [
-                                                Icon(Icons.analytics_outlined,
+                                              children: [
+                                                const Icon(Icons.analytics_outlined,
                                                     size: 14,
                                                     color: Colors.black54),
-                                                SizedBox(width: 4),
+                                                const SizedBox(width: 4),
                                                 Text(
-                                                  'Prediction unavailable',
+                                                  context.l10n.predictionUnavailable,
                                                   style: TextStyle(
                                                       fontSize: 14,
                                                       color: Colors.black54),
@@ -863,7 +873,7 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                               ),
                                               const SizedBox(width: 4),
                                               Text(
-                                                'Delay risk $risk%',
+                                                context.l10n.delayRiskPercent(risk),
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   color: riskFlag
@@ -872,56 +882,41 @@ class _EUEligibleFlightsScreenState extends State<EUEligibleFlightsScreen> {
                                                 ),
                                               ),
                                               const SizedBox(width: 12),
-                                              const Icon(Icons.timer,
-                                                  size: 14,
-                                                  color: Colors.black54),
-                                              const SizedBox(width: 4),
                                               Text(
-                                                'Avg $avg min',
-                                                style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.black54),
+                                                context.l10n.avgMinutesShort(avg),
                                               ),
                                             ],
                                           );
                                         },
                                       ),
+                                      const SizedBox(height: 8),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Tooltip(
+                                          message:
+                                              context.l10n.prefillCompensationForm,
+                                          child: AccessibleButton(
+                                            label: context.l10n
+                                                .prefillCompensationForm,
+                                            semanticLabel: context.l10n
+                                                .prefillCompensationForm,
+                                            onPressed: () =>
+                                                _openCompensationForm(
+                                                    context, flight),
+                                            icon: Icons.assignment_turned_in,
+                                            filled: true,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                          // Pre-fill button
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                                onPressed: () =>
-                                    _openCompensationForm(context, flight),
-                                icon: const Icon(Icons.description, size: 16),
-                                label: Text(
-                                  context.l10n.prefillCompensationForm,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14),
-                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                     );
                   },
                 );

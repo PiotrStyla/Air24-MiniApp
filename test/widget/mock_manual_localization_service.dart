@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:f35_flight_compensation/services/manual_localization_service.dart';
+import 'package:f35_flight_compensation/services/localization_service.dart';
 
 class MockManualLocalizationService extends ChangeNotifier implements ManualLocalizationService {
   Locale _currentLocale = const Locale('en', 'US');
@@ -78,6 +79,12 @@ class MockManualLocalizationService extends ChangeNotifier implements ManualLoca
   bool get isReady => _isReady;
 
   @override
+  Future<void> init() async {
+    _isReady = true;
+    await ensureLanguageLoaded(_currentLocale.languageCode);
+  }
+
+  @override
   String getString(String key, {String fallback = ''}) {
     String? value = _mockStrings[key];
     print('[MockManualLocalizationService] getString called for key: $key, returning: $value');
@@ -85,21 +92,15 @@ class MockManualLocalizationService extends ChangeNotifier implements ManualLoca
   }
 
   @override
-  Future<void> changeLanguage(Locale newLocale) async {
-    print('[MockManualLocalizationService] changeLanguage called with $newLocale');
-    _currentLocale = newLocale;
-    // Potentially load different mock strings or just notify
+  Future<void> setLocale(Locale locale) async {
+    print('[MockManualLocalizationService] setLocale called with $locale');
+    _currentLocale = locale;
+    await ensureLanguageLoaded(locale.languageCode);
     notifyListeners();
-    ManualLocalizationService.forceAppRebuild(); // Call static method if necessary for test behavior
+    ManualLocalizationService.forceAppRebuild();
   }
 
-  @override
-  Future<void> ensureAllTranslationsLoaded() async {
-    print('[MockManualLocalizationService] ensureAllTranslationsLoaded called');
-    // No-op for mock
-    _isReady = true;
-    return Future.value();
-  }
+  // ensureAllTranslationsLoaded() removed: not part of ManualLocalizationService interface
 
   @override
   Future<void> ensureLanguageLoaded(String languageCode) async {
@@ -108,53 +109,38 @@ class MockManualLocalizationService extends ChangeNotifier implements ManualLoca
     return Future.value();
   }
 
-  // Mocking static members isn't straightforward in Dart for instance methods.
-  // Tests needing these should interact with the real static members if absolutely necessary
-  // or the design should be reconsidered for better testability of static interactions.
-  // For the purpose of this mock, we are focusing on the instance methods.
-
-  // Other methods from ManualLocalizationService can be added here with mock implementations if needed by tests.
-  // For example:
-  // @override
-  // Map<String, String> get languageNames => ManualLocalizationService.languageNames;
-
-  // @override
-  // List<Locale> get supportedLocales => ManualLocalizationService.supportedLocales;
-
-  // Not mocking static rebuildNotifier or forceAppRebuild directly as they are static.
-  // The call to ManualLocalizationService.forceAppRebuild() in changeLanguage is an example
-  // of how the mock might interact with static parts if needed, though it calls the real static method.
-
   @override
-  Future<void> changeLocale(Locale locale) async {
-    print('[MockManualLocalizationService] changeLocale (new) called with $locale');
-    _currentLocale = locale;
-    notifyListeners();
-    ManualLocalizationService.forceAppRebuild();
-  }
-
-  @override
-  Future<void> forceReload(Locale locale) async {
-    print('[MockManualLocalizationService] forceReload called with $locale');
-    // Simulate reloading strings for the locale or just notify
-    _currentLocale = locale; // Ensure current locale is updated
+  Future<void> reloadLanguage(String languageCode) async {
+    print('[MockManualLocalizationService] reloadLanguage called for $languageCode');
     _isReady = false;
-    // In a real scenario, you might reload mock strings here if they depend on locale
+    // Simulate a tiny delay to mimic reload behavior in tests
+    await Future<void>.delayed(const Duration(milliseconds: 1));
     _isReady = true;
-    notifyListeners();
-    ManualLocalizationService.forceAppRebuild();
+    if (languageCode == _currentLocale.languageCode) {
+      notifyListeners();
+      ManualLocalizationService.forceAppRebuild();
+    }
   }
 
   @override
-  Locale getCurrentLocale() {
-    print('[MockManualLocalizationService] getCurrentLocale called, returning: $_currentLocale');
-    return _currentLocale;
+  void addStringDirectly(String languageCode, String key, String value) {
+    print('[MockManualLocalizationService] addStringDirectly: ($languageCode) $key = $value');
+    // In this simplified mock we only maintain one map; update when targeting current or EN locale
+    if (languageCode == _currentLocale.languageCode || languageCode == 'en') {
+      _mockStrings[key] = value;
+      notifyListeners();
+    }
   }
+
+  // changeLocale() removed: use setLocale(Locale) instead.
+  // forceReload() removed: use reloadLanguage(String languageCode) instead.
+
+  // getCurrentLocale() removed: use currentLocale getter instead.
 
   @override
   String getDisplayLanguage(String languageCode) {
     print('[MockManualLocalizationService] getDisplayLanguage for $languageCode');
-    return ManualLocalizationService.languageNames[languageCode] ?? languageCode;
+    return LocalizationService.languageNames[languageCode] ?? languageCode;
   }
 
   @override
@@ -176,16 +162,8 @@ class MockManualLocalizationService extends ChangeNotifier implements ManualLoca
     return value!;
   }
 
-   @override
-  Map<String, Map<String, dynamic>> get allStrings => {'en': _mockStrings.map((key, value) => MapEntry(key, value as dynamic))};
-
-  @override
-  ValueNotifier<int> get rebuildNotifier => ManualLocalizationService.rebuildNotifier; // Delegate to actual static member
-
-  @override
+  // Helper for tests to load custom translations (not part of the real interface)
   void loadTranslationsForTests(Map<String, String> translations) {
-    // This method doesn't exist in the original class, but can be useful for tests
-    // to set up specific strings. Or, adjust _mockStrings directly in tests.
     _mockStrings.addAll(translations);
     notifyListeners();
   }

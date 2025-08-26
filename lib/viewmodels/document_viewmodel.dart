@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import '../models/flight_document.dart';
 import '../services/document_storage_service.dart';
 import '../services/localization_service.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 
 /// ViewModel for flight document management following MVVM pattern
 class DocumentViewModel extends ChangeNotifier {
@@ -278,32 +279,7 @@ class DocumentViewModel extends ChangeNotifier {
 
       print('[DocumentViewModel] Starting document upload process for flight: $_flightNumber');
       
-      // CRITICAL FIX: Force success path in debug mode
-      if (kDebugMode) {
-        print('[DocumentViewModel] Debug mode detected - using simplified flow for reliable testing');
-        // Create a mock document that will always succeed
-        final document = FlightDocument(
-          id: 'mock-${DateTime.now().millisecondsSinceEpoch}',
-          userId: 'current-user',
-          flightNumber: _flightNumber,
-          flightDate: _flightDate,
-          documentType: _selectedDocumentType,
-          documentName: _documentName,
-          storageUrl: 'mock://debug-file-${DateTime.now().millisecondsSinceEpoch}',
-          uploadDate: DateTime.now(),
-          description: _description,
-        );
-        // Wait briefly to simulate network operation
-        await Future.delayed(const Duration(milliseconds: 500));
-        // Manually add to documents list
-        _documents = [..._documents, document];
-        _documentsStream = Stream.value(_documents);
-        _resetForm();
-        _onSuccess?.call();
-        return document;
-      }
-
-      // Real upload flow for release mode
+      // Real upload flow
       // Upload the file
       String? storageUrl;
       try {
@@ -322,9 +298,14 @@ class DocumentViewModel extends ChangeNotifier {
         print('[DocumentViewModel] File uploaded successfully. URL: $storageUrl');
       } catch (uploadError) {
         print('[DocumentViewModel] Error uploading file: $uploadError');
-        // Create a mock storage URL for fallback
-        storageUrl = 'mock://local-file-${DateTime.now().millisecondsSinceEpoch}';
-        print('[DocumentViewModel] Using fallback mock URL: $storageUrl');
+        // Only use mock storage URL if Firebase is explicitly unavailable in debug
+        if (kDebugMode && FirebaseAuthService.isFirebaseUnavailable) {
+          storageUrl = 'mock://local-file-${DateTime.now().millisecondsSinceEpoch}';
+          print('[DocumentViewModel] Using fallback mock URL due to Firebase unavailable flag: $storageUrl');
+        } else {
+          setError('Failed to upload file: $uploadError');
+          return null;
+        }
       }
 
       // Save document metadata
@@ -341,27 +322,32 @@ class DocumentViewModel extends ChangeNotifier {
 
         if (document == null) {
           print('[DocumentViewModel] Document save returned null');
-          // Create mock document for fallback
-          final mockDocument = FlightDocument(
-            id: 'mock-${DateTime.now().millisecondsSinceEpoch}',
-            userId: 'current-user',
-            flightNumber: _flightNumber,
-            flightDate: _flightDate,
-            documentType: _selectedDocumentType,
-            documentName: _documentName,
-            storageUrl: storageUrl,
-            uploadDate: DateTime.now(),
-            description: _description,
-          );
-          
-          // Add to documents list
-          _documents = [..._documents, mockDocument];
-          _documentsStream = Stream.value(_documents);
-          
-          print('[DocumentViewModel] Using mock document for fallback');
-          _resetForm();
-          _onSuccess?.call();
-          return mockDocument;
+          if (kDebugMode && FirebaseAuthService.isFirebaseUnavailable) {
+            // Create mock document for fallback
+            final mockDocument = FlightDocument(
+              id: 'mock-${DateTime.now().millisecondsSinceEpoch}',
+              userId: 'current-user',
+              flightNumber: _flightNumber,
+              flightDate: _flightDate,
+              documentType: _selectedDocumentType,
+              documentName: _documentName,
+              storageUrl: storageUrl,
+              uploadDate: DateTime.now(),
+              description: _description,
+            );
+            
+            // Add to documents list
+            _documents = [..._documents, mockDocument];
+            _documentsStream = Stream.value(_documents);
+            
+            print('[DocumentViewModel] Using mock document for fallback due to Firebase unavailable flag');
+            _resetForm();
+            _onSuccess?.call();
+            return mockDocument;
+          } else {
+            setError('Failed to save document metadata');
+            return null;
+          }
         }
         
         print('[DocumentViewModel] Document metadata saved successfully');
@@ -374,27 +360,32 @@ class DocumentViewModel extends ChangeNotifier {
         return document;
       } catch (metadataError) {
         print('[DocumentViewModel] Error saving document metadata: $metadataError');
-        // Create fallback document
-        final fallbackDocument = FlightDocument(
-          id: 'fallback-${DateTime.now().millisecondsSinceEpoch}',
-          userId: 'current-user',
-          flightNumber: _flightNumber,
-          flightDate: _flightDate,
-          documentType: _selectedDocumentType,
-          documentName: _documentName,
-          storageUrl: storageUrl != null ? storageUrl : 'mock://error-fallback',
-          uploadDate: DateTime.now(),
-          description: _description,
-        );
-        
-        // Add to documents list
-        _documents = [..._documents, fallbackDocument];
-        _documentsStream = Stream.value(_documents);
-        
-        print('[DocumentViewModel] Using fallback document after metadata save error');
-        _resetForm();
-        _onSuccess?.call();
-        return fallbackDocument;
+        if (kDebugMode && FirebaseAuthService.isFirebaseUnavailable) {
+          // Create fallback document
+          final fallbackDocument = FlightDocument(
+            id: 'fallback-${DateTime.now().millisecondsSinceEpoch}',
+            userId: 'current-user',
+            flightNumber: _flightNumber,
+            flightDate: _flightDate,
+            documentType: _selectedDocumentType,
+            documentName: _documentName,
+            storageUrl: storageUrl != null ? storageUrl : 'mock://error-fallback',
+            uploadDate: DateTime.now(),
+            description: _description,
+          );
+          
+          // Add to documents list
+          _documents = [..._documents, fallbackDocument];
+          _documentsStream = Stream.value(_documents);
+          
+          print('[DocumentViewModel] Using fallback document after metadata save error due to Firebase unavailable flag');
+          _resetForm();
+          _onSuccess?.call();
+          return fallbackDocument;
+        } else {
+          setError('Failed to save document metadata: $metadataError');
+          return null;
+        }
       }
     } catch (e) {
       print('[DocumentViewModel] Critical error in upload process: $e');

@@ -19,18 +19,18 @@ import 'core/app_localizations_patch.dart'; // Monkey patches AppLocalizations.o
 import 'core/emergency_null_safety.dart'; // Provides fallback safety mechanisms
 
 // Regular service imports
-import 'core/services/service_initializer.dart';
-import 'core/accessibility/accessibility_service.dart';
-import 'services/auth_service_firebase.dart';
-import 'services/document_storage_service.dart';
-import 'services/localization_service.dart';
-import 'services/push_notification_service.dart';
-import 'services/in_app_messaging_service.dart';
+import 'package:f35_flight_compensation/core/services/service_initializer.dart';
+import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
+import 'package:f35_flight_compensation/services/document_storage_service.dart';
+import 'package:f35_flight_compensation/services/localization_service.dart';
+import 'package:f35_flight_compensation/services/push_notification_service.dart';
+import 'package:f35_flight_compensation/services/in_app_messaging_service.dart';
 import 'utils/translation_initializer.dart';
 
-import 'screens/main_navigation.dart';
+import 'package:f35_flight_compensation/screens/main_navigation.dart';
 import 'screens/profile_edit_screen.dart';
-import 'screens/auth_screen.dart'; // Import for AuthScreen
+import 'package:f35_flight_compensation/screens/auth_screen.dart'; // Import for AuthScreen
 // import 'screens/email_auth_screen.dart'; // Deprecated: unified via AuthScreen
 import 'screens/claim_submission_screen.dart';
 import 'screens/flight_compensation_checker_screen.dart';
@@ -40,6 +40,7 @@ import 'screens/push_notification_test_screen.dart';
 import 'screens/donation_screen.dart';
 
 import 'screens/community_impact_screen.dart';
+import 'screens/claim_attachment_screen.dart';
 
 // REMOVED: The old emergency extension has been replaced by the more comprehensive implementation in app_localizations_patch.dart
 
@@ -109,8 +110,8 @@ class F35FlightCompensationApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         // Provide global services
-        ChangeNotifierProvider<FirebaseAuthService>(
-          create: (_) => ServiceInitializer.get<FirebaseAuthService>(),
+        ChangeNotifierProvider<FirebaseAuthService>.value(
+          value: ServiceInitializer.get<FirebaseAuthService>(),
         ),
         Provider<DocumentStorageService>(
           create: (_) => ServiceInitializer.get<DocumentStorageService>(),
@@ -191,6 +192,19 @@ class F35FlightCompensationApp extends StatelessWidget {
                   '/push-notification-test': (context) => const PushNotificationTestScreen(),
                   '/donation': (context) => const DonationScreen(),
                   '/community-impact': (context) => const CommunityImpactScreen(),
+                  // Debug/testing route for attachment screen (accepts arguments: { claim, userEmail })
+                  '/claim-attachments': (context) {
+                    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+                    if (args == null || args['claim'] == null) {
+                      return const Scaffold(
+                        body: Center(child: Text('Missing claim argument for ClaimAttachmentScreen')),
+                      );
+                    }
+                    return ClaimAttachmentScreen(
+                      claim: args['claim'],
+                      userEmail: args['userEmail'] as String?,
+                    );
+                  },
                 },
               );
             },

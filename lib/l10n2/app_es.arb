@@ -1258,6 +1258,10 @@
   "@confirmAndSendEmail": {
     "description": "Texto del botón para confirmar y enviar correo electrónico"
   },
+  "emailPreviewAttachmentGuidance": "Podrá añadir archivos adjuntos en el siguiente paso. Por favor, recuerde incluir únicamente archivos en formato JPG, PNG o PDF.",
+  "@emailPreviewAttachmentGuidance": {
+    "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
+  },
   "reviewAndConfirm": "Revisar y confirmar",
   "@reviewAndConfirm": {
     "description": "Instrucción para revisar y confirmar"
@@ -1875,5 +1879,31 @@
   "unknown": "Desconocido",
   "@unknown": {
     "description": "Unknown value placeholder"
+  },
+  "predictingDelay": "Calculando retraso…",
+  "@predictingDelay": {
+    "description": "Shown while asynchronously fetching a delay prediction"
+  },
+  "predictionUnavailable": "Predicción no disponible",
+  "@predictionUnavailable": {
+    "description": "Shown when prediction data could not be retrieved"
+  },
+  "delayRiskPercent": "Riesgo de retraso {risk}%",
+  "@delayRiskPercent": {
+    "description": "Label showing predicted delay probability",
+    "placeholders": {
+      "risk": {
+        "type": "int"
+      }
+    }
+  },
+  "avgMinutesShort": "Prom. {minutes} min",
+  "@avgMinutesShort": {
+    "description": "Short label for average delay time in minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
   }
 }

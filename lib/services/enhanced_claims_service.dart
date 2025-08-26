@@ -18,6 +18,7 @@ class EnhancedClaimsService extends ChangeNotifier {
   // Stream controllers for real-time updates
   final StreamController<List<Claim>> _claimsController = StreamController<List<Claim>>.broadcast();
   final StreamController<ClaimEvent> _claimEventsController = StreamController<ClaimEvent>.broadcast();
+  StreamSubscription<List<Claim>>? _claimsSubscription;
   
   // Current claims state
   List<Claim> _claims = [];
@@ -37,7 +38,7 @@ class EnhancedClaimsService extends ChangeNotifier {
   Future<void> _initializeService() async {
     try {
       // Listen to claim updates from the tracking service
-      _claimTrackingService.claimsStream.listen((claims) {
+      _claimsSubscription = _claimTrackingService.claimsStream.listen((claims) {
         _handleClaimsUpdate(claims);
       });
       
@@ -246,6 +247,47 @@ class EnhancedClaimsService extends ChangeNotifier {
       debugPrint('❌ Failed to update claim status: $e');
     }
   }
+
+  /// Delete a claim and notify listeners and event stream
+  Future<void> deleteClaim(String claimId) async {
+    try {
+      // Keep a reference for notifications and events
+      final claim = _claims.firstWhere((c) => c.id == claimId);
+
+      // Optimistically update local state
+      _claims = _claims.where((c) => c.id != claimId).toList();
+      _claimsController.add(_claims);
+      notifyListeners();
+
+      // Emit claim deleted event
+      _claimEventsController.add(ClaimEvent(
+        type: ClaimEventType.deleted,
+        claimId: claimId,
+        message: 'Claim deleted',
+        timestamp: DateTime.now(),
+      ));
+
+      // Localized push notification about deletion
+      final localizationService = GetIt.instance.get<LocalizationService>();
+      final language = localizationService.currentLocale.languageCode;
+      PushNotificationService.sendClaimStatusNotification(
+        title: _getLocalizedDeletionTitle(language),
+        body: _getLocalizedDeletionBody(claim, language),
+        claimId: claimId,
+      );
+
+      // Persist deletion via tracking service
+      await _claimTrackingService.deleteClaim(claimId);
+      debugPrint('🗑️ Claim deleted: $claimId');
+    } catch (e) {
+      debugPrint('❌ Failed to delete claim: $e');
+    }
+  }
+
+  /// Mark a claim as complete (maps to 'paid' status)
+  Future<void> markClaimAsComplete(String claimId) async {
+    await updateClaimStatus(claimId, 'paid');
+  }
   
   /// Get email status for a claim
   ClaimEmailStatus getEmailStatus(String claimId) {
@@ -387,9 +429,46 @@ class EnhancedClaimsService extends ChangeNotifier {
         return 'Your claim for flight ${claim.flightNumber} status has been updated to $newStatus';
     }
   }
+
+  /// Localized deletion notification title
+  String _getLocalizedDeletionTitle(String language) {
+    switch (language) {
+      case 'de':
+        return 'Anspruch gelöscht';
+      case 'es':
+        return 'Reclamación eliminada';
+      case 'fr':
+        return 'Réclamation supprimée';
+      case 'pl':
+        return 'Wniosek usunięty';
+      case 'pt':
+        return 'Reclamação eliminada';
+      default:
+        return 'Claim Deleted';
+    }
+  }
+
+  /// Localized deletion notification body
+  String _getLocalizedDeletionBody(Claim claim, String language) {
+    switch (language) {
+      case 'de':
+        return 'Ihr Anspruch für Flug ${claim.flightNumber} wurde gelöscht.';
+      case 'es':
+        return 'Tu reclamación para el vuelo ${claim.flightNumber} ha sido eliminada.';
+      case 'fr':
+        return 'Votre réclamation pour le vol ${claim.flightNumber} a été supprimée.';
+      case 'pl':
+        return 'Twój wniosek dotyczący lotu ${claim.flightNumber} został usunięty.';
+      case 'pt':
+        return 'A sua reclamação para o voo ${claim.flightNumber} foi eliminada.';
+      default:
+        return 'Your claim for flight ${claim.flightNumber} has been deleted.';
+    }
+  }
   
   @override
   void dispose() {
+    _claimsSubscription?.cancel();
     _claimsController.close();
     _claimEventsController.close();
     super.dispose();
@@ -403,6 +482,7 @@ enum ClaimEventType {
   emailSent,
   documentRequired,
   deadlineReminder,
+  deleted,
 }
 
 /// Claim event model

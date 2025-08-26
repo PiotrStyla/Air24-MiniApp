@@ -179,33 +179,26 @@ class _DocumentUploadScreenState extends State<DocumentUploadScreen> {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.file(
-            viewModel.selectedFile!,
+          child: Container(
             height: 200,
             width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                height: 200,
-                width: double.infinity,
-                color: Colors.grey[200],
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.insert_drive_file,
-                      size: 48,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'File selected',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                  ],
+            color: Colors.grey[200],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.insert_drive_file,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-              );
-            },
+                const SizedBox(height: 8),
+                Text(
+                  viewModel.selectedFileName ?? 'File selected',
+                  style: Theme.of(context).textTheme.labelLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -415,9 +408,9 @@ class _DocumentUploadScreenState extends State<DocumentUploadScreen> {
 
   void _uploadDocument(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      final success = await _viewModel.uploadSelectedFile();
+      final uploaded = await _viewModel.uploadSelectedFile();
       
-      if (success && mounted) {
+      if (uploaded != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Document uploaded successfully'),

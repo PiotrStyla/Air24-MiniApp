@@ -16,6 +16,9 @@ import 'package:f35_flight_compensation/core/accessibility/accessibility_service
 import 'package:image_picker/image_picker.dart';
 import 'package:f35_flight_compensation/models/document_ocr_result.dart';
 import 'package:f35_flight_compensation/models/flight_document.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
+import '../mock/unified_mock_auth_service.dart';
+import 'package:f35_flight_compensation/services/mock_user.dart' as mu;
 
 // Mock classes for services
 class MockAviationStackService extends AviationStackService {
@@ -255,7 +258,23 @@ void main() {
   // Register a special version of ServiceInitializer that uses our mock services
   setUp(() {
     ServiceInitializer.setTestMode(true);
+    // Seed a logged-in user for AuthGate to route to MainNavigation
+    final authMock = UnifiedMockAuthService(
+      initialUser: mu.MockUser(
+        uid: 'test_user_fixed',
+        displayName: 'Test User',
+        email: 'test.user@example.com',
+        photoURL: null,
+        isAnonymous: false,
+        emailVerified: true,
+      ),
+    );
+    // Align dependent mocks' user context
+    mockDocumentOcrService.setCurrentUserId('test_user_fixed');
+    mockDocumentStorageService.setCurrentUserId('test_user_fixed');
+
     ServiceInitializer.overrideForTesting({
+      FirebaseAuthService: authMock,
       AviationStackService: mockAviationStackService,
       DocumentOcrService: mockDocumentOcrService,
       DocumentStorageService: mockDocumentStorageService,

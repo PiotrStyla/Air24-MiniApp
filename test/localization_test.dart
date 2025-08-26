@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:f35_flight_compensation/generated/app_localizations.dart';
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -13,7 +13,7 @@ void main() {
       expect(localizations!.appTitle, 'Flight Compensation');
       expect(localizations.home, 'Home');
       expect(localizations.settings, 'Settings');
-      expect(localizations.languageSelection, 'Language');
+      expect(localizations.languageSelection, 'Language Selection');
     });
 
     testWidgets('Polish Localization Test', (WidgetTester tester) async {
@@ -41,7 +41,7 @@ void main() {
       await _pumpLocalizedWidget(tester, const Locale('en'));
       var localizations = AppLocalizations.of(tester.element(find.byType(TestLocalizations)));
       expect(localizations!.cropDocument, 'Crop Document');
-      expect(localizations.documentOcrResult, 'OCR Result');
+      expect(localizations.documentOcrResult, 'Document OCR Result');
       
       // Test Polish
       await _pumpLocalizedWidget(tester, const Locale('pl'));

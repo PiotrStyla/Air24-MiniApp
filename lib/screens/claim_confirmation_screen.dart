@@ -9,6 +9,7 @@ import '../services/auth_service_firebase.dart';
 import '../services/airline_procedure_service.dart';
 import '../services/push_notification_service.dart';
 import '../widgets/secure_email_preview_dialog.dart';
+// Attachments manager removed; no import needed
 
 class ClaimConfirmationScreen extends StatefulWidget {
   final Claim claim;
@@ -22,12 +23,17 @@ class ClaimConfirmationScreen extends StatefulWidget {
 
 class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
   Future<Map<String, String?>>? _emailDetailsFuture;
+  // Email preview UI removed; no cached preview future
+  late Claim _claim;
 
   @override
   void initState() {
     super.initState();
+    _claim = widget.claim;
     _emailDetailsFuture = _fetchEmailDetails();
+    // No on-screen preview; generation happens only on send
   }
+
 
   Future<Map<String, String?>> _fetchEmailDetails() async {
     try {
@@ -47,7 +53,7 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
       String airlineEmail = userEmail; // Default to user's email as a safer fallback
       
       // Get the flight number and normalize it
-      final String flightNumber = widget.claim.flightNumber.trim().toUpperCase();
+      final String flightNumber = _claim.flightNumber.trim().toUpperCase();
       print('DEBUG: Original flight number: "$flightNumber"');
       
       // Special handling for Air Austral (UU) flights
@@ -246,7 +252,7 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
       print('🌍 Full locale detected: $fullLocale');
       print('📧 Language code extracted: "$locale"');
       print('👤 Generating email for user: "$userName"');
-      print('✈️ Flight: ${widget.claim.flightNumber}');
+      print('✈️ Flight: ${_claim.flightNumber}');
       
       // Debug: Check if locale is supported
       final supportedLanguages = ['en', 'de', 'es', 'fr', 'pl', 'pt'];
@@ -256,46 +262,17 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         print('⚠️ Language "$locale" not supported, will fallback to English');
       }
       
-      // Generate professional email content using SecureEmailService with user's language preference
-      final emailBody = emailService.generateCompensationEmailBody(
-        passengerName: userName, // Use actual user name from profile
-        flightNumber: widget.claim.flightNumber,
-        flightDate: widget.claim.flightDate.toString().split(' ')[0], // Format date
-        departureAirport: widget.claim.departureAirport,
-        arrivalAirport: widget.claim.arrivalAirport,
-        delayReason: widget.claim.reason,
-        compensationAmount: widget.claim.compensationAmount.toString(),
-        locale: locale, // Use user's app language preference
-      );
-      
-      // Generate subject line based on user's app language preference
-      String subject;
-      switch (locale) {
-        case 'de':
-          subject = 'Entschädigungsanspruch Flug ${widget.claim.flightNumber} - EU261';
-          break;
-        case 'es':
-          subject = 'Reclamación de Compensación Vuelo ${widget.claim.flightNumber} - EU261';
-          break;
-        case 'fr':
-          subject = 'Demande d\'indemnisation Vol ${widget.claim.flightNumber} - EU261';
-          break;
-        case 'pl':
-          subject = 'Roszczenie o odszkodowanie Lot ${widget.claim.flightNumber} - EU261';
-          break;
-        case 'pt':
-          subject = 'Reclamação de Compensação Voo ${widget.claim.flightNumber} - EU261';
-          break;
-        default:
-          subject = 'Flight Compensation Claim ${widget.claim.flightNumber} - EU261';
-      }
+      // Reuse the same generation logic as the on-screen preview
+      final preview = await _buildEmailSubjectAndBody();
+      final String subject = preview['subject'] ?? '';
+      final String emailBodyWithAttachments = preview['body'] ?? '';
       
       // Send email using SecureEmailService
       final result = await emailService.sendEmail(
         toEmail: airlineEmail,
         ccEmail: userEmail,
         subject: subject,
-        body: emailBody,
+        body: emailBodyWithAttachments,
         userEmail: userEmail, // For reply-to functionality
       );
       
@@ -306,7 +283,7 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
         
         // Save the claim to the database
-        await claimSubmissionService.submitClaim(widget.claim);
+        await claimSubmissionService.submitClaim(_claim);
         
         // Show success message
         if (mounted) {
@@ -335,14 +312,14 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
           airlineEmail,
           userEmail, // CC email
           subject,
-          emailBody,
+          emailBodyWithAttachments,
           userEmail, // User email for reply-to functionality
         );
         
         if (emailSent) {
           // Email was sent successfully - submit the claim
           final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
-          await claimSubmissionService.submitClaim(widget.claim);
+          await claimSubmissionService.submitClaim(_claim);
           
           // Show success message and navigate back
           if (mounted) {
@@ -421,6 +398,67 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
     return result ?? false; // Return false if dialog was dismissed without result
   }
  
+  /// Builds the email subject and body preview using the same logic as sending
+  Future<Map<String, String>> _buildEmailSubjectAndBody() async {
+    // Create SecureEmailService instance for localized email generation
+    final emailService = SecureEmailService();
+
+    // Get current locale for localized email template (user's app language preference)
+    final fullLocale = Localizations.localeOf(context);
+    final locale = fullLocale.languageCode;
+
+    // Get the actual user name using the async method from AuthService
+    final authService = GetIt.instance<FirebaseAuthService>();
+    final userName = await authService.getUserDisplayNameAsync();
+
+    // Generate professional email content using SecureEmailService with user's language preference
+    final emailBody = emailService.generateCompensationEmailBody(
+      passengerName: userName,
+      flightNumber: _claim.flightNumber,
+      flightDate: _claim.flightDate.toString().split(' ')[0],
+      departureAirport: _claim.departureAirport,
+      arrivalAirport: _claim.arrivalAirport,
+      delayReason: _claim.reason,
+      compensationAmount: _claim.compensationAmount.toString(),
+      locale: locale,
+    );
+
+    // Append attachments section with URLs if present (preview mirrors the final email)
+    final List<String> attachmentUrls = _claim.attachmentUrls;
+    final String attachmentsSection = attachmentUrls.isNotEmpty
+        ? '\n\n${context.l10n.attachments}:\n${attachmentUrls.map((u) => '- $u').join('\n')}'
+        : '';
+    final String emailBodyWithAttachments =
+        attachmentsSection.isNotEmpty ? '$emailBody$attachmentsSection' : emailBody;
+
+    // Generate subject line based on user's app language preference
+    String subject;
+    switch (locale) {
+      case 'de':
+        subject = 'Entschädigungsanspruch Flug ${_claim.flightNumber} - EU261';
+        break;
+      case 'es':
+        subject = 'Reclamación de Compensación Vuelo ${_claim.flightNumber} - EU261';
+        break;
+      case 'fr':
+        subject = 'Demande d\'indemnisation Vol ${_claim.flightNumber} - EU261';
+        break;
+      case 'pl':
+        subject = 'Roszczenie o odszkodowanie Lot ${_claim.flightNumber} - EU261';
+        break;
+      case 'pt':
+        subject = 'Reclamação de Compensação Voo ${_claim.flightNumber} - EU261';
+        break;
+      default:
+        subject = 'Flight Compensation Claim ${_claim.flightNumber} - EU261';
+    }
+
+    return {
+      'subject': subject,
+      'body': emailBodyWithAttachments,
+    };
+  }
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -462,10 +500,35 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
                         const SizedBox(height: 16),
                         Text(context.l10n.copyToYourEmail, style: Theme.of(context).textTheme.titleMedium),
                         Text(userEmail, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        // Attachments list removed from confirmation screen
                       ],
                     ),
                   ),
                 ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.orange.shade200),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.attach_file, color: Colors.orange, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          context.l10n.emailPreviewAttachmentGuidance,
+                          style: TextStyle(fontSize: 12, color: Colors.orange.shade800),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Email preview card and attachments manager removed
+                const SizedBox(height: 8),
                 const Spacer(),
                 SizedBox(
                   width: double.infinity,

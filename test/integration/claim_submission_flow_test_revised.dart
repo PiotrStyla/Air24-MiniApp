@@ -16,6 +16,9 @@ import 'package:f35_flight_compensation/services/document_ocr_service.dart';
 import 'package:f35_flight_compensation/services/document_storage_service.dart';
 import 'package:f35_flight_compensation/services/claim_submission_service.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
+import '../mock/unified_mock_auth_service.dart';
+import 'package:f35_flight_compensation/services/mock_user.dart' as mu;
 
 import 'package:f35_flight_compensation/models/flight_document.dart';
 import 'package:f35_flight_compensation/models/document_ocr_result.dart'; // Added for DocumentOcrResult and DocumentType
@@ -310,6 +313,14 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   
   group('Flight Compensation App - Claim Submission Flow', () {
+    setUp(() {
+      ServiceInitializer.setTestMode(true);
+    });
+
+    tearDown(() {
+      ServiceInitializer.resetForTesting();
+    });
+
     testWidgets('Complete claim submission with accessibility features',
         (WidgetTester tester) async {
       // Setup mock services
@@ -317,9 +328,23 @@ void main() {
       final mockDocumentOcrService = MockDocumentOcrService();
       final mockDocumentStorageService = MockDocumentStorageService();
       final mockClaimSubmissionService = MockClaimSubmissionService();
+      // Seed a logged-in user so AuthGate navigates to MainNavigation
+      final authMock = UnifiedMockAuthService(
+        initialUser: mu.MockUser(
+          uid: 'test-user',
+          displayName: 'Test User',
+          email: 'test.user@example.com',
+          photoURL: null,
+          isAnonymous: false,
+          emailVerified: true,
+        ),
+      );
+      // Align storage mock to the same user context
+      mockDocumentStorageService.setCurrentUserId('test-user');
       
       // Register services for dependency injection
       TestServiceInitializer.testOverrides = {
+        FirebaseAuthService: authMock,
         AviationStackService: mockAviationService,
         DocumentOcrService: mockDocumentOcrService,
         DocumentStorageService: mockDocumentStorageService,

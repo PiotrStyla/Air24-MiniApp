@@ -995,6 +995,10 @@
   "@previewEmail": {
     "description": "Etykieta przycisku do podglądu e-mail"
   },
+  "emailPreviewAttachmentGuidance": "Załączniki będzie można dodać w następnym kroku. Pamiętaj, aby dołączać wyłącznie pliki w formatach JPG, PNG lub PDF.",
+  "@emailPreviewAttachmentGuidance": {
+    "description": "Wiadomość z instrukcją w podglądzie e‑mail: gdzie dodać załączniki i jakie formaty są obsługiwane"
+  },
   "pdfPreviewMessage": "Tutaj zostanie wyświetlony podgląd PDF.",
   "@pdfPreviewMessage": {
     "description": "Komunikat wyświetlany w miejscu podglądu PDF"
@@ -1248,7 +1252,7 @@
   "@validatorReasonRequired": {
     "description": "Validation message when reason for claim is empty"
   },
-  "continueToReview": "TODO: Translate 'Continue to Review'",
+  "continueToReview": "Przejdź do przeglądu",
   "@continueToReview": {
     "description": "Button text to proceed to review screen"
   },
@@ -1675,5 +1679,31 @@
   "unknown": "Nieznany",
   "@unknown": {
     "description": "Unknown value placeholder"
+  },
+  "predictingDelay": "Prognozowanie opóźnienia…",
+  "@predictingDelay": {
+    "description": "Shown while asynchronously fetching a delay prediction"
+  },
+  "predictionUnavailable": "Brak dostępnej prognozy",
+  "@predictionUnavailable": {
+    "description": "Shown when prediction data could not be retrieved"
+  },
+  "delayRiskPercent": "Ryzyko opóźnienia {risk}%",
+  "@delayRiskPercent": {
+    "description": "Label showing predicted delay probability",
+    "placeholders": {
+      "risk": {
+        "type": "int"
+      }
+    }
+  },
+  "avgMinutesShort": "Śr. {minutes} min",
+  "@avgMinutesShort": {
+    "description": "Short label for average delay time in minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
   }
 }

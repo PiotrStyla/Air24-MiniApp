@@ -18,6 +18,9 @@ import 'package:f35_flight_compensation/services/claim_submission_service.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 import 'package:f35_flight_compensation/models/flight_document.dart';
 import 'package:f35_flight_compensation/models/document_ocr_result.dart'; // Added
+import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
+import '../mock/unified_mock_auth_service.dart';
+import 'package:f35_flight_compensation/services/mock_user.dart' as mu;
 
 // Mock classes for services
 class MockAviationStackService extends AviationStackService {
@@ -292,10 +295,22 @@ void main() {
       final mockDocumentOcrService = MockDocumentOcrService();
       final mockDocumentStorageService = MockDocumentStorageService();
       final mockClaimSubmissionService = MockClaimSubmissionService();
+      // Seed a logged-in user so AuthGate navigates to MainNavigation
+      final authMock = UnifiedMockAuthService(
+        initialUser: mu.MockUser(
+          uid: 'test-user',
+          displayName: 'Test User',
+          email: 'test.user@example.com',
+          photoURL: null,
+          isAnonymous: false,
+          emailVerified: true,
+        ),
+      );
       
       // Register services for dependency injection
       // Using the existing ServiceInitializer's test mode functionality
       ServiceInitializer.overrideForTesting({
+        FirebaseAuthService: authMock,
         AviationStackService: mockAviationService,
         DocumentOcrService: mockDocumentOcrService,
         DocumentStorageService: mockDocumentStorageService,

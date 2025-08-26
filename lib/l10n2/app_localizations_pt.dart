@@ -49,6 +49,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get confirmAndSendEmail => 'Confirmar e Enviar Email';
 
   @override
+  String get attachmentsInfoNextStep =>
+      'You can add attachments (e.g., tickets, boarding passes) in the next step.';
+
+  @override
   String get departureAirport => 'Aeroporto de Partida';
 
   @override
@@ -226,6 +230,34 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get fullText => 'Texto Completo';
+
+  @override
+  String get extractedInformation => 'Informação Extraída';
+
+  @override
+  String get rawOcrText => 'Texto OCR Bruto';
+
+  @override
+  String get copyAllText => 'Copiar Todo o Texto';
+
+  @override
+  String get fillForm => 'Preencher Formulário';
+
+  @override
+  String get chooseUseInfo => 'Escolha como usar esta informação:';
+
+  @override
+  String get fillPassengerFlight =>
+      'Preencher informações do passageiro e do voo';
+
+  @override
+  String get flightSearch => 'Pesquisa de Voos';
+
+  @override
+  String get searchFlightNumber => 'Pesquisar por número de voo';
+
+  @override
+  String get done => 'Concluído';
 
   @override
   String get documentSaved => 'Documento guardado.';
@@ -717,6 +749,94 @@ class AppLocalizationsPt extends AppLocalizations {
   String get signIn => 'Sign In';
 
   @override
+  String get welcomeBack => 'Welcome back';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get resetPasswordTitle => 'Reset your password';
+
+  @override
+  String get signInSubtitle =>
+      'Sign in to access your flight compensation claims';
+
+  @override
+  String get signUpSubtitle =>
+      'Sign up to track your flight compensation claims';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Enter your email to receive a password reset link';
+
+  @override
+  String get emailHintExample => 'your.email@example.com';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get passwordPlaceholder => '********';
+
+  @override
+  String get signInWithGoogle => 'Sign in with Google';
+
+  @override
+  String get signUpWithGoogle => 'Sign up with Google';
+
+  @override
+  String get alreadyHaveAccountSignInCta => 'Already have an account? Sign In';
+
+  @override
+  String get dontHaveAccountSignUpCta => 'Don\'t have an account? Sign Up';
+
+  @override
+  String get forgotPasswordQuestion => 'Forgot Password?';
+
+  @override
+  String get backToSignIn => 'Back to Sign In';
+
+  @override
+  String get passwordResetEmailSentMessage =>
+      'Password reset email sent! Check your inbox.';
+
+  @override
+  String get authInvalidEmail => 'Please enter a valid email address';
+
+  @override
+  String get authPasswordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get authPasswordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get authEmailRequired => 'Please enter your email';
+
+  @override
+  String get authPasswordRequired => 'Please enter your password';
+
+  @override
+  String get authUnexpectedError =>
+      'An unexpected error occurred. Please try again.';
+
+  @override
+  String get authGoogleSignInFailed =>
+      'Google sign-in failed. Please try again.';
+
+  @override
+  String get authPasswordResetFailed =>
+      'Password reset failed. Please try again.';
+
+  @override
+  String get authSignOutFailed => 'Sign out failed. Please try again.';
+
+  @override
   String get checkFlightEligibilityButtonText =>
       'Verificar elegibilidade para compensação';
 
@@ -1156,4 +1276,27 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get emailSentSuccessfully => 'Email sent successfully!';
+
+  @override
+  String get predictingDelay => 'Prevendo atraso…';
+
+  @override
+  String get predictionUnavailable => 'Previsão indisponível';
+
+  @override
+  String delayRiskPercent(int risk) {
+    return 'Risco de atraso $risk%';
+  }
+
+  @override
+  String avgMinutesShort(int minutes) {
+    return 'Méd. $minutes min';
+  }
+
+  @override
+  String get attachmentGuidanceTitle => 'Attachments';
+
+  @override
+  String get emailPreviewAttachmentGuidance =>
+      'Você poderá adicionar anexos no próximo passo. Por favor, lembre-se de incluir apenas ficheiros nos formatos JPG, PNG ou PDF.';
 }

@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 // Assuming these paths are correct relative to the project root
 import 'package:f35_flight_compensation/core/accessibility/accessibility_service.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
-import 'package:f35_flight_compensation/generated/app_localizations.dart'; // For MaterialApp
+import 'package:f35_flight_compensation/l10n2/app_localizations.dart'; // For MaterialApp
 
 // Copied from claim_submission_test.dart
 class MockAccessibilityService extends AccessibilityService with ChangeNotifier {

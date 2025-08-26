@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
 import 'package:f35_flight_compensation/services/document_storage_service.dart';
-import 'package:f35_flight_compensation/services/local_document_storage_service.dart';
+import 'package:f35_flight_compensation/services/firebase_document_storage_service.dart';
 import 'package:f35_flight_compensation/services/mock_document_storage_service.dart';
 
 import 'package:f35_flight_compensation/services/aviation_stack_service.dart';
@@ -100,12 +100,12 @@ class ServiceInitializer {
           debugPrint('Using MockDocumentStorageService for development');
           return MockDocumentStorageService();
         } else {
-          if (!_locator.isRegistered<LocalDocumentStorageService>()) {
-            _locator.registerLazySingleton<LocalDocumentStorageService>(
-              () => LocalDocumentStorageService(_locator<FirebaseAuthService>())
+          if (!_locator.isRegistered<FirebaseDocumentStorageService>()) {
+            _locator.registerLazySingleton<FirebaseDocumentStorageService>(
+              () => FirebaseDocumentStorageService(_locator<FirebaseAuthService>())
             );
           }
-          return _locator<LocalDocumentStorageService>();
+          return _locator<FirebaseDocumentStorageService>();
         }
       } catch (e) {
         debugPrint('Error initializing DocumentStorageService, falling back to mock: $e');
@@ -154,7 +154,18 @@ class ServiceInitializer {
     if (T == FirebaseAuthService) {
       print('🟠 ServiceInitializer: get<FirebaseAuthService>() called!');
       print('🟠 ServiceInitializer: FirebaseAuthService registered = ${_locator.isRegistered<FirebaseAuthService>()}');
-      print('🟠 ServiceInitializer: FirebaseAuthService ready = ${_locator.isReady<FirebaseAuthService>()}');
+      // Avoid calling isReady() for sync singletons (e.g., in tests) to prevent GetIt errors.
+      if (!_isTestMode) {
+        try {
+          // Note: This returns a Future and is only valid for async/dependent/signalReady singletons.
+          final readyFuture = _locator.isReady<FirebaseAuthService>();
+          print('🟠 ServiceInitializer: FirebaseAuthService ready (Future) = $readyFuture');
+        } catch (e) {
+          print('🟠 ServiceInitializer: FirebaseAuthService isReady check skipped due to error: $e');
+        }
+      } else {
+        print('🟠 ServiceInitializer: FirebaseAuthService isReady check skipped in test mode (sync singleton).');
+      }
     }
     
     if (!_locator.isRegistered<T>()) {
@@ -250,7 +261,8 @@ class ServiceInitializer {
     _isTestMode = isTest;
   }
   
-
+  /// Returns true when running in test mode (set via overrideForTesting or setTestMode)
+  static bool get isTestMode => _isTestMode;
   
   /// Get a mocked implementation in test mode
   static T getMock<T extends Object>() {

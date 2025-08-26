@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../core/emergency_null_safety.dart';
+import 'package:f35_flight_compensation/core/emergency_null_safety.dart';
 
 // Screens
 import 'home_screen.dart';
@@ -9,11 +9,11 @@ import 'quick_claim_screen.dart';
 import 'profile_screen.dart';
 
 // Core
-import '../core/services/service_initializer.dart';
-import '../core/error/error_handler.dart';
-import '../utils/translation_initializer.dart';
-import '../services/notification_service.dart';
-import '../services/donation_popup_service.dart';
+import 'package:f35_flight_compensation/core/services/service_initializer.dart';
+import 'package:f35_flight_compensation/core/error/error_handler.dart';
+import 'package:f35_flight_compensation/utils/translation_initializer.dart';
+import 'package:f35_flight_compensation/services/notification_service.dart';
+import 'package:f35_flight_compensation/services/donation_popup_service.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -39,9 +39,11 @@ class _MainNavigationState extends State<MainNavigation> {
     // Initialize services (minimal version)
     _initializeServices();
     
-    // Show donation popup after app loads
+    // Show donation popup after app loads (skip in tests to avoid pending timers)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      DonationPopupService.showPopupIfNeeded(context);
+      if (!ServiceInitializer.isTestMode) {
+        DonationPopupService.showPopupIfNeeded(context);
+      }
     });
   }
 

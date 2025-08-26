@@ -48,6 +48,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmAndSendEmail => 'Confirm and Send Email';
 
   @override
+  String get attachmentsInfoNextStep =>
+      'You can add attachments (e.g., tickets, boarding passes) in the next step.';
+
+  @override
   String get departureAirport => 'Departure Airport';
 
   @override
@@ -196,10 +200,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldValue => 'Field Value';
 
   @override
-  String get noFieldsExtracted => 'No Fields Extracted';
+  String get noFieldsExtracted => 'No fields extracted';
 
   @override
-  String get copiedToClipboard => 'Copied to Clipboard';
+  String get copiedToClipboard => 'Copied to clipboard';
 
   @override
   String get networkError => 'Network Error';
@@ -221,6 +225,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fullText => 'Full Text';
+
+  @override
+  String get extractedInformation => 'Extracted Information';
+
+  @override
+  String get rawOcrText => 'Raw OCR Text';
+
+  @override
+  String get copyAllText => 'Copy All Text';
+
+  @override
+  String get fillForm => 'Fill Form';
+
+  @override
+  String get chooseUseInfo => 'Choose how you\'d like to use this information';
+
+  @override
+  String get fillPassengerFlight => 'Fill in passenger and flight details';
+
+  @override
+  String get flightSearch => 'Flight Search';
+
+  @override
+  String get searchFlightNumber => 'Search by flight number';
+
+  @override
+  String get done => 'Done';
 
   @override
   String get documentSaved => 'Document Saved';
@@ -699,6 +730,94 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signIn => 'Sign In';
 
   @override
+  String get welcomeBack => 'Welcome back';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get resetPasswordTitle => 'Reset your password';
+
+  @override
+  String get signInSubtitle =>
+      'Sign in to access your flight compensation claims';
+
+  @override
+  String get signUpSubtitle =>
+      'Sign up to track your flight compensation claims';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Enter your email to receive a password reset link';
+
+  @override
+  String get emailHintExample => 'your.email@example.com';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get passwordPlaceholder => '********';
+
+  @override
+  String get signInWithGoogle => 'Sign in with Google';
+
+  @override
+  String get signUpWithGoogle => 'Sign up with Google';
+
+  @override
+  String get alreadyHaveAccountSignInCta => 'Already have an account? Sign In';
+
+  @override
+  String get dontHaveAccountSignUpCta => 'Don\'t have an account? Sign Up';
+
+  @override
+  String get forgotPasswordQuestion => 'Forgot Password?';
+
+  @override
+  String get backToSignIn => 'Back to Sign In';
+
+  @override
+  String get passwordResetEmailSentMessage =>
+      'Password reset email sent! Check your inbox.';
+
+  @override
+  String get authInvalidEmail => 'Please enter a valid email address';
+
+  @override
+  String get authPasswordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get authPasswordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get authEmailRequired => 'Please enter your email';
+
+  @override
+  String get authPasswordRequired => 'Please enter your password';
+
+  @override
+  String get authUnexpectedError =>
+      'An unexpected error occurred. Please try again.';
+
+  @override
+  String get authGoogleSignInFailed =>
+      'Google sign-in failed. Please try again.';
+
+  @override
+  String get authPasswordResetFailed =>
+      'Password reset failed. Please try again.';
+
+  @override
+  String get authSignOutFailed => 'Sign out failed. Please try again.';
+
+  @override
   String get checkFlightEligibilityButtonText => 'Check Flight Eligibility';
 
   @override
@@ -1126,4 +1245,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailSentSuccessfully => 'Email sent successfully!';
+
+  @override
+  String get predictingDelay => 'Predicting delay…';
+
+  @override
+  String get predictionUnavailable => 'Prediction unavailable';
+
+  @override
+  String delayRiskPercent(int risk) {
+    return 'Delay risk $risk%';
+  }
+
+  @override
+  String avgMinutesShort(int minutes) {
+    return 'Avg $minutes min';
+  }
+
+  @override
+  String get attachmentGuidanceTitle => 'Attachments';
+
+  @override
+  String get emailPreviewAttachmentGuidance =>
+      'You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.';
 }
