@@ -14,14 +14,13 @@ class AccessibilitySettingsScreen extends StatefulWidget {
   static const routeName = '/accessibility-settings';
 
   /// Create a new accessibility settings screen
-  const AccessibilitySettingsScreen({Key? key}) : super(key: key);
+  const AccessibilitySettingsScreen({super.key});
 
   @override
   State<AccessibilitySettingsScreen> createState() => _AccessibilitySettingsScreenState();
 }
 
 class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScreen> {
-  bool _translationsRefreshed = false;
   late final ManualLocalizationService _manualLocalizationService;
   late final LocalizationService _localizationService;
   
@@ -34,13 +33,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
     _localizationService = GetIt.instance<LocalizationService>();
     
     // Force refresh translations when screen is initialized
-    _refreshTranslations().then((_) {
-      if (mounted) {
-        setState(() {
-          _translationsRefreshed = true;
-        });
-      }
-    });
+    _refreshTranslations();
   }
   
   @override
@@ -96,7 +89,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
                         const SizedBox(height: 16),
                         Text(
                           TranslationHelper.getString(context, 'highContrastDescription', fallback: 'High contrast mode increases the color contrast to improve readability for users with low vision.'),
-                          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
+                          style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
                         ),
                         const SizedBox(height: 24),
                         
@@ -109,7 +102,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
                         const SizedBox(height: 16),
                         Text(
                           TranslationHelper.getString(context, 'largeTextDescription', fallback: 'Large text mode increases the font size throughout the app for better readability.'),
-                          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
+                          style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
                         ),
                       ],
                     ),
@@ -132,7 +125,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
                         const SizedBox(height: 16),
                         Text(
                           TranslationHelper.getString(context, 'providesMoreDetailedDescriptions', fallback: 'Provides more detailed descriptions for screen readers to better explain interface elements.'),
-                          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
+                          style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
                         ),
                       ],
                     ),
@@ -175,7 +168,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: TranslationHelper.getString(context, 'sampleInputField', fallback: 'Sample Input Field'),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -223,8 +216,8 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
                       semanticLabel: TranslationHelper.getString(context, 'saveAccessibilitySettings', fallback: 'Save accessibility settings and return to previous screen'),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Settings saved'),
+                          SnackBar(
+                            content: Text(TranslationHelper.getString(context, 'settingsSaved', fallback: 'Settings saved')),
                           ),
                         );
                         Navigator.of(context).pop();
@@ -284,6 +277,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
           'screenReaderSettings': 'Configurações do leitor de tela',
           'enhancedScreenReaderDescriptions': 'Descrições aprimoradas do leitor de tela',
           'providesMoreDetailedDescriptions': 'Fornece descrições mais detalhadas para leitores de tela para explicar melhor os elementos da interface.',
+          'settingsSaved': 'Configurações salvas',
         };
         break;
         
@@ -297,6 +291,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
           'screenReaderSettings': 'Bildschirmleser-Einstellungen',
           'enhancedScreenReaderDescriptions': 'Erweiterte Bildschirmleserbeschreibungen',
           'providesMoreDetailedDescriptions': 'Bietet detailliertere Beschreibungen für Bildschirmleser, um Schnittstellenelemente besser zu erklären.',
+          'settingsSaved': 'Einstellungen gespeichert',
         };
         break;
         
@@ -310,6 +305,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
           'screenReaderSettings': 'Paramètres du lecteur d\'écran',
           'enhancedScreenReaderDescriptions': 'Descriptions améliorées pour lecteur d\'écran',
           'providesMoreDetailedDescriptions': 'Fournit des descriptions plus détaillées pour les lecteurs d\'écran afin de mieux expliquer les éléments d\'interface.',
+          'settingsSaved': 'Paramètres enregistrés',
         };
         break;
         
@@ -323,6 +319,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
           'screenReaderSettings': 'Ustawienia czytnika ekranu',
           'enhancedScreenReaderDescriptions': 'Rozszerzone opisy dla czytnika ekranu',
           'providesMoreDetailedDescriptions': 'Zapewnia bardziej szczegółowe opisy dla czytników ekranu, aby lepiej wyjaśnić elementy interfejsu.',
+          'settingsSaved': 'Ustawienia zapisane',
         };
         break;
         
@@ -336,6 +333,7 @@ class _AccessibilitySettingsScreenState extends State<AccessibilitySettingsScree
           'screenReaderSettings': 'Configuración del lector de pantalla',
           'enhancedScreenReaderDescriptions': 'Descripciones mejoradas del lector de pantalla',
           'providesMoreDetailedDescriptions': 'Proporciona descripciones más detalladas para los lectores de pantalla para explicar mejor los elementos de la interfaz.',
+          'settingsSaved': 'Configuraciones guardadas',
         };
         break;
     }

@@ -70,23 +70,41 @@ class AccessibleButton extends StatelessWidget {
         children: [
           Icon(icon),
           const SizedBox(width: 8),
-          Text(label),
+          // Make label flexible to avoid horizontal overflow on narrow screens
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+            ),
+          ),
         ],
       );
     } else {
-      buttonContent = Text(label);
+      // Single text label variant with safe overflow handling
+      buttonContent = Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        softWrap: false,
+      );
     }
     
     if (filled) {
       button = ElevatedButton(
         onPressed: buttonCallback,
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: color, // when null, theme primary is used
+          foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(
-            vertical: 12, 
-            horizontal: 16,
+            vertical: 12,
+            horizontal: 18,
           ),
           minimumSize: const Size(44, 44), // Minimum touch target size
+          shape: const StadiumBorder(),
+          elevation: 0,
+          textStyle: const TextStyle(fontWeight: FontWeight.w600),
         ),
         child: buttonContent,
       );
@@ -95,10 +113,14 @@ class AccessibleButton extends StatelessWidget {
         onPressed: buttonCallback,
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(
-            vertical: 12, 
-            horizontal: 16,
+            vertical: 12,
+            horizontal: 18,
           ),
           minimumSize: const Size(44, 44), // Minimum touch target size
+          shape: const StadiumBorder(),
+          side: BorderSide(color: (color ?? Theme.of(context).colorScheme.primary).withOpacity(0.6)),
+          foregroundColor: color,
+          textStyle: const TextStyle(fontWeight: FontWeight.w600),
         ),
         child: buttonContent,
       );
@@ -109,6 +131,12 @@ class AccessibleButton extends StatelessWidget {
       button: true,
       enabled: enabled && !isLoading,
       label: finalSemanticLabel,
+      onTap: (enabled && !isLoading && onPressed != null)
+          ? () {
+              // Mirror the primary activation action for assistive tech
+              onPressed!();
+            }
+          : null,
       child: ExcludeSemantics(
         child: button,
       ),
@@ -377,10 +405,12 @@ class AccessibleToggle extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w500,
+            child: ExcludeSemantics( // Exclude semantics on the Text inside AccessibleToggle
+              child: Text(
+                label,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),

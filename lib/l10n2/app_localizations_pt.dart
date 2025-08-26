@@ -160,7 +160,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get loadingExternalDataDescription =>
-      'TODO: Translate \'Please wait while we fetch the latest flight data...\'';
+      'Aguarde enquanto buscamos os dados de voo mais recentes...';
 
   @override
   String lastHours(int hours) {
@@ -174,6 +174,18 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String formSubmissionError(String error) {
     return 'Erro ao submeter o formulário: $error. Verifique a sua ligação e tente novamente.';
+  }
+
+  @override
+  String get compensationEmailSuccess =>
+      'Compensation email sent successfully!';
+
+  @override
+  String get compensationEmailFailed => 'Failed to send compensation email';
+
+  @override
+  String errorSendingEmail(String error) {
+    return 'Error sending email: $error';
   }
 
   @override
@@ -207,17 +219,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get noFieldsExtracted => 'Nenhum campo foi extraído do documento.';
 
   @override
-  String get copiedToClipboard => 'TODO: Translate \'Copied to Clipboard\'';
+  String get copiedToClipboard => 'Copiado para a área de transferência';
 
   @override
-  String get networkError => 'TODO: Translate \'Network Error\'';
+  String get networkError => 'Erro de rede';
 
   @override
-  String get generalError => 'TODO: Translate \'General Error\'';
+  String get generalError => 'Erro geral';
 
   @override
   String get loginRequiredForClaim =>
-      'TODO: Translate \'Login Required for Claim\'';
+      'Login necessário para enviar a reclamação';
 
   @override
   String get aspectRatio => 'Proporção';
@@ -273,6 +285,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get submitClaim => 'Submeter Reclamação';
+
+  @override
+  String get sendEmail => 'Send Email';
+
+  @override
+  String get resend => 'Resend';
 
   @override
   String get addDocument => 'Adicionar Documento';
@@ -360,11 +378,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get required => 'Obrigatório';
 
   @override
-  String get emailAddress => 'TODO: Translate \'Email Address\'';
+  String get emailAddress => 'Endereço de e-mail';
 
   @override
-  String get documentDeleteFailed =>
-      'TODO: Translate \'Failed to delete document\'';
+  String get documentDeleteFailed => 'Falha ao excluir documento';
 
   @override
   String get uploadNew => 'Enviar Novo';
@@ -379,35 +396,48 @@ class AppLocalizationsPt extends AppLocalizations {
   String get flight => 'Voo';
 
   @override
-  String get passengerInformation =>
-      'TODO: Translate \'Passenger Information\'';
+  String get passengerInformation => 'Informações do passageiro';
 
   @override
   String get fullName => 'Nome Completo';
 
   @override
-  String get downloadPdf => 'TODO: Translate \'Download PDF\'';
+  String get downloadPdf => 'Baixar PDF';
 
   @override
   String get filePreviewNotAvailable =>
-      'TODO: Translate \'File preview not available\'';
+      'Pré-visualização do arquivo não disponível';
 
   @override
-  String get deleteDocument => 'TODO: Translate \'Delete Document\'';
+  String get noFileSelected => 'Nenhum arquivo selecionado';
+
+  @override
+  String get preview => 'Visualizar';
+
+  @override
+  String get downloadStarting => 'Iniciando download...';
+
+  @override
+  String get fileTypeLabel => 'Tipo de arquivo:';
+
+  @override
+  String get failedToLoadImage => 'Falha ao carregar a imagem';
+
+  @override
+  String get deleteDocument => 'Excluir documento';
 
   @override
   String get deleteDocumentConfirmation =>
-      'TODO: Translate \'Are you sure you want to delete this document?\'';
+      'Tem certeza de que deseja excluir este documento?';
 
   @override
   String get cancel => 'Cancelar';
 
   @override
-  String get delete => 'TODO: Translate \'Delete\'';
+  String get delete => 'Excluir';
 
   @override
-  String get documentDeletedSuccess =>
-      'TODO: Translate \'Document deleted successfully\'';
+  String get documentDeletedSuccess => 'Documento excluído com sucesso';
 
   @override
   String get attachDocuments => 'Anexar Documentos';
@@ -428,14 +458,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get other => 'outro';
 
   @override
-  String get pdfPreviewMessage => 'TODO: Translate \'PDF Preview\'';
+  String get pdfPreviewMessage => 'Prévia do PDF';
 
   @override
-  String get tipsAndRemindersTitle => 'TODO: Translate \'Tips & Reminders\'';
+  String get tipsAndRemindersTitle => 'Dicas e lembretes';
 
   @override
-  String get tipSecureData =>
-      'TODO: Translate \'Your data is secure and encrypted\'';
+  String get tipSecureData => 'Seus dados são seguros e criptografados';
 
   @override
   String get tipCheckEligibility =>
@@ -464,34 +493,34 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get compensationAmountOptionalLabel =>
-      'TODO: Translate \'Requested Compensation Amount (Optional)\'';
+      'Valor de compensação solicitado (opcional)';
 
   @override
   String get compensationAmountHint =>
-      'TODO: Translate \'Enter amount if you have a specific request\'';
+      'Informe um valor se tiver um pedido específico';
 
   @override
   String get tooltipCompensationAmountQuickClaim =>
-      'TODO: Translate \'You can specify a compensation amount or leave it blank\'';
+      'Você pode informar um valor de compensação ou deixar em branco';
 
   @override
-  String get continueToReview => 'TODO: Translate \'Continue to Review\'';
+  String get continueToReview => 'Continuar para revisão';
 
   @override
   String get tooltipDepartureAirportQuickClaim =>
-      'TODO: Translate \'Enter the airport you departed from\'';
+      'Informe o aeroporto de partida';
 
   @override
   String get arrivalAirportHintQuickClaim =>
-      'TODO: Translate \'Enter airport code or name (e.g. LHR, London Heathrow)\'';
+      'Digite o código ou nome do aeroporto (ex.: LHR, London Heathrow)';
 
   @override
   String get validatorArrivalAirportRequired =>
-      'TODO: Translate \'Arrival airport is required\'';
+      'O aeroporto de chegada é obrigatório';
 
   @override
   String get tooltipArrivalAirportQuickClaim =>
-      'TODO: Translate \'Enter the airport you arrived at\'';
+      'Informe o aeroporto de chegada';
 
   @override
   String get reasonForClaimLabel => 'Motivo da Reclamação';
@@ -502,27 +531,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get flightNumberHintQuickClaim =>
-      'TODO: Translate \'Enter flight number (e.g. LH123)\'';
+      'Digite o número do voo (ex.: LH123)';
 
   @override
-  String get validatorFlightNumberRequired =>
-      'TODO: Translate \'Flight number is required\'';
+  String get validatorFlightNumberRequired => 'O número do voo é obrigatório';
 
   @override
   String get tooltipFlightNumberQuickClaim =>
-      'TODO: Translate \'Enter the flight number for your claim\'';
+      'Informe o número do voo para sua reclamação';
 
   @override
-  String get tooltipFlightDateQuickClaim =>
-      'TODO: Translate \'Select the date of your flight\'';
+  String get tooltipFlightDateQuickClaim => 'Selecione a data do seu voo';
 
   @override
   String get departureAirportHintQuickClaim =>
-      'TODO: Translate \'Enter airport code or name (e.g. LHR, London Heathrow)\'';
+      'Digite o código ou nome do aeroporto (ex.: LHR, London Heathrow)';
 
   @override
   String get validatorDepartureAirportRequired =>
-      'TODO: Translate \'Departure airport is required\'';
+      'O aeroporto de partida é obrigatório';
 
   @override
   String get underAppeal => 'Em recurso';
@@ -532,16 +559,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get errorMustBeLoggedIn =>
-      'TODO: Translate \'You must be logged in to submit a claim\'';
+      'Você deve estar conectado para enviar uma reclamação';
 
   @override
-  String get dialogTitleError => 'TODO: Translate \'Error\'';
+  String get dialogTitleError => 'Erro';
 
   @override
-  String get dialogButtonOK => 'TODO: Translate \'OK\'';
+  String get dialogButtonOK => 'OK';
 
   @override
-  String get quickClaimTitle => 'TODO: Translate \'Quick Claim Form\'';
+  String get quickClaimTitle => 'Formulário de reclamação rápida';
 
   @override
   String get tooltipFaqHelp =>
@@ -549,7 +576,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get quickClaimInfoBanner =>
-      'TODO: Translate \'Fill out this form to submit a quick compensation claim for your flight. We\'ll help you through the process.\'';
+      'Preencha este formulário para enviar rapidamente uma reclamação de compensação pelo seu voo. Vamos ajudar você no processo.';
 
   @override
   String get createClaim => 'Criar solicitação';
@@ -574,6 +601,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get paid => 'Pago';
+
+  @override
+  String get emailStatusNotSent => 'Not sent';
+
+  @override
+  String get emailStatusSending => 'Sending';
+
+  @override
+  String get emailStatusSent => 'Sent';
+
+  @override
+  String get emailStatusFailed => 'Failed';
+
+  @override
+  String get emailStatusBounced => 'Bounced';
 
   @override
   String flightRouteDetails(String departure, String arrival) {
@@ -619,7 +661,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get pendingAmount => 'Valor Pendente';
 
   @override
+  String get receivedAmount => 'Received';
+
+  @override
   String get noClaimsYetTitle => 'Ainda Não Há Reclamações';
+
+  @override
+  String get noRecentEvents => 'No recent events';
 
   @override
   String get pending => 'Pendente';
@@ -680,6 +728,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get completed => 'Concluída';
+
+  @override
+  String get events => 'Events';
 
   @override
   String get genericUser => 'Usuário';

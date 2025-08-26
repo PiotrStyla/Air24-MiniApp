@@ -400,6 +400,24 @@ abstract class AppLocalizations {
   /// **'Form submission error: {error}'**
   String formSubmissionError(String error);
 
+  /// Snackbar message when compensation email is sent successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Compensation email sent successfully!'**
+  String get compensationEmailSuccess;
+
+  /// Snackbar message when sending compensation email fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send compensation email'**
+  String get compensationEmailFailed;
+
+  /// Error message shown when an error occurs while sending email
+  ///
+  /// In en, this message translates to:
+  /// **'Error sending email: {error}'**
+  String errorSendingEmail(String error);
+
   /// Title for API connection issue
   ///
   /// In en, this message translates to:
@@ -585,6 +603,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submit Claim'**
   String get submitClaim;
+
+  /// Button label to send a compensation email
+  ///
+  /// In en, this message translates to:
+  /// **'Send Email'**
+  String get sendEmail;
+
+  /// Button label to resend an email
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get resend;
 
   /// Button label for adding a document
   ///
@@ -813,6 +843,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'File preview not available'**
   String get filePreviewNotAvailable;
+
+  /// Snackbar message when user cancels or no file is chosen
+  ///
+  /// In en, this message translates to:
+  /// **'No file selected'**
+  String get noFileSelected;
+
+  /// Tooltip label for preview icon button
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview;
+
+  /// Snackbar message shown when a download starts
+  ///
+  /// In en, this message translates to:
+  /// **'Download starting...'**
+  String get downloadStarting;
+
+  /// Label prefix for file type in preview fallback
+  ///
+  /// In en, this message translates to:
+  /// **'File type:'**
+  String get fileTypeLabel;
+
+  /// Error text when an image fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load image'**
+  String get failedToLoadImage;
 
   /// Title for delete document confirmation dialog
   ///
@@ -1132,6 +1192,36 @@ abstract class AppLocalizations {
   /// **'Paid'**
   String get paid;
 
+  /// Email status label: not sent
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent'**
+  String get emailStatusNotSent;
+
+  /// Email status label: sending
+  ///
+  /// In en, this message translates to:
+  /// **'Sending'**
+  String get emailStatusSending;
+
+  /// Email status label: sent
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get emailStatusSent;
+
+  /// Email status label: failed
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get emailStatusFailed;
+
+  /// Email status label: bounced
+  ///
+  /// In en, this message translates to:
+  /// **'Bounced'**
+  String get emailStatusBounced;
+
   /// Format for displaying flight route details
   ///
   /// In en, this message translates to:
@@ -1210,11 +1300,23 @@ abstract class AppLocalizations {
   /// **'Pending Amount'**
   String get pendingAmount;
 
+  /// Label for total received compensation
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get receivedAmount;
+
   /// Title shown when no claims exist in a category
   ///
   /// In en, this message translates to:
   /// **'No Claims in this Category'**
   String get noClaimsYetTitle;
+
+  /// Message shown when there are no recent events
+  ///
+  /// In en, this message translates to:
+  /// **'No recent events'**
+  String get noRecentEvents;
 
   /// Status label for pending compensation
   ///
@@ -1314,6 +1416,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Completed'**
   String get completed;
+
+  /// Tab label for recent events
+  ///
+  /// In en, this message translates to:
+  /// **'Events'**
+  String get events;
 
   /// No description provided for @genericUser.
   ///

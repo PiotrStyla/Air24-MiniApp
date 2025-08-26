@@ -1108,71 +1108,91 @@
   "@loadingExternalData": {
     "description": "Title for loading screen"
   },
-  "loadingExternalDataDescription": "TODO: Translate 'Please wait while we fetch the latest flight data...'",
+  "loadingExternalDataDescription": "Aguarde enquanto buscamos os dados de voo mais recentes...",
   "@loadingExternalDataDescription": {
     "description": "Message when loading external data"
   },
-  "copiedToClipboard": "TODO: Translate 'Copied to Clipboard'",
+  "copiedToClipboard": "Copiado para a área de transferência",
   "@copiedToClipboard": {
     "description": "Message when text is copied to clipboard"
   },
-  "networkError": "TODO: Translate 'Network Error'",
+  "networkError": "Erro de rede",
   "@networkError": {
     "description": "Generic network error message"
   },
-  "generalError": "TODO: Translate 'General Error'",
+  "generalError": "Erro geral",
   "@generalError": {
     "description": "Generic error message"
   },
-  "loginRequiredForClaim": "TODO: Translate 'Login Required for Claim'",
+  "loginRequiredForClaim": "Login necessário para enviar a reclamação",
   "@loginRequiredForClaim": {
     "description": "Message indicating login is required to submit a claim"
   },
-  "emailAddress": "TODO: Translate 'Email Address'",
+  "emailAddress": "Endereço de e-mail",
   "@emailAddress": {
     "description": "Label for email address field"
   },
-  "documentDeleteFailed": "TODO: Translate 'Failed to delete document'",
+  "documentDeleteFailed": "Falha ao excluir documento",
   "@documentDeleteFailed": {
     "description": "Error message shown when document deletion fails"
   },
-  "passengerInformation": "TODO: Translate 'Passenger Information'",
+  "passengerInformation": "Informações do passageiro",
   "@passengerInformation": {
     "description": "Header for passenger information section"
   },
-  "downloadPdf": "TODO: Translate 'Download PDF'",
+  "downloadPdf": "Baixar PDF",
   "@downloadPdf": {
     "description": "Label for download PDF button"
   },
-  "filePreviewNotAvailable": "TODO: Translate 'File preview not available'",
+  "filePreviewNotAvailable": "Pré-visualização do arquivo não disponível",
   "@filePreviewNotAvailable": {
     "description": "Message shown when file preview is not available"
   },
-  "deleteDocument": "TODO: Translate 'Delete Document'",
+  "noFileSelected": "Nenhum arquivo selecionado",
+  "@noFileSelected": {
+    "description": "Snackbar message when user cancels or no file is chosen"
+  },
+  "preview": "Visualizar",
+  "@preview": {
+    "description": "Tooltip label for preview icon button"
+  },
+  "downloadStarting": "Iniciando download...",
+  "@downloadStarting": {
+    "description": "Snackbar message shown when a download starts"
+  },
+  "fileTypeLabel": "Tipo de arquivo:",
+  "@fileTypeLabel": {
+    "description": "Label prefix for file type in preview fallback"
+  },
+  "failedToLoadImage": "Falha ao carregar a imagem",
+  "@failedToLoadImage": {
+    "description": "Error text when an image fails to load"
+  },
+  "deleteDocument": "Excluir documento",
   "@deleteDocument": {
     "description": "Title for delete document confirmation dialog"
   },
-  "deleteDocumentConfirmation": "TODO: Translate 'Are you sure you want to delete this document?'",
+  "deleteDocumentConfirmation": "Tem certeza de que deseja excluir este documento?",
   "@deleteDocumentConfirmation": {
     "description": "Confirmation message for document deletion"
   },
-  "delete": "TODO: Translate 'Delete'",
+  "delete": "Excluir",
   "@delete": {
     "description": "Label for delete button"
   },
-  "documentDeletedSuccess": "TODO: Translate 'Document deleted successfully'",
+  "documentDeletedSuccess": "Documento excluído com sucesso",
   "@documentDeletedSuccess": {
     "description": "Message shown when document is deleted successfully"
   },
-  "pdfPreviewMessage": "TODO: Translate 'PDF Preview'",
+  "pdfPreviewMessage": "Prévia do PDF",
   "@pdfPreviewMessage": {
     "description": "Message shown when viewing a PDF preview"
   },
-  "tipsAndRemindersTitle": "TODO: Translate 'Tips & Reminders'",
+  "tipsAndRemindersTitle": "Dicas e lembretes",
   "@tipsAndRemindersTitle": {
     "description": "Title for tips and reminders section"
   },
-  "tipSecureData": "TODO: Translate 'Your data is secure and encrypted'",
+  "tipSecureData": "Seus dados são seguros e criptografados",
   "@tipSecureData": {
     "description": "Tip about data security"
   },
@@ -1188,35 +1208,35 @@
   "@tooltipReasonQuickClaim": {
     "description": "Tooltip for reason field in quick claim form"
   },
-  "compensationAmountOptionalLabel": "TODO: Translate 'Requested Compensation Amount (Optional)'",
+  "compensationAmountOptionalLabel": "Valor de compensação solicitado (opcional)",
   "@compensationAmountOptionalLabel": {
     "description": "Label for optional compensation amount field"
   },
-  "compensationAmountHint": "TODO: Translate 'Enter amount if you have a specific request'",
+  "compensationAmountHint": "Informe um valor se tiver um pedido específico",
   "@compensationAmountHint": {
     "description": "Helper text for compensation amount field"
   },
-  "tooltipCompensationAmountQuickClaim": "TODO: Translate 'You can specify a compensation amount or leave it blank'",
+  "tooltipCompensationAmountQuickClaim": "Você pode informar um valor de compensação ou deixar em branco",
   "@tooltipCompensationAmountQuickClaim": {
     "description": "Tooltip for compensation amount in quick claim form"
   },
-  "continueToReview": "TODO: Translate 'Continue to Review'",
+  "continueToReview": "Continuar para revisão",
   "@continueToReview": {
     "description": "Button text to proceed to review screen"
   },
-  "tooltipDepartureAirportQuickClaim": "TODO: Translate 'Enter the airport you departed from'",
+  "tooltipDepartureAirportQuickClaim": "Informe o aeroporto de partida",
   "@tooltipDepartureAirportQuickClaim": {
     "description": "Tooltip for departure airport field in quick claim form"
   },
-  "arrivalAirportHintQuickClaim": "TODO: Translate 'Enter airport code or name (e.g. LHR, London Heathrow)'",
+  "arrivalAirportHintQuickClaim": "Digite o código ou nome do aeroporto (ex.: LHR, London Heathrow)",
   "@arrivalAirportHintQuickClaim": {
     "description": "Helper text for arrival airport field in quick claim form"
   },
-  "validatorArrivalAirportRequired": "TODO: Translate 'Arrival airport is required'",
+  "validatorArrivalAirportRequired": "O aeroporto de chegada é obrigatório",
   "@validatorArrivalAirportRequired": {
     "description": "Validation message when arrival airport is empty"
   },
-  "tooltipArrivalAirportQuickClaim": "TODO: Translate 'Enter the airport you arrived at'",
+  "tooltipArrivalAirportQuickClaim": "Informe o aeroporto de chegada",
   "@tooltipArrivalAirportQuickClaim": {
     "description": "Tooltip for arrival airport field in quick claim form"
   },
@@ -1228,47 +1248,47 @@
   "@hintTextReasonQuickClaim": {
     "description": "Hint text for reason field in quick claim form"
   },
-  "flightNumberHintQuickClaim": "TODO: Translate 'Enter flight number (e.g. LH123)'",
+  "flightNumberHintQuickClaim": "Digite o número do voo (ex.: LH123)",
   "@flightNumberHintQuickClaim": {
     "description": "Helper text for flight number field in quick claim form"
   },
-  "validatorFlightNumberRequired": "TODO: Translate 'Flight number is required'",
+  "validatorFlightNumberRequired": "O número do voo é obrigatório",
   "@validatorFlightNumberRequired": {
     "description": "Validation message when flight number is empty"
   },
-  "tooltipFlightNumberQuickClaim": "TODO: Translate 'Enter the flight number for your claim'",
+  "tooltipFlightNumberQuickClaim": "Informe o número do voo para sua reclamação",
   "@tooltipFlightNumberQuickClaim": {
     "description": "Tooltip for flight number field in quick claim form"
   },
-  "tooltipFlightDateQuickClaim": "TODO: Translate 'Select the date of your flight'",
+  "tooltipFlightDateQuickClaim": "Selecione a data do seu voo",
   "@tooltipFlightDateQuickClaim": {
     "description": "Tooltip for flight date field in quick claim form"
   },
-  "departureAirportHintQuickClaim": "TODO: Translate 'Enter airport code or name (e.g. LHR, London Heathrow)'",
+  "departureAirportHintQuickClaim": "Digite o código ou nome do aeroporto (ex.: LHR, London Heathrow)",
   "@departureAirportHintQuickClaim": {
     "description": "Helper text for departure airport field in quick claim form"
   },
-  "validatorDepartureAirportRequired": "TODO: Translate 'Departure airport is required'",
+  "validatorDepartureAirportRequired": "O aeroporto de partida é obrigatório",
   "@validatorDepartureAirportRequired": {
     "description": "Validation message when departure airport is empty"
   },
-  "errorMustBeLoggedIn": "TODO: Translate 'You must be logged in to submit a claim'",
+  "errorMustBeLoggedIn": "Você deve estar conectado para enviar uma reclamação",
   "@errorMustBeLoggedIn": {
     "description": "Error message shown when trying to access the claim form without being logged in"
   },
-  "dialogTitleError": "TODO: Translate 'Error'",
+  "dialogTitleError": "Erro",
   "@dialogTitleError": {
     "description": "Title for error dialog boxes"
   },
-  "dialogButtonOK": "TODO: Translate 'OK'",
+  "dialogButtonOK": "OK",
   "@dialogButtonOK": {
     "description": "OK button text for dialog boxes"
   },
-  "quickClaimTitle": "TODO: Translate 'Quick Claim Form'",
+  "quickClaimTitle": "Formulário de reclamação rápida",
   "@quickClaimTitle": {
     "description": "Title for the quick claim screen"
   },
-  "quickClaimInfoBanner": "TODO: Translate 'Fill out this form to submit a quick compensation claim for your flight. We'll help you through the process.'",
+  "quickClaimInfoBanner": "Preencha este formulário para enviar rapidamente uma reclamação de compensação pelo seu voo. Vamos ajudar você no processo.",
   "@quickClaimInfoBanner": {
     "description": "Information banner text at the top of quick claim form"
   },

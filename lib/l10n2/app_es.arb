@@ -1198,6 +1198,26 @@
   "@filePreviewNotAvailable": {
     "description": "Mensaje cuando la vista previa de archivo no está disponible"
   },
+  "noFileSelected": "Ningún archivo seleccionado",
+  "@noFileSelected": {
+    "description": "Mensaje de snackbar cuando se cancela o no se elige un archivo"
+  },
+  "preview": "Vista previa",
+  "@preview": {
+    "description": "Etiqueta de tooltip para el botón de vista previa"
+  },
+  "downloadStarting": "Iniciando descarga...",
+  "@downloadStarting": {
+    "description": "Mensaje de snackbar mostrado cuando inicia una descarga"
+  },
+  "fileTypeLabel": "Tipo de archivo:",
+  "@fileTypeLabel": {
+    "description": "Prefijo de etiqueta para el tipo de archivo en el modo de respaldo de vista previa"
+  },
+  "failedToLoadImage": "No se pudo cargar la imagen",
+  "@failedToLoadImage": {
+    "description": "Texto de error cuando una imagen no se puede cargar"
+  },
   "deleteDocument": "Eliminar documento",
   "@deleteDocument": {
     "description": "Texto del botón para eliminar documento"
@@ -1495,7 +1515,7 @@
   "@minutes": {
     "description": "Text for minutes unit"
   },
-  "aircraftLabel": "TODO: Translate 'Aircraft:'",
+  "aircraftLabel": "Aeronave:",
   "@aircraftLabel": {
     "description": "Label for aircraft information"
   },

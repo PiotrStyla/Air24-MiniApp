@@ -16,8 +16,10 @@ class EnhancedClaimsService extends ChangeNotifier {
   final SecureEmailService _emailService;
   
   // Stream controllers for real-time updates
-  final StreamController<List<Claim>> _claimsController = StreamController<List<Claim>>.broadcast();
-  final StreamController<ClaimEvent> _claimEventsController = StreamController<ClaimEvent>.broadcast();
+  // Note: controllers are initialized in the constructor to safely reference
+  // instance members from onListen.
+  late final StreamController<List<Claim>> _claimsController;
+  late final StreamController<ClaimEvent> _claimEventsController;
   StreamSubscription<List<Claim>>? _claimsSubscription;
   
   // Current claims state
@@ -25,6 +27,18 @@ class EnhancedClaimsService extends ChangeNotifier {
   Map<String, ClaimEmailStatus> _emailStatuses = {};
   
   EnhancedClaimsService(this._claimTrackingService, this._emailService) {
+    _claimsController = StreamController<List<Claim>>.broadcast(
+      onListen: () {
+        // Immediately emit current cache so new listeners don't wait forever
+        final current = _claims;
+        if (current.isNotEmpty) {
+          _claimsController.add(current);
+        } else {
+          _claimsController.add(const <Claim>[]);
+        }
+      },
+    );
+    _claimEventsController = StreamController<ClaimEvent>.broadcast();
     _initializeService();
   }
   
@@ -73,13 +87,6 @@ class EnhancedClaimsService extends ChangeNotifier {
   void _handleNewClaim(Claim claim) {
     debugPrint('📋 New claim created: ${claim.id}');
     
-    // Send notification for new claim
-    PushNotificationService.sendClaimStatusNotification(
-      title: 'New Claim Created',
-      body: 'Your claim for flight ${claim.flightNumber} has been submitted successfully.',
-      claimId: claim.id,
-    );
-    
     // Emit claim event
     _claimEventsController.add(ClaimEvent(
       type: ClaimEventType.created,
@@ -87,24 +94,25 @@ class EnhancedClaimsService extends ChangeNotifier {
       message: 'Claim created successfully',
       timestamp: DateTime.now(),
     ));
-    
-    // Schedule deadline reminder (e.g., 14 days before response deadline)
-    _scheduleDeadlineReminder(claim);
   }
   
   /// Handle claim status changes
   void _handleClaimStatusChange(Claim claim, String oldStatus, String newStatus) {
     debugPrint('📋 Claim status changed: ${claim.id} from $oldStatus to $newStatus');
     
-    String notificationTitle = 'Claim Update';
-    String notificationBody = _getStatusChangeMessage(claim, newStatus);
-    
-    // Send push notification for status change
-    PushNotificationService.sendClaimStatusNotification(
-      title: notificationTitle,
-      body: notificationBody,
-      claimId: claim.id,
-    );
+    // Only notify when airline provides meaningful updates
+    final airlineNotifiableStatuses = {
+      'approved', 'rejected', 'paid', 'requires_documents'
+    };
+    if (airlineNotifiableStatuses.contains(newStatus.toLowerCase())) {
+      final notificationTitle = 'Claim Update';
+      final notificationBody = _getStatusChangeMessage(claim, newStatus);
+      PushNotificationService.sendClaimStatusNotification(
+        title: notificationTitle,
+        body: notificationBody,
+        claimId: claim.id,
+      );
+    }
     
     // Emit claim event
     _claimEventsController.add(ClaimEvent(
@@ -144,16 +152,8 @@ class EnhancedClaimsService extends ChangeNotifier {
     try {
       debugPrint('📧 Sending compensation email for claim: ${claim.id}');
       
-      // Update email status to sending
+      // Update email status to sending (no user notification)
       _updateEmailStatus(claim.id, ClaimEmailStatus.sending);
-      
-      // Send notification about email being sent
-      PushNotificationService.sendEmailStatusNotification(
-        title: 'Sending Email',
-        body: 'Sending compensation email to ${claim.airlineName}...',
-        emailId: '${claim.id}_email',
-        isSuccess: true,
-      );
       
       // Prepare email content with user's preferred language
       // Get user's language preference from stored locale settings
@@ -190,10 +190,10 @@ class EnhancedClaimsService extends ChangeNotifier {
         // Update email status to sent
         _updateEmailStatus(claim.id, ClaimEmailStatus.sent);
         
-        // Send success notification
+        // Notify once when the new claim is sent to the airline
         PushNotificationService.sendEmailStatusNotification(
-          title: 'Email Sent Successfully',
-          body: 'Your compensation email was sent to ${claim.airlineName}',
+          title: 'Claim Sent',
+          body: 'Your claim for flight ${claim.flightNumber} was sent to ${claim.airlineName}.',
           emailId: '${claim.id}_email',
           isSuccess: true,
         );
@@ -203,16 +203,19 @@ class EnhancedClaimsService extends ChangeNotifier {
           await updateClaimStatus(claim.id, 'submitted');
         }
         
+        // Schedule a reminder to check/resend after 14 days
+        _scheduleDeadlineReminder(claim);
+        
         debugPrint('✅ Compensation email sent successfully for claim: ${claim.id}');
         return true;
       } else {
         // Update email status to failed
         _updateEmailStatus(claim.id, ClaimEmailStatus.failed);
         
-        // Send failure notification
+        // Optional: notify user of failure (single concise message)
         PushNotificationService.sendEmailStatusNotification(
-          title: 'Email Failed',
-          body: 'Failed to send compensation email to ${claim.airlineName}',
+          title: 'Send Failed',
+          body: 'Could not send your claim to ${claim.airlineName}. Please try again.',
           emailId: '${claim.id}_email',
           isSuccess: false,
         );
@@ -325,21 +328,19 @@ class EnhancedClaimsService extends ChangeNotifier {
   void _handleDocumentsRequired(Claim claim) {
     debugPrint('📄 Additional documents required for claim ${claim.id}');
     
-    // Schedule reminder for document submission
-    _scheduleDocumentReminder(claim);
+    // No extra reminders here. A single airline update notification is sufficient.
   }
   
   /// Schedule deadline reminder
   void _scheduleDeadlineReminder(Claim claim) {
-    // Calculate deadline (e.g., 14 days from now)
+    // Calculate deadline (14 days from now)
     final deadline = DateTime.now().add(const Duration(days: 14));
     
-    // In a real app, you'd use a proper scheduling service
-    // For now, we'll just send an immediate reminder
-    Future.delayed(const Duration(seconds: 5), () {
+    // In-app simple scheduling (best effort while app is running)
+    Future.delayed(const Duration(days: 14), () {
       PushNotificationService.sendDeadlineReminderNotification(
-        title: 'Claim Deadline Reminder',
-        body: 'Don\'t forget to follow up on your claim for flight ${claim.flightNumber}',
+        title: 'Reminder to Follow Up',
+        body: 'It has been 2 weeks since you sent your claim for flight ${claim.flightNumber}. Consider resending or following up.',
         deadlineId: claim.id,
         deadlineDate: deadline,
       );

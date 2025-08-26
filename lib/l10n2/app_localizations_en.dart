@@ -174,6 +174,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get compensationEmailSuccess =>
+      'Compensation email sent successfully!';
+
+  @override
+  String get compensationEmailFailed => 'Failed to send compensation email';
+
+  @override
+  String errorSendingEmail(String error) {
+    return 'Error sending email: $error';
+  }
+
+  @override
   String get apiConnectionIssue => 'API Connection Issue';
 
   @override
@@ -267,6 +279,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get submitClaim => 'Submit Claim';
+
+  @override
+  String get sendEmail => 'Send Email';
+
+  @override
+  String get resend => 'Resend';
 
   @override
   String get addDocument => 'Add Document';
@@ -381,6 +399,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filePreviewNotAvailable => 'File preview not available';
+
+  @override
+  String get noFileSelected => 'No file selected';
+
+  @override
+  String get preview => 'Preview';
+
+  @override
+  String get downloadStarting => 'Download starting...';
+
+  @override
+  String get fileTypeLabel => 'File type:';
+
+  @override
+  String get failedToLoadImage => 'Failed to load image';
 
   @override
   String get deleteDocument => 'Delete Document';
@@ -556,6 +589,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paid => 'Paid';
 
   @override
+  String get emailStatusNotSent => 'Not sent';
+
+  @override
+  String get emailStatusSending => 'Sending';
+
+  @override
+  String get emailStatusSent => 'Sent';
+
+  @override
+  String get emailStatusFailed => 'Failed';
+
+  @override
+  String get emailStatusBounced => 'Bounced';
+
+  @override
   String flightRouteDetails(String departure, String arrival) {
     return '$departure to $arrival';
   }
@@ -599,7 +647,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pendingAmount => 'Pending Amount';
 
   @override
+  String get receivedAmount => 'Received';
+
+  @override
   String get noClaimsYetTitle => 'No Claims in this Category';
+
+  @override
+  String get noRecentEvents => 'No recent events';
 
   @override
   String get pending => 'Pending';
@@ -664,6 +718,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completed => 'Completed';
+
+  @override
+  String get events => 'Events';
 
   @override
   String get genericUser => 'Generic User';

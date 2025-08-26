@@ -124,7 +124,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String noFlightsMatchingFilter(String filter) {
-    return 'TODO: Translate \'No flights matching filter: $filter\'';
+    return 'Aucun vol correspondant au filtre : $filter';
   }
 
   @override
@@ -150,22 +150,21 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vols éligibles à la compensation européenne';
 
   @override
-  String get forceRefreshData => 'TODO: Translate \'Force Refresh Data\'';
+  String get forceRefreshData => 'Forcer l’actualisation des données';
 
   @override
-  String get forcingFreshDataLoad =>
-      'TODO: Translate \'Forcing fresh data load...\'';
+  String get forcingFreshDataLoad => 'Forçage du chargement des données…';
 
   @override
-  String get loadingExternalData => 'TODO: Translate \'Loading External Data\'';
+  String get loadingExternalData => 'Chargement des données externes';
 
   @override
   String get loadingExternalDataDescription =>
-      'TODO: Translate \'Please wait while we fetch the latest flight data...\'';
+      'Veuillez patienter pendant que nous récupérons les dernières données de vol…';
 
   @override
   String lastHours(int hours) {
-    return 'TODO: Translate \'Last $hours Hours\'';
+    return 'Dernières $hours heures';
   }
 
   @override
@@ -178,15 +177,26 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get apiConnectionIssue => 'TODO: Translate \'API Connection Issue\'';
+  String get compensationEmailSuccess =>
+      'Compensation email sent successfully!';
 
   @override
-  String get noEligibleFlightsFound =>
-      'TODO: Translate \'No Eligible Flights Found\'';
+  String get compensationEmailFailed => 'Failed to send compensation email';
+
+  @override
+  String errorSendingEmail(String error) {
+    return 'Error sending email: $error';
+  }
+
+  @override
+  String get apiConnectionIssue => 'Problème de connexion à l’API';
+
+  @override
+  String get noEligibleFlightsFound => 'Aucun vol éligible trouvé';
 
   @override
   String noEligibleFlightsDescription(int hours) {
-    return 'TODO: Translate \'No flights eligible for EU compensation were found in the last $hours hours. Check again later.\'';
+    return 'Aucun vol éligible à la compensation UE n’a été trouvé au cours des dernières $hours heures. Réessayez plus tard.';
   }
 
   @override
@@ -211,14 +221,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get copiedToClipboard => 'Copié dans le presse-papiers';
 
   @override
-  String get networkError => 'TODO: Translate \'Network Error\'';
+  String get networkError => 'Erreur réseau';
 
   @override
-  String get generalError => 'TODO: Translate \'General Error\'';
+  String get generalError => 'Erreur générale';
 
   @override
-  String get loginRequiredForClaim =>
-      'TODO: Translate \'Login Required for Claim\'';
+  String get loginRequiredForClaim => 'Connexion requise pour la réclamation';
 
   @override
   String get aspectRatio => 'Ratio d\'Aspect';
@@ -273,6 +282,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get submitClaim => 'Soumettre la Réclamation';
+
+  @override
+  String get sendEmail => 'Send Email';
+
+  @override
+  String get resend => 'Resend';
 
   @override
   String get addDocument => 'Ajouter un Document';
@@ -360,17 +375,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get required => 'Requis';
 
   @override
-  String get emailAddress => 'TODO: Translate \'Email Address\'';
+  String get emailAddress => 'Adresse e-mail';
 
   @override
-  String get documentDeleteFailed =>
-      'TODO: Translate \'Failed to delete document\'';
+  String get documentDeleteFailed => 'Échec de la suppression du document';
 
   @override
-  String get uploadNew => 'TODO: Translate \'Upload New\'';
+  String get uploadNew => 'Télécharger un nouveau document';
 
   @override
-  String get continueAction => 'TODO: Translate \'Continue\'';
+  String get continueAction => 'Continuer';
 
   @override
   String get compensationClaimForm => 'Formulaire de Demande d\'Indemnisation';
@@ -379,63 +393,74 @@ class AppLocalizationsFr extends AppLocalizations {
   String get flight => 'Vol';
 
   @override
-  String get passengerInformation =>
-      'TODO: Translate \'Passenger Information\'';
+  String get passengerInformation => 'Informations du passager';
 
   @override
-  String get fullName => 'TODO: Translate \'Full Name\'';
+  String get fullName => 'Nom complet';
 
   @override
-  String get downloadPdf => 'TODO: Translate \'Download PDF\'';
+  String get downloadPdf => 'Télécharger le PDF';
 
   @override
-  String get filePreviewNotAvailable =>
-      'TODO: Translate \'File preview not available\'';
+  String get filePreviewNotAvailable => 'Aperçu du fichier non disponible';
 
   @override
-  String get deleteDocument => 'TODO: Translate \'Delete Document\'';
+  String get noFileSelected => 'Aucun fichier sélectionné';
+
+  @override
+  String get preview => 'Aperçu';
+
+  @override
+  String get downloadStarting => 'Démarrage du téléchargement...';
+
+  @override
+  String get fileTypeLabel => 'Type de fichier :';
+
+  @override
+  String get failedToLoadImage => 'Échec du chargement de l\'image';
+
+  @override
+  String get deleteDocument => 'Supprimer le document';
 
   @override
   String get deleteDocumentConfirmation =>
-      'TODO: Translate \'Are you sure you want to delete this document?\'';
+      'Voulez-vous vraiment supprimer ce document ?';
 
   @override
   String get cancel => 'Annuler';
 
   @override
-  String get delete => 'TODO: Translate \'Delete\'';
+  String get delete => 'Supprimer';
 
   @override
-  String get documentDeletedSuccess =>
-      'TODO: Translate \'Document deleted successfully\'';
+  String get documentDeletedSuccess => 'Document supprimé avec succès';
 
   @override
-  String get attachDocuments => 'TODO: Translate \'Attach Documents\'';
+  String get attachDocuments => 'Joindre des documents';
 
   @override
-  String get uploadingDocument => 'TODO: Translate \'Uploading document...\'';
+  String get uploadingDocument => 'Téléchargement du document...';
 
   @override
-  String get noDocuments => 'TODO: Translate \'No documents uploaded yet\'';
+  String get noDocuments => 'Aucun document téléchargé pour le moment';
 
   @override
-  String get uploadFirstDocument => 'TODO: Translate \'Upload First Document\'';
+  String get uploadFirstDocument => 'Télécharger le premier document';
 
   @override
-  String get claimAttachment => 'TODO: Translate \'Claim Attachment\'';
+  String get claimAttachment => 'Pièce jointe à la réclamation';
 
   @override
   String get other => 'autre';
 
   @override
-  String get pdfPreviewMessage => 'TODO: Translate \'PDF Preview\'';
+  String get pdfPreviewMessage => 'Aperçu du PDF';
 
   @override
-  String get tipsAndRemindersTitle => 'TODO: Translate \'Tips & Reminders\'';
+  String get tipsAndRemindersTitle => 'Conseils et rappels';
 
   @override
-  String get tipSecureData =>
-      'TODO: Translate \'Your data is secure and encrypted\'';
+  String get tipSecureData => 'Vos données sont sécurisées et chiffrées';
 
   @override
   String get tipCheckEligibility =>
@@ -510,38 +535,37 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tooltipFlightNumberQuickClaim =>
-      'TODO: Translate \'Enter the flight number for your claim\'';
+      'Saisissez le numéro de vol de votre réclamation';
 
   @override
-  String get tooltipFlightDateQuickClaim =>
-      'TODO: Translate \'Select the date of your flight\'';
+  String get tooltipFlightDateQuickClaim => 'Sélectionnez la date de votre vol';
 
   @override
   String get departureAirportHintQuickClaim =>
-      'TODO: Translate \'Enter airport code or name (e.g. LHR, London Heathrow)\'';
+      'Entrez le code ou le nom de l’aéroport (ex. LHR, London Heathrow)';
 
   @override
   String get validatorDepartureAirportRequired =>
-      'TODO: Translate \'Departure airport is required\'';
+      'L’aéroport de départ est requis';
 
   @override
-  String get underAppeal => 'TODO: Translate \'Under Appeal\'';
+  String get underAppeal => 'En appel';
 
   @override
   String get unknown => 'Inconnu';
 
   @override
   String get errorMustBeLoggedIn =>
-      'TODO: Translate \'You must be logged in to submit a claim\'';
+      'Vous devez être connecté pour soumettre une réclamation';
 
   @override
-  String get dialogTitleError => 'TODO: Translate \'Error\'';
+  String get dialogTitleError => 'Erreur';
 
   @override
-  String get dialogButtonOK => 'TODO: Translate \'OK\'';
+  String get dialogButtonOK => 'OK';
 
   @override
-  String get quickClaimTitle => 'TODO: Translate \'Quick Claim Form\'';
+  String get quickClaimTitle => 'Réclamation rapide';
 
   @override
   String get tooltipFaqHelp =>
@@ -549,50 +573,64 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get quickClaimInfoBanner =>
-      'TODO: Translate \'Fill out this form to submit a quick compensation claim for your flight. We\'ll help you through the process.\'';
+      'Remplissez ce formulaire pour soumettre rapidement une demande d’indemnisation pour votre vol. Nous vous guiderons tout au long du processus.';
 
   @override
-  String get createClaim => 'TODO: Translate \'Create New Claim\'';
+  String get createClaim => 'Créer une nouvelle réclamation';
 
   @override
-  String get submitted => 'TODO: Translate \'Submitted\'';
+  String get submitted => 'Soumise';
 
   @override
-  String get inReview => 'TODO: Translate \'In Review\'';
+  String get inReview => 'En cours d’examen';
 
   @override
   String get actionRequired => 'Action Requise';
 
   @override
-  String get processing => 'TODO: Translate \'Processing\'';
+  String get processing => 'Traitement en cours';
 
   @override
-  String get approved => 'TODO: Translate \'Approved\'';
+  String get approved => 'Approuvée';
 
   @override
-  String get rejected => 'TODO: Translate \'Rejected\'';
+  String get rejected => 'Rejetée';
 
   @override
-  String get paid => 'TODO: Translate \'Paid\'';
+  String get paid => 'Payée';
+
+  @override
+  String get emailStatusNotSent => 'Not sent';
+
+  @override
+  String get emailStatusSending => 'Sending';
+
+  @override
+  String get emailStatusSent => 'Sent';
+
+  @override
+  String get emailStatusFailed => 'Failed';
+
+  @override
+  String get emailStatusBounced => 'Bounced';
 
   @override
   String flightRouteDetails(String departure, String arrival) {
-    return 'TODO: Translate \'$departure to $arrival\'';
+    return '$departure vers $arrival';
   }
 
   @override
-  String get authenticationRequired =>
-      'TODO: Translate \'Authentication Required\'';
+  String get authenticationRequired => 'Authentification requise';
 
   @override
-  String get errorLoadingClaims => 'TODO: Translate \'Error loading claims\'';
+  String get errorLoadingClaims => 'Erreur lors du chargement des réclamations';
 
   @override
   String get loginToViewClaimsDashboard =>
-      'TODO: Translate \'Please log in to view your claims dashboard\'';
+      'Connectez-vous pour voir votre tableau de bord des réclamations';
 
   @override
-  String get logIn => 'TODO: Translate \'Log In\'';
+  String get logIn => 'Se connecter';
 
   @override
   String get noClaimsYet => 'Aucune réclamation pour le moment';
@@ -620,7 +658,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pendingAmount => 'Pending Amount';
 
   @override
+  String get receivedAmount => 'Received';
+
+  @override
   String get noClaimsYetTitle => 'Aucune Réclamation Pour le Moment';
+
+  @override
+  String get noRecentEvents => 'No recent events';
 
   @override
   String get pending => 'Pending';
@@ -685,6 +729,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get completed => 'Terminée';
+
+  @override
+  String get events => 'Events';
 
   @override
   String get genericUser => 'Generic User';

@@ -905,7 +905,8 @@ Widget build(BuildContext context) {
                                                     context, flight),
                                             icon: Icons.assignment_turned_in,
                                             filled: true,
-                                            color: Colors.green,
+                                            // Use a refined green shade similar to the provided design
+                                            color: const Color(0xFF43A047),
                                           ),
                                         ),
                                       ),

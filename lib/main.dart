@@ -128,8 +128,6 @@ class F35FlightCompensationApp extends StatelessWidget {
       ],
       child: Consumer<AccessibilityService>(
         builder: (context, accessibilityService, _) {
-          // Initialize accessibility service
-          accessibilityService.initialize();
           
           // Get base theme
           final baseTheme = ThemeData(
@@ -163,7 +161,7 @@ class F35FlightCompensationApp extends StatelessWidget {
                   
                   // Apply text scaling safely based on accessibility settings
                   final MediaQueryData mediaQueryData = MediaQuery.of(context);
-                  final double textScaleFactor = accessibilityService.largeTextMode ? 1.3 : 1.0;
+                  final double textScaleFactor = accessibilityService.getTextScaleFactor();
                   
                   // Use the fixed textScaler to avoid assertion errors
                   return MediaQuery(

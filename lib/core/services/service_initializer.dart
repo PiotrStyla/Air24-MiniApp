@@ -75,6 +75,10 @@ class ServiceInitializer {
     });
     _locator.registerLazySingleton<ClaimValidationService>(() => ClaimValidationService());
     _locator.registerLazySingleton<AccessibilityService>(() => AccessibilityService());
+    // Initialize AccessibilityService once during app startup to ensure
+    // preferences are loaded and to avoid triggering notifyListeners from build cycles
+    await _locator<AccessibilityService>().initialize();
+    print('[ServiceInitializer] AccessibilityService initialized.');
 
     // Register manual localization service and point the abstract service to it
     if (!_locator.isRegistered<ManualLocalizationService>()) {

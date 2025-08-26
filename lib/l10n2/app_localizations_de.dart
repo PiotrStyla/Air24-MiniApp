@@ -15,14 +15,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scheduledLabel => 'Geplant';
 
   @override
-  String get minutes => 'TODO: Translate \'minutes\'';
+  String get minutes => 'Minuten';
 
   @override
   String get aircraftLabel => 'Flugzeug:';
 
   @override
-  String get prefillCompensationForm =>
-      'TODO: Translate \'Pre-fill Compensation Form\'';
+  String get prefillCompensationForm => 'Entschädigungsformular vorausfüllen';
 
   @override
   String get confirmAndSend => 'Bestätigen und senden';
@@ -156,11 +155,11 @@ class AppLocalizationsDe extends AppLocalizations {
       'Erzwinge eine neue Datenaktualisierung...';
 
   @override
-  String get loadingExternalData => 'TODO: Translate \'Loading External Data\'';
+  String get loadingExternalData => 'Externe Daten werden geladen';
 
   @override
   String get loadingExternalDataDescription =>
-      'TODO: Translate \'Please wait while we fetch the latest flight data...\'';
+      'Bitte warten, während wir die neuesten Flugdaten abrufen...';
 
   @override
   String lastHours(int hours) {
@@ -174,6 +173,18 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String formSubmissionError(String error) {
     return 'Fehler beim Senden des Formulars: $error. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.';
+  }
+
+  @override
+  String get compensationEmailSuccess =>
+      'Compensation email sent successfully!';
+
+  @override
+  String get compensationEmailFailed => 'Failed to send compensation email';
+
+  @override
+  String errorSendingEmail(String error) {
+    return 'Error sending email: $error';
   }
 
   @override
@@ -277,6 +288,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get submitClaim => 'Anspruch einreichen';
 
   @override
+  String get sendEmail => 'Send Email';
+
+  @override
+  String get resend => 'Resend';
+
+  @override
   String get addDocument => 'Dokument hinzufügen';
 
   @override
@@ -362,7 +379,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get required => 'Erforderlich';
 
   @override
-  String get emailAddress => 'TODO: Translate \'Email Address\'';
+  String get emailAddress => 'E-Mail-Adresse';
 
   @override
   String get documentDeleteFailed => 'Dokument konnte nicht gelöscht werden';
@@ -380,8 +397,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get flight => 'Flug';
 
   @override
-  String get passengerInformation =>
-      'TODO: Translate \'Passenger Information\'';
+  String get passengerInformation => 'Passagierinformationen';
 
   @override
   String get fullName => 'Vollständiger Name';
@@ -391,6 +407,21 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get filePreviewNotAvailable => 'Datevorschau nicht verfügbar';
+
+  @override
+  String get noFileSelected => 'Keine Datei ausgewählt';
+
+  @override
+  String get preview => 'Vorschau';
+
+  @override
+  String get downloadStarting => 'Download wird gestartet...';
+
+  @override
+  String get fileTypeLabel => 'Dateityp:';
+
+  @override
+  String get failedToLoadImage => 'Bild konnte nicht geladen werden';
 
   @override
   String get deleteDocument => 'Dokument löschen';
@@ -568,6 +599,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get paid => 'Ausbezahlt';
 
   @override
+  String get emailStatusNotSent => 'Not sent';
+
+  @override
+  String get emailStatusSending => 'Sending';
+
+  @override
+  String get emailStatusSent => 'Sent';
+
+  @override
+  String get emailStatusFailed => 'Failed';
+
+  @override
+  String get emailStatusBounced => 'Bounced';
+
+  @override
   String flightRouteDetails(String departure, String arrival) {
     return 'Flug $flightNumber: $departure - $arrival';
   }
@@ -611,7 +657,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pendingAmount => 'Ausstehender Betrag';
 
   @override
+  String get receivedAmount => 'Received';
+
+  @override
   String get noClaimsYetTitle => 'Noch keine Ansprüche';
+
+  @override
+  String get noRecentEvents => 'No recent events';
 
   @override
   String get pending => 'Ausstehend';
@@ -672,6 +724,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get completed => 'Abgeschlossen';
+
+  @override
+  String get events => 'Events';
 
   @override
   String get genericUser => 'Benutzer';

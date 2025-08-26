@@ -224,6 +224,24 @@
       }
     }
   },
+  "compensationEmailSuccess": "Compensation email sent successfully!",
+  "@compensationEmailSuccess": {
+    "description": "Snackbar message when compensation email is sent successfully"
+  },
+  "compensationEmailFailed": "Failed to send compensation email",
+  "@compensationEmailFailed": {
+    "description": "Snackbar message when sending compensation email fails"
+  },
+  "errorSendingEmail": "Error sending email: {error}",
+  "@errorSendingEmail": {
+    "description": "Error message shown when an error occurs while sending email",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network timeout"
+      }
+    }
+  },
   "apiConnectionIssue": "API Connection Issue",
   "@apiConnectionIssue": {
     "description": "Title for API connection issue"
@@ -353,6 +371,14 @@
   "submitClaim": "Submit Claim",
   "@submitClaim": {
     "description": "Button label for submitting a claim"
+  },
+  "sendEmail": "Send Email",
+  "@sendEmail": {
+    "description": "Button label to send a compensation email"
+  },
+  "resend": "Resend",
+  "@resend": {
+    "description": "Button label to resend an email"
   },
   "addDocument": "Add Document",
   "@addDocument": {
@@ -505,6 +531,26 @@
   "filePreviewNotAvailable": "File preview not available",
   "@filePreviewNotAvailable": {
     "description": "Message shown when file preview is not available"
+  },
+  "noFileSelected": "No file selected",
+  "@noFileSelected": {
+    "description": "Snackbar message when user cancels or no file is chosen"
+  },
+  "preview": "Preview",
+  "@preview": {
+    "description": "Tooltip label for preview icon button"
+  },
+  "downloadStarting": "Download starting...",
+  "@downloadStarting": {
+    "description": "Snackbar message shown when a download starts"
+  },
+  "fileTypeLabel": "File type:",
+  "@fileTypeLabel": {
+    "description": "Label prefix for file type in preview fallback"
+  },
+  "failedToLoadImage": "Failed to load image",
+  "@failedToLoadImage": {
+    "description": "Error text when an image fails to load"
   },
   "deleteDocument": "Delete Document",
   "@deleteDocument": {
@@ -718,6 +764,26 @@
   "@paid": {
     "description": "Status label for a paid claim"
   },
+  "emailStatusNotSent": "Not sent",
+  "@emailStatusNotSent": {
+    "description": "Email status label: not sent"
+  },
+  "emailStatusSending": "Sending",
+  "@emailStatusSending": {
+    "description": "Email status label: sending"
+  },
+  "emailStatusSent": "Sent",
+  "@emailStatusSent": {
+    "description": "Email status label: sent"
+  },
+  "emailStatusFailed": "Failed",
+  "@emailStatusFailed": {
+    "description": "Email status label: failed"
+  },
+  "emailStatusBounced": "Bounced",
+  "@emailStatusBounced": {
+    "description": "Email status label: bounced"
+  },
   "flightRouteDetails": "{departure} to {arrival}",
   "@flightRouteDetails": {
     "description": "Format for displaying flight route details",
@@ -780,9 +846,17 @@
   "@pendingAmount": {
     "description": "Label for pending compensation amount"
   },
+  "receivedAmount": "Received",
+  "@receivedAmount": {
+    "description": "Label for total received compensation"
+  },
   "noClaimsYetTitle": "No Claims in this Category",
   "@noClaimsYetTitle": {
     "description": "Title shown when no claims exist in a category"
+  },
+  "noRecentEvents": "No recent events",
+  "@noRecentEvents": {
+    "description": "Message shown when there are no recent events"
   },
   "pending": "Pending",
   "@pending": {
@@ -882,6 +956,10 @@
   "completed": "Completed",
   "@completed": {
     "description": "Tab label for completed claims"
+  },
+  "events": "Events",
+  "@events": {
+    "description": "Tab label for recent events"
   },
   "genericUser": "Generic User",
   "signOut": "Sign Out",

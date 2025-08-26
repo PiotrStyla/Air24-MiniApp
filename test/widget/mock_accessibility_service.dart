@@ -55,17 +55,6 @@ class MockAccessibilityService extends ChangeNotifier implements AccessibilitySe
     return _screenReaderEmphasis ? detailedLabel : shortLabel;
   }
 
-  // ChangeNotifier stubs (can be more elaborate if needed with a listener list)
-  @override
-  void addListener(VoidCallback listener) {
-    // No-op or basic listener tracking
-  }
-
-  @override
-  void removeListener(VoidCallback listener) {
-    // No-op or basic listener tracking
-  }
-
   @override
   void dispose() {
     // No-op

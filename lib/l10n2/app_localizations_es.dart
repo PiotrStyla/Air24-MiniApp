@@ -177,6 +177,18 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get compensationEmailSuccess =>
+      'Compensation email sent successfully!';
+
+  @override
+  String get compensationEmailFailed => 'Failed to send compensation email';
+
+  @override
+  String errorSendingEmail(String error) {
+    return 'Error sending email: $error';
+  }
+
+  @override
   String get apiConnectionIssue =>
       'Problema de conexión con la API. Por favor, inténtelo de nuevo.';
 
@@ -272,6 +284,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get submitClaim => 'Enviar Reclamación';
+
+  @override
+  String get sendEmail => 'Send Email';
+
+  @override
+  String get resend => 'Resend';
 
   @override
   String get addDocument => 'Añadir Documento';
@@ -388,6 +406,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get filePreviewNotAvailable => 'Vista previa de archivo no disponible';
+
+  @override
+  String get noFileSelected => 'Ningún archivo seleccionado';
+
+  @override
+  String get preview => 'Vista previa';
+
+  @override
+  String get downloadStarting => 'Iniciando descarga...';
+
+  @override
+  String get fileTypeLabel => 'Tipo de archivo:';
+
+  @override
+  String get failedToLoadImage => 'No se pudo cargar la imagen';
 
   @override
   String get deleteDocument => 'Eliminar documento';
@@ -564,6 +597,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get paid => 'Pagado';
 
   @override
+  String get emailStatusNotSent => 'Not sent';
+
+  @override
+  String get emailStatusSending => 'Sending';
+
+  @override
+  String get emailStatusSent => 'Sent';
+
+  @override
+  String get emailStatusFailed => 'Failed';
+
+  @override
+  String get emailStatusBounced => 'Bounced';
+
+  @override
   String flightRouteDetails(String departure, String arrival) {
     return 'Vuelo $flightNumber: $departure - $arrival';
   }
@@ -607,7 +655,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pendingAmount => 'Monto Pendiente';
 
   @override
+  String get receivedAmount => 'Received';
+
+  @override
   String get noClaimsYetTitle => 'Aún No Hay Reclamaciones';
+
+  @override
+  String get noRecentEvents => 'No recent events';
 
   @override
   String get pending => 'Pendiente';
@@ -668,6 +722,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get completed => 'Completada';
+
+  @override
+  String get events => 'Events';
 
   @override
   String get genericUser => 'Usuario';

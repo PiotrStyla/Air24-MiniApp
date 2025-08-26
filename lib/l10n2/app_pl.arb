@@ -1015,6 +1015,26 @@
   "@filePreviewNotAvailable": {
     "description": "Komunikat wyświetlany, gdy podgląd pliku nie jest dostępny"
   },
+  "noFileSelected": "Nie wybrano pliku",
+  "@noFileSelected": {
+    "description": "Komunikat na pasku powiadomień, gdy nie wybrano pliku lub dialog został anulowany"
+  },
+  "preview": "Podgląd",
+  "@preview": {
+    "description": "Etykieta podpowiedzi dla przycisku podglądu"
+  },
+  "downloadStarting": "Rozpoczynanie pobierania...",
+  "@downloadStarting": {
+    "description": "Komunikat na pasku powiadomień podczas rozpoczęcia pobierania"
+  },
+  "fileTypeLabel": "Typ pliku:",
+  "@fileTypeLabel": {
+    "description": "Prefiks etykiety dla typu pliku w trybie zapasowym podglądu"
+  },
+  "failedToLoadImage": "Nie udało się wczytać obrazu",
+  "@failedToLoadImage": {
+    "description": "Komunikat o błędzie, gdy nie można wczytać obrazu"
+  },
   "deleteDocument": "Usuń dokument",
   "@deleteDocument": {
     "description": "Tytuł dla dialogu potwierdzenia usunięcia dokumentu"
@@ -1215,7 +1235,7 @@
   "@minutes": {
     "description": "Text for minutes unit"
   },
-  "errorFailedToSubmitClaim": "TODO: Translate 'Failed to submit claim. Please try again.'",
+  "errorFailedToSubmitClaim": "Nie udało się wysłać zgłoszenia. Spróbuj ponownie.",
   "@errorFailedToSubmitClaim": {
     "description": "Error message shown when claim submission fails",
     "placeholders": {
@@ -1224,27 +1244,27 @@
       }
     }
   },
-  "copiedToClipboard": "TODO: Translate 'Copied to Clipboard'",
+  "copiedToClipboard": "Skopiowano do schowka",
   "@copiedToClipboard": {
     "description": "Message when text is copied to clipboard"
   },
-  "networkError": "TODO: Translate 'Network Error'",
+  "networkError": "Błąd sieci",
   "@networkError": {
     "description": "Generic network error message"
   },
-  "generalError": "TODO: Translate 'General Error'",
+  "generalError": "Błąd ogólny",
   "@generalError": {
     "description": "Generic error message"
   },
-  "loginRequiredForClaim": "TODO: Translate 'Login Required for Claim'",
+  "loginRequiredForClaim": "Wymagane logowanie, aby wysłać zgłoszenie",
   "@loginRequiredForClaim": {
     "description": "Message indicating login is required to submit a claim"
   },
-  "emailAddress": "TODO: Translate 'Email Address'",
+  "emailAddress": "Adres e-mail",
   "@emailAddress": {
     "description": "Label for email address field"
   },
-  "passengerInformation": "TODO: Translate 'Passenger Information'",
+  "passengerInformation": "Informacje o pasażerze",
   "@passengerInformation": {
     "description": "Header for passenger information section"
   },
@@ -1256,23 +1276,23 @@
   "@continueToReview": {
     "description": "Button text to proceed to review screen"
   },
-  "validatorArrivalAirportRequired": "TODO: Translate 'Arrival airport is required'",
+  "validatorArrivalAirportRequired": "Lotnisko przylotu jest wymagane",
   "@validatorArrivalAirportRequired": {
     "description": "Validation message when arrival airport is empty"
   },
-  "validatorFlightNumberRequired": "TODO: Translate 'Flight number is required'",
+  "validatorFlightNumberRequired": "Numer lotu jest wymagany",
   "@validatorFlightNumberRequired": {
     "description": "Validation message when flight number is empty"
   },
-  "validatorDepartureAirportRequired": "TODO: Translate 'Departure airport is required'",
+  "validatorDepartureAirportRequired": "Lotnisko wylotu jest wymagane",
   "@validatorDepartureAirportRequired": {
     "description": "Validation message when departure airport is empty"
   },
-  "errorMustBeLoggedIn": "TODO: Translate 'You must be logged in to submit a claim'",
+  "errorMustBeLoggedIn": "Aby wysłać zgłoszenie, musisz być zalogowany",
   "@errorMustBeLoggedIn": {
     "description": "Error message shown when trying to access the claim form without being logged in"
   },
-  "dialogTitleError": "TODO: Translate 'Error'",
+  "dialogTitleError": "Błąd",
   "@dialogTitleError": {
     "description": "Title for error dialog boxes"
   },

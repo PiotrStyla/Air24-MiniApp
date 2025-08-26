@@ -9,7 +9,7 @@ import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 import 'package:f35_flight_compensation/l10n2/app_localizations.dart'; // For MaterialApp
 
 // Copied from claim_submission_test.dart
-class MockAccessibilityService extends AccessibilityService with ChangeNotifier {
+class MockAccessibilityService extends AccessibilityService {
   bool _mockHighContrast = false;
   bool _mockLargeText = false;
   bool _mockScreenReaderEmphasis = false;

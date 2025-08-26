@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart';
 import 'package:intl/intl.dart';
+import '../services/enhanced_claims_service.dart';
+import '../services/claim_tracking_service.dart';
 
 import '../models/claim.dart';
 import '../models/claim_status.dart';
@@ -11,8 +13,9 @@ import '../core/error/error_handler.dart';
 /// A simplified version of the claim detail screen to address compilation issues
 class ClaimDetailScreen extends StatefulWidget {
   final String claimId;
+  final Claim? initialClaim;
   
-  const ClaimDetailScreen({Key? key, required this.claimId}) : super(key: key);
+  const ClaimDetailScreen({Key? key, required this.claimId, this.initialClaim}) : super(key: key);
 
   @override
   State<ClaimDetailScreen> createState() => _ClaimDetailScreenState();
@@ -28,17 +31,52 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
   void initState() {
     super.initState();
     _viewModel = ServiceInitializer.get<ClaimDashboardViewModel>();
-    _loadClaimDetails();
+    // If we were given the Claim object, render immediately
+    if (widget.initialClaim != null) {
+      _claim = widget.initialClaim;
+      _isLoading = false;
+      // Perform a silent refresh to ensure up-to-date data
+      _loadClaimDetails(showSpinner: false);
+    } else {
+      _loadClaimDetails();
+    }
   }
   
-  Future<void> _loadClaimDetails() async {
-    setState(() {
-      _isLoading = true;
+  Future<void> _loadClaimDetails({bool showSpinner = true}) async {
+    if (showSpinner) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    } else {
       _errorMessage = null;
-    });
+    }
     
     try {
-      final claim = await _viewModel.getClaimDetails(widget.claimId);
+      Claim? claim;
+      // 1) Try EnhancedClaimsService cache (used by dashboard)
+      try {
+        final enhanced = ServiceInitializer.get<EnhancedClaimsService>();
+        claim = enhanced.claims.firstWhere(
+          (c) => c.id == widget.claimId,
+          orElse: () => throw StateError('not found'),
+        );
+      } catch (_) {
+        // ignore and try next source
+      }
+
+      // 2) Fall back to ClaimTrackingService direct fetch
+      if (claim == null) {
+        try {
+          final tracking = ServiceInitializer.get<ClaimTrackingService>();
+          claim = await tracking.getClaimDetails(widget.claimId);
+        } catch (_) {
+          // ignore and try next source
+        }
+      }
+
+      // 3) Fall back to ViewModel cached list
+      claim ??= await _viewModel.getClaimDetails(widget.claimId);
       
       setState(() {
         _claim = claim;

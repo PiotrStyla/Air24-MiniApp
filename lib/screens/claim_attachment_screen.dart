@@ -70,7 +70,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('No file selected'),
+                content: Text(context.l10n.noFileSelected),
                 backgroundColor: Colors.orange,
               ),
             );
@@ -108,7 +108,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Document "$fileName" added successfully (Web Demo)'),
+              content: Text(context.l10n.documentUploadSuccess),
               backgroundColor: Colors.green,
             ),
           );
@@ -117,7 +117,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to create document: $e'),
+              content: Text('${context.l10n.uploadFailed}: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -234,12 +234,12 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.visibility, color: Colors.blue),
-                      tooltip: 'Preview',
+                      tooltip: context.l10n.preview,
                       onPressed: () => _previewDocument(context, doc),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
-                      tooltip: 'Delete',
+                      tooltip: context.l10n.delete,
                       onPressed: () => _deleteDocument(context, doc),
                     ),
                   ],
@@ -285,7 +285,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
 
   /// Method to preview a document
   void _previewDocument(BuildContext context, FlightDocument document) {
-    final String fileName = document.documentName ?? 'Document';
+    final String fileName = document.documentName ?? context.l10n.claimAttachment;
     final bool isImageFile = _isImageFile(fileName);
     final bool isPdfFile = fileName.toLowerCase().endsWith('.pdf');
     
@@ -342,7 +342,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                                   onPressed: () {
                                     // Would implement actual download functionality here
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Download would start here')),
+                                      SnackBar(content: Text(context.l10n.downloadStarting)),
                                     );
                                   },
                                 ),
@@ -354,7 +354,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                                 const Icon(Icons.insert_drive_file, size: 100, color: Colors.blue),
                                 const SizedBox(height: 16),
                                 Text(context.l10n.filePreviewNotAvailable),
-                                Text('File type: ${_getFileExtension(fileName)}'),
+                                Text('${context.l10n.fileTypeLabel} ${_getFileExtension(fileName)}'),
                               ],
                             )),
                 ),
@@ -389,9 +389,8 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
           children: [
             const Icon(Icons.image, size: 100, color: Colors.blue),
             const SizedBox(height: 16),
-            const Text('Preview not available for web mock documents'),
+            Text(context.l10n.filePreviewNotAvailable),
             const SizedBox(height: 16),
-            const Text('In a real implementation, the actual image would be shown here'),
           ],
         ),
       );
@@ -419,7 +418,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                 children: [
                   const Icon(Icons.broken_image, size: 100, color: Colors.red),
                   const SizedBox(height: 16),
-                  Text('Failed to load image: $error'),
+                  Text('${context.l10n.failedToLoadImage}: $error'),
                 ],
               );
             },
@@ -447,13 +446,13 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                     const Icon(Icons.image, size: 150, color: Colors.white70),
                     const SizedBox(height: 20),
                     Text(
-                      'Preview of $fileName',
+                      fileName,
                       style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
                     const SizedBox(height: 40),
-                    const Text(
-                      'In a production app, the actual image would be shown here.',
-                      style: TextStyle(color: Colors.white70),
+                    Text(
+                      context.l10n.filePreviewNotAvailable,
+                      style: const TextStyle(color: Colors.white70),
                     ),
                   ],
                 ),
@@ -470,12 +469,12 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Previewing: $fileName',
+                      fileName,
                       style: const TextStyle(color: Colors.white),
                     ),
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Close', style: TextStyle(color: Colors.white)),
+                      child: Text(context.l10n.done, style: const TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -485,7 +484,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
         ),
       ),
       barrierDismissible: true,
-      barrierLabel: 'Dismiss',
+      barrierLabel: context.l10n.cancel,
       transitionDuration: const Duration(milliseconds: 300),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
@@ -556,7 +555,7 @@ class _ClaimAttachmentViewState extends State<_ClaimAttachmentView> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete document: $e'),
+            content: Text('${context.l10n.documentDeleteFailed}: $e'),
             backgroundColor: Colors.red,
           ),
         );

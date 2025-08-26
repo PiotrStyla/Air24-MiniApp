@@ -1151,6 +1151,26 @@
   "@filePreviewNotAvailable": {
     "description": "Meldung, wenn keine Datevorschau verfügbar ist"
   },
+  "noFileSelected": "Keine Datei ausgewählt",
+  "@noFileSelected": {
+    "description": "Snackbar-Meldung, wenn keine Datei ausgewählt wurde oder der Dialog abgebrochen wurde"
+  },
+  "preview": "Vorschau",
+  "@preview": {
+    "description": "Tooltip-Beschriftung für die Vorschau-Schaltfläche"
+  },
+  "downloadStarting": "Download wird gestartet...",
+  "@downloadStarting": {
+    "description": "Snackbar-Meldung, wenn ein Download startet"
+  },
+  "fileTypeLabel": "Dateityp:",
+  "@fileTypeLabel": {
+    "description": "Label-Präfix für Dateityp in der Vorschau"
+  },
+  "failedToLoadImage": "Bild konnte nicht geladen werden",
+  "@failedToLoadImage": {
+    "description": "Fehlermeldung, wenn ein Bild nicht geladen werden kann"
+  },
   "deleteDocument": "Dokument löschen",
   "@deleteDocument": {
     "description": "Text für die Schaltfläche zum Löschen eines Dokuments"
@@ -1280,31 +1300,31 @@
   "@euCompensation": {
     "description": "Label for EU compensation tag on eligible flights"
   },
-  "minutes": "TODO: Translate 'minutes'",
+  "minutes": "Minuten",
   "@minutes": {
     "description": "Text for minutes unit"
   },
-  "aircraftLabel": "TODO: Translate 'Aircraft:'",
+  "aircraftLabel": "Flugzeug:",
   "@aircraftLabel": {
     "description": "Label for aircraft information"
   },
-  "prefillCompensationForm": "TODO: Translate 'Pre-fill Compensation Form'",
+  "prefillCompensationForm": "Entschädigungsformular vorausfüllen",
   "@prefillCompensationForm": {
     "description": "Button text for pre-filling compensation form"
   },
-  "loadingExternalData": "TODO: Translate 'Loading External Data'",
+  "loadingExternalData": "Externe Daten werden geladen",
   "@loadingExternalData": {
     "description": "Title for loading screen"
   },
-  "loadingExternalDataDescription": "TODO: Translate 'Please wait while we fetch the latest flight data...'",
+  "loadingExternalDataDescription": "Bitte warten, während wir die neuesten Flugdaten abrufen...",
   "@loadingExternalDataDescription": {
     "description": "Message when loading external data"
   },
-  "emailAddress": "TODO: Translate 'Email Address'",
+  "emailAddress": "E-Mail-Adresse",
   "@emailAddress": {
     "description": "Label for email address field"
   },
-  "passengerInformation": "TODO: Translate 'Passenger Information'",
+  "passengerInformation": "Passagierinformationen",
   "@passengerInformation": {
     "description": "Header for passenger information section"
   },

@@ -64,7 +64,7 @@ class _EmailPreviewDialogState extends State<EmailPreviewDialog> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'To: ${context.l10n.toEmail}',
+                    '${context.l10n.to}:',
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,

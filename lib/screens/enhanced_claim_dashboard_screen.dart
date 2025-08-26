@@ -81,19 +81,19 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                 tabs: [
                   Tab(
                     icon: const Icon(Icons.pending_actions),
-                    text: 'Active',
+                    text: context.l10n.active,
                   ),
                   Tab(
                     icon: const Icon(Icons.warning_amber),
-                    text: 'Action Required',
+                    text: context.l10n.actionRequired,
                   ),
                   Tab(
                     icon: const Icon(Icons.check_circle),
-                    text: 'Completed',
+                    text: context.l10n.completed,
                   ),
                   Tab(
                     icon: const Icon(Icons.notifications_active),
-                    text: 'Events',
+                    text: context.l10n.events,
                   ),
                 ],
               ),
@@ -103,7 +103,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                 IconButton(
                   icon: const Icon(Icons.refresh),
                   onPressed: () => _refreshDashboard(),
-                  tooltip: 'Refresh Dashboard',
+                  tooltip: context.l10n.refreshDashboard,
                 ),
               ],
             ),
@@ -148,7 +148,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
             floatingActionButton: FloatingActionButton.extended(
               onPressed: () => _navigateToClaimSubmission(),
               icon: const Icon(Icons.add),
-              label: const Text('New Claim'),
+              label: Text(context.l10n.newClaim),
             ),
           );
         },
@@ -239,7 +239,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                 const Icon(Icons.analytics, color: Colors.blue),
                 const SizedBox(width: 8),
                 Text(
-                  'Claims Overview',
+                  context.l10n.claimsSummary,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -249,7 +249,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
               children: [
                 Expanded(
                   child: _buildStatCard(
-                    'Total Claims',
+                    context.l10n.totalClaims,
                     totalClaims.toString(),
                     Icons.receipt_long,
                     Colors.blue,
@@ -258,7 +258,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                 const SizedBox(width: 8),
                 Expanded(
                   child: _buildStatCard(
-                    'Active',
+                    context.l10n.active,
                     activeClaims.toString(),
                     Icons.pending_actions,
                     Colors.orange,
@@ -267,7 +267,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                 const SizedBox(width: 8),
                 Expanded(
                   child: _buildStatCard(
-                    'Completed',
+                    context.l10n.completed,
                     completedClaims.toString(),
                     Icons.check_circle,
                     Colors.green,
@@ -280,7 +280,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
               children: [
                 Expanded(
                   child: _buildStatCard(
-                    'Total Value',
+                    context.l10n.totalCompensation,
                     _currencyFormat.format(totalCompensation),
                     Icons.euro,
                     Colors.purple,
@@ -289,7 +289,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                 const SizedBox(width: 8),
                 Expanded(
                   child: _buildStatCard(
-                    'Received',
+                    context.l10n.receivedAmount,
                     _currencyFormat.format(paidCompensation),
                     Icons.account_balance_wallet,
                     Colors.green,
@@ -349,15 +349,15 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
   /// Build claims list
   Widget _buildClaimsList(List<Claim> claims, EnhancedClaimsService claimsService) {
     if (claims.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inbox_outlined, size: 64, color: Colors.grey),
-            SizedBox(height: 16),
+            const Icon(Icons.inbox_outlined, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
             Text(
-              'No claims in this category',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              context.l10n.noClaimsYetTitle,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),
@@ -464,7 +464,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                       child: ElevatedButton.icon(
                         onPressed: () => _sendCompensationEmail(claim, claimsService),
                         icon: const Icon(Icons.send, size: 16),
-                        label: const Text('Send Email'),
+                        label: Text(context.l10n.sendEmail),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           foregroundColor: Colors.white,
@@ -476,7 +476,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                       child: OutlinedButton.icon(
                         onPressed: () => _resendEmail(claim, claimsService),
                         icon: const Icon(Icons.refresh, size: 16),
-                        label: const Text('Resend'),
+                        label: Text(context.l10n.resend),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -485,7 +485,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
                     child: OutlinedButton.icon(
                       onPressed: () => _navigateToClaimDetail(claim),
                       icon: const Icon(Icons.visibility, size: 16),
-                      label: const Text('View Details'),
+                      label: Text(context.l10n.viewClaimDetails),
                     ),
                   ),
                 ],
@@ -567,27 +567,27 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
       case ClaimEmailStatus.notSent:
         color = Colors.grey;
         icon = Icons.email_outlined;
-        text = 'NOT SENT';
+        text = context.l10n.emailStatusNotSent.toUpperCase();
         break;
       case ClaimEmailStatus.sending:
         color = Colors.orange;
         icon = Icons.send;
-        text = 'SENDING';
+        text = context.l10n.emailStatusSending.toUpperCase();
         break;
       case ClaimEmailStatus.sent:
         color = Colors.green;
         icon = Icons.check_circle;
-        text = 'SENT';
+        text = context.l10n.emailStatusSent.toUpperCase();
         break;
       case ClaimEmailStatus.failed:
         color = Colors.red;
         icon = Icons.error;
-        text = 'FAILED';
+        text = context.l10n.emailStatusFailed.toUpperCase();
         break;
       case ClaimEmailStatus.bounced:
         color = Colors.red;
         icon = Icons.error_outline;
-        text = 'BOUNCED';
+        text = context.l10n.emailStatusBounced.toUpperCase();
         break;
     }
     
@@ -619,15 +619,15 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
   /// Build events tab
   Widget _buildEventsTab() {
     if (_recentEvents.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.notifications_none, size: 64, color: Colors.grey),
-            SizedBox(height: 16),
+            const Icon(Icons.notifications_none, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
             Text(
-              'No recent events',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              context.l10n.noRecentEvents,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),
@@ -707,7 +707,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
           const Icon(Icons.error_outline, size: 64, color: Colors.red),
           const SizedBox(height: 16),
           Text(
-            'Error loading claims',
+            context.l10n.errorLoadingClaims,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
@@ -719,7 +719,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: _refreshDashboard,
-            child: const Text('Retry'),
+            child: Text(context.l10n.retry),
           ),
         ],
       ),
@@ -735,20 +735,20 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
           const Icon(Icons.flight_takeoff, size: 64, color: Colors.grey),
           const SizedBox(height: 16),
           Text(
-            'No Claims Yet',
+            context.l10n.noClaimsYet,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Start by creating your first compensation claim',
+          Text(
+            context.l10n.startCompensationClaimInstructions,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey),
+            style: const TextStyle(color: Colors.grey),
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: _navigateToClaimSubmission,
             icon: const Icon(Icons.add),
-            label: const Text('Create Claim'),
+            label: Text(context.l10n.createClaim),
           ),
         ],
       ),
@@ -786,8 +786,8 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
           SnackBar(
             content: Text(
               success 
-                ? 'Compensation email sent successfully!' 
-                : 'Failed to send compensation email'
+                ? context.l10n.compensationEmailSuccess 
+                : context.l10n.compensationEmailFailed
             ),
             backgroundColor: success ? Colors.green : Colors.red,
           ),
@@ -797,7 +797,7 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error sending email: ${e.toString()}'),
+            content: Text(context.l10n.errorSendingEmail(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -823,7 +823,10 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
   void _navigateToClaimDetail(Claim claim) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ClaimDetailScreen(claimId: claim.id),
+        builder: (context) => ClaimDetailScreen(
+          claimId: claim.id,
+          initialClaim: claim,
+        ),
       ),
     );
   }

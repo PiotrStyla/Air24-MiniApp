@@ -285,24 +285,12 @@ class FirebaseDocumentStorageService implements DocumentStorageService {
       // Then try to delete from storage if we have a URL
       if (document.storageUrl.isNotEmpty) {
         try {
-          // Extract storage path from URL
-          // This assumes URLs are in the format: https://storage.googleapis.com/[bucket]/[path]
-          // or firebase storage URLs that contain /o/ in the path
-          final uri = Uri.parse(document.storageUrl);
-          String? storagePath;
-          
-          if (document.storageUrl.contains('firebase') && uri.path.contains('/o/')) {
-            // Firebase Storage URL format
-            storagePath = Uri.decodeComponent(uri.path.split('/o/')[1].split('?').first);
-          } else {
-            // Standard Google Cloud Storage URL format
-            storagePath = uri.path.replaceFirst('/', '');
-          }
-          
-          if (storagePath != null && storagePath.isNotEmpty) {
-            await _storage.ref().child(storagePath).delete();
-            debugPrint('✅ Document: File deleted from storage: $storagePath');
-          }
+          // Prefer Firebase's built-in URL resolution for storage references
+          // Handles gs://, https://firebasestorage.googleapis.com, and other formats
+          final Reference ref = _storage.refFromURL(document.storageUrl);
+          final String storagePath = ref.fullPath;
+          await ref.delete();
+          debugPrint('✅ Document: File deleted from storage: $storagePath');
         } catch (storageError) {
           // Log error but don't fail the overall operation
           debugPrint('⚠️ Document: Failed to delete storage file: $storageError');
