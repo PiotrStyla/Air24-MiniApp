@@ -314,6 +314,7 @@
   "viewAll": "Voir Tout",
   "documentScanner": "Scanner de Documents",
   "profileInformation": "Informations du Profil",
+  "profileInfoBannerSemanticLabel": "Informations sur l'utilisation des données de votre profil",
   "editPersonalInformation": "Modifier vos informations personnelles",
   "editPersonalAndContactInformation": "Modifier vos informations personnelles et de contact",
   "configureAccessibilityOptions": "Configurer les options d'accessibilité de l'application",
@@ -530,6 +531,14 @@
   "emailPreviewAttachmentGuidance": "Vous pourrez ajouter des pièces jointes à l'étape suivante. Veuillez n'inclure que des fichiers aux formats JPG, PNG ou PDF.",
   "@emailPreviewAttachmentGuidance": {
     "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
+  },
+  "emailClipboardFallbackPrimary": "Aucune application e-mail disponible. Le contenu de l'e-mail a été copié dans votre presse-papiers. Collez-le dans n'importe quel service de messagerie.",
+  "@emailClipboardFallbackPrimary": {
+    "description": "Texte principal du bandeau lorsque la copie dans le presse-papiers est utilisée faute d'application e-mail disponible"
+  },
+  "emailClipboardFallbackAdvisory": "Après avoir collé, vous pouvez relire et corriger le texte, et joindre des documents comme des billets ou des cartes d'embarquement (JPG, PNG, PDF).",
+  "@emailClipboardFallbackAdvisory": {
+    "description": "Texte de conseil secondaire pour expliquer les corrections et pièces jointes"
   },
   "reasonForClaim": "Motif de la Réclamation",
   "@reasonForClaim": {
@@ -1137,6 +1146,9 @@
   "@profileInformation": {
     "description": "Auto-generated for profileInformation"
   },
+  "@profileInfoBannerSemanticLabel": {
+    "description": "Étiquette sémantique pour l'accessibilité de la bannière d'informations du profil"
+  },
   "firstName": "First Name",
   "@firstName": {
     "description": "Auto-generated for firstName"
@@ -1425,5 +1437,21 @@
         "type": "int"
       }
     }
+  },
+  "emailReadyTitle": "Votre Email d’indemnisation est prêt à être envoyé !",
+  "@emailReadyTitle": {
+    "description": "Title shown at top of secure email preview dialog"
+  },
+  "sendEmailSecurely": "Envoyer l'Email en toute sécurité",
+  "@sendEmailSecurely": {
+    "description": "Primary action button to send email securely"
+  },
+  "emailWillBeSentSecurely": "Votre email sera envoyé en toute sécurité via notre service backend",
+  "@emailWillBeSentSecurely": {
+    "description": "Subtitle explaining secure sending through backend"
+  },
+  "secureTransmissionNotice": "Votre email sera envoyé en toute sécurité via une transmission chiffrée",
+  "@secureTransmissionNotice": {
+    "description": "Notice about secure, encrypted transmission"
   }
 }

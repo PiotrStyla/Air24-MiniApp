@@ -296,6 +296,7 @@
   "viewAll": "Alle anzeigen",
   "documentScanner": "Dokumentenscanner",
   "profileInformation": "Profilinformationen",
+  "profileInfoBannerSemanticLabel": "Informationen über die Verwendung Ihrer Profildaten",
   "editPersonalInformation": "Ihre persönlichen Daten bearbeiten",
   "editPersonalAndContactInformation": "Ihre persönlichen und Kontaktdaten bearbeiten",
   "configureAccessibilityOptions": "Barrierefreiheitsoptionen der App konfigurieren",
@@ -1398,6 +1399,9 @@
   "@profileInformation": {
     "description": "Auto-generated for profileInformation"
   },
+  "@profileInfoBannerSemanticLabel": {
+    "description": "Semantische Beschriftung für die Barrierefreiheit des Profilinformations-Banners"
+  },
   "firstName": "First Name",
   "@firstName": {
     "description": "Auto-generated for firstName"
@@ -1611,5 +1615,29 @@
   "emailPreviewAttachmentGuidance": "Sie können im nächsten Schritt Anhänge hinzufügen. Bitte denken Sie daran, nur Dateien im JPG-, PNG- oder PDF-Format beizufügen.",
   "@emailPreviewAttachmentGuidance": {
     "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
+  },
+  "emailClipboardFallbackPrimary": "Keine E-Mail-App verfügbar. Der E-Mail-Inhalt wurde in Ihre Zwischenablage kopiert. Fügen Sie ihn in einen beliebigen E-Mail-Dienst ein.",
+  "@emailClipboardFallbackPrimary": {
+    "description": "Primärer Bannertext, wenn wegen fehlender E-Mail-App auf die Zwischenablage zurückgegriffen wird"
+  },
+  "emailClipboardFallbackAdvisory": "Nach dem Einfügen können Sie den Text prüfen und korrigieren sowie Dokumente wie Tickets oder Bordkarten (JPG, PNG, PDF) anhängen.",
+  "@emailClipboardFallbackAdvisory": {
+    "description": "Zusätzlicher Hinweis zum Banner: Korrekturen vornehmen und Anhänge hinzufügen"
+  },
+  "emailReadyTitle": "Ihre Entschädigungs-E-Mail ist zum Senden bereit!",
+  "@emailReadyTitle": {
+    "description": "Title shown at top of secure email preview dialog"
+  },
+  "sendEmailSecurely": "E-Mail sicher senden",
+  "@sendEmailSecurely": {
+    "description": "Primary action button to send email securely"
+  },
+  "emailWillBeSentSecurely": "Ihre E-Mail wird sicher über unseren Backend-Dienst gesendet",
+  "@emailWillBeSentSecurely": {
+    "description": "Subtitle explaining secure sending through backend"
+  },
+  "secureTransmissionNotice": "Ihre E-Mail wird sicher mit verschlüsselter Übertragung gesendet",
+  "@secureTransmissionNotice": {
+    "description": "Notice about secure, encrypted transmission"
   }
 }
