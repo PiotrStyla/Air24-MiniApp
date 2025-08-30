@@ -84,6 +84,7 @@ flutter:
     # - assets/rapidapi_key.txt
     - assets/data/eu_airports.json
     - assets/data/flight_compensation_data.json
+    - assets/icons/app_icon.png
     - lib/l10n2/app_en.arb
     - lib/l10n2/app_de.arb
     - lib/l10n2/app_es.arb

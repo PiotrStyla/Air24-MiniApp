@@ -177,8 +177,17 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
             airlineEmail = procedure.claimEmail;
             print('DEBUG: Found airline through service: ${procedure.name} with email: $airlineEmail');
           } else {
-            print('DEBUG: No airline procedure found for IATA code: "$airlineIata". Using user email as fallback.');
-            airlineEmail = userEmail;
+            // Fallback: attempt lookup by human-readable airline name from claim
+            final airlineName = _claim.airlineName.trim();
+            print('DEBUG: No airline procedure found for IATA code: "$airlineIata". Trying fallback by name: "$airlineName"');
+            final nameProcedure = await AirlineProcedureService.getProcedureByName(airlineName);
+            if (nameProcedure != null && nameProcedure.claimEmail.isNotEmpty) {
+              airlineEmail = nameProcedure.claimEmail;
+              print('DEBUG: Fallback match by NAME succeeded: ${nameProcedure.name} (${nameProcedure.iata}) -> $airlineEmail');
+            } else {
+              print('DEBUG: No airline procedure found by NAME either. Using user email as fallback.');
+              airlineEmail = userEmail;
+            }
           }
         } catch (e) {
           print('DEBUG: Error getting airline procedure: $e');
