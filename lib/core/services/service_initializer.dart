@@ -23,6 +23,7 @@ import 'package:f35_flight_compensation/services/in_app_messaging_service.dart';
 import 'package:f35_flight_compensation/services/enhanced_claims_service.dart';
 import 'package:f35_flight_compensation/services/secure_email_service.dart';
 import 'package:f35_flight_compensation/services/donation_service.dart';
+import 'package:f35_flight_compensation/services/world_id_service.dart';
 import 'package:f35_flight_compensation/core/error/error_handler.dart';
 import 'package:f35_flight_compensation/viewmodels/auth_viewmodel.dart';
 import 'package:f35_flight_compensation/viewmodels/document_viewmodel.dart';
@@ -34,6 +35,9 @@ import 'package:f35_flight_compensation/viewmodels/claim_dashboard_viewmodel.dar
 class ServiceInitializer {
   static final GetIt _locator = GetIt.instance;
   static bool _isTestMode = false;
+  
+  // Feature flags
+  static bool donationsEnabled = false;
 
   /// Register all services and viewmodels asynchronously
   static Future<void> initAsync() async {
@@ -51,6 +55,14 @@ class ServiceInitializer {
     _locator.registerLazySingleton<InAppMessagingService>(() => InAppMessagingService());
     _locator.registerLazySingleton<SecureEmailService>(() => SecureEmailService());
     _locator.registerLazySingleton<DonationService>(() => DonationService());
+    _locator.registerLazySingleton<WorldIdService>(() => WorldIdService(
+      baseUrl: const String.fromEnvironment(
+        'WLD_BASE_URL',
+        defaultValue: kDebugMode
+            ? 'http://localhost:3000/api'
+            : 'https://air24.app/api',
+      ),
+    ));
     _locator.registerLazySingleton<EnhancedClaimsService>(() => 
       EnhancedClaimsService(
         _locator.get<ClaimTrackingService>(),
