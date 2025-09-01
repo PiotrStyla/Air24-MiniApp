@@ -45,5 +45,14 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Permissions required by plugins -->
+	<key>NSCameraUsageDescription</key>
+	<string>Camera is used to scan boarding passes and documents to help process your compensation claim.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo library is used to select boarding pass photos and documents for your claim.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location is used to suggest nearby airports and pre-fill flight details.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Face ID is used to quickly and securely authenticate your profile.</string>
 </dict>
 </plist>

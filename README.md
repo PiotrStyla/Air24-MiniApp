@@ -67,6 +67,37 @@ For iOS devices:
 flutter build ios --release
 ```
 
+## Mobile Production Readiness (Android/iOS)
+
+This branch includes changes preparing the mobile apps for Play Store and App Store submission.
+
+- __Android__
+  - compileSdk 35; minify/shrink disabled to avoid ML Kit stripping
+  - Conditional release signing in `android/app/build.gradle.kts` using `android/key.properties`
+  - Steps:
+    1. Create upload keystore (place at `android/upload-keystore.jks`).
+    2. Create `android/key.properties` (gitignored):
+       ```properties
+       storePassword=... 
+       keyPassword=...
+       keyAlias=upload
+       storeFile=../upload-keystore.jks
+       ```
+    3. Build AAB:
+       ```bash
+       flutter build appbundle --release
+       ```
+    4. Output: `build/app/outputs/bundle/release/app-release.aab`
+
+- __iOS__
+  - Bundle ID: `app.air24.flightcompensation`
+  - `ios/Runner/Info.plist` includes: `NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription`, `NSLocationWhenInUseUsageDescription`, `NSFaceIDUsageDescription`
+  - Steps (on macOS): open `ios/Runner.xcworkspace`, set Team/signing, then Archive via Xcode Organizer
+
+Notes:
+- R8/shrinking can be re-enabled later with proper ML Kit keep rules
+- Android SDK licenses should be accepted (`flutter doctor --android-licenses`)
+
 ## Recent Updates
 
 - Fixed localization issues across all screens
