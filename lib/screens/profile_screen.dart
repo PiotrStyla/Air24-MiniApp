@@ -4,6 +4,7 @@ import '../screens/donation_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:get_it/get_it.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:f35_flight_compensation/l10n2/app_localizations.dart';
 import 'faq_screen.dart';
 import 'profile_edit_screen.dart';
@@ -17,6 +18,7 @@ import '../services/manual_localization_service.dart';
 import '../utils/translation_helper.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 import 'package:f35_flight_compensation/services/world_id_service.dart';
+import 'package:f35_flight_compensation/services/world_id_oidc_service.dart';
 import 'dart:convert';
 import 'package:f35_flight_compensation/services/world_id_interop.dart' as worldid_interop;
 
@@ -114,6 +116,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg)),
     );
+  }
+
+  Future<void> _openWorldAppFlow() async {
+    // Deep link into World App MiniKit. Fallback opens the mini-app page in browser.
+    final miniAppUrl = Uri.parse('https://air24.app/miniapp/?action=flight-compensation-verify');
+    final deepLink = Uri.parse('worldapp://link?url=${Uri.encodeComponent(miniAppUrl.toString())}');
+    try {
+      final canOpen = await canLaunchUrl(deepLink);
+      final target = canOpen ? deepLink : miniAppUrl;
+      final ok = await launchUrl(
+        target,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!ok && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open World App. Please try again.')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error opening World App: $e')),
+        );
+      }
+    }
   }
 
   void _showWorldIdVerifyDialog() {
@@ -527,10 +554,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: 'Verify with World ID',
                       semanticLabel: 'Verify your humanity with Worldcoin World ID. Web only for now.',
                       onTap: () async {
-                        if (kDebugMode) {
-                          _showWorldIdVerifyDialog();
-                        } else {
+                        // Always try to open IDKit on web; fallback to debug dialog only if unavailable
+                        final available = await worldid_interop.worldIdAvailable();
+                        if (available) {
                           await _startWorldIdFlow();
+                        } else {
+                          if (kDebugMode) {
+                            _showWorldIdVerifyDialog();
+                          } else {
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('World ID is temporarily unavailable. Please try again later.')),
+                            );
+                          }
                         }
                       },
                       child: Row(
@@ -540,6 +576,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Expanded(
                             child: Text(
                               'Verify your identity privately using World ID. This helps us prevent abuse while keeping the app free.',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          Icon(Icons.chevron_right, color: Theme.of(context).disabledColor),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  if (!kIsWeb) ...[
+                    AccessibleCard(
+                      title: 'Sign in with World App',
+                      semanticLabel: 'Sign in with World App (World ID) to verify your account.',
+                      onTap: () async {
+                        await _openWorldAppFlow();
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(Icons.verified_user, color: Colors.green),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              'Sign in with World App to verify your identity. This helps prevent abuse while keeping the app free.',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          Icon(Icons.launch, color: Theme.of(context).disabledColor),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Native OIDC Login with World ID (via flutter_appauth)
+                    AccessibleCard(
+                      title: 'Sign in with World ID (OIDC)',
+                      semanticLabel: 'Sign in with World ID using OIDC (recommended for Play Store).',
+                      onTap: () async {
+                        final svc = GetIt.I<WorldIdOidcService>();
+                        try {
+                          final ok = await svc.signIn();
+                          if (!mounted) return;
+                          final msg = ok ? 'Signed in with World ID' : 'World ID sign-in cancelled';
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(msg)),
+                          );
+                        } catch (e) {
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('OIDC sign-in failed: $e')),
+                          );
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(Icons.lock_open, color: Colors.blue),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              'Sign in with World ID via secure OIDC + PKCE.',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
