@@ -213,6 +213,19 @@ class AuthViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return false;
+    } on AuthException catch (e) {
+      // Special handling for web redirect flow: this is not an error
+      if (e.code == 'redirect') {
+        print('AuthViewModel: Web redirect initiated for Google Sign-In; suppressing error and keeping loading state.');
+        // Keep loading true so the UI shows a spinner until the page navigates away.
+        // The app will reload and complete the redirect via FirebaseAuthService._completeWebRedirectIfPending().
+        return false;
+      }
+      print('AuthViewModel: AuthException during Google Sign-In: ${e.code} - ${e.message}');
+      _errorMessage = e.message;
+      _isLoading = false;
+      notifyListeners();
+      return false;
     } catch (e, stackTrace) {
       print('AuthViewModel: Unexpected error during Google Sign-In: $e');
       print('AuthViewModel: Stack trace: $stackTrace');

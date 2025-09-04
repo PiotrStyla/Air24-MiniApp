@@ -27,11 +27,12 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   uuid: ^4.2.2
   shared_preferences: ^2.2.2
+  flutter_appauth: ^6.0.4
 
   # Added for dependency injection - MVVM architecture
   get_it: ^7.6.7
   # Document scanning and OCR
-  google_mlkit_text_recognition: ^0.11.0
+  google_mlkit_text_recognition: ^0.15.0
   path_provider: ^2.1.2
   image: ^4.0.17
   camera: ^0.10.5+9
@@ -84,6 +85,7 @@ flutter:
     # - assets/rapidapi_key.txt
     - assets/data/eu_airports.json
     - assets/data/flight_compensation_data.json
+    - assets/icons/app_icon.png
     - lib/l10n2/app_en.arb
     - lib/l10n2/app_de.arb
     - lib/l10n2/app_es.arb

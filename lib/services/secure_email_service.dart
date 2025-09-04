@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
 /// Types of email sending errors
 enum EmailErrorType {
@@ -45,6 +48,11 @@ class EmailSendResult {
 class SecureEmailService {
   // Production-ready email service - uses direct email app integration
   // This ensures reliable email functionality without backend dependencies
+  static const String _apiBase = String.fromEnvironment(
+    'WLD_BASE_URL',
+    defaultValue:
+        'https://air24.app/api',
+  );
   
   /// Main method to send email via secure backend endpoint
   /// Returns EmailSendResult indicating success/failure and error details
@@ -81,37 +89,28 @@ class SecureEmailService {
         );
       }
       
-      // Prepare request payload
-      final Map<String, dynamic> payload = {
-        'to': toEmail,
-        'subject': subject,
-        'body': body,
-        'timestamp': DateTime.now().toIso8601String(),
-      };
-      
-      if (ccEmail != null && ccEmail.isNotEmpty) {
-        payload['cc'] = ccEmail;
+      // Decide method by platform
+      if (kIsWeb) {
+        debugPrint('🌐 SecureEmailService: Web detected - attempting backend send via $_apiBase/sendEmail');
+        final backendResult = await _sendViaBackend(
+          toEmail: toEmail,
+          ccEmail: ccEmail,
+          bccEmail: bccEmail,
+          subject: subject,
+          body: body,
+          replyTo: replyTo,
+          userEmail: userEmail,
+        );
+        if (backendResult.success) {
+          return backendResult;
+        }
+        debugPrint('⚠️ Backend send failed on Web, using clipboard fallback (no new tab)');
+        return _clipboardFallback(toEmail, ccEmail, subject, body);
+      } else {
+        // Mobile/Desktop: prefer native email app via mailto
+        debugPrint('📱 SecureEmailService: Mobile/Desktop detected - using mailto approach');
+        return _fallbackEmailSend(toEmail, ccEmail, subject, body);
       }
-      
-      if (bccEmail != null && bccEmail.isNotEmpty) {
-        payload['bcc'] = bccEmail;
-      }
-      
-      if (replyTo != null && replyTo.isNotEmpty) {
-        payload['replyTo'] = replyTo;
-      }
-      
-      if (userEmail != null && userEmail.isNotEmpty) {
-        payload['userEmail'] = userEmail;
-      }
-      
-      // Production-ready approach: Use direct email app integration as primary method
-      // This ensures reliable email functionality without backend dependencies
-      debugPrint('📧 SecureEmailService: Using production-ready direct email approach...');
-      debugPrint('📧 SecureEmailService: Reply-to provided? ${userEmail?.isNotEmpty == true}');
-      
-      // Use the reliable fallback method as the primary approach
-      return _fallbackEmailSend(toEmail, ccEmail, subject, body);
       
     } catch (e) {
       debugPrint('❌ SecureEmailService: Unexpected error: $e');
@@ -119,6 +118,64 @@ class SecureEmailService {
         success: false,
         errorType: EmailErrorType.unknown,
         errorMessage: 'Unexpected error: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<EmailSendResult> _sendViaBackend({
+    required String toEmail,
+    String? ccEmail,
+    String? bccEmail,
+    required String subject,
+    required String body,
+    String? replyTo,
+    String? userEmail,
+  }) async {
+    try {
+      final uri = Uri.parse('$_apiBase/sendEmail');
+      final response = await http
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'to': toEmail,
+              if (ccEmail != null && ccEmail.isNotEmpty) 'cc': ccEmail,
+              if (bccEmail != null && bccEmail.isNotEmpty) 'bcc': bccEmail,
+              'subject': subject,
+              'body': body,
+              if (replyTo != null && replyTo.isNotEmpty) 'replyTo': replyTo,
+              if (userEmail != null && userEmail.isNotEmpty) 'userEmail': userEmail,
+            }),
+          )
+          .timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        String? emailId;
+        try {
+          final data = jsonDecode(response.body) as Map<String, dynamic>;
+          emailId = data['emailId']?.toString();
+        } catch (_) {}
+        return EmailSendResult(success: true, emailId: emailId);
+      }
+
+      return EmailSendResult(
+        success: false,
+        statusCode: response.statusCode,
+        errorType: _mapStatusCodeToErrorType(response.statusCode),
+        errorMessage:
+            'Backend responded with status ${response.statusCode}: ${response.body}',
+      );
+    } on TimeoutException {
+      return const EmailSendResult(
+        success: false,
+        errorType: EmailErrorType.networkError,
+        errorMessage: 'Request to email backend timed out',
+      );
+    } catch (e) {
+      return EmailSendResult(
+        success: false,
+        errorType: EmailErrorType.networkError,
+        errorMessage: 'Failed to call email backend: ${e.toString()}',
       );
     }
   }

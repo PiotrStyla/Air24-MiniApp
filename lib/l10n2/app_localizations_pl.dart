@@ -720,6 +720,68 @@ class AppLocalizationsPl extends AppLocalizations {
   String get tipContactDetails => 'Dane kontaktowe';
 
   @override
+  String get legalPrivacySectionTitle => 'Legal & Privacy';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get privacyPolicyDesc => 'How we handle your data';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get termsOfServiceDesc => 'Rules for using the service';
+
+  @override
+  String get cookiePolicy => 'Cookie Policy';
+
+  @override
+  String get cookiePolicyDesc => 'Cookie usage and categories';
+
+  @override
+  String get legalNoticeImprint => 'Legal Notice / Imprint';
+
+  @override
+  String get legalNoticeImprintDesc => 'Operator and contact details';
+
+  @override
+  String get accessibilityStatement => 'Accessibility Statement';
+
+  @override
+  String get accessibilityStatementDesc => 'Our accessibility commitments';
+
+  @override
+  String get manageCookiePreferences => 'Manage cookie preferences';
+
+  @override
+  String get manageCookiePreferencesDesc =>
+      'Change analytics and marketing cookie settings';
+
+  @override
+  String get cookiePreferencesTitle => 'Cookie Preferences';
+
+  @override
+  String get cookiePreferencesIntro =>
+      'We use cookies to improve your experience. Necessary cookies are always on.';
+
+  @override
+  String get analyticsLabel => 'Analytics';
+
+  @override
+  String get analyticsDesc => 'Helps us understand usage. Optional.';
+
+  @override
+  String get marketingLabel => 'Marketing';
+
+  @override
+  String get marketingDesc => 'Personalized content/ads. Optional.';
+
+  @override
+  String get savePreferences => 'Save preferences';
+
+  @override
   String get tipAccessibilitySettings => 'Ustawienia dostępności';
 
   @override
@@ -748,6 +810,10 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get profileInfoCardTitle =>
       'Twój profil zawiera Twoje dane osobowe i kontaktowe. Są one wykorzystywane do przetwarzania Twoich roszczeń o odszkodowanie za lot i informowania Cię o postępach.';
+
+  @override
+  String get profileInfoBannerSemanticLabel =>
+      'Informacje o wykorzystaniu danych Twojego profilu';
 
   @override
   String get accountSettings => 'Ustawienia Konta';
@@ -1275,11 +1341,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get chooseSupportAmount => 'Wybierz kwotę wsparcia:';
 
   @override
-  String get emailReadyTitle => 'Your Compensation Email is Ready to Send!';
+  String get emailReadyTitle =>
+      'Twój e-mail dotyczący odszkodowania jest gotowy do wysłania!';
 
   @override
   String get emailWillBeSentSecurely =>
-      'Your email will be sent securely through our backend service';
+      'Twój e-mail zostanie wysłany bezpiecznie za pośrednictwem naszego serwisu backendowego';
 
   @override
   String get toLabel => 'Do';
@@ -1295,13 +1362,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get secureTransmissionNotice =>
-      'Your email will be sent securely using encrypted transmission';
+      'Twoja wiadomość e-mail zostanie wysłana bezpiecznie przy użyciu szyfrowanej transmisji';
 
   @override
   String get sendingEllipsis => 'Sending...';
 
   @override
-  String get sendEmailSecurely => 'Send Email Securely';
+  String get sendEmailSecurely => 'Wyślij e-mail bezpiecznie';
 
   @override
   String get openingEmailApp => 'Opening email app...';
@@ -1348,4 +1415,12 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get emailPreviewAttachmentGuidance =>
       'Załączniki będzie można dodać w następnym kroku. Pamiętaj, aby dołączać wyłącznie pliki w formatach JPG, PNG lub PDF.';
+
+  @override
+  String get emailClipboardFallbackPrimary =>
+      'Brak dostępnej aplikacji e‑mail. Treść wiadomości została skopiowana do schowka. Wklej ją w dowolnej usłudze e‑mail.';
+
+  @override
+  String get emailClipboardFallbackAdvisory =>
+      'Po wklejeniu możesz sprawdzić i poprawić tekst oraz dołączyć dokumenty, np. bilety lub karty pokładowe (JPG, PNG, PDF).';
 }

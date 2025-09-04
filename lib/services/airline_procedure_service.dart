@@ -22,14 +22,23 @@ class AirlineClaimProcedure {
   });
 
   factory AirlineClaimProcedure.fromJson(Map<String, dynamic> json) {
+    // Be tolerant to differing schemas and nulls
+    final String iata = (json['iata'] ?? json['IATA'] ?? '').toString();
+    final String name = (json['name'] ?? json['airline'] ?? json['Name'] ?? '').toString();
+    final String claimEmail = (json['claim_email'] ?? json['email'] ?? '').toString();
+    final String claimFormUrl = (json['claim_form_url'] ?? json['web_form'] ?? json['form_url'] ?? '').toString();
+    final String instructions = (json['instructions'] ?? '').toString();
+    final String? phone = json['phone']?.toString();
+    final String? postalAddress = (json['postal_address'] ?? json['address'])?.toString();
+
     return AirlineClaimProcedure(
-      iata: json['iata'],
-      name: json['name'],
-      claimEmail: json['claim_email'],
-      claimFormUrl: json['claim_form_url'],
-      instructions: json['instructions'],
-      phone: json['phone'],
-      postalAddress: json['postal_address'],
+      iata: iata,
+      name: name,
+      claimEmail: claimEmail,
+      claimFormUrl: claimFormUrl,
+      instructions: instructions,
+      phone: phone,
+      postalAddress: postalAddress,
     );
   }
 }
@@ -115,6 +124,50 @@ class AirlineProcedureService {
       }
     }
     
+    return match;
+  }
+
+  // Helper to normalize names for fuzzy matching
+  static String _normalize(String value) {
+    return value.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
+  }
+
+  // Fallback: try to find airline by its human-readable name
+  static Future<AirlineClaimProcedure?> getProcedureByName(String airlineName) async {
+    print('AirlineProcedureService: Looking for procedure by airline NAME: "$airlineName"');
+
+    if (airlineName.trim().isEmpty) {
+      print('AirlineProcedureService: Airline name is empty, cannot find matching airline');
+      return null;
+    }
+
+    final procedures = await loadProcedures();
+
+    if (procedures.isEmpty) {
+      print('AirlineProcedureService: Procedures list is empty, cannot match by name');
+      return null;
+    }
+
+    final target = _normalize(airlineName);
+
+    // 1) Exact normalized name match
+    AirlineClaimProcedure? match =
+        procedures.firstWhereOrNull((p) => _normalize(p.name) == target);
+
+    // 2) Contains either way (handles prefixes/suffixes like "LOT Polish Airlines")
+    match ??= procedures.firstWhereOrNull(
+      (p) {
+        final n = _normalize(p.name);
+        return target.contains(n) || n.contains(target);
+      },
+    );
+
+    if (match != null) {
+      print('AirlineProcedureService: Found match by name: ${match.name} (${match.iata}) with email ${match.claimEmail}');
+    } else {
+      print('AirlineProcedureService: No match found by name for "$airlineName"');
+    }
+
     return match;
   }
 }

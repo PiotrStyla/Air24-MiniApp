@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:async';
 import 'package:f35_flight_compensation/core/emergency_null_safety.dart';
 
@@ -14,6 +15,7 @@ import 'package:f35_flight_compensation/core/error/error_handler.dart';
 import 'package:f35_flight_compensation/utils/translation_initializer.dart';
 import 'package:f35_flight_compensation/services/notification_service.dart';
 import 'package:f35_flight_compensation/services/donation_popup_service.dart';
+import 'package:f35_flight_compensation/core/privacy/consent_banner.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -41,7 +43,7 @@ class _MainNavigationState extends State<MainNavigation> {
     
     // Show donation popup after app loads (skip in tests to avoid pending timers)
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ServiceInitializer.isTestMode) {
+      if (!ServiceInitializer.isTestMode && ServiceInitializer.donationsEnabled) {
         DonationPopupService.showPopupIfNeeded(context);
       }
     });
@@ -77,6 +79,7 @@ class _MainNavigationState extends State<MainNavigation> {
       const ProfileScreen(),
     ];
 
+    final l10n = EmergencyNullSafety.safeLocalizations(context);
     return Scaffold(
       body: screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -101,6 +104,34 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
         ],
       ),
+      persistentFooterButtons: kIsWeb
+          ? [
+              TextButton(
+                onPressed: () => Navigator.of(context).pushNamed('/privacy'),
+                child: Text(l10n.privacyPolicy),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pushNamed('/terms'),
+                child: Text(l10n.termsOfService),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pushNamed('/cookies'),
+                child: Text(l10n.cookiePolicy),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pushNamed('/legal'),
+                child: Text(l10n.legalNoticeImprint),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pushNamed('/accessibility'),
+                child: Text(l10n.accessibilityStatement),
+              ),
+              TextButton(
+                onPressed: () => ConsentManager.openPreferences(context),
+                child: Text(l10n.manageCookiePreferences),
+              ),
+            ]
+          : null,
       floatingActionButton: _selectedIndex == 0 
         ? FloatingActionButton.extended(
             heroTag: 'main_navigation_fab',

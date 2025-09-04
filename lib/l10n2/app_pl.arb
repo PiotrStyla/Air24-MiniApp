@@ -339,6 +339,7 @@
   "viewAll": "Zobacz Wszystko",
   "documentScanner": "Skaner Dokumentów",
   "profileInformation": "Informacje Profilowe",
+  "profileInfoBannerSemanticLabel": "Informacje o wykorzystaniu danych Twojego profilu",
   "editPersonalInformation": "Edytuj swoje dane osobowe",
   "editPersonalAndContactInformation": "Edytuj swoje dane osobowe i kontaktowe",
   "configureAccessibilityOptions": "Skonfiguruj opcje dostępności aplikacji",
@@ -999,6 +1000,14 @@
   "@emailPreviewAttachmentGuidance": {
     "description": "Wiadomość z instrukcją w podglądzie e‑mail: gdzie dodać załączniki i jakie formaty są obsługiwane"
   },
+  "emailClipboardFallbackPrimary": "Brak dostępnej aplikacji e‑mail. Treść wiadomości została skopiowana do schowka. Wklej ją w dowolnej usłudze e‑mail.",
+  "@emailClipboardFallbackPrimary": {
+    "description": "Główny tekst banera przy użyciu schowka z powodu braku aplikacji e‑mail"
+  },
+  "emailClipboardFallbackAdvisory": "Po wklejeniu możesz sprawdzić i poprawić tekst oraz dołączyć dokumenty, np. bilety lub karty pokładowe (JPG, PNG, PDF).",
+  "@emailClipboardFallbackAdvisory": {
+    "description": "Dodatkowa porada: możliwość korekty tekstu i dołączania dokumentów"
+  },
   "pdfPreviewMessage": "Tutaj zostanie wyświetlony podgląd PDF.",
   "@pdfPreviewMessage": {
     "description": "Komunikat wyświetlany w miejscu podglądu PDF"
@@ -1388,6 +1397,9 @@
   "@profileInformation": {
     "description": "Auto-generated for profileInformation"
   },
+  "@profileInfoBannerSemanticLabel": {
+    "description": "Etykieta semantyczna dla dostępności banera informacji profilu"
+  },
   "firstName": "First Name",
   "@firstName": {
     "description": "Auto-generated for firstName"
@@ -1725,5 +1737,21 @@
         "type": "int"
       }
     }
+  },
+  "emailReadyTitle": "Twój e-mail dotyczący odszkodowania jest gotowy do wysłania!",
+  "@emailReadyTitle": {
+    "description": "Title shown at top of secure email preview dialog"
+  },
+  "sendEmailSecurely": "Wyślij e-mail bezpiecznie",
+  "@sendEmailSecurely": {
+    "description": "Primary action button to send email securely"
+  },
+  "emailWillBeSentSecurely": "Twój e-mail zostanie wysłany bezpiecznie za pośrednictwem naszego serwisu backendowego",
+  "@emailWillBeSentSecurely": {
+    "description": "Subtitle explaining secure sending through backend"
+  },
+  "secureTransmissionNotice": "Twoja wiadomość e-mail zostanie wysłana bezpiecznie przy użyciu szyfrowanej transmisji",
+  "@secureTransmissionNotice": {
+    "description": "Notice about secure, encrypted transmission"
   }
 }

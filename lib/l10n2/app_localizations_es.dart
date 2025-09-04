@@ -715,6 +715,68 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tipContactDetails => 'Datos de Contacto';
 
   @override
+  String get legalPrivacySectionTitle => 'Legal & Privacy';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get privacyPolicyDesc => 'How we handle your data';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get termsOfServiceDesc => 'Rules for using the service';
+
+  @override
+  String get cookiePolicy => 'Cookie Policy';
+
+  @override
+  String get cookiePolicyDesc => 'Cookie usage and categories';
+
+  @override
+  String get legalNoticeImprint => 'Legal Notice / Imprint';
+
+  @override
+  String get legalNoticeImprintDesc => 'Operator and contact details';
+
+  @override
+  String get accessibilityStatement => 'Accessibility Statement';
+
+  @override
+  String get accessibilityStatementDesc => 'Our accessibility commitments';
+
+  @override
+  String get manageCookiePreferences => 'Manage cookie preferences';
+
+  @override
+  String get manageCookiePreferencesDesc =>
+      'Change analytics and marketing cookie settings';
+
+  @override
+  String get cookiePreferencesTitle => 'Cookie Preferences';
+
+  @override
+  String get cookiePreferencesIntro =>
+      'We use cookies to improve your experience. Necessary cookies are always on.';
+
+  @override
+  String get analyticsLabel => 'Analytics';
+
+  @override
+  String get analyticsDesc => 'Helps us understand usage. Optional.';
+
+  @override
+  String get marketingLabel => 'Marketing';
+
+  @override
+  String get marketingDesc => 'Personalized content/ads. Optional.';
+
+  @override
+  String get savePreferences => 'Save preferences';
+
+  @override
   String get tipAccessibilitySettings => 'Configuración de Accesibilidad';
 
   @override
@@ -743,6 +805,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get profileInfoCardTitle =>
       'Su perfil contiene su información personal y de contacto. Esto se utiliza para procesar sus reclamaciones de compensación de vuelo y mantenerlo informado.';
+
+  @override
+  String get profileInfoBannerSemanticLabel =>
+      'Información sobre el uso de los datos de su perfil';
 
   @override
   String get accountSettings => 'Configuración de la Cuenta';
@@ -1276,11 +1342,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chooseSupportAmount => 'Elige tu cantidad de apoyo:';
 
   @override
-  String get emailReadyTitle => 'Your Compensation Email is Ready to Send!';
+  String get emailReadyTitle =>
+      '¡Su correo electrónico de compensación está listo para enviar!';
 
   @override
   String get emailWillBeSentSecurely =>
-      'Your email will be sent securely through our backend service';
+      'Su correo electrónico se enviará de forma segura a través de nuestro servicio backend';
 
   @override
   String get toLabel => 'To:';
@@ -1296,13 +1363,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get secureTransmissionNotice =>
-      'Your email will be sent securely using encrypted transmission';
+      'Su correo electrónico se enviará de forma segura mediante transmisión cifrada';
 
   @override
   String get sendingEllipsis => 'Sending...';
 
   @override
-  String get sendEmailSecurely => 'Send Email Securely';
+  String get sendEmailSecurely => 'Enviar correo electrónico de forma segura';
 
   @override
   String get openingEmailApp => 'Opening email app...';
@@ -1349,4 +1416,12 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get emailPreviewAttachmentGuidance =>
       'Podrá añadir archivos adjuntos en el siguiente paso. Por favor, recuerde incluir únicamente archivos en formato JPG, PNG o PDF.';
+
+  @override
+  String get emailClipboardFallbackPrimary =>
+      'No hay ninguna aplicación de correo electrónico disponible. El contenido del correo electrónico se ha copiado en su portapapeles. Péguelo en cualquier servicio de correo.';
+
+  @override
+  String get emailClipboardFallbackAdvisory =>
+      'Después de pegar, puede revisar y corregir el texto y adjuntar documentos como billetes o tarjetas de embarque (JPG, PNG, PDF).';
 }

@@ -66,3 +66,7 @@ app.*.map.json
 DerivedData/
 CON
 
+# Node.js backends (ignore dependencies and local metadata)
+vercel-backend/node_modules/
+backend/functions/node_modules/
+vercel-backend/.vercel/

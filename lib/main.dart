@@ -40,6 +40,12 @@ import 'screens/push_notification_test_screen.dart';
 import 'screens/donation_screen.dart';
 
 import 'screens/community_impact_screen.dart';
+import 'core/privacy/consent_banner.dart';
+import 'screens/privacy_policy_screen.dart';
+import 'screens/terms_of_service_screen.dart';
+import 'screens/cookie_policy_screen.dart';
+import 'screens/legal_notice_screen.dart';
+import 'screens/accessibility_statement_screen.dart';
 import 'screens/claim_attachment_screen.dart';
 
 // REMOVED: The old emergency extension has been replaced by the more comprehensive implementation in app_localizations_patch.dart
@@ -170,7 +176,13 @@ class F35FlightCompensationApp extends StatelessWidget {
                       // This avoids assertion errors with fontSize
                       textScaler: TextScaler.linear(textScaleFactor),
                     ),
-                    child: child,
+                    child: Stack(
+                      children: [
+                        child,
+                        // Web-only consent banner lives above the UI
+                        const ConsentBanner(),
+                      ],
+                    ),
                   );
                 },
                 home: const AuthGate(),
@@ -188,8 +200,26 @@ class F35FlightCompensationApp extends StatelessWidget {
                   '/language-selection': (context) => const LanguageSelectionScreen(),
                   '/claim-submission': (context) => const ClaimSubmissionScreen(),
                   '/push-notification-test': (context) => const PushNotificationTestScreen(),
-                  '/donation': (context) => const DonationScreen(),
+                  '/donation': (context) {
+                    if (!ServiceInitializer.donationsEnabled) {
+                      return const Scaffold(
+                        body: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Text('Donations are temporarily disabled.'),
+                          ),
+                        ),
+                      );
+                    }
+                    return const DonationScreen();
+                  },
                   '/community-impact': (context) => const CommunityImpactScreen(),
+                  // Legal & compliance routes (web/mobile)
+                  '/privacy': (context) => const PrivacyPolicyScreen(),
+                  '/terms': (context) => const TermsOfServiceScreen(),
+                  '/cookies': (context) => const CookiePolicyScreen(),
+                  '/legal': (context) => const LegalNoticeScreen(),
+                  '/accessibility': (context) => const AccessibilityStatementScreen(),
                   // Debug/testing route for attachment screen (accepts arguments: { claim, userEmail })
                   '/claim-attachments': (context) {
                     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;

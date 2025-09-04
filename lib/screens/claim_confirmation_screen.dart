@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/claim.dart';
 import '../services/claim_submission_service.dart';
@@ -176,8 +177,17 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
             airlineEmail = procedure.claimEmail;
             print('DEBUG: Found airline through service: ${procedure.name} with email: $airlineEmail');
           } else {
-            print('DEBUG: No airline procedure found for IATA code: "$airlineIata". Using user email as fallback.');
-            airlineEmail = userEmail;
+            // Fallback: attempt lookup by human-readable airline name from claim
+            final airlineName = _claim.airlineName.trim();
+            print('DEBUG: No airline procedure found for IATA code: "$airlineIata". Trying fallback by name: "$airlineName"');
+            final nameProcedure = await AirlineProcedureService.getProcedureByName(airlineName);
+            if (nameProcedure != null && nameProcedure.claimEmail.isNotEmpty) {
+              airlineEmail = nameProcedure.claimEmail;
+              print('DEBUG: Fallback match by NAME succeeded: ${nameProcedure.name} (${nameProcedure.iata}) -> $airlineEmail');
+            } else {
+              print('DEBUG: No airline procedure found by NAME either. Using user email as fallback.');
+              airlineEmail = userEmail;
+            }
           }
         } catch (e) {
           print('DEBUG: Error getting airline procedure: $e');
@@ -204,38 +214,59 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
 
   Future<void> _sendClaimEmail(String airlineEmail, String userEmail) async {
     try {
-      // Show loading + guidance before launching external email app
+      // Show loading + guidance
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(context.l10n.openingEmailApp),
-                      const SizedBox(height: 2),
-                      Text(
-                        context.l10n.tipReturnBackGesture,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ],
+        if (kIsWeb) {
+          // On Web: indicate backend send (no external app)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(context.l10n.sendingEllipsis)),
+                ],
+              ),
+              duration: const Duration(seconds: 4),
             ),
-            duration: const Duration(seconds: 4),
-          ),
-        );
+          );
+        } else {
+          // Mobile/Desktop: show opening email app
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(context.l10n.openingEmailApp),
+                        const SizedBox(height: 2),
+                        Text(
+                          context.l10n.tipReturnBackGesture,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        }
       }
 
       // Create SecureEmailService instance for localized email generation
@@ -276,80 +307,109 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         userEmail: userEmail, // For reply-to functionality
       );
       
-      final bool emailLaunched = result.success;
-      
-      if (emailLaunched) {
-        // Email app opened successfully
-        final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
-        
-        // Save the claim to the database
-        await claimSubmissionService.submitClaim(_claim);
-        
-        // Show success message
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(context.l10n.emailAppOpenedMessage(userEmail)),
-              backgroundColor: Colors.green,
-              duration: const Duration(seconds: 3),
-            ),
-          );
-        }
-
-        // Send a local notification to help user return to the app (ignore failures on web)
-        try {
-          await PushNotificationService.sendReturnToAppReminder(
-            title: context.l10n.returnToAppTitle,
-            body: context.l10n.returnToAppBody,
-          );
-        } catch (e) {
-          debugPrint('ℹ️ Local notification not available on this platform: $e');
-        }
-      } else {
-        // Email app not available - show better email composition experience
-        final emailSent = await _showEmailCompositionDialog(
-          context,
-          airlineEmail,
-          userEmail, // CC email
-          subject,
-          emailBodyWithAttachments,
-          userEmail, // User email for reply-to functionality
-        );
-        
-        if (emailSent) {
-          // Email was sent successfully - submit the claim
+      if (kIsWeb) {
+        // Web: treat success as backend or clipboard success, and message accordingly
+        if (result.success) {
           final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
           await claimSubmissionService.submitClaim(_claim);
-          
-          // Show success message and navigate back
+
+          if (mounted) {
+            final em = result.errorMessage?.toLowerCase();
+            final isClipboardFallback = result.emailId == null &&
+                (em?.contains('clipboard') == true || em?.contains('no email app') == true);
+
+            if (isClipboardFallback) {
+              _showWebClipboardFallbackBanner();
+            } else {
+              _showWebSuccessBanner(context.l10n.emailSentSuccessfully);
+            }
+          }
+
+          try {
+            await PushNotificationService.sendReturnToAppReminder(
+              title: context.l10n.returnToAppTitle,
+              body: context.l10n.returnToAppBody,
+            );
+          } catch (e) {
+            debugPrint('ℹ️ Local notification not available on this platform: $e');
+          }
+        } else {
+          // Failure on web -> open secure dialog for backend retry/clipboard guidance
+          final emailSent = await _showEmailCompositionDialog(
+            context,
+            airlineEmail,
+            userEmail, // CC email
+            subject,
+            emailBodyWithAttachments,
+            userEmail, // User email for reply-to functionality
+          );
+
+          if (emailSent) {
+            final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
+            await claimSubmissionService.submitClaim(_claim);
+
+            if (mounted) {
+              _showWebSuccessBanner(context.l10n.emailSentSuccessfully);
+            }
+          } else {
+            return;
+          }
+        }
+      } else {
+        // Mobile/Desktop original behavior
+        final bool emailLaunched = result.success;
+        if (emailLaunched) {
+          final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
+          await claimSubmissionService.submitClaim(_claim);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Row(
-                  children: [
-                    Icon(
-                      Icons.check_circle,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      context.l10n.emailSentSuccessfully,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                backgroundColor: Colors.green.shade600,
+                content: Text(context.l10n.emailAppOpenedMessage(userEmail)),
+                backgroundColor: Colors.green,
                 duration: const Duration(seconds: 3),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
               ),
             );
           }
+          try {
+            await PushNotificationService.sendReturnToAppReminder(
+              title: context.l10n.returnToAppTitle,
+              body: context.l10n.returnToAppBody,
+            );
+          } catch (e) {
+            debugPrint('ℹ️ Local notification not available on this platform: $e');
+          }
         } else {
-          return;
+          final emailSent = await _showEmailCompositionDialog(
+            context,
+            airlineEmail,
+            userEmail, // CC email
+            subject,
+            emailBodyWithAttachments,
+            userEmail, // User email for reply-to functionality
+          );
+          if (emailSent) {
+            final claimSubmissionService = GetIt.instance<ClaimSubmissionService>();
+            await claimSubmissionService.submitClaim(_claim);
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                      const SizedBox(width: 8),
+                      Text(context.l10n.emailSentSuccessfully, style: const TextStyle(fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                  backgroundColor: Colors.green.shade600,
+                  duration: const Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              );
+            }
+          } else {
+            return;
+          }
         }
       }
     } catch (e) {
@@ -396,6 +456,78 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
       ),
     );
     return result ?? false; // Return false if dialog was dismissed without result
+  }
+
+  void _showWebSuccessBanner(String primaryText) {
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearMaterialBanners();
+
+    final String advisory = context.l10n.emailPreviewAttachmentGuidance;
+
+    messenger.showMaterialBanner(
+      MaterialBanner(
+        padding: const EdgeInsets.all(16),
+        backgroundColor: Colors.green.shade50,
+        leading: const Icon(Icons.check_circle, color: Colors.green, size: 28),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              primaryText,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black87),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              advisory,
+              style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.3),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => messenger.hideCurrentMaterialBanner(),
+            child: Text(context.l10n.ok),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showWebClipboardFallbackBanner() {
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearMaterialBanners();
+
+    messenger.showMaterialBanner(
+      MaterialBanner(
+        padding: const EdgeInsets.all(16),
+        backgroundColor: Colors.green.shade50,
+        leading: const Icon(Icons.content_paste, color: Colors.green, size: 28),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              context.l10n.emailClipboardFallbackPrimary,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black87),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              context.l10n.emailClipboardFallbackAdvisory,
+              style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.3),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => messenger.hideCurrentMaterialBanner(),
+            child: Text(context.l10n.ok),
+          ),
+        ],
+      ),
+    );
   }
  
   /// Builds the email subject and body preview using the same logic as sending

@@ -945,6 +945,46 @@
   "@tipContactDetails": {
     "description": "Tip about importance of correct contact details"
   },
+  "legalPrivacySectionTitle": "Legal & Privacy",
+  "@legalPrivacySectionTitle": {"description": "Section title for legal and privacy"},
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {"description": "Link label to privacy policy"},
+  "privacyPolicyDesc": "How we handle your data",
+  "@privacyPolicyDesc": {"description": "Description under privacy policy link"},
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {"description": "Link label to terms of service"},
+  "termsOfServiceDesc": "Rules for using the service",
+  "@termsOfServiceDesc": {"description": "Description under terms link"},
+  "cookiePolicy": "Cookie Policy",
+  "@cookiePolicy": {"description": "Link label to cookie policy"},
+  "cookiePolicyDesc": "Cookie usage and categories",
+  "@cookiePolicyDesc": {"description": "Description under cookie policy link"},
+  "legalNoticeImprint": "Legal Notice / Imprint",
+  "@legalNoticeImprint": {"description": "Link label to legal notice"},
+  "legalNoticeImprintDesc": "Operator and contact details",
+  "@legalNoticeImprintDesc": {"description": "Description under legal notice link"},
+  "accessibilityStatement": "Accessibility Statement",
+  "@accessibilityStatement": {"description": "Link label to accessibility statement"},
+  "accessibilityStatementDesc": "Our accessibility commitments",
+  "@accessibilityStatementDesc": {"description": "Description under accessibility link"},
+  "manageCookiePreferences": "Manage cookie preferences",
+  "@manageCookiePreferences": {"description": "Action to open cookie preferences dialog"},
+  "manageCookiePreferencesDesc": "Change analytics and marketing cookie settings",
+  "@manageCookiePreferencesDesc": {"description": "Description for manage cookies action"},
+  "cookiePreferencesTitle": "Cookie Preferences",
+  "@cookiePreferencesTitle": {"description": "Title for cookie preferences dialog"},
+  "cookiePreferencesIntro": "We use cookies to improve your experience. Necessary cookies are always on.",
+  "@cookiePreferencesIntro": {"description": "Intro text in cookie dialog"},
+  "analyticsLabel": "Analytics",
+  "@analyticsLabel": {"description": "Label for analytics cookies"},
+  "analyticsDesc": "Helps us understand usage. Optional.",
+  "@analyticsDesc": {"description": "Description for analytics cookies"},
+  "marketingLabel": "Marketing",
+  "@marketingLabel": {"description": "Label for marketing cookies"},
+  "marketingDesc": "Personalized content/ads. Optional.",
+  "@marketingDesc": {"description": "Description for marketing cookies"},
+  "savePreferences": "Save preferences",
+  "@savePreferences": {"description": "Button to save cookie preferences"},
   "tipAccessibilitySettings": "• Configure accessibility settings to customize your experience.",
   "@tipAccessibilitySettings": {
     "description": "Tip about accessibility settings"
@@ -973,6 +1013,7 @@
   },
   "profileInformation": "Profile Information",
   "profileInfoCardTitle": "Personal Information",
+  "profileInfoBannerSemanticLabel": "Information about your profile data usage",
   "accountSettings": "Account Settings",
   "editPersonalInfo": "Edit Personal Information",
   "editPersonalInfoDescription": "Update your name, email, and other personal details",
@@ -1129,6 +1170,9 @@
   },
   "@profileInformation": {
     "description": "Auto-generated for profileInformation"
+  },
+  "@profileInfoBannerSemanticLabel": {
+    "description": "Semantic label for profile information banner accessibility"
   },
   "firstName": "First Name",
   "@firstName": {
@@ -1657,5 +1701,13 @@
   "emailPreviewAttachmentGuidance": "You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.",
   "@emailPreviewAttachmentGuidance": {
     "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
+  },
+  "emailClipboardFallbackPrimary": "No email app available. Email content copied to your clipboard. Paste it into any email service.",
+  "@emailClipboardFallbackPrimary": {
+    "description": "Primary banner text shown when clipboard fallback is used because no email app is available"
+  },
+  "emailClipboardFallbackAdvisory": "After pasting, you can review and make corrections, and attach documents like tickets or boarding passes (JPG, PNG, PDF).",
+  "@emailClipboardFallbackAdvisory": {
+    "description": "Secondary advisory text for clipboard fallback explaining corrections and attachments"
   }
 }

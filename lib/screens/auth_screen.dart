@@ -86,21 +86,19 @@ class _AuthScreenState extends State<AuthScreen> {
                       children: [
                         const SizedBox(height: 24),
                         
-                        // Logo or app icon
+                        // Logo (no colored circle background)
                         Hero(
                           tag: 'appLogo',
-                          child: Container(
+                          child: SizedBox(
                             height: 120,
-                            width: 120,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.flight_takeoff,
-                              size: 60,
-                              color: Theme.of(context).colorScheme.primary,
+                            child: Center(
+                              child: Image.asset(
+                                'assets/icons/app_icon.png',
+                                width: 84,
+                                height: 84,
+                                fit: BoxFit.contain,
+                                semanticLabel: 'App logo',
+                              ),
                             ),
                           ),
                         ),

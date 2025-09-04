@@ -35,11 +35,62 @@
   <!--google cloud client ID-->
   <meta name="google-signin-client_id" content="445502709010-v0797dcc0hs0q4tnemo0utcujv49b5n0.apps.googleusercontent.com">
 
+  <!-- Worldcoin IDKit config (public). Set these in production builds. -->
+  <meta name="worldcoin-app-id" content="app_6f4b07c9d84438a94414813a89974ab0">
+  <meta name="worldcoin-action" content="flight-compensation-mini-app-verify">
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <!-- Worldcoin IDKit (Standalone) -->
+  <script src="https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js"></script>
+  <script>
+    // Minimal wrapper to expose a stable Promise-based API to Flutter (via js_util)
+    window.WorldIdInterop = {
+      available: function () {
+        return !!(window.IDKit && typeof window.IDKit.open === 'function');
+      },
+      open: function (config) {
+        return new Promise(function (resolve, reject) {
+          try {
+            if (!window.IDKit) { throw new Error('IDKit not loaded'); }
+            var appId = (config && config.app_id) || null;
+            var action = (config && config.action) || null;
+            var signal = (config && config.signal) || undefined;
+            // Fallback to meta tags if not provided explicitly
+            if (!appId) {
+              var metaApp = document.querySelector('meta[name="worldcoin-app-id"]');
+              if (metaApp) { appId = metaApp.getAttribute('content') || null; }
+            }
+            if (!action) {
+              var metaAction = document.querySelector('meta[name="worldcoin-action"]');
+              if (metaAction) { action = metaAction.getAttribute('content') || 'verify'; }
+            }
+            if (!appId) { throw new Error('Missing app_id'); }
+            if (!action) { action = 'verify'; }
+            window.IDKit.init({
+              app_id: appId,
+              action: action,
+              signal: signal,
+              onSuccess: function (result) {
+                try {
+                  resolve(JSON.stringify(result || {}));
+                } catch (e) {
+                  resolve('{}');
+                }
+              },
+            });
+            window.IDKit.open().catch(reject);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+    };
+  </script>
 
 </head>
 <body>

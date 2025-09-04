@@ -299,6 +299,7 @@
   "viewAll": "Ver Todo",
   "documentScanner": "Escáner de Documentos",
   "profileInformation": "Información del Perfil",
+  "profileInfoBannerSemanticLabel": "Información sobre el uso de los datos de su perfil",
   "editPersonalInformation": "Editar su información personal",
   "editPersonalAndContactInformation": "Editar su información personal y de contacto",
   "configureAccessibilityOptions": "Configurar las opciones de accesibilidad de la aplicación",
@@ -1282,6 +1283,15 @@
   "@emailPreviewAttachmentGuidance": {
     "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
   },
+  "emailClipboardFallbackPrimary": "No hay ninguna aplicación de correo electrónico disponible. El contenido del correo electrónico se ha copiado en su portapapeles. Péguelo en cualquier servicio de correo.",
+  "@emailClipboardFallbackPrimary": {
+    "description": "Texto principal del banner cuando se utiliza el portapapeles por no haber aplicación de correo disponible"
+  },
+  "emailClipboardFallbackAdvisory": "Después de pegar, puede revisar y corregir el texto y adjuntar documentos como billetes o tarjetas de embarque (JPG, PNG, PDF).",
+  "@emailClipboardFallbackAdvisory": {
+    "description": "Texto de aviso adicional: posibilidad de corregir y adjuntar documentos"
+  },
+  
   "reviewAndConfirm": "Revisar y confirmar",
   "@reviewAndConfirm": {
     "description": "Instrucción para revisar y confirmar"
@@ -1602,6 +1612,9 @@
   },
   "@profileInformation": {
     "description": "Auto-generated for profileInformation"
+  },
+  "@profileInfoBannerSemanticLabel": {
+    "description": "Etiqueta semántica para la accesibilidad del banner de información del perfil"
   },
   "firstName": "First Name",
   "@firstName": {
@@ -1925,5 +1938,21 @@
         "type": "int"
       }
     }
+  },
+  "emailReadyTitle": "¡Su correo electrónico de compensación está listo para enviar!",
+  "@emailReadyTitle": {
+    "description": "Title shown at top of secure email preview dialog"
+  },
+  "sendEmailSecurely": "Enviar correo electrónico de forma segura",
+  "@sendEmailSecurely": {
+    "description": "Primary action button to send email securely"
+  },
+  "emailWillBeSentSecurely": "Su correo electrónico se enviará de forma segura a través de nuestro servicio backend",
+  "@emailWillBeSentSecurely": {
+    "description": "Subtitle explaining secure sending through backend"
+  },
+  "secureTransmissionNotice": "Su correo electrónico se enviará de forma segura mediante transmisión cifrada",
+  "@secureTransmissionNotice": {
+    "description": "Notice about secure, encrypted transmission"
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../services/secure_email_service.dart';
 import '../services/push_notification_service.dart';
 import '../core/app_localizations_patch.dart';
@@ -269,6 +270,78 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
     );
   }
 
+  void _showClipboardFallbackBanner() {
+    // Clear any existing banners to avoid stacking
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearMaterialBanners();
+
+    messenger.showMaterialBanner(
+      MaterialBanner(
+        padding: const EdgeInsets.all(16),
+        backgroundColor: Colors.green.shade50,
+        leading: const Icon(Icons.content_paste, color: Colors.green, size: 28),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              context.l10n.emailClipboardFallbackPrimary,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black87),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              context.l10n.emailClipboardFallbackAdvisory,
+              style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.3),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => messenger.hideCurrentMaterialBanner(),
+            child: Text(context.l10n.ok),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSuccessBanner(String primaryText) {
+    // Clear any existing banners to avoid stacking
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearMaterialBanners();
+
+    final String advisory = context.l10n.emailPreviewAttachmentGuidance;
+
+    messenger.showMaterialBanner(
+      MaterialBanner(
+        padding: const EdgeInsets.all(16),
+        backgroundColor: Colors.green.shade50,
+        leading: const Icon(Icons.check_circle, color: Colors.green, size: 28),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              primaryText,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black87),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              advisory,
+              style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.3),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => messenger.hideCurrentMaterialBanner(),
+            child: Text(context.l10n.ok),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildEmailField(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +382,7 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
     try {
       debugPrint('🚀 SecureEmailPreviewDialog: Starting secure email send...');
       
-      // Show brief guidance while launching external email app
+      // Show brief guidance (different on Web vs others)
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -326,12 +399,13 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(context.l10n.openingEmailApp),
+                    Text(kIsWeb ? context.l10n.sendingEllipsis : context.l10n.openingEmailApp),
                     const SizedBox(height: 2),
-                    Text(
-                      context.l10n.tipReturnBackGesture,
-                      style: const TextStyle(fontSize: 12),
-                    ),
+                    if (!kIsWeb)
+                      Text(
+                        context.l10n.tipReturnBackGesture,
+                        style: const TextStyle(fontSize: 12),
+                      ),
                   ],
                 ),
               ),
@@ -355,8 +429,28 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
         });
 
         if (result.success) {
-          debugPrint('✅ SecureEmailPreviewDialog: Email sent successfully');
-          // Send a local notification to help user return to the app
+          debugPrint('✅ SecureEmailPreviewDialog: Email send returned success');
+          String? successText;
+          bool showedClipboardBanner = false;
+
+          // Detect clipboard fallback across all platforms
+          final em = result.errorMessage?.toLowerCase();
+          final isClipboardFallback = result.emailId == null &&
+              (em?.contains('clipboard') == true || em?.contains('no email app') == true);
+
+          if (isClipboardFallback) {
+            _showClipboardFallbackBanner();
+            showedClipboardBanner = true;
+          } else {
+            // On Web, still use a MaterialBanner with text if available; otherwise default success handling
+            if (kIsWeb) {
+              successText = result.emailId != null
+                  ? context.l10n.emailSentSuccessfully
+                  : (result.errorMessage ?? context.l10n.emailSentSuccessfully);
+            }
+          }
+
+          // Send a local notification to help user return to the app (best-effort)
           try {
             await PushNotificationService.sendReturnToAppReminder(
               title: context.l10n.returnToAppTitle,
@@ -365,7 +459,19 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
           } catch (e) {
             debugPrint('ℹ️ Local notification not available on this platform: $e');
           }
-          _showSuccessMessage();
+
+          if (showedClipboardBanner) {
+            // Close the dialog after a short delay
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              if (mounted) {
+                Navigator.of(context).pop(true);
+              }
+            });
+          } else if (successText != null) {
+            _showSuccessMessageWithText(successText);
+          } else {
+            _showSuccessMessage();
+          }
         } else {
           debugPrint('❌ SecureEmailPreviewDialog: Email send failed: ${result.errorMessage}');
           _showErrorMessage(result.errorMessage ?? context.l10n.errorFailedToSendEmail);
@@ -383,6 +489,56 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
   }
 
   void _showSuccessMessage() {
+    if (kIsWeb) {
+      _showSuccessBanner(context.l10n.emailSentSuccessfully);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.white,
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                context.l10n.emailSentSuccessfully,
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green.shade600,
+          duration: const Duration(seconds: 10),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      );
+    }
+
+    // Close the dialog after a short delay
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      if (mounted) {
+        Navigator.of(context).pop(true);
+      }
+    });
+  }
+
+  void _showSuccessMessageWithText(String text) {
+    if (kIsWeb) {
+      _showSuccessBanner(text);
+      // Close the dialog after a short delay
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
+      });
+      return;
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -390,18 +546,22 @@ class _SecureEmailPreviewDialogState extends State<SecureEmailPreviewDialog> {
             Icon(
               Icons.check_circle,
               color: Colors.white,
-              size: 20,
+              size: 24,
             ),
             const SizedBox(width: 8),
-            Text(
-              context.l10n.emailSentSuccessfully,
-              style: const TextStyle(fontWeight: FontWeight.w500),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+              ),
             ),
           ],
         ),
         backgroundColor: Colors.green.shade600,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 10),
         behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
