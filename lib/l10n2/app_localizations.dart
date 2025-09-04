@@ -1399,6 +1399,126 @@ abstract class AppLocalizations {
   /// **'• Correct contact details help with compensation.'**
   String get tipContactDetails;
 
+  /// Section title for legal and privacy
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Privacy'**
+  String get legalPrivacySectionTitle;
+
+  /// Link label to privacy policy
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// Description under privacy policy link
+  ///
+  /// In en, this message translates to:
+  /// **'How we handle your data'**
+  String get privacyPolicyDesc;
+
+  /// Link label to terms of service
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
+  /// Description under terms link
+  ///
+  /// In en, this message translates to:
+  /// **'Rules for using the service'**
+  String get termsOfServiceDesc;
+
+  /// Link label to cookie policy
+  ///
+  /// In en, this message translates to:
+  /// **'Cookie Policy'**
+  String get cookiePolicy;
+
+  /// Description under cookie policy link
+  ///
+  /// In en, this message translates to:
+  /// **'Cookie usage and categories'**
+  String get cookiePolicyDesc;
+
+  /// Link label to legal notice
+  ///
+  /// In en, this message translates to:
+  /// **'Legal Notice / Imprint'**
+  String get legalNoticeImprint;
+
+  /// Description under legal notice link
+  ///
+  /// In en, this message translates to:
+  /// **'Operator and contact details'**
+  String get legalNoticeImprintDesc;
+
+  /// Link label to accessibility statement
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility Statement'**
+  String get accessibilityStatement;
+
+  /// Description under accessibility link
+  ///
+  /// In en, this message translates to:
+  /// **'Our accessibility commitments'**
+  String get accessibilityStatementDesc;
+
+  /// Action to open cookie preferences dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Manage cookie preferences'**
+  String get manageCookiePreferences;
+
+  /// Description for manage cookies action
+  ///
+  /// In en, this message translates to:
+  /// **'Change analytics and marketing cookie settings'**
+  String get manageCookiePreferencesDesc;
+
+  /// Title for cookie preferences dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Cookie Preferences'**
+  String get cookiePreferencesTitle;
+
+  /// Intro text in cookie dialog
+  ///
+  /// In en, this message translates to:
+  /// **'We use cookies to improve your experience. Necessary cookies are always on.'**
+  String get cookiePreferencesIntro;
+
+  /// Label for analytics cookies
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get analyticsLabel;
+
+  /// Description for analytics cookies
+  ///
+  /// In en, this message translates to:
+  /// **'Helps us understand usage. Optional.'**
+  String get analyticsDesc;
+
+  /// Label for marketing cookies
+  ///
+  /// In en, this message translates to:
+  /// **'Marketing'**
+  String get marketingLabel;
+
+  /// Description for marketing cookies
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized content/ads. Optional.'**
+  String get marketingDesc;
+
+  /// Button to save cookie preferences
+  ///
+  /// In en, this message translates to:
+  /// **'Save preferences'**
+  String get savePreferences;
+
   /// Tip about accessibility settings
   ///
   /// In en, this message translates to:
@@ -1452,6 +1572,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Personal Information'**
   String get profileInfoCardTitle;
+
+  /// Semantic label for profile information banner accessibility
+  ///
+  /// In en, this message translates to:
+  /// **'Information about your profile data usage'**
+  String get profileInfoBannerSemanticLabel;
 
   /// No description provided for @accountSettings.
   ///
@@ -2538,6 +2664,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.'**
   String get emailPreviewAttachmentGuidance;
+
+  /// Primary banner text shown when clipboard fallback is used because no email app is available
+  ///
+  /// In en, this message translates to:
+  /// **'No email app available. Email content copied to your clipboard. Paste it into any email service.'**
+  String get emailClipboardFallbackPrimary;
+
+  /// Secondary advisory text for clipboard fallback explaining corrections and attachments
+  ///
+  /// In en, this message translates to:
+  /// **'After pasting, you can review and make corrections, and attach documents like tickets or boarding passes (JPG, PNG, PDF).'**
+  String get emailClipboardFallbackAdvisory;
 }
 
 class _AppLocalizationsDelegate

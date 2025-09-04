@@ -710,6 +710,68 @@ class AppLocalizationsEn extends AppLocalizations {
       '• Correct contact details help with compensation.';
 
   @override
+  String get legalPrivacySectionTitle => 'Legal & Privacy';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get privacyPolicyDesc => 'How we handle your data';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get termsOfServiceDesc => 'Rules for using the service';
+
+  @override
+  String get cookiePolicy => 'Cookie Policy';
+
+  @override
+  String get cookiePolicyDesc => 'Cookie usage and categories';
+
+  @override
+  String get legalNoticeImprint => 'Legal Notice / Imprint';
+
+  @override
+  String get legalNoticeImprintDesc => 'Operator and contact details';
+
+  @override
+  String get accessibilityStatement => 'Accessibility Statement';
+
+  @override
+  String get accessibilityStatementDesc => 'Our accessibility commitments';
+
+  @override
+  String get manageCookiePreferences => 'Manage cookie preferences';
+
+  @override
+  String get manageCookiePreferencesDesc =>
+      'Change analytics and marketing cookie settings';
+
+  @override
+  String get cookiePreferencesTitle => 'Cookie Preferences';
+
+  @override
+  String get cookiePreferencesIntro =>
+      'We use cookies to improve your experience. Necessary cookies are always on.';
+
+  @override
+  String get analyticsLabel => 'Analytics';
+
+  @override
+  String get analyticsDesc => 'Helps us understand usage. Optional.';
+
+  @override
+  String get marketingLabel => 'Marketing';
+
+  @override
+  String get marketingDesc => 'Personalized content/ads. Optional.';
+
+  @override
+  String get savePreferences => 'Save preferences';
+
+  @override
   String get tipAccessibilitySettings =>
       '• Configure accessibility settings to customize your experience.';
 
@@ -738,6 +800,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileInfoCardTitle => 'Personal Information';
+
+  @override
+  String get profileInfoBannerSemanticLabel =>
+      'Information about your profile data usage';
 
   @override
   String get accountSettings => 'Account Settings';
@@ -1325,4 +1391,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get emailPreviewAttachmentGuidance =>
       'You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.';
+
+  @override
+  String get emailClipboardFallbackPrimary =>
+      'No email app available. Email content copied to your clipboard. Paste it into any email service.';
+
+  @override
+  String get emailClipboardFallbackAdvisory =>
+      'After pasting, you can review and make corrections, and attach documents like tickets or boarding passes (JPG, PNG, PDF).';
 }

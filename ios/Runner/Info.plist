@@ -54,5 +54,23 @@
 	<string>Location is used to suggest nearby airports and pre-fill flight details.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Face ID is used to quickly and securely authenticate your profile.</string>
+	<!-- Allow canOpenURL/launchUrl for World App deep links -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>worldapp</string>
+	</array>
+
+	<!-- OIDC redirect handler for flutter_appauth (scheme: air24) -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>air24</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

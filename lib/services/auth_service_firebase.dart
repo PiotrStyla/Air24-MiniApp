@@ -28,7 +28,15 @@ class FirebaseAuthService extends ChangeNotifier {
   final LocalAuthentication _localAuth = LocalAuthentication();
   
   User? _currentUser;
-
+  User? get currentUser => _currentUser;
+  String? get userDisplayName {
+    // Prioritize real Firebase user display name
+    final name = _currentUser?.displayName;
+    if (name != null && name.trim().isNotEmpty) {
+      return name.trim();
+    }
+    return null;
+  }
   /// Factory method for async creation
   static Future<FirebaseAuthService> create() async {
     final service = FirebaseAuthService._internal();
@@ -62,6 +70,11 @@ class FirebaseAuthService extends ChangeNotifier {
         debugPrint('✅ FirebaseAuthService: Debug credential store initialized');
       }
       
+      // Web: complete any pending Firebase redirect sign-in
+      if (kIsWeb) {
+        await _completeWebRedirectIfPending();
+      }
+      
       notifyListeners();
     } catch (e) {
       debugPrint('❌ FirebaseAuthService: Initialization failed: $e');
@@ -70,432 +83,86 @@ class FirebaseAuthService extends ChangeNotifier {
     }
   }
   
-  /// Initialize the debug-mode credential store for DEV/DEBUG authentication
   Future<void> _initDebugCredentialStore() async {
+    // Initialize a lightweight debug credential store without mutating real data
     try {
       final prefs = await SharedPreferences.getInstance();
-      if (!prefs.containsKey('debug_credentials')) {
-        // Initialize with empty credential store
-        await prefs.setString('debug_credentials', '[]');
-        debugPrint('✅ FirebaseAuthService: Created new debug credential store');
-      } else {
-        debugPrint('✅ FirebaseAuthService: Found existing debug credential store');
-      }
+      // Mark initialization to avoid repeating any expensive work in debug
+      await prefs.setBool('debug_credential_store_initialized', true);
     } catch (e) {
-      debugPrint('⚠️ FirebaseAuthService: Failed to initialize debug credential store: $e');
+      debugPrint('⚠️ FirebaseAuthService: Debug credential store init failed: $e');
     }
   }
   
-  /// Add a credential to the debug credential store
-  Future<bool> _addDebugCredential(String email, String password) async {
+  // Completes Firebase web redirect sign-in if a result is pending
+  Future<void> _completeWebRedirectIfPending() async {
+    if (!kIsWeb) return;
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final String credentialsJson = prefs.getString('debug_credentials') ?? '[]';
-      final List<dynamic> credentials = jsonDecode(credentialsJson);
-      
-      // Check if email already exists (case insensitive)
-      final normalizedEmail = email.trim().toLowerCase();
-      final existingCredential = credentials.firstWhere(
-        (cred) => cred['email'].toString().toLowerCase() == normalizedEmail,
-        orElse: () => null,
-      );
-      
-      if (existingCredential != null) {
-        debugPrint('⚠️ FirebaseAuthService: Debug credential already exists (email suppressed)');
-        return false; // Email already exists
-      }
-      
-      // Add new credential
-      credentials.add({
-        'email': normalizedEmail,
-        'password': password,
-        'display_name': normalizedEmail.split('@')[0],
-        'created_at': DateTime.now().toIso8601String(),
-        'verified': false, // Default to unverified
-      });
-      
-      // Save updated credentials
-      await prefs.setString('debug_credentials', jsonEncode(credentials));
-      debugPrint('✅ FirebaseAuthService: Added debug credential (email suppressed)');
-      return true;
-    } catch (e) {
-      debugPrint('❌ FirebaseAuthService: Failed to add debug credential: $e');
-      return false;
-    }
-  }
-  
-  /// Get a debug credential by email
-  Future<Map<String, dynamic>?> _getDebugCredential(String email) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final String credentialsJson = prefs.getString('debug_credentials') ?? '[]';
-      final List<dynamic> credentials = jsonDecode(credentialsJson);
-      
-      // Find credential by email (case insensitive)
-      final normalizedEmail = email.trim().toLowerCase();
-      final existingCredential = credentials.firstWhere(
-        (cred) => cred['email'].toString().toLowerCase() == normalizedEmail,
-        orElse: () => null,
-      );
-      
-      return existingCredential;
-    } catch (e) {
-      debugPrint('❌ FirebaseAuthService: Failed to get debug credential: $e');
-      return null;
-    }
-  }
-  
-  /// Update a debug credential
-  Future<bool> _updateDebugCredential(Map<String, dynamic> credential) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final String credentialsJson = prefs.getString('debug_credentials') ?? '[]';
-      final List<dynamic> credentials = jsonDecode(credentialsJson);
-      
-      // Find index of credential by email
-      final normalizedEmail = credential['email'].toString().toLowerCase();
-      final index = credentials.indexWhere(
-        (cred) => cred['email'].toString().toLowerCase() == normalizedEmail
-      );
-      
-      if (index == -1) {
-        debugPrint('⚠️ FirebaseAuthService: Debug credential not found (email suppressed)');
-        return false;
-      }
-      
-      // Update credential
-      credentials[index] = credential;
-      
-      // Save updated credentials
-      await prefs.setString('debug_credentials', jsonEncode(credentials));
-      debugPrint('✅ FirebaseAuthService: Updated debug credential (email suppressed)');
-      return true;
-    } catch (e) {
-      debugPrint('❌ FirebaseAuthService: Failed to update debug credential: $e');
-      return false;
-    }
-  }
-  
-  /// Verify a debug credential's email
-  Future<bool> _verifyDebugCredential(String email) async {
-    try {
-      final credential = await _getDebugCredential(email);
-      
-      if (credential == null) {
-        debugPrint('⚠️ FirebaseAuthService: No debug credential found (email suppressed)');
-        return false;
-      }
-      
-      // Mark as verified
-      credential['verified'] = true;
-      credential['verified_at'] = DateTime.now().toIso8601String();
-      
-      return await _updateDebugCredential(credential);
-    } catch (e) {
-      debugPrint('❌ FirebaseAuthService: Failed to verify debug credential: $e');
-      return false;
-    }
-  }
-  
-  /// Check if the user is authenticated
-  bool get isAuthenticated => _currentUser != null;
-  
-  /// Get the current user
-  User? get currentUser => _currentUser;
-  
-  /// Get user display name with various fallbacks
-  String get userDisplayName {
-    if (_currentUser == null) return 'Guest';
-    
-    // Use Firebase user display name if available
-    if (_currentUser!.displayName != null && _currentUser!.displayName!.isNotEmpty) {
-      return _currentUser!.displayName!;
-    }
-    
-    // Try to extract name from email
-    if (_currentUser!.email != null && _currentUser!.email!.isNotEmpty) {
-      final username = _currentUser!.email!.split('@')[0];
-      return username;
-    }
-    
-    // Last resort: generic name
-    return 'User';
-  }
-  
-  /// Get user display name asynchronously with better fallback options
-  Future<String> getUserDisplayNameAsync() async {
-    // If we have current user with display name, use it
-    if (_currentUser?.displayName != null && _currentUser!.displayName!.isNotEmpty) {
-      return _currentUser!.displayName!;
-    }
-    
-    // Try to get name from shared preferences (previously saved)
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final savedName = prefs.getString('user_display_name');
-      if (savedName != null && savedName.isNotEmpty) {
-        return savedName;
-      }
-    } catch (e) {
-      debugPrint('⚠️ FirebaseAuthService: Error getting name from preferences: $e');
-    }
-    
-    // Extract from email if available
-    if (_currentUser?.email != null && _currentUser!.email!.isNotEmpty) {
-      return _currentUser!.email!.split('@')[0];
-    }
-    
-    // Final fallback
-    return 'User';
-  }
-  
-  /// Sign in with email and password
-  Future<UserCredential> signInWithEmail(String email, String password) async {
-    debugPrint('🔑 FirebaseAuthService: Attempting email sign-in (email suppressed)');
-    
-    // Normalize email to prevent case-sensitivity issues
-    final String trimmedEmail = email.trim().toLowerCase();
-    final String trimmedPassword = password.trim();
-    
-    // Check if we're in debug mode first for consistent dev experience
-    if (kDebugMode && isFirebaseUnavailable) {
-      debugPrint('🔑 FirebaseAuthService: DEBUG MODE sign-in attempt');
-      try {
-        // Try to authenticate with debug credential store
-        final credential = await _getDebugCredential(trimmedEmail);
-        
-        // Check if user exists and password matches
-        if (credential != null) {
-          if (credential['password'] == trimmedPassword) {
-            // Check if email is verified
-            if (credential['verified'] == true) {
-              debugPrint('✅ FirebaseAuthService: DEBUG MODE sign-in successful');
-              
-              // Web platform simplified authentication path
-              if (kIsWeb) {
-                debugPrint('🌐 FirebaseAuthService: Using simplified auth for web platform');
-                throw AuthException(
-                  'web-not-supported',
-                  'Development authentication is not fully supported on web platform. Please test on a mobile device.'
-                );
-              }
-              
-              // Mobile platform uses full authentication implementation
-              // This code is never reached on web platform due to the if-block above
-              final mockUser = _createMockUserFromDebugCredential(credential);
-              _currentUser = mockUser;
-              notifyListeners();
-              
-              // Return mock credential
-              return MockUserCredential(mockUser);
-            } else {
-              debugPrint('📧 FirebaseAuthService: DEBUG MODE email not verified');
-              throw AuthException(
-                'email-not-verified',
-                'Please verify your email address first. A verification email has been sent to $trimmedEmail.'
-              );
-            }
-          } else {
-            debugPrint('⚠️ FirebaseAuthService: DEBUG MODE invalid password');
-            throw AuthException(
-              'invalid-credentials',
-              'Invalid email or password. Please try again.'
-            );
-          }
-        } else {
-          debugPrint('⚠️ FirebaseAuthService: DEBUG MODE user not found');
-          throw AuthException(
-            'user-not-found',
-            'No user found with this email address.'
-          );
-        }
-      } catch (e) {
-        // If it's an AuthException, rethrow it
-        if (e is AuthException) rethrow;
-        
-        // Otherwise, log and throw general error
-        debugPrint('❌ FirebaseAuthService: DEBUG MODE sign-in error: $e');
-        throw AuthException(
-          'sign-in-failed',
-          'Failed to sign in. Please try again.'
-        );
-      }
-    }
-    
-    // Regular Firebase authentication flow for production
-    try {
-      // Check if user exists and verify email status
-      try {
-        final methods = await _auth.fetchSignInMethodsForEmail(trimmedEmail);
-        if (methods.isNotEmpty) {
-          // User exists, check credentials first
-          UserCredential tempCredential;
-          try {
-            tempCredential = await _auth.signInWithEmailAndPassword(
-              email: trimmedEmail,
-              password: trimmedPassword
-            );
-          } catch (signInError) {
-            // Handle wrong password separately with clear message
-            debugPrint('❌ FirebaseAuthService: Sign-in error: $signInError');
-            throw AuthException(
-              'invalid-credentials',
-              'Invalid email or password. Please try again.'
-            );
-          }
-          
-          // User exists and password is correct - now strictly check email verification
-          if (tempCredential.user != null) {
-            // Force refresh to get latest verification status
-            await tempCredential.user!.reload();
-            final freshUser = _auth.currentUser;
-            
-            if (freshUser != null && !freshUser.emailVerified) {
-              // Not verified - send a new verification email
-              await freshUser.sendEmailVerification();
-              await _auth.signOut(); // Sign out until verified
-              
-              // Save email for verification check
-              try {
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setString('pending_verification_email', trimmedEmail);
-              } catch (e) {
-                debugPrint('⚠️ FirebaseAuthService: Failed to save pending email: $e');
-              }
-              
-              debugPrint('📧 FirebaseAuthService: Email not verified, new verification sent');
-              throw AuthException(
-                'email-not-verified',
-                'Please verify your email address first. A verification email has been sent to $trimmedEmail.'
-              );
-            }
-            
-            // If we got here, email is verified
-            debugPrint('✅ FirebaseAuthService: Email verified, sign-in successful');
-            _currentUser = freshUser;
-            notifyListeners();
-            return tempCredential;
-          }
-        }
-      } catch (e) {
-        // Only rethrow AuthExceptions, other errors will fall through
-        if (e is AuthException) rethrow;
-      }
-      
-      // Regular sign-in flow
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: trimmedEmail,
-        password: trimmedPassword
-      );
-      
-      _currentUser = userCredential.user;
-      notifyListeners();
-      return userCredential;
-    } on FirebaseAuthException catch (e) {
-      debugPrint('❌ FirebaseAuthService: Firebase sign-in error: ${e.code}');
-      throw _handleAuthError(e);
-    } catch (e) {
-      if (e is AuthException) rethrow;
-      
-      debugPrint('❌ FirebaseAuthService: Sign-in error: $e');
-      throw AuthException(
-        'sign-in-failed',
-        'Failed to sign in. Please check your credentials and try again.'
-      );
-    }
-  }
-  
-  /// Create a new account with email and password
-  Future<UserCredential> createUserWithEmail(String email, String password) async {
-    debugPrint('📝 FirebaseAuthService: Creating new account (email suppressed)');
-    
-    // Normalize email to prevent case-sensitivity issues
-    final String trimmedEmail = email.trim().toLowerCase();
-    final String trimmedPassword = password.trim();
-    
-    try {
-      // Check if user already exists
-      final methods = await _auth.fetchSignInMethodsForEmail(trimmedEmail);
-      if (methods.isNotEmpty) {
-        debugPrint('❌ FirebaseAuthService: Email already in use');
-        throw AuthException(
-          'email-already-in-use',
-          'An account already exists with this email address.'
-        );
-      }
-      
-      // Create the account
-      final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: trimmedEmail,
-        password: trimmedPassword
-      );
-      
-      // Send email verification
-      if (userCredential.user != null) {
-        await userCredential.user!.sendEmailVerification();
-        
-        debugPrint('📧 FirebaseAuthService: Account created, verification email sent');
-        
-        // Save email to SharedPreferences so we can check its verification status later
+      final result = await _auth.getRedirectResult();
+      if (result.user != null) {
+        debugPrint('✅ FirebaseAuthService: Completed web redirect sign-in');
+        _currentUser = result.user;
+        // Persist basic user info
         try {
           final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('pending_verification_email', trimmedEmail);
-          debugPrint('📝 FirebaseAuthService: Saved pending verification email');
+          await prefs.setString('user_uid', result.user!.uid);
+          await prefs.setString('user_display_name', result.user!.displayName ?? '');
+          await prefs.setString('user_email', result.user!.email ?? '');
+          await prefs.setString('user_photo_url', result.user!.photoURL ?? '');
         } catch (e) {
-          debugPrint('⚠️ FirebaseAuthService: Failed to save pending email: $e');
+          debugPrint('⚠️ FirebaseAuthService: Failed to persist redirect user: $e');
         }
-        
-        // Sign out until email is verified
-        await _auth.signOut();
-        
-        // Throw special exception to show verification needed message
-        throw AuthException(
-          'verification-email-sent',
-          'Your account has been created. Please check your email to verify your account before signing in.'
-        );
+      } else {
+        debugPrint('ℹ️ FirebaseAuthService: No pending web redirect result');
       }
-      
-      // Return the credential but don't set as current user
-      return userCredential;
-    } on FirebaseAuthException catch (e) {
-      debugPrint('❌ FirebaseAuthService: Firebase account creation error: ${e.code}');
-      throw _handleAuthError(e);
     } catch (e) {
-      if (e is AuthException) rethrow;
-      
-      debugPrint('❌ FirebaseAuthService: Account creation error: $e');
-      throw AuthException(
-        'signup-failed',
-        'Failed to create account. Please try again later.'
-      );
-    }
-  }
-  
-  /// Verify if an email has been verified
-  Future<bool> checkEmailVerified(String email) async {
-    try {
-      // Sign in and check verification status
-      await _auth.signOut(); // Make sure we're signed out first
-      
-      // Sign in again to check verification status
-      final methods = await _auth.fetchSignInMethodsForEmail(email);
-      if (methods.isEmpty) {
-        return false; // Email doesn't exist
-      }
-      
-      // Re-authenticate
-      final user = _auth.currentUser;
-      return user != null && user.emailVerified;
-    } catch (e) {
-      debugPrint('❌ FirebaseAuthService: Check email verification error: $e');
-      return false;
+      debugPrint('⚠️ FirebaseAuthService: getRedirectResult error: $e');
+    } finally {
+      notifyListeners();
     }
   }
   
   /// Sign in with Google
   Future<UserCredential> signInWithGoogle() async {
     debugPrint('🚀🚀 FirebaseAuthService: Starting Google Sign-In flow');
-    
+
+    // Web-specific: Prefer Firebase popup (GIS) with fallback to redirect for reliability
+    if (kIsWeb) {
+      debugPrint('🌐 FirebaseAuthService: Using Firebase web flow (popup with redirect fallback)');
+      final provider = GoogleAuthProvider();
+      provider.setCustomParameters({'prompt': 'select_account'});
+      try {
+        final result = await _auth.signInWithPopup(provider);
+        if (result.user == null) {
+          throw FirebaseAuthException(code: 'popup-no-user', message: 'No user from popup');
+        }
+        // Persist user data
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user_uid', result.user!.uid);
+          await prefs.setString('user_display_name', result.user!.displayName ?? '');
+          await prefs.setString('user_email', result.user!.email ?? '');
+          await prefs.setString('user_photo_url', result.user!.photoURL ?? '');
+          debugPrint('💾 Saved user data to SharedPreferences (web popup)');
+        } catch (e) {
+          debugPrint('⚠️ Failed to save user data (web popup): $e');
+        }
+        _currentUser = result.user;
+        notifyListeners();
+        debugPrint('✅🎉 FirebaseAuthService: Web popup sign-in SUCCESS');
+        return result;
+      } on FirebaseAuthException catch (e) {
+        debugPrint('⚠️ FirebaseAuthService: signInWithPopup failed: ${e.code} - falling back to redirect');
+        await _auth.signInWithRedirect(provider);
+        // App will redirect away; this Future won't complete normally. Throw a benign exception for callers.
+        throw AuthException('redirect', 'Redirecting to Google Sign-In...');
+      } catch (e) {
+        debugPrint('⚠️ FirebaseAuthService: signInWithPopup error: $e - falling back to redirect');
+        await _auth.signInWithRedirect(provider);
+        throw AuthException('redirect', 'Redirecting to Google Sign-In...');
+      }
+    }
+
     try {
       // Declare variable for credentials early to use in fallback path
       UserCredential? userCredential;
@@ -780,13 +447,11 @@ class FirebaseAuthService extends ChangeNotifier {
       emailVerified: true,
     );
   }
-
+  
   /// Send password reset email
   Future<void> resetPassword(String email) async {
     debugPrint('📧 FirebaseAuthService: Sending password reset email (email suppressed)');
-    
     final String trimmedEmail = email.trim().toLowerCase();
-    
     try {
       await _auth.sendPasswordResetEmail(email: trimmedEmail);
       debugPrint('✅ FirebaseAuthService: Password reset email sent');
@@ -802,6 +467,78 @@ class FirebaseAuthService extends ChangeNotifier {
     }
   }
   
+  /// Sign in with email and password
+  Future<UserCredential> signInWithEmail(String email, String password) async {
+    debugPrint('🔑 FirebaseAuthService: Signing in with email (email suppressed)');
+    final String trimmedEmail = email.trim().toLowerCase();
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+        email: trimmedEmail,
+        password: password,
+      );
+      _currentUser = result.user;
+      // Persist basic user info
+      try {
+        if (result.user != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user_uid', result.user!.uid);
+          await prefs.setString('user_display_name', result.user!.displayName ?? '');
+          await prefs.setString('user_email', result.user!.email ?? '');
+          await prefs.setString('user_photo_url', result.user!.photoURL ?? '');
+        }
+      } catch (e) {
+        debugPrint('⚠️ FirebaseAuthService: Failed to persist email sign-in user: $e');
+      }
+      notifyListeners();
+      return result;
+    } on FirebaseAuthException catch (e) {
+      debugPrint('❌ FirebaseAuthService: Email sign-in error: ${e.code}');
+      throw _handleAuthError(e);
+    } catch (e) {
+      debugPrint('❌ FirebaseAuthService: Email sign-in unexpected error: $e');
+      throw AuthException(
+        'sign-in-failed',
+        'Failed to sign in. Please try again.',
+      );
+    }
+  }
+
+  /// Create a new user with email and password
+  Future<UserCredential> createUserWithEmail(String email, String password) async {
+    debugPrint('🆕 FirebaseAuthService: Creating user with email (email suppressed)');
+    final String trimmedEmail = email.trim().toLowerCase();
+    try {
+      final result = await _auth.createUserWithEmailAndPassword(
+        email: trimmedEmail,
+        password: password,
+      );
+      _currentUser = result.user;
+      // Persist basic user info
+      try {
+        if (result.user != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user_uid', result.user!.uid);
+          await prefs.setString('user_display_name', result.user!.displayName ?? '');
+          await prefs.setString('user_email', result.user!.email ?? '');
+          await prefs.setString('user_photo_url', result.user!.photoURL ?? '');
+        }
+      } catch (e) {
+        debugPrint('⚠️ FirebaseAuthService: Failed to persist sign-up user: $e');
+      }
+      notifyListeners();
+      return result;
+    } on FirebaseAuthException catch (e) {
+      debugPrint('❌ FirebaseAuthService: Email sign-up error: ${e.code}');
+      throw _handleAuthError(e);
+    } catch (e) {
+      debugPrint('❌ FirebaseAuthService: Email sign-up unexpected error: $e');
+      throw AuthException(
+        'sign-up-failed',
+        'Failed to create account. Please try again.',
+      );
+    }
+  }
+
   /// Process auth state changes
   Future<void> _onAuthStateChanged(User? user) async {
     debugPrint('🔄 FirebaseAuthService: Auth state changed: user present? ${user != null}');
@@ -866,6 +603,33 @@ class FirebaseAuthService extends ChangeNotifier {
       debugPrint('❌ FirebaseAuthService: Sign out error: $e');
       throw AuthException('signout-failed', 'Failed to sign out. Please try again.');
     }
+  }
+  
+  Future<String> getUserDisplayNameAsync() async {
+    // Return the most reliable display name available
+    final name = _currentUser?.displayName;
+    if (name != null && name.trim().isNotEmpty) {
+      return name.trim();
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final persisted = prefs.getString('user_display_name');
+      if (persisted != null && persisted.trim().isNotEmpty) {
+        return persisted.trim();
+      }
+      final manual = prefs.getString('manual_google_name');
+      if (manual != null && manual.trim().isNotEmpty) {
+        return manual.trim();
+      }
+      // As a last resort, derive from email prefix if available
+      final email = _currentUser?.email ?? prefs.getString('user_email');
+      if (email != null && email.contains('@')) {
+        return email.split('@').first;
+      }
+    } catch (e) {
+      debugPrint('⚠️ FirebaseAuthService: getUserDisplayNameAsync prefs error: $e');
+    }
+    return 'Passenger';
   }
   
   /// Helper method to convert FirebaseAuthException into a user-friendly AuthException

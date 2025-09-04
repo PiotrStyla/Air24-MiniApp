@@ -721,6 +721,68 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tipContactDetails => 'Detalhes de Contato';
 
   @override
+  String get legalPrivacySectionTitle => 'Legal & Privacy';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get privacyPolicyDesc => 'How we handle your data';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get termsOfServiceDesc => 'Rules for using the service';
+
+  @override
+  String get cookiePolicy => 'Cookie Policy';
+
+  @override
+  String get cookiePolicyDesc => 'Cookie usage and categories';
+
+  @override
+  String get legalNoticeImprint => 'Legal Notice / Imprint';
+
+  @override
+  String get legalNoticeImprintDesc => 'Operator and contact details';
+
+  @override
+  String get accessibilityStatement => 'Accessibility Statement';
+
+  @override
+  String get accessibilityStatementDesc => 'Our accessibility commitments';
+
+  @override
+  String get manageCookiePreferences => 'Manage cookie preferences';
+
+  @override
+  String get manageCookiePreferencesDesc =>
+      'Change analytics and marketing cookie settings';
+
+  @override
+  String get cookiePreferencesTitle => 'Cookie Preferences';
+
+  @override
+  String get cookiePreferencesIntro =>
+      'We use cookies to improve your experience. Necessary cookies are always on.';
+
+  @override
+  String get analyticsLabel => 'Analytics';
+
+  @override
+  String get analyticsDesc => 'Helps us understand usage. Optional.';
+
+  @override
+  String get marketingLabel => 'Marketing';
+
+  @override
+  String get marketingDesc => 'Personalized content/ads. Optional.';
+
+  @override
+  String get savePreferences => 'Save preferences';
+
+  @override
   String get tipAccessibilitySettings => 'Configurações de Acessibilidade';
 
   @override
@@ -749,6 +811,10 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get profileInfoCardTitle =>
       'O seu perfil contém as suas informações pessoais e de contacto. Estas são usadas para processar as suas reclamações de compensação de voo e mantê-lo informado.';
+
+  @override
+  String get profileInfoBannerSemanticLabel =>
+      'Informações sobre o uso dos dados do seu perfil';
 
   @override
   String get accountSettings => 'Definições da Conta';
@@ -1277,11 +1343,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get chooseSupportAmount => 'Escolha o valor do seu apoio:';
 
   @override
-  String get emailReadyTitle => 'Your Compensation Email is Ready to Send!';
+  String get emailReadyTitle =>
+      'O seu email de compensação está pronto para ser enviado!';
 
   @override
   String get emailWillBeSentSecurely =>
-      'Your email will be sent securely through our backend service';
+      'O seu email será enviado com segurança através do nosso serviço backend';
 
   @override
   String get toLabel => 'To:';
@@ -1297,13 +1364,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get secureTransmissionNotice =>
-      'Your email will be sent securely using encrypted transmission';
+      'O seu email será enviado com segurança utilizando transmissão cifrada';
 
   @override
   String get sendingEllipsis => 'Sending...';
 
   @override
-  String get sendEmailSecurely => 'Send Email Securely';
+  String get sendEmailSecurely => 'Enviar email com segurança';
 
   @override
   String get openingEmailApp => 'Opening email app...';
@@ -1350,4 +1417,12 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get emailPreviewAttachmentGuidance =>
       'Você poderá adicionar anexos no próximo passo. Por favor, lembre-se de incluir apenas ficheiros nos formatos JPG, PNG ou PDF.';
+
+  @override
+  String get emailClipboardFallbackPrimary =>
+      'Nenhuma aplicação de e‑mail disponível. O conteúdo do e‑mail foi copiado para a sua área de transferência. Cole-o em qualquer serviço de e‑mail.';
+
+  @override
+  String get emailClipboardFallbackAdvisory =>
+      'Depois de colar, pode rever e corrigir o texto e anexar documentos como bilhetes ou cartões de embarque (JPG, PNG, PDF).';
 }

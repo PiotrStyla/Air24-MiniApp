@@ -106,6 +106,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildLoggedInBody(BuildContext context, User user) {
     final authService = Provider.of<FirebaseAuthService>(context, listen: false);
+    // Prepare display values for greeting to avoid showing empty parentheses
+    final String nameToShow = (user.displayName?.trim().isNotEmpty == true)
+        ? user.displayName!.trim()
+        : (user.email?.trim().isNotEmpty == true)
+            ? user.email!.trim()
+            : context.l10n.genericUser;
+    final String? emailToShow = user.email?.trim();
+    final String greetingText = (emailToShow?.isNotEmpty == true)
+        ? context.l10n.welcomeUser(nameToShow, emailToShow!, "")
+        : '${context.l10n.welcomeMessage}, $nameToShow';
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -199,13 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             const SizedBox(height: 16),
             Text(
-              context.l10n.welcomeUser(
-                user.displayName?.isNotEmpty == true
-                    ? user.displayName!
-                    : user.email ?? context.l10n.genericUser,
-                "", // role parameter
-                "", // userName parameter
-              ),
+              greetingText,
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

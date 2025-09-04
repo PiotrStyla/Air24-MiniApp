@@ -38,6 +38,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
   late TextEditingController _arrivalAirportController;
   late TextEditingController _reasonController;
   late TextEditingController _compensationAmountController;
+  late TextEditingController _dateController;
   late DateTime _flightDate;
 
   @override
@@ -49,6 +50,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
     _reasonController = TextEditingController(text: widget.reason ?? '');
     _compensationAmountController = TextEditingController(text: widget.compensationAmount?.toString() ?? '');
     _flightDate = widget.flightDate;
+    _dateController = TextEditingController(text: DateFormat.yMMMd().format(_flightDate));
   }
 
   @override
@@ -58,6 +60,7 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
     _arrivalAirportController.dispose();
     _reasonController.dispose();
     _compensationAmountController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
@@ -114,6 +117,21 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
   final _formKey = GlobalKey<FormState>();
   
   // This method is no longer used as we now redirect to the standard claim flow
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _flightDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+    );
+    if (picked != null && picked != _flightDate) {
+      setState(() {
+        _flightDate = picked;
+        _dateController.text = DateFormat.yMMMd().format(_flightDate);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -191,9 +209,20 @@ class _QuickClaimScreenState extends State<QuickClaimScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: InputDecorator(
-                      decoration: InputDecoration(labelText: '${context.l10n.flightDate} *'),
-                      child: Text(DateFormat.yMMMd().format(_flightDate)),
+                    child: TextFormField(
+                      controller: _dateController,
+                      decoration: InputDecoration(
+                        labelText: '${context.l10n.flightDate} *',
+                        suffixIcon: const Icon(Icons.calendar_today),
+                      ),
+                      readOnly: true,
+                      onTap: () => _selectDate(context),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return context.l10n.pleaseSelectFlightDate;
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   Tooltip(
