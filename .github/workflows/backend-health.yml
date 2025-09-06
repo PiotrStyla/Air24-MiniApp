@@ -1,0 +1,47 @@
+name: Backend Health Check
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # every 30 minutes
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check /health endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          CODE=$(curl -sS -w "%{http_code}" -o /tmp/health.json https://piotrs.pythonanywhere.com/health)
+          echo "Health HTTP status: $CODE"
+          test "$CODE" = "200"
+          echo "Health payload:"
+          cat /tmp/health.json
+
+      - name: Check /eligible_flights (24h)
+        shell: bash
+        run: |
+          set -euo pipefail
+          CODE=$(curl -sS -w "%{http_code}" -o /tmp/flights.json "https://piotrs.pythonanywhere.com/eligible_flights?hours=24&include_delayed=true")
+          echo "Eligible HTTP status: $CODE"
+          test "$CODE" = "200"
+          echo "Eligible payload sample:"
+          head -c 500 /tmp/flights.json || true
+          echo
+          echo "Count parsed by Python:"
+          python3 - <<'PY'
+import json
+try:
+    with open('/tmp/flights.json','r', encoding='utf-8') as f:
+        data = json.load(f)
+    if isinstance(data, list):
+        print(len(data))
+    else:
+        print('not-a-list')
+except Exception as e:
+    print(f'parse-error: {e}')
+PY
+
+      - name: Summary
+        run: echo "Backend health checks passed."
