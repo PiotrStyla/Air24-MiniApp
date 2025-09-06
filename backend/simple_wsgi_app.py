@@ -1,7 +1,7 @@
 """
 Ultra-simple WSGI application for Flight Compensation API (repository copy)
 - Uses only Python standard libraries; no Flask dependency
-- Provides canonical route /eligible_flights and a temporary alias /eu-compensation-eligible
+- Provides canonical route /eligible_flights (legacy alias removed)
 - Normalizes records to the shape expected by the Flutter app (AviationStackService)
 
 Deploying on PythonAnywhere:
@@ -228,8 +228,8 @@ def application(environ, start_response):
             start_response("200 OK", [("Content-Type", "text/plain")])
             return [b"Flight Compensation API is running..."]
 
-        # Eligible flights (ALIAS supported)
-        elif path in ("/eligible_flights", "/eu-compensation-eligible"):
+        # Eligible flights (canonical route)
+        elif path == "/eligible_flights":
             hours = None
             if "hours" in params:
                 try:
