@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 void main() async {
   print('Starting backend data check...');
   
-  final String backendUrl = 'https://piotrs.pythonanywhere.com';
+  const String backendUrl = 'https://piotrs.pythonanywhere.com';
   
   // Test root endpoint
   try {

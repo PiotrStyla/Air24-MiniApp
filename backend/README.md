@@ -201,3 +201,31 @@ For issues with:
 - **Firebase Functions**: Firebase Support
 - **Resend API**: Resend Support (support@resend.com)
 - **DNS/Domain**: Your domain registrar support
+
+---
+
+## PythonAnywhere Simple WSGI API (EU Eligible Flights)
+
+This repository also contains a minimal, framework-free WSGI backend used to serve eligible EU compensation flights to the Flutter app.
+
+- File: `backend/simple_wsgi_app.py`
+- Purpose: Provide the endpoint the app calls for EU-wide eligible flights.
+- Endpoints:
+  - `GET /eligible_flights?hours=24` (canonical)
+  - `GET /eu-compensation-eligible?hours=24` (temporary alias for older builds)
+  - `GET /api/flights` (normalized raw flights)
+  - `GET /health`, `GET /status`, `GET /check_data_file`, `GET /debug_flight_data` (debug/health)
+- Response: A list of normalized flight objects with keys the app expects (`flight_iata`, `airline_name`, `airline_iata`, `departure_airport_iata`, `arrival_airport_iata`, `status`, `delay_minutes`, `departure_scheduled_time`, ...).
+
+### Deploying on PythonAnywhere
+
+1. Open the PythonAnywhere web app WSGI configuration (e.g., `/var/www/piotrs_pythonanywhere_com_wsgi.py`).
+2. Paste the contents of `backend/simple_wsgi_app.py` into that WSGI file, or import it from a small loader.
+3. Reload the PythonAnywhere web app.
+4. Verify:
+   - `https://<your-domain>.pythonanywhere.com/eligible_flights?hours=24` returns a non-empty JSON list (when data is present)
+   - `https://<your-domain>.pythonanywhere.com/check_data_file` shows file health and counts
+
+Notes:
+- The app uses a 24-hour window coherently across UI, service, and tests.
+- Keep the alias `/eu-compensation-eligible` until all deployed frontends use `/eligible_flights`, then remove it.
