@@ -157,6 +157,12 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
     switch (languageCode) {
       case 'en':
         return '🇺🇸'; // US flag
+      case 'es':
+        return '🇪🇸'; // Spain flag
+      case 'fr':
+        return '🇫🇷'; // France flag
+      case 'de':
+        return '🇩🇪'; // Germany flag
       case 'pt':
         return '🇧🇷'; // Brazil flag
       case 'pl':

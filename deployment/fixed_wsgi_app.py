@@ -2,7 +2,7 @@
 import json
 import os
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 import urllib.parse
 import sys
 
@@ -13,6 +13,29 @@ try:
 except ImportError:
     logging.warning("EU airports module not found. Using basic eligibility checks.")
     EU_AIRPORTS_MODULE_LOADED = False
+
+# Helper: check if any provided timestamp is within the last N hours
+def _is_within_hours(hours, *iso_timestamps):
+    try:
+        cutoff = datetime.utcnow() - timedelta(hours=hours)
+    except Exception:
+        return True  # If we cannot compute, do not over-filter
+    for ts in iso_timestamps:
+        try:
+            if not ts:
+                continue
+            s = str(ts).replace('Z', '+00:00')
+            dt = datetime.fromisoformat(s)
+            if dt.tzinfo is not None:
+                # Normalize to UTC
+                dt_utc = dt.astimezone(tz=None).replace(tzinfo=None)
+            else:
+                dt_utc = dt
+            if dt_utc >= cutoff:
+                return True
+        except Exception:
+            continue
+    return False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -127,6 +150,179 @@ def add_flight(flight_data, source="API"):
         logger.error(f"Error adding flight: {str(e)}")
         return False
 
+# Map AviationStack API flight object to this app's internal storage format
+def _map_avstack_to_internal(flight):
+    try:
+        status = (flight.get('flight_status') or flight.get('status') or '').upper()
+        dep = flight.get('departure') or {}
+        arr = flight.get('arrival') or {}
+        airline = flight.get('airline') or {}
+        flight_field = flight.get('flight') or {}
+
+        # Determine delay minutes from API if present (prefer arrival, then departure)
+        delay_minutes = 0
+        try:
+            d = dep.get('delay')
+            if isinstance(d, int):
+                delay_minutes = max(delay_minutes, d)
+        except Exception:
+            pass
+        try:
+            a = arr.get('delay')
+            if isinstance(a, int):
+                # Prefer arrival delay for EU261
+                delay_minutes = max(delay_minutes, a)
+        except Exception:
+            pass
+
+        mapped = {
+            'flight': flight_field.get('iata') or flight.get('flight_iata') or '',
+            'airline': {
+                'iata': airline.get('iata', 'Unknown'),
+                'name': airline.get('name', 'Unknown'),
+            },
+            'departure': {
+                'airport': {
+                    'iata': dep.get('iata') or '',
+                    'name': dep.get('airport') or '',
+                },
+                'scheduledTime': dep.get('scheduled') or '',
+            },
+            'arrival': {
+                'airport': {
+                    'iata': arr.get('iata') or '',
+                    'name': arr.get('airport') or '',
+                },
+                'scheduledTime': arr.get('scheduled') or '',
+            },
+            'status': status,
+            # Internal code expects 'delay' in minutes
+            'delay': delay_minutes,
+            # Distance may be absent; default to 2000 for compensation banding
+            'distance_km': flight.get('distance_km', 2000),
+        }
+        return mapped
+    except Exception as e:
+        logger.error(f"Error mapping AviationStack flight: {str(e)}")
+        return None
+
+# Refresh eligible flights from AviationStack and persist to local JSON cache
+def _refresh_eu_eligible_flights_from_aviationstack(hours=72):
+    try:
+        sys.path.append(os.path.dirname(__file__))
+        from aviationstack_client import AviationStackClient
+        client = AviationStackClient()
+    except Exception as e:
+        logger.error(f"Cannot initialize AviationStack client: {str(e)}")
+        return {'refreshed': False, 'added': 0, 'errors': 1, 'message': str(e)}
+
+    eu_airports = ['FRA', 'CDG', 'AMS', 'MAD', 'FCO', 'LHR', 'MUC', 'BCN', 'LIS', 'VIE', 'WAW']
+    added = 0
+    errors = 0
+
+    logger.info(f"Refreshing eligible flights from AviationStack for {len(eu_airports)} airports")
+
+    for airport in eu_airports:
+        try:
+            # 1) Arrivals to EU airport (captures inbound disruptions)
+            params_arr = {
+                'arr_iata': airport,
+                'flight_status': 'active,landed,cancelled,diverted',
+                'limit': 100,
+            }
+            flights = client.get_flights(params=params_arr) or []
+
+            for f in flights:
+                mapped = _map_avstack_to_internal(f)
+                if not mapped:
+                    continue
+
+                status_lower = (mapped.get('status') or '').lower()
+                is_cancelled = 'cancel' in status_lower
+                is_diverted = 'divert' in status_lower
+                delay = mapped.get('delay') or 0
+
+                # Time window filter (use both dep/arr scheduled)
+                dep_time = mapped.get('departure', {}).get('scheduledTime')
+                arr_time = mapped.get('arrival', {}).get('scheduledTime')
+                if not _is_within_hours(hours, dep_time, arr_time):
+                    continue
+
+                # EU route-aware eligibility if module is available
+                try:
+                    if EU_AIRPORTS_MODULE_LOADED:
+                        mapped_for_check = {
+                            'airline': mapped.get('airline'),
+                            'departure': mapped.get('departure'),
+                            'arrival': mapped.get('arrival'),
+                            'status': mapped.get('status'),
+                            'delay': mapped.get('delay'),
+                        }
+                        eligible = is_eligible_for_eu261(mapped_for_check)
+                    else:
+                        eligible = (delay >= 180) or is_cancelled or is_diverted
+                except Exception:
+                    eligible = (delay >= 180) or is_cancelled or is_diverted
+
+                if eligible:
+                    mapped['eligible_for_compensation'] = True
+                    if add_flight(mapped, source="AviationStack"):
+                        added += 1
+        except Exception as e:
+            errors += 1
+            logger.error(f"Error processing airport {airport}: {str(e)}")
+
+        # 2) Departures from EU airport (captures outbound EU flights that later arrive with delay)
+        try:
+            params_dep = {
+                'dep_iata': airport,
+                'flight_status': 'active,landed,cancelled,diverted',
+                'limit': 100,
+            }
+            flights_dep = client.get_flights(params=params_dep) or []
+
+            for f in flights_dep:
+                mapped = _map_avstack_to_internal(f)
+                if not mapped:
+                    continue
+
+                status_lower = (mapped.get('status') or '').lower()
+                is_cancelled = 'cancel' in status_lower
+                is_diverted = 'divert' in status_lower
+                delay = mapped.get('delay') or 0
+
+                dep_time = mapped.get('departure', {}).get('scheduledTime')
+                arr_time = mapped.get('arrival', {}).get('scheduledTime')
+                if not _is_within_hours(hours, dep_time, arr_time):
+                    continue
+
+                # Route must depart from EU; this loop ensures dep EU. Let eligibility logic handle disruption rule.
+                try:
+                    if EU_AIRPORTS_MODULE_LOADED:
+                        mapped_for_check = {
+                            'airline': mapped.get('airline'),
+                            'departure': mapped.get('departure'),
+                            'arrival': mapped.get('arrival'),
+                            'status': mapped.get('status'),
+                            'delay': mapped.get('delay'),
+                        }
+                        eligible = is_eligible_for_eu261(mapped_for_check)
+                    else:
+                        eligible = (delay >= 180) or is_cancelled or is_diverted
+                except Exception:
+                    eligible = (delay >= 180) or is_cancelled or is_diverted
+
+                if eligible:
+                    mapped['eligible_for_compensation'] = True
+                    if add_flight(mapped, source="AviationStack"):
+                        added += 1
+        except Exception as e:
+            errors += 1
+            logger.error(f"Error processing departures for airport {airport}: {str(e)}")
+
+    logger.info(f"AviationStack refresh complete. Added {added} eligible flights, errors: {errors}")
+    return {'refreshed': True, 'added': added, 'errors': errors}
+
 # WSGI application
 def application(environ, start_response):
     path = environ.get('PATH_INFO', '').rstrip('/')
@@ -149,17 +345,29 @@ def application(environ, start_response):
                     hours = int(hours_param)
                 except ValueError:
                     hours = 72
+                # Optional onlyLive filter
+                only_live_param = params.get('onlyLive', params.get('only_live', ['false']))[0].lower()
+                only_live = only_live_param in ('true', '1', 'yes')
                 
                 # Process like /eu-compensation-eligible
                 # Load all flights from the database
                 all_flights = load_flight_data().get("flights", [])
                 logger.info(f"Loaded {len(all_flights)} flights from database")
+                if only_live:
+                    before = len(all_flights)
+                    all_flights = [f for f in all_flights if f.get('source') == 'AviationStack']
+                    logger.info(f"Filtered to live flights only: {len(all_flights)} of {before} remain")
                 
                 # Add additional eligible flights based on delay criteria
                 eligible_flights = []
                 for flight in all_flights:
                     # Skip flights without required fields
                     if not flight.get('flight') or not flight.get('departure') or not flight.get('arrival'):
+                        continue
+                    # Time window filter (use dep or arr scheduledTime)
+                    dep_time = flight.get('departure', {}).get('scheduledTime')
+                    arr_time = flight.get('arrival', {}).get('scheduledTime')
+                    if not _is_within_hours(hours, dep_time, arr_time):
                         continue
                     
                     # FIX: Safely handle None status
@@ -251,49 +459,132 @@ def application(environ, start_response):
         return [response]
     
     elif path == '/compensation-check':
+        # Live ad-hoc eligibility check via AviationStack (server-side)
         # Parse query parameters
         query_string = environ.get('QUERY_STRING', '')
         params = urllib.parse.parse_qs(query_string)
-        
-        flight_number = params.get('flight_number', [''])[0]
-        date = params.get('date', [''])[0]
-        
-        if not flight_number or not date:
+
+        flight_number = (params.get('flight_number', [''])[0] or '').strip()
+        date = (params.get('date', [''])[0] or '').strip()  # optional YYYY-MM-DD
+
+        if not flight_number:
             response = json.dumps({
                 "eligible": False,
-                "message": "Missing flight number or date"
+                "message": "Missing flight number",
+                "error": "missing_flight_number"
             }).encode('utf-8')
-            start_response('400 Bad Request', [('Content-Type', 'application/json')])
+            start_response('400 Bad Request', [('Content-Type', 'application/json'), ('Access-Control-Allow-Origin', '*')])
             return [response]
-        
+
         try:
-            data = load_flight_data()
-            flights = data.get("flights", [])
-            
-            # Find matching flights
-            matching_flights = []
-            for flight in flights:
-                if flight.get("flight_number", "").upper() == flight_number.upper():
-                    flight_date = flight.get("departure_date", "")
-                    if date in flight_date:
-                        matching_flights.append(flight)
-            
-            # Generate response
-            if matching_flights:
-                response = json.dumps({
-                    "eligible": True,
-                    "flights": matching_flights,
-                    "message": "Flight is eligible for compensation!"
-                }).encode('utf-8')
-            else:
+            # Initialize AviationStack client
+            try:
+                sys.path.append(os.path.dirname(__file__))
+                from aviationstack_client import AviationStackClient
+                client = AviationStackClient()
+            except Exception as e:
+                logger.error(f"AviationStack client error: {e}")
                 response = json.dumps({
                     "eligible": False,
-                    "message": "No matching flights found for compensation."
+                    "message": "AviationStack client not configured",
+                    "error": str(e)
                 }).encode('utf-8')
-                
-            start_response('200 OK', [('Content-Type', 'application/json')])
+                start_response('500 Internal Server Error', [('Content-Type', 'application/json'), ('Access-Control-Allow-Origin', '*')])
+                return [response]
+
+            # Fetch flights by number
+            flights = client.get_flight_by_number(flight_number) or []
+
+            # Optionally filter by date (by flight_date or scheduled departure)
+            if date:
+                filtered = []
+                for f in flights:
+                    try:
+                        if ((f.get('flight_date') and date in str(f.get('flight_date'))) or
+                            (f.get('departure', {}).get('scheduled') and date in str(f['departure']['scheduled']))):
+                            filtered.append(f)
+                    except Exception:
+                        continue
+                flights = filtered
+
+            if not flights:
+                response = json.dumps({
+                    "eligible": False,
+                    "message": "No flight found for given number/date"
+                }).encode('utf-8')
+                start_response('200 OK', [('Content-Type', 'application/json'), ('Access-Control-Allow-Origin', '*')])
+                return [response]
+
+            # Take the most relevant flight (first)
+            f = flights[0]
+
+            # Build a minimal structure for EU261 checks
+            dep = f.get('departure') or {}
+            arr = f.get('arrival') or {}
+            airline = f.get('airline') or {}
+            flight_field = f.get('flight') or {}
+
+            # Determine delay minutes
+            delay_minutes = 0
+            try:
+                d = dep.get('delay')
+                if isinstance(d, int):
+                    delay_minutes = max(delay_minutes, d)
+            except Exception:
+                pass
+            try:
+                a = arr.get('delay')
+                if isinstance(a, int):
+                    delay_minutes = max(delay_minutes, a)
+            except Exception:
+                pass
+
+            status = (f.get('flight_status') or '').upper()
+
+            # Compose a normalized flight for EU261 helpers
+            normalized = {
+                'flight_number': flight_field.get('iata') or flight_number,
+                'airline': airline.get('iata') or airline.get('name') or 'Unknown',
+                'departure_airport': dep.get('iata') or '',
+                'arrival_airport': arr.get('iata') or '',
+                'status': status,
+                'delay_minutes': delay_minutes,
+            }
+
+            # EU261 evaluation
+            try:
+                eu_applies = True  # Assume EU evaluation is applicable; helper determines specifics
+                if EU_AIRPORTS_MODULE_LOADED:
+                    eligible = is_eligible_for_eu261(normalized)
+                    compensation = calculate_eu261_compensation(normalized) if eligible else 0
+                else:
+                    # Basic rule: 3+ hours delay or cancelled/diverted
+                    is_cancelled = 'CANCEL' in status
+                    is_diverted = 'DIVERT' in status
+                    eligible = (delay_minutes >= 180) or is_cancelled or is_diverted
+                    compensation = 400 if eligible else 0
+            except Exception as e:
+                logger.error(f"EU261 evaluation error: {e}")
+                eligible = delay_minutes >= 180 or 'CANCEL' in status or 'DIVERT' in status
+                compensation = 400 if eligible else 0
+
+            result = {
+                'flight_number': normalized['flight_number'],
+                'airline': airline.get('name') or normalized['airline'],
+                'status': status,
+                'departure_airport': normalized['departure_airport'],
+                'arrival_airport': normalized['arrival_airport'],
+                'delay_minutes': delay_minutes,
+                'is_eligible': bool(eligible),
+                'compensation_amount_eur': int(compensation) if isinstance(compensation, int) else 0,
+                'currency': 'EUR',
+                'eu_regulation_applies': True,
+            }
+
+            response = json.dumps(result).encode('utf-8')
+            start_response('200 OK', [('Content-Type', 'application/json'), ('Access-Control-Allow-Origin', '*')])
             return [response]
-            
+
         except Exception as e:
             logger.error(f"Error in compensation check: {str(e)}")
             response = json.dumps({
@@ -301,7 +592,7 @@ def application(environ, start_response):
                 "error": str(e),
                 "message": "An error occurred while checking compensation eligibility."
             }).encode('utf-8')
-            start_response('500 Internal Server Error', [('Content-Type', 'application/json')])
+            start_response('500 Internal Server Error', [('Content-Type', 'application/json'), ('Access-Control-Allow-Origin', '*')])
             return [response]
     
     elif path == '/eu-compensation-eligible' or path == '/eligible_flights' or path == '/eligible-flights':
@@ -312,12 +603,25 @@ def application(environ, start_response):
             params = urllib.parse.parse_qs(query_string)
             
             # Get hours parameter with default
-            hours_param = params.get('hours', ['72'])[0]
+            hours_param = params.get('hours', ['24'])[0]
             try:
                 hours = int(hours_param)
             except ValueError:
-                hours = 72
+                hours = 24
             
+            # Optional: only live flights (AviationStack-sourced)
+            only_live_param = params.get('onlyLive', params.get('only_live', ['false']))[0].lower()
+            only_live = only_live_param in ('true', '1', 'yes')
+            
+            # Optional: refresh cache from AviationStack when requested
+            refresh_param = params.get('refreshData', ['false'])[0].lower()
+            if refresh_param in ('true', '1', 'yes'):
+                logger.info("Refresh requested via query param: fetching from AviationStack before serving data")
+                try:
+                    _refresh_eu_eligible_flights_from_aviationstack(hours=hours)
+                except Exception as e:
+                    logger.error(f"Refresh failed: {str(e)}")
+
             logger.info(f"Processing EU compensation request for last {hours} hours")
             
             # Load all flights from the database 

@@ -721,44 +721,45 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tipContactDetails => 'Detalhes de Contato';
 
   @override
-  String get legalPrivacySectionTitle => 'Legal & Privacy';
+  String get legalPrivacySectionTitle => 'Informações legais e privacidade';
 
   @override
-  String get privacyPolicy => 'Privacy Policy';
+  String get privacyPolicy => 'Política de Privacidade';
 
   @override
-  String get privacyPolicyDesc => 'How we handle your data';
+  String get privacyPolicyDesc => 'Como tratamos os seus dados';
 
   @override
-  String get termsOfService => 'Terms of Service';
+  String get termsOfService => 'Termos de Serviço';
 
   @override
-  String get termsOfServiceDesc => 'Rules for using the service';
+  String get termsOfServiceDesc => 'Regras para utilizar o serviço';
 
   @override
-  String get cookiePolicy => 'Cookie Policy';
+  String get cookiePolicy => 'Política de Cookies';
 
   @override
-  String get cookiePolicyDesc => 'Cookie usage and categories';
+  String get cookiePolicyDesc => 'Utilização de cookies e categorias';
 
   @override
-  String get legalNoticeImprint => 'Legal Notice / Imprint';
+  String get legalNoticeImprint => 'Informações legais / Imprint';
 
   @override
-  String get legalNoticeImprintDesc => 'Operator and contact details';
+  String get legalNoticeImprintDesc => 'Operador e dados de contacto';
 
   @override
-  String get accessibilityStatement => 'Accessibility Statement';
+  String get accessibilityStatement => 'Declaração de Acessibilidade';
 
   @override
-  String get accessibilityStatementDesc => 'Our accessibility commitments';
+  String get accessibilityStatementDesc =>
+      'Os nossos compromissos de acessibilidade';
 
   @override
-  String get manageCookiePreferences => 'Manage cookie preferences';
+  String get manageCookiePreferences => 'Gerir preferências de cookies';
 
   @override
   String get manageCookiePreferencesDesc =>
-      'Change analytics and marketing cookie settings';
+      'Alterar as definições de cookies de análise e marketing';
 
   @override
   String get cookiePreferencesTitle => 'Cookie Preferences';
@@ -1417,6 +1418,44 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get emailPreviewAttachmentGuidance =>
       'Você poderá adicionar anexos no próximo passo. Por favor, lembre-se de incluir apenas ficheiros nos formatos JPG, PNG ou PDF.';
+
+  @override
+  String get worldIdVerifyTitle => 'Verificar com World ID';
+
+  @override
+  String get worldIdVerifyDesc =>
+      'Verifique a sua identidade de forma privada com o World ID. Isso ajuda a prevenir abusos e a manter a aplicação gratuita.';
+
+  @override
+  String get worldIdVerifySemantic =>
+      'Verifique a sua identidade com o Worldcoin World ID. Apenas na Web por enquanto.';
+
+  @override
+  String get worldIdTemporarilyUnavailable =>
+      'O World ID está temporariamente indisponível. Tente novamente mais tarde.';
+
+  @override
+  String get worldAppSignInTitle => 'Entrar com o World App';
+
+  @override
+  String get worldAppSignInDesc =>
+      'Entre com o World App para verificar a sua identidade. Isso ajuda a prevenir abusos e manter a aplicação gratuita.';
+
+  @override
+  String get worldAppOpenError =>
+      'Não foi possível abrir o World App. Tente novamente.';
+
+  @override
+  String worldAppOpenException(String error) {
+    return 'Erro ao abrir o World App: $error';
+  }
+
+  @override
+  String get worldIdOidcTitle => 'Entrar com World ID (OIDC)';
+
+  @override
+  String get worldIdOidcDesc =>
+      'Entre com o World ID através de OIDC + PKCE seguro.';
 
   @override
   String get emailClipboardFallbackPrimary =>

@@ -16,6 +16,7 @@ import '../services/localization_service.dart';
 import '../core/privacy/consent_banner.dart';
 import '../services/manual_localization_service.dart';
 import '../utils/translation_helper.dart';
+import 'package:f35_flight_compensation/core/app_localizations_worldid_ext.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 import 'package:f35_flight_compensation/services/world_id_service.dart';
 import 'package:f35_flight_compensation/services/world_id_oidc_service.dart';
@@ -45,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _startWorldIdFlow() async {
     if (!kIsWeb) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('World ID is only available on web for now.')),
+        SnackBar(content: Text(AppLocalizations.of(context)?.worldIdTemporarilyUnavailable ?? 'World ID is temporarily unavailable. Please try again later.')),
       );
       return;
     }
@@ -54,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final available = await worldid_interop.worldIdAvailable();
     if (!available) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('World ID is temporarily unavailable. Please try again later.')),
+        SnackBar(content: Text(AppLocalizations.of(context)?.worldIdTemporarilyUnavailable ?? 'World ID is temporarily unavailable. Please try again later.')),
       );
       return;
     }
@@ -108,11 +109,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
     final msg = res.success
-        ? 'World ID verified'
+        ? (l10n?.worldIdVerified ?? 'World ID verified')
         : (res.isConfiguredError
-            ? 'Backend missing WLD_APP_ID. Configure it and redeploy.'
-            : 'Verification failed: ${res.errorCode ?? ''} ${res.message ?? ''}'.trim());
+            ? (l10n?.worldIdBackendMissingAppId ?? 'Backend missing WLD_APP_ID. Configure it and redeploy.')
+            : (l10n?.worldIdVerificationFailed(res.errorCode ?? '', res.message?.toString()) ??
+                'Verification failed: ${res.errorCode ?? ''} ${res.message ?? ''}'.trim()));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg)),
     );
@@ -551,8 +554,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   if (kIsWeb) ...[
                     AccessibleCard(
-                      title: 'Verify with World ID',
-                      semanticLabel: 'Verify your humanity with Worldcoin World ID. Web only for now.',
+                      title: localizations.worldIdVerifyTitle,
+                      semanticLabel: localizations.worldIdVerifySemantic,
                       onTap: () async {
                         // Always try to open IDKit on web; fallback to debug dialog only if unavailable
                         final available = await worldid_interop.worldIdAvailable();
@@ -564,7 +567,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           } else {
                             if (!mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('World ID is temporarily unavailable. Please try again later.')),
+                              SnackBar(content: Text(localizations.worldIdTemporarilyUnavailable)),
                             );
                           }
                         }
@@ -575,7 +578,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
-                              'Verify your identity privately using World ID. This helps us prevent abuse while keeping the app free.',
+                              localizations.worldIdVerifyDesc,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
@@ -588,8 +591,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   if (!kIsWeb) ...[
                     AccessibleCard(
-                      title: 'Sign in with World App',
-                      semanticLabel: 'Sign in with World App (World ID) to verify your account.',
+                      title: localizations.worldAppSignInTitle,
+                      semanticLabel: localizations.worldAppSignInDesc,
                       onTap: () async {
                         await _openWorldAppFlow();
                       },
@@ -599,7 +602,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
-                              'Sign in with World App to verify your identity. This helps prevent abuse while keeping the app free.',
+                              localizations.worldAppSignInDesc,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
@@ -611,22 +614,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     // Native OIDC Login with World ID (via flutter_appauth)
                     AccessibleCard(
-                      title: 'Sign in with World ID (OIDC)',
-                      semanticLabel: 'Sign in with World ID using OIDC (recommended for Play Store).',
+                      title: localizations.worldIdOidcTitle,
+                      semanticLabel: localizations.worldIdOidcDesc,
                       onTap: () async {
                         final svc = GetIt.I<WorldIdOidcService>();
                         try {
                           final ok = await svc.signIn();
                           if (!mounted) return;
-                          final msg = ok ? 'Signed in with World ID' : 'World ID sign-in cancelled';
+                          final msg = ok ? (localizations.worldIdVerified) : 'World ID sign-in cancelled';
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(msg)),
                           );
                         } catch (e) {
                           if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('OIDC sign-in failed: $e')),
-                          );
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('OIDC sign-in failed: $e')));
                         }
                       },
                       child: Row(
@@ -635,7 +636,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(width: 16),
                           Expanded(
                             child: Text(
-                              'Sign in with World ID via secure OIDC + PKCE.',
+                              localizations.worldIdOidcDesc,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),

@@ -1393,6 +1393,42 @@ class AppLocalizationsEn extends AppLocalizations {
       'You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.';
 
   @override
+  String get worldIdVerifyTitle => 'Verify with World ID';
+
+  @override
+  String get worldIdVerifyDesc =>
+      'Verify your identity privately using World ID. This helps us prevent abuse while keeping the app free.';
+
+  @override
+  String get worldIdVerifySemantic =>
+      'Verify your humanity with Worldcoin World ID. Web only for now.';
+
+  @override
+  String get worldIdTemporarilyUnavailable =>
+      'World ID is temporarily unavailable. Please try again later.';
+
+  @override
+  String get worldAppSignInTitle => 'Sign in with World App';
+
+  @override
+  String get worldAppSignInDesc =>
+      'Sign in with World App to verify your identity. This helps prevent abuse while keeping the app free.';
+
+  @override
+  String get worldAppOpenError => 'Could not open World App. Please try again.';
+
+  @override
+  String worldAppOpenException(String error) {
+    return 'Error opening World App: $error';
+  }
+
+  @override
+  String get worldIdOidcTitle => 'Sign in with World ID (OIDC)';
+
+  @override
+  String get worldIdOidcDesc => 'Sign in with World ID via secure OIDC + PKCE.';
+
+  @override
   String get emailClipboardFallbackPrimary =>
       'No email app available. Email content copied to your clipboard. Paste it into any email service.';
 

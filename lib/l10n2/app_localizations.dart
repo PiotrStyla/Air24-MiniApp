@@ -1399,13 +1399,13 @@ abstract class AppLocalizations {
   /// **'• Correct contact details help with compensation.'**
   String get tipContactDetails;
 
-  /// Section title for legal and privacy
+  /// Title for Legal & Privacy section
   ///
   /// In en, this message translates to:
   /// **'Legal & Privacy'**
   String get legalPrivacySectionTitle;
 
-  /// Link label to privacy policy
+  /// Link to privacy policy
   ///
   /// In en, this message translates to:
   /// **'Privacy Policy'**
@@ -1417,19 +1417,19 @@ abstract class AppLocalizations {
   /// **'How we handle your data'**
   String get privacyPolicyDesc;
 
-  /// Link label to terms of service
+  /// Link to terms of service
   ///
   /// In en, this message translates to:
   /// **'Terms of Service'**
   String get termsOfService;
 
-  /// Description under terms link
+  /// Description under terms of service link
   ///
   /// In en, this message translates to:
   /// **'Rules for using the service'**
   String get termsOfServiceDesc;
 
-  /// Link label to cookie policy
+  /// Link to cookie policy
   ///
   /// In en, this message translates to:
   /// **'Cookie Policy'**
@@ -1441,7 +1441,7 @@ abstract class AppLocalizations {
   /// **'Cookie usage and categories'**
   String get cookiePolicyDesc;
 
-  /// Link label to legal notice
+  /// Link to legal notice/imprint
   ///
   /// In en, this message translates to:
   /// **'Legal Notice / Imprint'**
@@ -1453,25 +1453,25 @@ abstract class AppLocalizations {
   /// **'Operator and contact details'**
   String get legalNoticeImprintDesc;
 
-  /// Link label to accessibility statement
+  /// Link to accessibility statement
   ///
   /// In en, this message translates to:
   /// **'Accessibility Statement'**
   String get accessibilityStatement;
 
-  /// Description under accessibility link
+  /// Description under accessibility statement link
   ///
   /// In en, this message translates to:
   /// **'Our accessibility commitments'**
   String get accessibilityStatementDesc;
 
-  /// Action to open cookie preferences dialog
+  /// Action to open cookie preferences
   ///
   /// In en, this message translates to:
   /// **'Manage cookie preferences'**
   String get manageCookiePreferences;
 
-  /// Description for manage cookies action
+  /// Description for cookie preferences action
   ///
   /// In en, this message translates to:
   /// **'Change analytics and marketing cookie settings'**
@@ -2664,6 +2664,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.'**
   String get emailPreviewAttachmentGuidance;
+
+  /// Title for World ID verification card (web)
+  ///
+  /// In en, this message translates to:
+  /// **'Verify with World ID'**
+  String get worldIdVerifyTitle;
+
+  /// Description for World ID verification card
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your identity privately using World ID. This helps us prevent abuse while keeping the app free.'**
+  String get worldIdVerifyDesc;
+
+  /// Semantic label for World ID verification card
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your humanity with Worldcoin World ID. Web only for now.'**
+  String get worldIdVerifySemantic;
+
+  /// Snackbar when IDKit not available
+  ///
+  /// In en, this message translates to:
+  /// **'World ID is temporarily unavailable. Please try again later.'**
+  String get worldIdTemporarilyUnavailable;
+
+  /// Title for World App sign-in card (mobile)
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with World App'**
+  String get worldAppSignInTitle;
+
+  /// Description for World App sign-in card
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with World App to verify your identity. This helps prevent abuse while keeping the app free.'**
+  String get worldAppSignInDesc;
+
+  /// Snackbar when deep link fails
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open World App. Please try again.'**
+  String get worldAppOpenError;
+
+  /// Snackbar for exception opening World App
+  ///
+  /// In en, this message translates to:
+  /// **'Error opening World App: {error}'**
+  String worldAppOpenException(String error);
+
+  /// Title for OIDC sign-in card
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with World ID (OIDC)'**
+  String get worldIdOidcTitle;
+
+  /// Description for OIDC sign-in card
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with World ID via secure OIDC + PKCE.'**
+  String get worldIdOidcDesc;
 
   /// Primary banner text shown when clipboard fallback is used because no email app is available
   ///

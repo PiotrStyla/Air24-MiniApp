@@ -1701,13 +1701,112 @@
   "emailPreviewAttachmentGuidance": "You will be able to add attachments in the next step. Please remember to only include files in JPG, PNG, or PDF format.",
   "@emailPreviewAttachmentGuidance": {
     "description": "Guidance message shown in email preview explaining where to add attachments and which formats are supported"
-  },
-  "emailClipboardFallbackPrimary": "No email app available. Email content copied to your clipboard. Paste it into any email service.",
-  "@emailClipboardFallbackPrimary": {
-    "description": "Primary banner text shown when clipboard fallback is used because no email app is available"
-  },
-  "emailClipboardFallbackAdvisory": "After pasting, you can review and make corrections, and attach documents like tickets or boarding passes (JPG, PNG, PDF).",
-  "@emailClipboardFallbackAdvisory": {
-    "description": "Secondary advisory text for clipboard fallback explaining corrections and attachments"
   }
+,
+ 
+"legalPrivacySectionTitle": "Legal & Privacy",
+"@legalPrivacySectionTitle": {
+  "description": "Title for Legal & Privacy section"
+},
+"privacyPolicy": "Privacy Policy",
+"@privacyPolicy": {
+  "description": "Link to privacy policy"
+},
+"privacyPolicyDesc": "How we handle your data",
+"@privacyPolicyDesc": {
+  "description": "Description under privacy policy link"
+},
+"termsOfService": "Terms of Service",
+"@termsOfService": {
+  "description": "Link to terms of service"
+},
+"termsOfServiceDesc": "Rules for using the service",
+"@termsOfServiceDesc": {
+  "description": "Description under terms of service link"
+},
+"cookiePolicy": "Cookie Policy",
+"@cookiePolicy": {
+  "description": "Link to cookie policy"
+},
+"cookiePolicyDesc": "Cookie usage and categories",
+"@cookiePolicyDesc": {
+  "description": "Description under cookie policy link"
+},
+"legalNoticeImprint": "Legal Notice / Imprint",
+"@legalNoticeImprint": {
+  "description": "Link to legal notice/imprint"
+},
+"legalNoticeImprintDesc": "Operator and contact details",
+"@legalNoticeImprintDesc": {
+  "description": "Description under legal notice link"
+},
+"accessibilityStatement": "Accessibility Statement",
+"@accessibilityStatement": {
+  "description": "Link to accessibility statement"
+},
+"accessibilityStatementDesc": "Our accessibility commitments",
+"@accessibilityStatementDesc": {
+  "description": "Description under accessibility statement link"
+},
+"manageCookiePreferences": "Manage cookie preferences",
+"@manageCookiePreferences": {
+  "description": "Action to open cookie preferences"
+},
+"manageCookiePreferencesDesc": "Change analytics and marketing cookie settings",
+"@manageCookiePreferencesDesc": {
+  "description": "Description for cookie preferences action"
+},
+"worldIdVerifyTitle": "Verify with World ID",
+"@worldIdVerifyTitle": {
+  "description": "Title for World ID verification card (web)"
+},
+"worldIdVerifyDesc": "Verify your identity privately using World ID. This helps us prevent abuse while keeping the app free.",
+"@worldIdVerifyDesc": {
+  "description": "Description for World ID verification card"
+},
+"worldIdVerifySemantic": "Verify your humanity with Worldcoin World ID. Web only for now.",
+"@worldIdVerifySemantic": {
+  "description": "Semantic label for World ID verification card"
+},
+"worldIdTemporarilyUnavailable": "World ID is temporarily unavailable. Please try again later.",
+"@worldIdTemporarilyUnavailable": {
+  "description": "Snackbar when IDKit not available"
+},
+"worldAppSignInTitle": "Sign in with World App",
+"@worldAppSignInTitle": {
+  "description": "Title for World App sign-in card (mobile)"
+},
+"worldAppSignInDesc": "Sign in with World App to verify your identity. This helps prevent abuse while keeping the app free.",
+"@worldAppSignInDesc": {
+  "description": "Description for World App sign-in card"
+},
+"worldAppOpenError": "Could not open World App. Please try again.",
+"@worldAppOpenError": {
+  "description": "Snackbar when deep link fails"
+},
+"worldAppOpenException": "Error opening World App: {error}",
+"@worldAppOpenException": {
+  "description": "Snackbar for exception opening World App",
+  "placeholders": {
+    "error": {
+      "type": "String"
+    }
+  }
+},
+"worldIdOidcTitle": "Sign in with World ID (OIDC)",
+"@worldIdOidcTitle": {
+  "description": "Title for OIDC sign-in card"
+},
+"worldIdOidcDesc": "Sign in with World ID via secure OIDC + PKCE.",
+"@worldIdOidcDesc": {
+  "description": "Description for OIDC sign-in card"
+},
+"emailClipboardFallbackPrimary": "No email app available. Email content copied to your clipboard. Paste it into any email service.",
+"@emailClipboardFallbackPrimary": {
+  "description": "Primary banner text shown when clipboard fallback is used because no email app is available"
+},
+"emailClipboardFallbackAdvisory": "After pasting, you can review and make corrections, and attach documents like tickets or boarding passes (JPG, PNG, PDF).",
+"@emailClipboardFallbackAdvisory": {
+  "description": "Secondary advisory text for clipboard fallback explaining corrections and attachments"
+}
 }
