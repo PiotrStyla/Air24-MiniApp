@@ -720,44 +720,45 @@ class AppLocalizationsPl extends AppLocalizations {
   String get tipContactDetails => 'Dane kontaktowe';
 
   @override
-  String get legalPrivacySectionTitle => 'Legal & Privacy';
+  String get legalPrivacySectionTitle => 'Informacje prawne i prywatność';
 
   @override
-  String get privacyPolicy => 'Privacy Policy';
+  String get privacyPolicy => 'Polityka prywatności';
 
   @override
-  String get privacyPolicyDesc => 'How we handle your data';
+  String get privacyPolicyDesc => 'Jak przetwarzamy Twoje dane';
 
   @override
-  String get termsOfService => 'Terms of Service';
+  String get termsOfService => 'Regulamin';
 
   @override
-  String get termsOfServiceDesc => 'Rules for using the service';
+  String get termsOfServiceDesc => 'Zasady korzystania z usługi';
 
   @override
-  String get cookiePolicy => 'Cookie Policy';
+  String get cookiePolicy => 'Polityka plików cookie';
 
   @override
-  String get cookiePolicyDesc => 'Cookie usage and categories';
+  String get cookiePolicyDesc => 'Zastosowanie i kategorie plików cookie';
 
   @override
-  String get legalNoticeImprint => 'Legal Notice / Imprint';
+  String get legalNoticeImprint => 'Nota prawna / Impressum';
 
   @override
-  String get legalNoticeImprintDesc => 'Operator and contact details';
+  String get legalNoticeImprintDesc => 'Operator i dane kontaktowe';
 
   @override
-  String get accessibilityStatement => 'Accessibility Statement';
+  String get accessibilityStatement => 'Oświadczenie o dostępności';
 
   @override
-  String get accessibilityStatementDesc => 'Our accessibility commitments';
+  String get accessibilityStatementDesc =>
+      'Nasze zobowiązania w zakresie dostępności';
 
   @override
-  String get manageCookiePreferences => 'Manage cookie preferences';
+  String get manageCookiePreferences => 'Zarządzaj zgodami na pliki cookie';
 
   @override
   String get manageCookiePreferencesDesc =>
-      'Change analytics and marketing cookie settings';
+      'Zmień ustawienia analityczne i marketingowe dotyczące plików cookie';
 
   @override
   String get cookiePreferencesTitle => 'Cookie Preferences';
@@ -1346,7 +1347,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get emailWillBeSentSecurely =>
-      'Twój e-mail zostanie wysłany bezpiecznie za pośrednictwem naszego serwisu backendowego';
+      'Twój e‑mail zostanie wysłany bezpiecznie za pośrednictwem naszego serwisu backendowego';
 
   @override
   String get toLabel => 'Do';
@@ -1362,7 +1363,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get secureTransmissionNotice =>
-      'Twoja wiadomość e-mail zostanie wysłana bezpiecznie przy użyciu szyfrowanej transmisji';
+      'Twoja wiadomość e‑mail zostanie wysłana bezpiecznie przy użyciu szyfrowanej transmisji';
 
   @override
   String get sendingEllipsis => 'Sending...';
@@ -1415,6 +1416,44 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get emailPreviewAttachmentGuidance =>
       'Załączniki będzie można dodać w następnym kroku. Pamiętaj, aby dołączać wyłącznie pliki w formatach JPG, PNG lub PDF.';
+
+  @override
+  String get worldIdVerifyTitle => 'Zweryfikuj z World ID';
+
+  @override
+  String get worldIdVerifyDesc =>
+      'Zweryfikuj swoją tożsamość prywatnie za pomocą World ID. Pomaga to zapobiegać nadużyciom i utrzymać aplikację bezpłatną.';
+
+  @override
+  String get worldIdVerifySemantic =>
+      'Zweryfikuj swoją tożsamość (Worldcoin World ID). Dostępne tylko w wersji web.';
+
+  @override
+  String get worldIdTemporarilyUnavailable =>
+      'World ID jest tymczasowo niedostępny. Spróbuj ponownie później.';
+
+  @override
+  String get worldAppSignInTitle => 'Zaloguj się w World App';
+
+  @override
+  String get worldAppSignInDesc =>
+      'Zaloguj się w World App, aby zweryfikować swoją tożsamość. To pomaga zapobiegać nadużyciom i utrzymać aplikację bezpłatną.';
+
+  @override
+  String get worldAppOpenError =>
+      'Nie udało się otworzyć World App. Spróbuj ponownie.';
+
+  @override
+  String worldAppOpenException(String error) {
+    return 'Błąd podczas otwierania World App: $error';
+  }
+
+  @override
+  String get worldIdOidcTitle => 'Zaloguj się World ID (OIDC)';
+
+  @override
+  String get worldIdOidcDesc =>
+      'Zaloguj się przez World ID z użyciem bezpiecznego OIDC + PKCE.';
 
   @override
   String get emailClipboardFallbackPrimary =>

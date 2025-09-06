@@ -175,6 +175,120 @@ def get_flights():
         logger.error(f"Error in /api/flights: {str(e)}")
         return jsonify({"error": "Internal server error", "details": str(e)}), 500
 
+@app.route('/compensation-check', methods=['GET'])
+def compensation_check():
+    """Ad-hoc live eligibility check via AviationStack (server-side)."""
+    flight_number = (request.args.get('flight_number') or '').strip()
+    date = (request.args.get('date') or '').strip()  # optional YYYY-MM-DD
+
+    if not flight_number:
+        return jsonify({
+            "eligible": False,
+            "message": "Missing flight number",
+            "error": "missing_flight_number"
+        }), 400
+
+    # Import AviationStack client from deployment folder
+    try:
+        sys.path.append(os.path.join(os.path.dirname(__file__), 'deployment'))
+        from aviationstack_client import AviationStackClient  # type: ignore
+        client = AviationStackClient()
+    except Exception as e:
+        logger.error(f"AviationStack client error: {e}")
+        return jsonify({
+            "eligible": False,
+            "message": "AviationStack client not configured",
+            "error": str(e),
+        }), 500
+
+    # Fetch flights by number
+    flights = client.get_flight_by_number(flight_number) or []
+
+    # Optionally filter by date
+    if date:
+        filtered = []
+        for f in flights:
+            try:
+                if ((f.get('flight_date') and date in str(f.get('flight_date'))) or
+                    (f.get('departure', {}).get('scheduled') and date in str(f['departure']['scheduled']))):
+                    filtered.append(f)
+            except Exception:
+                continue
+        flights = filtered
+
+    if not flights:
+        return jsonify({
+            "eligible": False,
+            "message": "No flight found for given number/date"
+        })
+
+    f = flights[0]
+
+    dep = f.get('departure') or {}
+    arr = f.get('arrival') or {}
+    airline = f.get('airline') or {}
+    flight_field = f.get('flight') or {}
+
+    # Determine delay minutes
+    delay_minutes = 0
+    try:
+        d = dep.get('delay')
+        if isinstance(d, int):
+            delay_minutes = max(delay_minutes, d)
+    except Exception:
+        pass
+    try:
+        a = arr.get('delay')
+        if isinstance(a, int):
+            delay_minutes = max(delay_minutes, a)
+    except Exception:
+        pass
+
+    status = (f.get('flight_status') or '').upper()
+
+    # Build minimal normalized structure
+    normalized = {
+        'flight_number': flight_field.get('iata') or flight_number,
+        'airline': airline.get('iata') or airline.get('name') or 'Unknown',
+        'departure_airport': dep.get('iata') or '',
+        'arrival_airport': arr.get('iata') or '',
+        'status': status,
+        'delay_minutes': delay_minutes,
+    }
+
+    # Eligibility
+    try:
+        # Use local helper if available
+        eligible = is_eligible_for_compensation({
+            'status': status,
+            'delayMinutes': delay_minutes,
+            'departure': {'airport': {'iata': normalized['departure_airport']}},
+            'arrival': {'airport': {'iata': normalized['arrival_airport']}},
+        })
+        compensation = calculate_compensation_amount({
+            'distance_km': 2000  # default banding; refine if you add distance calc
+        }) if eligible else 0
+    except Exception:
+        is_cancelled = 'CANCEL' in status
+        is_diverted = 'DIVERT' in status
+        eligible = (delay_minutes >= 180) or is_cancelled or is_diverted
+        compensation = 400 if eligible else 0
+
+    result = {
+        'flight_number': normalized['flight_number'],
+        'airline': airline.get('name') or normalized['airline'],
+        'status': status,
+        'departure_airport': normalized['departure_airport'],
+        'arrival_airport': normalized['arrival_airport'],
+        'delay_minutes': delay_minutes,
+        'is_eligible': bool(eligible),
+        'compensation_amount_eur': int(compensation) if isinstance(compensation, int) else 0,
+        'currency': 'EUR',
+        'eu_regulation_applies': True,
+    }
+
+    return jsonify(result)
+
 @app.route('/api/eligible_flights', methods=['GET'])
 def get_eligible_flights():
     """Get flights eligible for compensation"""

@@ -1742,16 +1742,61 @@
   "@emailReadyTitle": {
     "description": "Title shown at top of secure email preview dialog"
   },
+  
   "sendEmailSecurely": "Wyślij e-mail bezpiecznie",
-  "@sendEmailSecurely": {
-    "description": "Primary action button to send email securely"
-  },
-  "emailWillBeSentSecurely": "Twój e-mail zostanie wysłany bezpiecznie za pośrednictwem naszego serwisu backendowego",
-  "@emailWillBeSentSecurely": {
-    "description": "Subtitle explaining secure sending through backend"
-  },
-  "secureTransmissionNotice": "Twoja wiadomość e-mail zostanie wysłana bezpiecznie przy użyciu szyfrowanej transmisji",
-  "@secureTransmissionNotice": {
-    "description": "Notice about secure, encrypted transmission"
-  }
+  "@sendEmailSecurely": {"description": "Primary action button to send email securely"},
+  "emailWillBeSentSecurely": "Twój e‑mail zostanie wysłany bezpiecznie za pośrednictwem naszego serwisu backendowego",
+  "@emailWillBeSentSecurely": {"description": "Subtitle explaining secure sending through backend"},
+  "secureTransmissionNotice": "Twoja wiadomość e‑mail zostanie wysłana bezpiecznie przy użyciu szyfrowanej transmisji",
+  "@secureTransmissionNotice": {"description": "Notice about secure, encrypted transmission"},
+  
+  "legalPrivacySectionTitle": "Informacje prawne i prywatność",
+  "@legalPrivacySectionTitle": {"description": "Tytuł sekcji Informacje prawne i prywatność"},
+  "privacyPolicy": "Polityka prywatności",
+  "@privacyPolicy": {"description": "Odnośnik do polityki prywatności"},
+  "privacyPolicyDesc": "Jak przetwarzamy Twoje dane",
+  "@privacyPolicyDesc": {"description": "Opis pod odnośnikiem do polityki prywatności"},
+  "termsOfService": "Regulamin",
+  "@termsOfService": {"description": "Odnośnik do regulaminu"},
+  "termsOfServiceDesc": "Zasady korzystania z usługi",
+  "@termsOfServiceDesc": {"description": "Opis pod odnośnikiem do regulaminu"},
+  "cookiePolicy": "Polityka plików cookie",
+  "@cookiePolicy": {"description": "Odnośnik do polityki plików cookie"},
+  "cookiePolicyDesc": "Zastosowanie i kategorie plików cookie",
+  "@cookiePolicyDesc": {"description": "Opis pod odnośnikiem do polityki plików cookie"},
+  "legalNoticeImprint": "Nota prawna / Impressum",
+  "@legalNoticeImprint": {"description": "Odnośnik do informacji prawnych"},
+  "legalNoticeImprintDesc": "Operator i dane kontaktowe",
+  "@legalNoticeImprintDesc": {"description": "Opis pod odnośnikiem do informacji prawnych"},
+  "accessibilityStatement": "Oświadczenie o dostępności",
+  "@accessibilityStatement": {"description": "Odnośnik do oświadczenia o dostępności"},
+  "accessibilityStatementDesc": "Nasze zobowiązania w zakresie dostępności",
+  "@accessibilityStatementDesc": {"description": "Opis pod odnośnikiem do oświadczenia o dostępności"},
+  "manageCookiePreferences": "Zarządzaj zgodami na pliki cookie",
+  "@manageCookiePreferences": {"description": "Akcja otwierająca ustawienia plików cookie"},
+  "manageCookiePreferencesDesc": "Zmień ustawienia analityczne i marketingowe dotyczące plików cookie",
+  "@manageCookiePreferencesDesc": {"description": "Opis akcji zarządzania plikami cookie"},
+  
+  "worldIdVerifyTitle": "Zweryfikuj z World ID",
+  "@worldIdVerifyTitle": {"description": "Title for World ID verification card (web)"},
+  "worldIdVerifyDesc": "Zweryfikuj swoją tożsamość prywatnie za pomocą World ID. Pomaga to zapobiegać nadużyciom i utrzymać aplikację bezpłatną.",
+  "@worldIdVerifyDesc": {"description": "Description for World ID verification card"},
+  "worldIdVerifySemantic": "Zweryfikuj swoją tożsamość (Worldcoin World ID). Dostępne tylko w wersji web.",
+  "@worldIdVerifySemantic": {"description": "Semantic label for World ID verification card"},
+  "worldIdTemporarilyUnavailable": "World ID jest tymczasowo niedostępny. Spróbuj ponownie później.",
+  "@worldIdTemporarilyUnavailable": {"description": "Snackbar when IDKit not available"},
+  
+  "worldAppSignInTitle": "Zaloguj się w World App",
+  "@worldAppSignInTitle": {"description": "Title for World App sign-in card (mobile)"},
+  "worldAppSignInDesc": "Zaloguj się w World App, aby zweryfikować swoją tożsamość. To pomaga zapobiegać nadużyciom i utrzymać aplikację bezpłatną.",
+  "@worldAppSignInDesc": {"description": "Description for World App sign-in card"},
+  "worldAppOpenError": "Nie udało się otworzyć World App. Spróbuj ponownie.",
+  "@worldAppOpenError": {"description": "Snackbar when deep link fails"},
+  "worldAppOpenException": "Błąd podczas otwierania World App: {error}",
+  "@worldAppOpenException": {"description": "Snackbar for exception opening World App", "placeholders": {"error": {"type": "String"}}},
+  
+"worldIdOidcTitle": "Zaloguj się World ID (OIDC)",
+"@worldIdOidcTitle": {"description": "Title for OIDC sign-in card"},
+"worldIdOidcDesc": "Zaloguj się przez World ID z użyciem bezpiecznego OIDC + PKCE.",
+"@worldIdOidcDesc": {"description": "Description for OIDC sign-in card"}
 }

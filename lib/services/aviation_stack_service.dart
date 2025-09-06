@@ -313,27 +313,55 @@ class AviationStackService {
     try {
       // For Python backend
       if (_usingPythonBackend) {
-        final uri = Uri.parse('$pythonBackendUrl/check_eligibility').replace(queryParameters: {
-          'flight_number': flightNumber,
-        });
+        final q = <String, String>{'flight_number': flightNumber};
+        if (date != null && date.trim().isNotEmpty) {
+          q['date'] = date.trim();
+        }
+        final uri = Uri.parse('$pythonBackendUrl/compensation-check').replace(queryParameters: q);
         
         foundation.debugPrint('AviationStackService: Fetching from Python backend: $uri');
         final response = await _httpClient.get(uri).timeout(const Duration(seconds: 30));
         
         if (response.statusCode != 200) {
           foundation.debugPrint('AviationStackService: Error ${response.statusCode} from backend');
-          return _generateFallbackEligibilityResponse(flightNumber);
+          if (!foundation.kReleaseMode) {
+            return _generateFallbackEligibilityResponse(flightNumber);
+          }
+          return {
+            'flight_number': flightNumber,
+            'is_eligible': false,
+            'eligible': false,
+            'message': 'Backend unavailable',
+            'error': 'HTTP ${response.statusCode}',
+          };
         }
         
         final data = json.decode(response.body);
         return data;
       } else {
         // For direct AviationStack API usage (fallback)
-        return _generateFallbackEligibilityResponse(flightNumber);
+        if (!foundation.kReleaseMode) {
+          return _generateFallbackEligibilityResponse(flightNumber);
+        }
+        return {
+          'flight_number': flightNumber,
+          'is_eligible': false,
+          'eligible': false,
+          'message': 'Direct API disabled in production',
+        };
       }
     } catch (e) {
       foundation.debugPrint('AviationStackService: Error checking compensation: $e');
-      return _generateFallbackEligibilityResponse(flightNumber);
+      if (!foundation.kReleaseMode) {
+        return _generateFallbackEligibilityResponse(flightNumber);
+      }
+      return {
+        'flight_number': flightNumber,
+        'is_eligible': false,
+        'eligible': false,
+        'message': 'An error occurred while checking eligibility',
+        'error': e.toString(),
+      };
     }
   }
   
@@ -620,12 +648,12 @@ class AviationStackService {
   /// It first tries to fetch data from the Python backend, and if that fails, falls back to the AviationStack API.
   /// In case both sources fail, it returns mock eligible flights for testing purposes.
   ///
-  /// [hours] - How many hours in the past to look for flights (default: 72)
+  /// [hours] - How many hours in the past to look for flights (default: 24)
   /// [relaxEligibilityForDebugging] - Whether to relax eligibility criteria for debugging purposes
   ///
   /// Returns a list of flights that may be eligible for EU compensation
   Future<List<Map<String, dynamic>>> getEUCompensationEligibleFlights({
-    int hours = 72,
+    int hours = 24,
     bool relaxEligibilityForDebugging = false,
   }) async {
     // Add enhanced debugging indicator at the start of each call to track the flow
@@ -644,7 +672,7 @@ class AviationStackService {
       // Add explicit request for delayed flights to Python backend
       final uri = Uri.parse('$pythonBackendUrl/eligible_flights').replace(queryParameters: {
         'hours': hours.toString(),
-        'include_delayed': 'true'
+        'onlyLive': 'true'
       });
       foundation.debugPrint('🌐 AviationStackService: Making HTTP request to URI = ${uri.toString()}');
       
@@ -673,9 +701,13 @@ class AviationStackService {
     }
 
     // Fallback to direct AviationStack API if Python backend is disabled or fails
-    try {
+    if (!foundation.kReleaseMode) {
+      try {
       foundation.debugPrint('🔎 AviationStackService: Attempting to fetch flights from AviationStack API for multiple statuses.');
       final apiKey = await _getApiKey();
+      if (apiKey.isEmpty) {
+        foundation.debugPrint('⚠️ AviationStackService: No API key configured; skipping direct API fallback.');
+      } else {
       // Prioritize 'delayed' status by putting it first in the list
       final statusesToFetch = ['delayed', 'cancelled', 'diverted', 'landed'];
       
@@ -737,11 +769,14 @@ class AviationStackService {
         foundation.debugPrint('⚠️ AviationStackService: No flights found after checking all statuses.');
         foundation.debugPrint('⚠️ AviationStackService: Both Python backend and AviationStack API FAILED to return flights.');
       }
-
+      } 
     } catch (e) {
-      foundation.debugPrint('❌ AviationStackService: A general error occurred during flight fetching: $e');
-      foundation.debugPrint('🔴 AviationStackService: CRITICAL ERROR during flight fetching, unable to retrieve eligible flights');
-      // No mock data fallback - returning empty list only
+        foundation.debugPrint('❌ AviationStackService: A general error occurred during flight fetching: $e');
+        foundation.debugPrint('🔴 AviationStackService: CRITICAL ERROR during flight fetching, unable to retrieve eligible flights');
+        // No mock data fallback - returning empty list only
+      }
+    } else {
+      foundation.debugPrint('🛡️ AviationStackService: Skipping direct AviationStack API fallback in release builds');
     }
 
     return await _processCompensationEligibility(allFlights, relaxEligibilityForDebugging: relaxEligibilityForDebugging);

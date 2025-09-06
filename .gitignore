@@ -70,3 +70,4 @@ CON
 vercel-backend/node_modules/
 backend/functions/node_modules/
 vercel-backend/.vercel/
+.vercel

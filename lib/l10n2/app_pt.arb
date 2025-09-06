@@ -1632,5 +1632,101 @@
   "secureTransmissionNotice": "O seu email será enviado com segurança utilizando transmissão cifrada",
   "@secureTransmissionNotice": {
     "description": "Notice about secure, encrypted transmission"
+  },
+  "legalPrivacySectionTitle": "Informações legais e privacidade",
+  "@legalPrivacySectionTitle": {
+    "description": "Título para a seção de informações legais e privacidade"
+  },
+  "privacyPolicy": "Política de Privacidade",
+  "@privacyPolicy": {
+    "description": "Link para a política de privacidade"
+  },
+  "privacyPolicyDesc": "Como tratamos os seus dados",
+  "@privacyPolicyDesc": {
+    "description": "Descrição sob o link da política de privacidade"
+  },
+  "termsOfService": "Termos de Serviço",
+  "@termsOfService": {
+    "description": "Link para os termos de serviço"
+  },
+  "termsOfServiceDesc": "Regras para utilizar o serviço",
+  "@termsOfServiceDesc": {
+    "description": "Descrição sob os termos de serviço"
+  },
+  "cookiePolicy": "Política de Cookies",
+  "@cookiePolicy": {
+    "description": "Link para a política de cookies"
+  },
+  "cookiePolicyDesc": "Utilização de cookies e categorias",
+  "@cookiePolicyDesc": {
+    "description": "Descrição sob a política de cookies"
+  },
+  "legalNoticeImprint": "Informações legais / Imprint",
+  "@legalNoticeImprint": {
+    "description": "Link para as informações legais / imprint"
+  },
+  "legalNoticeImprintDesc": "Operador e dados de contacto",
+  "@legalNoticeImprintDesc": {
+    "description": "Descrição sob as informações legais"
+  },
+  "accessibilityStatement": "Declaração de Acessibilidade",
+  "@accessibilityStatement": {
+    "description": "Link para a declaração de acessibilidade"
+  },
+  "accessibilityStatementDesc": "Os nossos compromissos de acessibilidade",
+  "@accessibilityStatementDesc": {
+  },
+  "manageCookiePreferences": "Gerir preferências de cookies",
+  "@manageCookiePreferences": {
+    "description": "Ação para abrir as preferências de cookies"
+  },
+  "manageCookiePreferencesDesc": "Alterar as definições de cookies de análise e marketing",
+  "@manageCookiePreferencesDesc": {
+    "description": "Descrição para a ação de preferências de cookies"
+  },
+  "worldIdVerifyTitle": "Verificar com World ID",
+  "@worldIdVerifyTitle": {
+    "description": "Título para o cartão de verificação do World ID (Web)"
+  },
+  "worldIdVerifyDesc": "Verifique a sua identidade de forma privada com o World ID. Isso ajuda a prevenir abusos e a manter a aplicação gratuita.",
+  "@worldIdVerifyDesc": {
+    "description": "Descrição para o cartão de verificação do World ID"
+  },
+  "worldIdVerifySemantic": "Verifique a sua identidade com o Worldcoin World ID. Apenas na Web por enquanto.",
+  "@worldIdVerifySemantic": {
+    "description": "Rótulo semântico para o cartão de verificação do World ID"
+  },
+  "worldIdTemporarilyUnavailable": "O World ID está temporariamente indisponível. Tente novamente mais tarde.",
+  "@worldIdTemporarilyUnavailable": {
+    "description": "Snackbar quando o IDKit não está disponível"
+  },
+  "worldAppSignInTitle": "Entrar com o World App",
+  "@worldAppSignInTitle": {
+    "description": "Título do cartão de início de sessão do World App (móvel)"
+  },
+  "worldAppSignInDesc": "Entre com o World App para verificar a sua identidade. Isso ajuda a prevenir abusos e manter a aplicação gratuita.",
+  "@worldAppSignInDesc": {
+    "description": "Descrição para o cartão de início de sessão do World App"
+  },
+  "worldAppOpenError": "Não foi possível abrir o World App. Tente novamente.",
+  "@worldAppOpenError": {
+    "description": "Snackbar quando o Deep Link falha"
+  },
+  "worldAppOpenException": "Erro ao abrir o World App: {error}",
+  "@worldAppOpenException": {
+    "description": "Snackbar para exceção ao abrir o World App",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "worldIdOidcTitle": "Entrar com World ID (OIDC)",
+  "@worldIdOidcTitle": {
+    "description": "Título para o cartão OIDC"
+  },
+  "worldIdOidcDesc": "Entre com o World ID através de OIDC + PKCE seguro.",
+  "@worldIdOidcDesc": {
+    "description": "Descrição para o cartão OIDC"
   }
 }
