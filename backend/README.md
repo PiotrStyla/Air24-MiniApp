@@ -212,7 +212,6 @@ This repository also contains a minimal, framework-free WSGI backend used to ser
 - Purpose: Provide the endpoint the app calls for EU-wide eligible flights.
 - Endpoints:
   - `GET /eligible_flights?hours=24` (canonical)
-  - `GET /eu-compensation-eligible?hours=24` (temporary alias for older builds)
   - `GET /api/flights` (normalized raw flights)
   - `GET /health`, `GET /status`, `GET /check_data_file`, `GET /debug_flight_data` (debug/health)
 - Response: A list of normalized flight objects with keys the app expects (`flight_iata`, `airline_name`, `airline_iata`, `departure_airport_iata`, `arrival_airport_iata`, `status`, `delay_minutes`, `departure_scheduled_time`, ...).
@@ -228,4 +227,4 @@ This repository also contains a minimal, framework-free WSGI backend used to ser
 
 Notes:
 - The app uses a 24-hour window coherently across UI, service, and tests.
-- Keep the alias `/eu-compensation-eligible` until all deployed frontends use `/eligible_flights`, then remove it.
+- Only the canonical route `/eligible_flights` is served (legacy alias removed).
