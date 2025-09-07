@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart';
 import '../services/aviation_stack_service.dart';
+import 'package:get_it/get_it.dart';
 import 'compensation_claim_form_screen.dart';
 
 class FlightCompensationCheckerScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class _FlightCompensationCheckerScreenState extends State<FlightCompensationChec
   final _flightNumberController = TextEditingController();
   final _dateController = TextEditingController();
   // Initialize service with real API data only
-    final _aviationStackService = AviationStackService(baseUrl: 'https://api.aviationstack.com/v1');
+    final AviationStackService _aviationStackService = GetIt.I<AviationStackService>();
   
   bool _isLoading = false;
   Map<String, dynamic>? _compensationResult;

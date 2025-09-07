@@ -1,0 +1,387 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-05-22",
+    "description": "Comprehensive database of commercial passenger airports in EU member states",
+    "source": "Compiled from official aviation authorities data"
+  },
+  "eu_countries": [
+    "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", 
+    "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", 
+    "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", 
+    "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", 
+    "Spain", "Sweden"
+  ],
+  "airports": [
+    {
+      "iata": "VIE",
+      "icao": "LOWW",
+      "name": "Vienna International Airport",
+      "city": "Vienna",
+      "country": "Austria",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 22
+    },
+    {
+      "iata": "BRU",
+      "icao": "EBBR",
+      "name": "Brussels Airport",
+      "city": "Brussels",
+      "country": "Belgium",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 25
+    },
+    {
+      "iata": "SOF",
+      "icao": "LBSF",
+      "name": "Sofia Airport",
+      "city": "Sofia",
+      "country": "Bulgaria",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 98
+    },
+    {
+      "iata": "ZAG",
+      "icao": "LDZA",
+      "name": "Zagreb International Airport",
+      "city": "Zagreb",
+      "country": "Croatia",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 155
+    },
+    {
+      "iata": "LCA",
+      "icao": "LCLK",
+      "name": "Larnaca International Airport",
+      "city": "Larnaca",
+      "country": "Cyprus",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 138
+    },
+    {
+      "iata": "PRG",
+      "icao": "LKPR",
+      "name": "Václav Havel Airport Prague",
+      "city": "Prague",
+      "country": "Czech Republic",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 42
+    },
+    {
+      "iata": "CPH",
+      "icao": "EKCH",
+      "name": "Copenhagen Airport",
+      "city": "Copenhagen",
+      "country": "Denmark",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 19
+    },
+    {
+      "iata": "TLL",
+      "icao": "EETN",
+      "name": "Lennart Meri Tallinn Airport",
+      "city": "Tallinn",
+      "country": "Estonia",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 148
+    },
+    {
+      "iata": "HEL",
+      "icao": "EFHK",
+      "name": "Helsinki Airport",
+      "city": "Helsinki",
+      "country": "Finland",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 34
+    },
+    {
+      "iata": "CDG",
+      "icao": "LFPG",
+      "name": "Charles de Gaulle Airport",
+      "city": "Paris",
+      "country": "France",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 2
+    },
+    {
+      "iata": "ORY",
+      "icao": "LFPO",
+      "name": "Orly Airport",
+      "city": "Paris",
+      "country": "France",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 13
+    },
+    {
+      "iata": "NCE",
+      "icao": "LFMN",
+      "name": "Nice Côte d'Azur Airport",
+      "city": "Nice",
+      "country": "France",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 47
+    },
+    {
+      "iata": "FRA",
+      "icao": "EDDF",
+      "name": "Frankfurt Airport",
+      "city": "Frankfurt",
+      "country": "Germany",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 1
+    },
+    {
+      "iata": "MUC",
+      "icao": "EDDM",
+      "name": "Munich Airport",
+      "city": "Munich",
+      "country": "Germany",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 6
+    },
+    {
+      "iata": "TXL",
+      "icao": "EDDT",
+      "name": "Berlin Tegel Airport",
+      "city": "Berlin",
+      "country": "Germany",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 26
+    },
+    {
+      "iata": "ATH",
+      "icao": "LGAV",
+      "name": "Athens International Airport",
+      "city": "Athens",
+      "country": "Greece",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 38
+    },
+    {
+      "iata": "BUD",
+      "icao": "LHBP",
+      "name": "Budapest Ferenc Liszt International Airport",
+      "city": "Budapest",
+      "country": "Hungary",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 52
+    },
+    {
+      "iata": "DUB",
+      "icao": "EIDW",
+      "name": "Dublin Airport",
+      "city": "Dublin",
+      "country": "Ireland",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 17
+    },
+    {
+      "iata": "FCO",
+      "icao": "LIRF",
+      "name": "Leonardo da Vinci–Fiumicino Airport",
+      "city": "Rome",
+      "country": "Italy",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 8
+    },
+    {
+      "iata": "MXP",
+      "icao": "LIMC",
+      "name": "Milan Malpensa Airport",
+      "city": "Milan",
+      "country": "Italy",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 24
+    },
+    {
+      "iata": "RIX",
+      "icao": "EVRA",
+      "name": "Riga International Airport",
+      "city": "Riga",
+      "country": "Latvia",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 93
+    },
+    {
+      "iata": "VNO",
+      "icao": "EYVI",
+      "name": "Vilnius Airport",
+      "city": "Vilnius",
+      "country": "Lithuania",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 114
+    },
+    {
+      "iata": "LUX",
+      "icao": "ELLX",
+      "name": "Luxembourg Airport",
+      "city": "Luxembourg City",
+      "country": "Luxembourg",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 91
+    },
+    {
+      "iata": "MLA",
+      "icao": "LMML",
+      "name": "Malta International Airport",
+      "city": "Luqa",
+      "country": "Malta",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 104
+    },
+    {
+      "iata": "AMS",
+      "icao": "EHAM",
+      "name": "Amsterdam Airport Schiphol",
+      "city": "Amsterdam",
+      "country": "Netherlands",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 3
+    },
+    {
+      "iata": "WAW",
+      "icao": "EPWA",
+      "name": "Warsaw Chopin Airport",
+      "city": "Warsaw",
+      "country": "Poland",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 40
+    },
+    {
+      "iata": "KRK",
+      "icao": "EPKK",
+      "name": "Kraków John Paul II International Airport",
+      "city": "Kraków",
+      "country": "Poland",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 96
+    },
+    {
+      "iata": "LIS",
+      "icao": "LPPT",
+      "name": "Lisbon Airport",
+      "city": "Lisbon",
+      "country": "Portugal",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 21
+    },
+    {
+      "iata": "OTP",
+      "icao": "LROP",
+      "name": "Henri Coandă International Airport",
+      "city": "Bucharest",
+      "country": "Romania",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 88
+    },
+    {
+      "iata": "BTS",
+      "icao": "LZIB",
+      "name": "M. R. Štefánik Airport",
+      "city": "Bratislava",
+      "country": "Slovakia",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 172
+    },
+    {
+      "iata": "LJU",
+      "icao": "LJLJ",
+      "name": "Ljubljana Jože Pučnik Airport",
+      "city": "Ljubljana",
+      "country": "Slovenia",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 178
+    },
+    {
+      "iata": "MAD",
+      "icao": "LEMD",
+      "name": "Adolfo Suárez Madrid–Barajas Airport",
+      "city": "Madrid",
+      "country": "Spain",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 5
+    },
+    {
+      "iata": "BCN",
+      "icao": "LEBL",
+      "name": "Josep Tarradellas Barcelona–El Prat Airport",
+      "city": "Barcelona",
+      "country": "Spain",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 7
+    },
+    {
+      "iata": "PMI",
+      "icao": "LEPA",
+      "name": "Palma de Mallorca Airport",
+      "city": "Palma de Mallorca",
+      "country": "Spain",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 14
+    },
+    {
+      "iata": "ARN",
+      "icao": "ESSA",
+      "name": "Stockholm Arlanda Airport",
+      "city": "Stockholm",
+      "country": "Sweden",
+      "is_eu": true,
+      "is_major_hub": true,
+      "passenger_volume_rank": 20
+    },
+    {
+      "iata": "GDN",
+      "icao": "EPGD",
+      "name": "Gdańsk Lech Wałęsa Airport",
+      "city": "Gdańsk",
+      "country": "Poland",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 112
+    },
+    {
+      "iata": "WRO",
+      "icao": "EPWR",
+      "name": "Copernicus Airport Wrocław",
+      "city": "Wrocław",
+      "country": "Poland",
+      "is_eu": true,
+      "is_major_hub": false,
+      "passenger_volume_rank": 137
+    }
+  ]
+}

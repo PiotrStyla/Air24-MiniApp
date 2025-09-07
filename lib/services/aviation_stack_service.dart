@@ -324,6 +324,15 @@ class AviationStackService {
         
         if (response.statusCode != 200) {
           foundation.debugPrint('AviationStackService: Error ${response.statusCode} from backend');
+          // Fallback: try to locate the flight within /eligible_flights (same source used by EU Eligible Flights screen)
+          try {
+            final fallback = await _findFlightFromEligibleFlights(flightNumber: flightNumber);
+            if (fallback != null) {
+              return fallback;
+            }
+          } catch (e) {
+            foundation.debugPrint('AviationStackService: Fallback via /eligible_flights failed: $e');
+          }
           if (!foundation.kReleaseMode) {
             return _generateFallbackEligibilityResponse(flightNumber);
           }
@@ -352,6 +361,15 @@ class AviationStackService {
       }
     } catch (e) {
       foundation.debugPrint('AviationStackService: Error checking compensation: $e');
+      // Try eligible_flights fallback once more in any exception case
+      try {
+        final fallback = await _findFlightFromEligibleFlights(flightNumber: flightNumber);
+        if (fallback != null) {
+          return fallback;
+        }
+      } catch (e2) {
+        foundation.debugPrint('AviationStackService: Exception during eligible_flights fallback: $e2');
+      }
       if (!foundation.kReleaseMode) {
         return _generateFallbackEligibilityResponse(flightNumber);
       }
@@ -363,6 +381,66 @@ class AviationStackService {
         'error': e.toString(),
       };
     }
+  }
+
+  /// Attempts to find a specific flight within the Python backend eligible flights and
+  /// returns a result shaped for the checker screen if found.
+  Future<Map<String, dynamic>?> _findFlightFromEligibleFlights({required String flightNumber}) async {
+    final normalized = flightNumber.replaceAll(' ', '').toUpperCase();
+    final uri = Uri.parse('$pythonBackendUrl/eligible_flights')
+        .replace(queryParameters: {'hours': '24', 'onlyLive': 'true'});
+    foundation.debugPrint('AviationStackService: Fallback lookup via $uri for $normalized');
+    final response = await _httpClient.get(uri).timeout(const Duration(seconds: 20));
+    if (response.statusCode != 200) {
+      foundation.debugPrint('AviationStackService: eligible_flights fallback HTTP ${response.statusCode}');
+      return null;
+    }
+    final data = json.decode(response.body);
+    final flights = await _tryProcessFlightsData(data);
+    if (flights.isEmpty) return null;
+
+    // Find by flight_iata match (normalize, ignore spaces)
+    Map<String, dynamic>? match = flights.firstWhere(
+      (f) => (f['flight_iata']?.toString().replaceAll(' ', '').toUpperCase() ?? '') == normalized,
+      orElse: () => {},
+    );
+    if (match == null || match.isEmpty) {
+      foundation.debugPrint('AviationStackService: No match for $normalized in eligible_flights');
+      return null;
+    }
+
+    // Calculate eligibility details and map to checker result
+    final eligibility = await _calculateEligibility(match);
+    return _mapFlightToCheckerResult(match, eligibility);
+  }
+
+  /// Maps normalized flight + eligibility details to the structure expected by the
+  /// Flight Compensation Checker UI.
+  Map<String, dynamic> _mapFlightToCheckerResult(
+    Map<String, dynamic> flight,
+    Map<String, dynamic> eligibility,
+  ) {
+    final airlineName = flight['airline_name']?.toString() ?? 'Unknown Airline';
+    final dep = flight['departure_airport_iata']?.toString() ?? '';
+    final arr = flight['arrival_airport_iata']?.toString() ?? '';
+    final route = dep.isNotEmpty && arr.isNotEmpty ? '$dep - $arr' : '';
+    final status = flight['status']?.toString() ?? eligibility['status']?.toString() ?? 'UNKNOWN';
+    final delayMinutes = flight['delay_minutes'] is int ? flight['delay_minutes'] : (eligibility['delay_minutes'] ?? 0);
+
+    return {
+      'flight_number': flight['flight_iata'] ?? 'Unknown',
+      'is_eligible': (eligibility['eligible'] as bool? ?? false),
+      'eligible': (eligibility['eligible'] as bool? ?? false),
+      'message': eligibility['reason']?.toString() ?? '',
+      'status': status,
+      'delay_minutes': delayMinutes,
+      'compensation_amount_eur': eligibility['compensation_amount_eur'] ?? 0,
+      'airline': airlineName,
+      'route': route,
+      'departure_airport': dep,
+      'arrival_airport': arr,
+      'eu_regulation_applies': eligibility['eu_regulation_applies'] ?? true,
+    };
   }
   
   // This simplified getEUCompensationEligibleFlights implementation is removed.
