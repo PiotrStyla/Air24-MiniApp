@@ -129,15 +129,22 @@ ${_authService.currentUser?.displayName ?? 'Awaiting your reply'}
       print('DEBUG: Claim saved successfully!');
 
       // Log analytics event
+      print('DEBUG: 🎯 Starting analytics logging...');
       try {
+        print('DEBUG: 🎯 Getting AnalyticsService from ServiceInitializer...');
         final analytics = ServiceInitializer.get<AnalyticsService>();
+        print('DEBUG: 🎯 AnalyticsService obtained: ${analytics.runtimeType}');
+        
+        print('DEBUG: 🎯 Calling logClaimSubmitted...');
         await analytics.logClaimSubmitted(
           airline: newClaim.airlineName,
           compensationAmount: newClaim.compensationAmount.toInt(),
           flightNumber: newClaim.flightNumber,
         );
-      } catch (e) {
-        debugPrint('📊 Analytics error in claim submission: $e');
+        print('DEBUG: 🎯 Analytics event logged successfully!');
+      } catch (e, stackTrace) {
+        print('DEBUG: ❌ Analytics error in claim submission: $e');
+        print('DEBUG: ❌ Stack trace: $stackTrace');
       }
 
       _setSubmitting(false);

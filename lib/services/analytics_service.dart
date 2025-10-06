@@ -25,6 +25,7 @@ class AnalyticsService {
     int? delayMinutes,
   }) async {
     try {
+      print('📊 AnalyticsService: logClaimSubmitted called with airline=$airline, amount=$compensationAmount');
       await _analytics.logEvent(
         name: 'claim_submitted',
         parameters: {
@@ -35,8 +36,10 @@ class AnalyticsService {
           'timestamp': DateTime.now().toIso8601String(),
         },
       );
+      print('📊 Analytics: claim_submitted - $airline (€$compensationAmount) - EVENT SENT TO FIREBASE');
       debugPrint('📊 Analytics: claim_submitted - $airline (€$compensationAmount)');
     } catch (e) {
+      print('❌ Analytics error (claim_submitted): $e');
       debugPrint('❌ Analytics error (claim_submitted): $e');
     }
   }
