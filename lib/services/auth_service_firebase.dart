@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:f35_flight_compensation/core/services/service_initializer.dart';
+import 'package:f35_flight_compensation/services/analytics_service.dart';
 import 'dart:math' as math;
 import 'dart:convert';
 
@@ -411,6 +413,14 @@ class FirebaseAuthService extends ChangeNotifier {
       
       if (_currentUser != null) {
         debugPrint('🎉🎉 SUCCESS: Google Sign-In completed (email suppressed)');
+        
+        // Log analytics event for successful sign-in
+        try {
+          final analytics = ServiceInitializer.get<AnalyticsService>();
+          await analytics.logSignIn(method: 'google');
+        } catch (e) {
+          debugPrint('📊 Analytics error in sign-in: $e');
+        }
       } else {
         debugPrint('⚠️ WARNING: Sign-in succeeded but current user is null');
       }

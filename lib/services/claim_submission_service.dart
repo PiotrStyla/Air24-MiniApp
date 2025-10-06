@@ -8,6 +8,8 @@ import '../models/claim_status.dart';
 import 'claim_tracking_service.dart';
 import 'claim_validation_service.dart';
 import 'package:f35_flight_compensation/services/auth_service_firebase.dart';
+import 'package:f35_flight_compensation/core/services/service_initializer.dart';
+import 'package:f35_flight_compensation/services/analytics_service.dart';
 
 /// Service for submitting and managing compensation claims.
 class ClaimSubmissionService extends ChangeNotifier {
@@ -125,6 +127,18 @@ ${_authService.currentUser?.displayName ?? 'Awaiting your reply'}
       print('DEBUG: Saving claim to tracking service...');
       await _claimTrackingService.saveClaim(newClaim);
       print('DEBUG: Claim saved successfully!');
+
+      // Log analytics event
+      try {
+        final analytics = ServiceInitializer.get<AnalyticsService>();
+        await analytics.logClaimSubmitted(
+          airline: newClaim.airlineName,
+          compensationAmount: newClaim.compensationAmount.toInt(),
+          flightNumber: newClaim.flightNumber,
+        );
+      } catch (e) {
+        debugPrint('📊 Analytics error in claim submission: $e');
+      }
 
       _setSubmitting(false);
       return newClaim;
