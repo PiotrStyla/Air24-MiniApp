@@ -388,7 +388,7 @@ class AviationStackService {
   Future<Map<String, dynamic>?> _findFlightFromEligibleFlights({required String flightNumber}) async {
     final normalized = flightNumber.replaceAll(' ', '').toUpperCase();
     final uri = Uri.parse('$pythonBackendUrl/eligible_flights')
-        .replace(queryParameters: {'hours': '24', 'onlyLive': 'true'});
+        .replace(queryParameters: {'hours': '24', 'include_delayed': 'true'});
     foundation.debugPrint('AviationStackService: Fallback lookup via $uri for $normalized');
     final response = await _httpClient.get(uri).timeout(const Duration(seconds: 20));
     if (response.statusCode != 200) {

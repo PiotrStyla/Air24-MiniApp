@@ -15,7 +15,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Path for flight data storage
-DATA_FILE = "./data/flight_compensation_data.json"
+# Correct, absolute path for PythonAnywhere environment
+DATA_FILE = "/home/PiotrS/flight_compensation/data/flight_compensation_data.json"
 
 # Create data directory if it doesn't exist
 os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
@@ -54,32 +55,30 @@ def get_status_lower(flight_record):
 # Check if a flight is eligible for compensation based on EU261
 def is_eligible_for_compensation(flight, hours_ago=None):
     """
-    Determines if a flight is eligible for compensation under EU261 rules
-    with explicit handling of None values and missing fields
+    Determines if a flight is eligible for compensation under EU261 rules.
+    This function now uses the corrected, normalized data structure.
     """
     try:
-        # Safe status processing with None handling
         status_lower = get_status_lower(flight)
+        delay_minutes = flight.get('delay_minutes', 0) or 0
+
+        # A flight is eligible if it's cancelled or delayed by 3+ hours (180 minutes).
+        is_eligible_status = "cancel" in status_lower or delay_minutes >= 180
+        if not is_eligible_status:
+            return False
+
+        # Check if the flight involves an EU airport.
+        # The data is already normalized, so we can access keys directly.
+        departure_airport = flight.get('departure_airport_iata', '')
+        arrival_airport = flight.get('arrival_airport_iata', '')
         
-        # Default values
-        delay_minutes = flight.get('delayMinutes', 0)
-        if delay_minutes is None:
-            delay_minutes = 0
-            
-        # Only delayed or cancelled flights are eligible
-        if "cancel" in status_lower or delay_minutes >= 180:  # 3+ hours delay
-            # Check if airports are in EU
-            departure_airport = flight.get('departure', {}).get('airport', {}).get('iata', '')
-            arrival_airport = flight.get('arrival', {}).get('airport', {}).get('iata', '')
-            
-            # Simple check - in a real app would use a proper EU airport database
-            eu_airports = ['MAD', 'CDG', 'FRA', 'AMS', 'FCO', 'LHR', 'MUC', 'BCN', 'ATH', 'VIE', 'WAW', 'DUB', 'BRU', 'LIS', 'HEL', 'PRG', 'CPH', 'BUD', 'ARN', 'TXL', 'OTP', 'SOF', 'LJU', 'RIX', 'VNO', 'TLL']
-            
-            # Either departure or arrival airport must be in the EU
-            is_eu_flight = departure_airport in eu_airports or arrival_airport in eu_airports
-            
-            return is_eu_flight
-        return False
+        # In a real app, this list would be more comprehensive or use a library.
+        eu_airports = ['MAD', 'CDG', 'FRA', 'AMS', 'FCO', 'LHR', 'MUC', 'BCN', 'ATH', 'VIE', 'WAW', 'DUB', 'BRU', 'LIS', 'HEL', 'PRG', 'CPH', 'BUD', 'ARN', 'TXL', 'OTP', 'SOF', 'LJU', 'RIX', 'VNO', 'TLL']
+        
+        # EU261 applies if departure or arrival is in the EU.
+        is_eu_flight = departure_airport in eu_airports or arrival_airport in eu_airports
+        
+        return is_eu_flight
     except Exception as e:
         logger.warning(f"Error determining eligibility: {str(e)}. Defaulting to not eligible.")
         return False
@@ -119,8 +118,8 @@ def process_flights(flights, hours_ago=None):
             
             # Only consider flights from specified time period if hours_ago is provided
             if hours_ago is not None:
-                # Extract scheduled departure time
-                departure_time_str = flight.get('departure', {}).get('scheduled', '')
+                # Extract scheduled departure time from the normalized top-level key
+                departure_time_str = flight.get('departure_scheduled_time', '')
                 
                 if not departure_time_str:
                     continue
@@ -303,8 +302,21 @@ def get_eligible_flights():
         # Load and process flights
         data = load_flight_data()
         flights = data.get("flights", [])
+        logger.info(f"Loaded {len(flights)} flights from data file.")
+
+        # Log the first flight record if available, to check structure
+        if flights:
+            logger.info(f"First flight record sample: {json.dumps(flights[0])}")
+
         eligible_flights = process_flights(flights, hours_ago)
-        
+        logger.info(f"[DIAGNOSTIC] After processing, found {len(eligible_flights)} eligible flights to return.")
+
+        # Add a final diagnostic log
+        if not eligible_flights and flights:
+            logger.warning("[DIAGNOSTIC] Loaded flights from file but none were deemed eligible by the filter criteria.")
+        elif not flights:
+            logger.warning("[DIAGNOSTIC] The data file was loaded, but it contained no flight records.")
+
         return jsonify({"flights": eligible_flights})
     except Exception as e:
         logger.error(f"Error in /api/eligible_flights: {str(e)}")
