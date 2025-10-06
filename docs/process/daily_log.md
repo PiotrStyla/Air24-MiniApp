@@ -167,6 +167,53 @@ Major infrastructure day! Email ingestion backend complete, analytics enhanced, 
 
 ---
 
+## 2025-10-06 (Day 5) 🔄
+
+**Completed:**
+- [x] Firebase Functions directory created with complete email ingestion code
+- [x] Dependencies installed (firebase-admin, openai, @sendgrid/mail)
+- [x] Firebase Functions code complete (ingestEmail + healthCheck endpoints)
+- [x] firebase.json configured for Functions deployment
+- [x] .firebaserc created with project configuration
+- [x] Deployment guide written (docs/deployment/firebase_functions_deployment.md)
+- [x] API keys documented and attempted to set
+- [x] All code committed to GitHub (3 commits today)
+
+**Metrics:**
+- DAU: [Checking Firebase Console for Day 4 data]
+- Claims: 81+ (from Day 4 testing)
+- Premium: 0
+- MRR: €0
+
+**Learnings:**
+- Firebase CLI can have silent failures (no output in terminal)
+- Missing .firebaserc causes deployment to fail silently
+- firebase.json must include "functions" configuration
+- npm install -g firebase-tools may need troubleshooting
+- Functions can be deployed via Firebase Console UI as alternative
+- Code readiness ≠ deployment success (tooling matters!)
+
+**Blockers:**
+- Firebase CLI not showing any output (tried multiple times)
+- Functions deployment blocked by CLI issue
+- firebase deploy --only functions runs but shows no output
+- Even firebase --version shows nothing
+- SendGrid webhook config pending successful deployment
+
+**Next Session:**
+- [ ] Troubleshoot Firebase CLI or use Console UI deployment
+- [ ] Deploy Functions to production (manual if needed)
+- [ ] Configure SendGrid inbound parse webhook
+- [ ] Test email ingestion end-to-end
+- [ ] Verify analytics data in Firebase Console
+
+**Notes:**
+Productive infrastructure session! All Firebase Functions code complete and ready for deployment. Hit Firebase CLI tooling issues - commands run but show no output. All code safely committed to Git. Functions can be deployed via Firebase Console UI as workaround. Focus next session: deploy Functions and test email flow! 🚀
+
+**Time Investment:** ~2 hours (Functions setup + CLI troubleshooting)
+
+---
+
 ## Template for Future Days:
 
 ```markdown
