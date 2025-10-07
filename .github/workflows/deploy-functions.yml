@@ -28,7 +28,8 @@ jobs:
       - name: Install dependencies
         run: |
           cd functions
-          npm ci
+          rm -rf node_modules
+          npm install
       
       - name: Setup Google Cloud credentials
         uses: google-github-actions/auth@v1
