@@ -39,8 +39,23 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
       
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+      
       - name: Deploy to Firebase
         run: firebase deploy --only functions --project flightcompensation-d059a --force
+      
+      - name: Set environment variables for functions
+        run: |
+          gcloud functions deploy ingestEmail \
+            --update-env-vars OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}",RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
+            --region us-central1 \
+            --project flightcompensation-d059a
+          
+          gcloud functions deploy healthCheck \
+            --update-env-vars OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}",RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
+            --region us-central1 \
+            --project flightcompensation-d059a
           
       - name: Deployment summary
         run: |
