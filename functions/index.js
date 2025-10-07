@@ -6,12 +6,14 @@ const sgMail = require('@sendgrid/mail');
 admin.initializeApp();
 
 // Initialize OpenAI
+// Supports both Cloud Console env vars (OPENAI_API_KEY) and Firebase CLI config (openai.api_key)
 const openai = new OpenAI({
-  apiKey: functions.config().openai.api_key,
+  apiKey: process.env.OPENAI_API_KEY || functions.config().openai?.api_key,
 });
 
 // Initialize SendGrid
-sgMail.setApiKey(functions.config().resend.api_key);
+// Supports both Cloud Console env vars (RESEND_API_KEY) and Firebase CLI config (resend.api_key)
+sgMail.setApiKey(process.env.RESEND_API_KEY || functions.config().resend?.api_key);
 
 /**
  * Parse incoming email using GPT-4 to extract claim status updates

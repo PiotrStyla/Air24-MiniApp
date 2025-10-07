@@ -214,6 +214,64 @@ Productive infrastructure session! All Firebase Functions code complete and read
 
 ---
 
+## 2025-10-07 (Day 6) ⚠️
+
+**Completed:**
+- [x] Firebase project billing upgraded (Blaze plan)
+- [x] Cloud Functions API enabled and verified
+- [x] Firebase CLI completely reinstalled (fresh install)
+- [x] npm cache cleaned
+- [x] Functions code updated to support both env var formats
+- [x] Console UI deployment guide created
+- [x] Multiple deployment attempts via CLI
+- [x] Troubleshooting documentation updated
+
+**Metrics:**
+- DAU: [No analytics data yet - 24-48hr delay still in effect]
+- Claims: 81+ (from Day 4 testing)
+- Premium: 0
+- MRR: €0
+
+**Learnings:**
+- Firebase requires billing even though free tier is generous (2M invocations/month)
+- Firebase CLI can have persistent output issues on some Windows systems
+- npm commands work fine but Firebase CLI commands produce no output
+- Even fresh install doesn't fix Firebase CLI silent failures
+- Google Cloud Console and Firebase Console are different interfaces
+- Cloud Run ≠ Cloud Functions (easy to confuse)
+- Deployment can succeed silently but this didn't happen
+
+**Blockers (Critical):**
+- **Firebase CLI produces ZERO output** on this system
+  - Tried: Multiple commands, debug mode, output redirection, fresh install
+  - Result: Always silent (no stdout, no stderr, empty files)
+  - Even `firebase --version` shows nothing
+- **Functions NOT deployed** despite multiple attempts
+- **Email ingestion NOT live** (depends on Functions deployment)
+- **SendGrid webhook** cannot be configured (no endpoint URL yet)
+
+**Attempted Solutions:**
+1. ✅ Reinstalled Firebase CLI completely (removed 714 packages, added 714 packages)
+2. ✅ Cleared npm cache with --force
+3. ✅ Tried output redirection to file (file remained empty)
+4. ✅ Tried --debug flag (still no output)
+5. ❌ All attempts failed - CLI fundamentally broken on this system
+
+**Next Session Options:**
+- [ ] **Option A:** Setup GitHub Actions for CI/CD deployment (recommended)
+- [ ] **Option B:** Manual deployment via Google Cloud Console (browser)
+- [ ] **Option C:** Try deployment from different computer
+- [ ] **Option D:** Use alternative backend (Vercel/Netlify Functions)
+
+**Notes:**
+Challenging day focused on Firebase CLI troubleshooting. Spent ~1.5 hours trying various solutions. Successfully enabled billing and API, but hit a wall with CLI tooling. Code is production-ready and safely committed. The blocker is purely deployment infrastructure, not code quality. Recommend GitHub Actions for next session to bypass CLI entirely. This is a common approach for production deployments anyway. 🔧
+
+**Time Investment:** ~1.5 hours (Billing setup + CLI troubleshooting + reinstallation attempts)
+
+**Key Takeaway:** Sometimes tools fail. Have backup deployment strategies ready. CI/CD via GitHub Actions is the professional solution.
+
+---
+
 ## Template for Future Days:
 
 ```markdown
