@@ -48,11 +48,23 @@ jobs:
       - name: Set environment variables for functions
         run: |
           gcloud functions deploy ingestEmail \
+            --gen2 \
+            --runtime nodejs20 \
+            --entry-point ingestEmail \
+            --source functions \
+            --trigger-http \
+            --allow-unauthenticated \
             --update-env-vars OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}",RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
             --region us-central1 \
             --project flightcompensation-d059a
           
           gcloud functions deploy healthCheck \
+            --gen2 \
+            --runtime nodejs20 \
+            --entry-point healthCheck \
+            --source functions \
+            --trigger-http \
+            --allow-unauthenticated \
             --update-env-vars OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}",RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
             --region us-central1 \
             --project flightcompensation-d059a
