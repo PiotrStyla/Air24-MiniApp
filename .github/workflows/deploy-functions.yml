@@ -48,7 +48,6 @@ jobs:
       - name: Set environment variables for functions
         run: |
           gcloud functions deploy ingestEmail \
-            --gen2 \
             --runtime nodejs20 \
             --entry-point ingestEmail \
             --source functions \
@@ -59,7 +58,6 @@ jobs:
             --project flightcompensation-d059a
           
           gcloud functions deploy healthCheck \
-            --gen2 \
             --runtime nodejs20 \
             --entry-point healthCheck \
             --source functions \
