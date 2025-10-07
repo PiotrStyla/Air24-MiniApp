@@ -5,15 +5,19 @@ const sgMail = require('@sendgrid/mail');
 
 admin.initializeApp();
 
-// Initialize OpenAI
-// Supports both Cloud Console env vars (OPENAI_API_KEY) and Firebase CLI config (openai.api_key)
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || functions.config().openai?.api_key,
-});
+// Helper function to get OpenAI client (lazy initialization)
+function getOpenAIClient() {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY || functions.config().openai?.api_key,
+  });
+}
 
-// Initialize SendGrid
-// Supports both Cloud Console env vars (RESEND_API_KEY) and Firebase CLI config (resend.api_key)
-sgMail.setApiKey(process.env.RESEND_API_KEY || functions.config().resend?.api_key);
+// Helper function to get SendGrid client (lazy initialization)
+function getSendGridClient() {
+  const client = sgMail;
+  client.setApiKey(process.env.RESEND_API_KEY || functions.config().resend?.api_key);
+  return client;
+}
 
 /**
  * Parse incoming email using GPT-4 to extract claim status updates
@@ -37,6 +41,7 @@ exports.ingestEmail = functions.https.onRequest(async (req, res) => {
     console.log(`📝 Subject: ${subject}`);
 
     // Use GPT-4 to parse the email content
+    const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
