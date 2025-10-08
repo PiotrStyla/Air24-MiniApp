@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'in_app_messaging_service.dart';
 import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 import 'user_service.dart';
+import 'analytics_service.dart';
 
 /// Service for handling push notifications using Firebase Cloud Messaging
 /// Supports both remote push notifications and local notifications
@@ -208,6 +209,22 @@ class PushNotificationService {
 
     if (response.payload != null) {
       final data = jsonDecode(response.payload!);
+      
+      // Log analytics event for notification tapped (Day 11)
+      try {
+        final claimId = data['claimId'] as String?;
+        final notificationType = data['type'] as String? ?? 'unknown';
+        if (claimId != null) {
+          final analytics = ServiceInitializer.get<AnalyticsService>();
+          analytics.logNotificationTapped(
+            claimId: claimId,
+            notificationType: notificationType,
+          );
+        }
+      } catch (e) {
+        debugPrint('Analytics error: $e');
+      }
+      
       _handleNotificationAction(data);
     }
   }
@@ -215,6 +232,21 @@ class PushNotificationService {
   /// Handle foreground messages
   static Future<void> _handleForegroundMessage(RemoteMessage message) async {
     debugPrint('🔔 Foreground message received: ${message.messageId}');
+
+    // Log analytics event for notification received (Day 11)
+    try {
+      final claimId = message.data['claimId'] as String?;
+      final notificationType = message.data['type'] as String? ?? 'unknown';
+      if (claimId != null) {
+        final analytics = ServiceInitializer.get<AnalyticsService>();
+        await analytics.logNotificationReceived(
+          claimId: claimId,
+          notificationType: notificationType,
+        );
+      }
+    } catch (e) {
+      debugPrint('Analytics error: $e');
+    }
 
     // Show local notification when app is in foreground
     await _showLocalNotification(
@@ -227,6 +259,22 @@ class PushNotificationService {
   /// Handle background messages
   static Future<void> _handleBackgroundMessage(RemoteMessage message) async {
     debugPrint('🔔 Background message opened: ${message.messageId}');
+    
+    // Log analytics event for notification tapped from background (Day 11)
+    try {
+      final claimId = message.data['claimId'] as String?;
+      final notificationType = message.data['type'] as String? ?? 'unknown';
+      if (claimId != null) {
+        final analytics = ServiceInitializer.get<AnalyticsService>();
+        await analytics.logNotificationTapped(
+          claimId: claimId,
+          notificationType: notificationType,
+        );
+      }
+    } catch (e) {
+      debugPrint('Analytics error: $e');
+    }
+    
     _handleNotificationAction(message.data);
   }
 

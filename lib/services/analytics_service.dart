@@ -230,6 +230,154 @@ class AnalyticsService {
     }
   }
 
+  /// Log when a claim is created (Day 11)
+  Future<void> logClaimCreated({
+    required String claimId,
+    required String airline,
+    required int compensationAmount,
+    String? flightNumber,
+  }) async {
+    try {
+      await _analytics.logEvent(
+        name: 'claim_created',
+        parameters: {
+          'claim_id': claimId,
+          'airline': airline,
+          'compensation_amount': compensationAmount,
+          if (flightNumber != null) 'flight_number': flightNumber,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+      debugPrint('📊 Analytics: claim_created - $claimId ($airline, €$compensationAmount)');
+    } catch (e) {
+      debugPrint('❌ Analytics error (claim_created): $e');
+    }
+  }
+
+  /// Log when user receives a push notification (Day 11)
+  Future<void> logNotificationReceived({
+    required String claimId,
+    required String notificationType, // 'approved', 'rejected', 'needs_info', etc.
+  }) async {
+    try {
+      await _analytics.logEvent(
+        name: 'notification_received',
+        parameters: {
+          'claim_id': claimId,
+          'notification_type': notificationType,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+      debugPrint('📊 Analytics: notification_received - $claimId ($notificationType)');
+    } catch (e) {
+      debugPrint('❌ Analytics error (notification_received): $e');
+    }
+  }
+
+  /// Log when user taps a push notification (Day 11)
+  Future<void> logNotificationTapped({
+    required String claimId,
+    required String notificationType,
+  }) async {
+    try {
+      await _analytics.logEvent(
+        name: 'notification_tapped',
+        parameters: {
+          'claim_id': claimId,
+          'notification_type': notificationType,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+      debugPrint('📊 Analytics: notification_tapped - $claimId ($notificationType)');
+    } catch (e) {
+      debugPrint('❌ Analytics error (notification_tapped): $e');
+    }
+  }
+
+  /// Log when claim status changes (Day 11)
+  Future<void> logClaimStatusChanged({
+    required String claimId,
+    required String oldStatus,
+    required String newStatus,
+    required String source, // 'email', 'manual', 'system'
+  }) async {
+    try {
+      await _analytics.logEvent(
+        name: 'claim_status_changed',
+        parameters: {
+          'claim_id': claimId,
+          'old_status': oldStatus,
+          'new_status': newStatus,
+          'source': source,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+      debugPrint('📊 Analytics: claim_status_changed - $claimId ($oldStatus → $newStatus via $source)');
+    } catch (e) {
+      debugPrint('❌ Analytics error (claim_status_changed): $e');
+    }
+  }
+
+  /// Log when user copies email address (Day 11)
+  Future<void> logEmailAddressCopied({
+    required String claimId,
+  }) async {
+    try {
+      await _analytics.logEvent(
+        name: 'email_address_copied',
+        parameters: {
+          'claim_id': claimId,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+      debugPrint('📊 Analytics: email_address_copied - $claimId');
+    } catch (e) {
+      debugPrint('❌ Analytics error (email_address_copied): $e');
+    }
+  }
+
+  /// Log when user views claim detail screen (Day 11)
+  Future<void> logClaimDetailViewed({
+    required String claimId,
+    required String status,
+  }) async {
+    try {
+      await _analytics.logEvent(
+        name: 'claim_detail_viewed',
+        parameters: {
+          'claim_id': claimId,
+          'status': status,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+      debugPrint('📊 Analytics: claim_detail_viewed - $claimId ($status)');
+    } catch (e) {
+      debugPrint('❌ Analytics error (claim_detail_viewed): $e');
+    }
+  }
+
+  /// Log when email is processed by backend (Day 11)
+  Future<void> logEmailProcessed({
+    required String claimId,
+    required String result, // 'success', 'spam', 'not_found'
+    int? processingTimeMs,
+  }) async {
+    try {
+      await _analytics.logEvent(
+        name: 'email_processed',
+        parameters: {
+          'claim_id': claimId,
+          'result': result,
+          if (processingTimeMs != null) 'processing_time_ms': processingTimeMs,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+      debugPrint('📊 Analytics: email_processed - $claimId ($result)');
+    } catch (e) {
+      debugPrint('❌ Analytics error (email_processed): $e');
+    }
+  }
+
   /// Log custom event (for future flexibility)
   Future<void> logCustomEvent({
     required String eventName,

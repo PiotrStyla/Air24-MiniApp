@@ -4,6 +4,7 @@ import '../core/app_localizations_patch.dart';
 import 'package:intl/intl.dart';
 import '../services/enhanced_claims_service.dart';
 import '../services/claim_tracking_service.dart';
+import '../services/analytics_service.dart';
 
 import '../models/claim.dart';
 import '../models/claim_status.dart';
@@ -83,6 +84,19 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
         _claim = claim;
         _isLoading = false;
       });
+      
+      // Log analytics event for viewing claim detail (Day 11)
+      if (claim != null) {
+        try {
+          final analytics = ServiceInitializer.get<AnalyticsService>();
+          await analytics.logClaimDetailViewed(
+            claimId: claim.claimId,
+            status: claim.status,
+          );
+        } catch (e) {
+          debugPrint('Analytics error: $e');
+        }
+      }
     } catch (e) {
       setState(() {
         _errorMessage = 'Error loading claim details: $e';
@@ -481,6 +495,19 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
                         tooltip: 'Copy email address',
                         onPressed: () async {
                           await Clipboard.setData(const ClipboardData(text: 'claims@unshaken-strategy.eu'));
+                          
+                          // Log analytics event for copying email (Day 11)
+                          if (_claim != null) {
+                            try {
+                              final analytics = ServiceInitializer.get<AnalyticsService>();
+                              await analytics.logEmailAddressCopied(
+                                claimId: _claim!.claimId,
+                              );
+                            } catch (e) {
+                              debugPrint('Analytics error: $e');
+                            }
+                          }
+                          
                           if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
