@@ -27,13 +27,43 @@ exports.ingestEmail = functions.https.onRequest(async (req, res) => {
   try {
     console.log('📧 Email ingestion started');
     console.log('Headers:', JSON.stringify(req.headers));
-    console.log('Body:', JSON.stringify(req.body));
+    console.log('Body type:', req.headers['content-type']);
 
-    // Extract email content from SendGrid webhook
-    const { from, to, subject, text, html } = req.body;
+    // Handle both JSON and multipart/form-data from SendGrid
+    let from, to, subject, text, html;
+    
+    if (req.headers['content-type']?.includes('multipart/form-data')) {
+      // Parse multipart data (SendGrid with "POST raw MIME" checked or unchecked but still sending multipart)
+      console.log('📦 Parsing multipart/form-data');
+      const Busboy = require('busboy');
+      const busboy = Busboy({ headers: req.headers });
+      const fields = {};
+      
+      await new Promise((resolve, reject) => {
+        busboy.on('field', (fieldname, val) => {
+          fields[fieldname] = val;
+        });
+        busboy.on('finish', resolve);
+        busboy.on('error', reject);
+        busboy.end(req.rawBody || req.body);
+      });
+      
+      // Extract email data from parsed fields
+      from = fields.from;
+      to = fields.to;
+      subject = fields.subject;
+      text = fields.text;
+      html = fields.html;
+      
+      console.log('Parsed fields:', Object.keys(fields));
+    } else {
+      // JSON format (expected when "POST raw MIME" is unchecked)
+      ({ from, to, subject, text, html } = req.body);
+    }
 
     if (!from || !text) {
       console.error('❌ Missing required email fields');
+      console.error('Available data:', { from, to, subject, hasText: !!text, hasHtml: !!html });
       return res.status(400).send('Missing required fields');
     }
 
