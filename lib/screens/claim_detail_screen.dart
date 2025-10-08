@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../services/enhanced_claims_service.dart';
 import '../services/claim_tracking_service.dart';
 import '../services/analytics_service.dart';
+import '../widgets/claims_shimmer_loading.dart'; // Day 11
+import '../utils/haptic_feedback_util.dart'; // Day 11
 
 import '../models/claim.dart';
 import '../models/claim_status.dart';
@@ -124,7 +126,7 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const ClaimDetailShimmer()
           : _errorMessage != null
               ? _buildErrorView()
               : _claim == null
@@ -494,6 +496,9 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
                         icon: Icon(Icons.copy, size: 18, color: Colors.blue.shade700),
                         tooltip: 'Copy email address',
                         onPressed: () async {
+                          // Haptic feedback for success action (Day 11)
+                          await HapticFeedbackUtil.success();
+                          
                           await Clipboard.setData(const ClipboardData(text: 'claims@unshaken-strategy.eu'));
                           
                           // Log analytics event for copying email (Day 11)
@@ -513,6 +518,7 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
                               const SnackBar(
                                 content: Text('Email address copied to clipboard!'),
                                 duration: Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating,
                               ),
                             );
                           }

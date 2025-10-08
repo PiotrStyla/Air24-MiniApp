@@ -9,6 +9,7 @@ import 'package:f35_flight_compensation/core/services/service_initializer.dart';
 
 import '../core/app_localizations_patch.dart';
 import 'claim_detail_screen.dart';
+import '../widgets/claims_shimmer_loading.dart'; // Day 11 - Beautiful loading
 
 /// Enhanced Claims Dashboard with notifications and email integration
 class EnhancedClaimDashboardScreen extends StatefulWidget {
@@ -111,7 +112,12 @@ class _EnhancedClaimDashboardScreenState extends State<EnhancedClaimDashboardScr
               stream: claimsService.claimsStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Column(
+                    children: [
+                      const AnalyticsCardShimmer(),
+                      Expanded(child: ClaimsShimmerLoading(itemCount: 5)),
+                    ],
+                  );
                 }
                 
                 if (snapshot.hasError) {
