@@ -130,20 +130,52 @@ Respond ONLY with valid JSON. If information is not found, use null.`
             const userData = userDoc.data();
 
             if (userData && userData.fcmToken) {
+              // Create user-friendly notification message
+              const statusMessages = {
+                approved: '✅ Great news! Your claim has been approved',
+                rejected: '❌ Your claim was rejected',
+                pending: '⏳ Your claim is being reviewed',
+                needs_info: 'ℹ️ Action required: Additional information needed'
+              };
+              
+              const notificationTitle = statusMessages[parsedData.status] || 'Claim Update';
+              const notificationBody = parsedData.compensation_amount
+                ? `Claim ${parsedData.claim_id}: ${parsedData.compensation_amount} compensation`
+                : `Claim ${parsedData.claim_id} status updated. Tap to view details.`;
+              
               const message = {
                 notification: {
-                  title: 'Claim Update',
-                  body: `Your claim ${parsedData.claim_id} has been ${parsedData.status}`
+                  title: notificationTitle,
+                  body: notificationBody
                 },
                 data: {
+                  type: 'claim_update',
                   claimId: parsedData.claim_id,
-                  status: parsedData.status || 'unknown'
+                  status: parsedData.status || 'unknown',
+                  timestamp: new Date().toISOString()
                 },
-                token: userData.fcmToken
+                token: userData.fcmToken,
+                android: {
+                  priority: 'high',
+                  notification: {
+                    channelId: 'claim_updates',
+                    priority: 'high',
+                    defaultSound: true,
+                    defaultVibrateTimings: true
+                  }
+                },
+                apns: {
+                  payload: {
+                    aps: {
+                      sound: 'default',
+                      badge: 1
+                    }
+                  }
+                }
               };
 
               await admin.messaging().send(message);
-              console.log('🔔 Push notification sent');
+              console.log('🔔 Push notification sent successfully');
             }
           } catch (notifError) {
             console.error('❌ Push notification failed:', notifError);

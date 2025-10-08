@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'in_app_messaging_service.dart';
+import 'package:f35_flight_compensation/core/services/service_initializer.dart';
+import 'user_service.dart';
 
 /// Service for handling push notifications using Firebase Cloud Messaging
 /// Supports both remote push notifications and local notifications
@@ -155,6 +157,8 @@ class PushNotificationService {
     _firebaseMessaging.onTokenRefresh.listen((token) {
       _fcmToken = token;
       debugPrint('🔑 FCM Token refreshed: $token');
+      // Save updated token to Firestore
+      _saveFcmTokenToFirestore();
     });
   }
 
@@ -163,10 +167,26 @@ class PushNotificationService {
     try {
       _fcmToken = await _firebaseMessaging.getToken();
       debugPrint('🔑 FCM Token: $_fcmToken');
+      
+      // Save token to Firestore for push notifications from Cloud Function
+      await _saveFcmTokenToFirestore();
+      
       return _fcmToken;
     } catch (e) {
       debugPrint('❌ Failed to get FCM token: $e');
       return null;
+    }
+  }
+  
+  /// Save FCM token to Firestore for Cloud Function notifications
+  static Future<void> _saveFcmTokenToFirestore() async {
+    try {
+      final userService = ServiceInitializer.get<UserService>();
+      await userService.saveFcmToken();
+      debugPrint('✅ FCM token saved to Firestore');
+    } catch (e) {
+      debugPrint('⚠️ Failed to save FCM token to Firestore: $e');
+      // Don't throw - local notifications will still work
     }
   }
 

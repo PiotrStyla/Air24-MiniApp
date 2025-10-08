@@ -26,6 +26,7 @@ import 'package:f35_flight_compensation/services/donation_service.dart';
 import 'package:f35_flight_compensation/services/world_id_service.dart';
 import 'package:f35_flight_compensation/services/world_id_oidc_service.dart';
 import 'package:f35_flight_compensation/services/analytics_service.dart';
+import 'package:f35_flight_compensation/services/user_service.dart';
 import 'package:f35_flight_compensation/core/error/error_handler.dart';
 import 'package:f35_flight_compensation/viewmodels/auth_viewmodel.dart';
 import 'package:f35_flight_compensation/viewmodels/document_viewmodel.dart';
@@ -67,6 +68,9 @@ class ServiceInitializer {
     ));
     _locator.registerLazySingleton<WorldIdOidcService>(() => WorldIdOidcService());
     _locator.registerLazySingleton<AnalyticsService>(() => AnalyticsService());
+    _locator.registerLazySingleton<UserService>(() => UserService(
+      authService: _locator.get<FirebaseAuthService>(),
+    ));
     _locator.registerLazySingleton<EnhancedClaimsService>(() => 
       EnhancedClaimsService(
         _locator.get<ClaimTrackingService>(),
