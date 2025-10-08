@@ -6,6 +6,7 @@ import '../services/enhanced_claims_service.dart';
 import '../services/claim_tracking_service.dart';
 import '../services/analytics_service.dart';
 import '../widgets/claims_shimmer_loading.dart'; // Day 11
+import '../widgets/claim_status_timeline.dart'; // Day 11
 import '../utils/haptic_feedback_util.dart'; // Day 11
 
 import '../models/claim.dart';
@@ -401,6 +402,11 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
           const SizedBox(height: 12),
           
           _buildClaimStatusSection(context),
+          
+          const SizedBox(height: 24),
+          
+          // Timeline (Day 11 - Priority 3)
+          ClaimStatusTimeline(claim: claim),
           
           const SizedBox(height: 24),
           
