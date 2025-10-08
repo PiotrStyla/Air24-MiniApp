@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../core/app_localizations_patch.dart';
 import 'package:intl/intl.dart';
 import '../services/enhanced_claims_service.dart';
@@ -355,6 +356,34 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Claim ID Badge
+          if (claim.claimId.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.blue.shade200),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.tag, size: 16, color: Colors.blue.shade700),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Claim ID: ${claim.claimId}',
+                    style: TextStyle(
+                      color: Colors.blue.shade700,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          
+          const SizedBox(height: 12),
+          
           _buildClaimStatusSection(context),
           
           const SizedBox(height: 24),
@@ -375,6 +404,8 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
                     ),
                   ),
                   const Divider(),
+                  if (claim.claimId.isNotEmpty)
+                    _buildInfoRow('Claim Reference:', claim.claimId),
                   _buildInfoRow('Flight Number:', claim.flightNumber),
                   _buildInfoRow('Departure:', claim.departureAirport),
                   _buildInfoRow('Arrival:', claim.arrivalAirport),
@@ -386,6 +417,87 @@ class _ClaimDetailScreenState extends State<ClaimDetailScreen> {
                       '€${claim.compensationAmount!.toStringAsFixed(2)}',
                       valueColor: Colors.green,
                     ),
+                ],
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Last Updated / Email Response Info Card
+          Card(
+            elevation: 1,
+            color: Colors.grey.shade50,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.info_outline, size: 16, color: Colors.grey.shade600),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Status Information',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  // Last updated info would come from Firestore
+                  // For now, show a placeholder
+                  Text(
+                    'To receive automatic updates, forward airline emails to:',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: Text(
+                            'claims@unshaken-strategy.eu',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'monospace',
+                              color: Colors.blue.shade700,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.copy, size: 18, color: Colors.blue.shade700),
+                        tooltip: 'Copy email address',
+                        onPressed: () async {
+                          await Clipboard.setData(const ClipboardData(text: 'claims@unshaken-strategy.eu'));
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Email address copied to clipboard!'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Include your Claim ID (${claim.claimId.isEmpty ? "will be generated" : claim.claimId}) when contacting the airline.',
+                    style: TextStyle(fontSize: 11, color: Colors.grey.shade500, fontStyle: FontStyle.italic),
+                  ),
                 ],
               ),
             ),
