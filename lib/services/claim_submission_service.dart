@@ -46,11 +46,13 @@ class ClaimSubmissionService extends ChangeNotifier {
         ? '\n\nSupporting Documents:\n${claim.attachmentUrls.map((url) => '- $url').join('\n')}'
         : '';
 
+    final claimRef = claim.claimId.isNotEmpty ? '\n- Claim Reference: ${claim.claimId}' : '';
+    
     final body = '''
 Dear Sir or Madam,
 
 I am writing to claim compensation under EC Regulation 261/2004 for the flight detailed below:
-
+$claimRef
 - Flight Number: ${claim.flightNumber}
 - Flight Date: ${claim.flightDate.toIso8601String().split('T').first}
 - Departure Airport: ${claim.departureAirport}
@@ -58,6 +60,8 @@ I am writing to claim compensation under EC Regulation 261/2004 for the flight d
 - Reason for Claim: ${claim.reason}
 
 Please find my details and the flight information above for your processing.$attachmentsSection
+
+When responding, please reference Claim ID: ${claim.claimId}
 
 Sincerely,
 ${_authService.currentUser?.displayName ?? 'Awaiting your reply'}
@@ -84,6 +88,18 @@ ${_authService.currentUser?.displayName ?? 'Awaiting your reply'}
     return mailtoUri;
   }
 
+  /// Generate a human-readable claim ID (e.g., "FC-2025-001")
+  Future<String> _generateClaimId(String userId) async {
+    final year = DateTime.now().year;
+    final userClaims = await _claimTrackingService.getClaimsForUser(userId);
+    
+    // Count claims for this year
+    final thisYearClaims = userClaims.where((c) => c.flightDate.year == year).length;
+    final sequence = (thisYearClaims + 1).toString().padLeft(3, '0');
+    
+    return 'FC-$year-$sequence';
+  }
+
   /// Submit a new compensation claim.
   Future<Claim?> submitClaim(Claim claim) async {
     _setSubmitting(true);
@@ -97,13 +113,18 @@ ${_authService.currentUser?.displayName ?? 'Awaiting your reply'}
     print('DEBUG: Submitting claim with userId: $userId');
 
     try {
+      print('DEBUG: Generating claim ID...');
+      final claimId = await _generateClaimId(userId);
+      print('DEBUG: Generated claim ID: $claimId');
+      
       print('DEBUG: Creating new claim with userId: $userId');
       final newClaim = claim.copyWith(
         id: _uuid.v4(),
+        claimId: claimId,
         userId: userId,
         status: ClaimStatus.submitted.name,
       );
-      print('DEBUG: New claim created: ${newClaim.toString()}');
+      print('DEBUG: New claim created with ID: $claimId');
 
       print('DEBUG: Getting user claims for validation...');
       final userClaims = await _claimTrackingService.getClaimsForUser(userId);

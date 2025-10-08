@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Claim {
   final String id;
+  final String claimId; // Human-readable ID for emails (e.g., "FC-2025-001")
   final String userId;
   final String flightNumber;
   final String airlineName;
@@ -16,6 +17,7 @@ class Claim {
 
   Claim({
     required this.id,
+    this.claimId = '', // Will be generated during submission
     required this.userId,
     required this.airlineName,
     required this.flightNumber,
@@ -32,6 +34,7 @@ class Claim {
   factory Claim.fromFirestore(Map<String, dynamic> data, String documentId) {
     return Claim(
       id: documentId,
+      claimId: data['claimId'] as String? ?? documentId, // Fallback to document ID for old claims
       userId: data['userId'] as String,
       flightNumber: data['flightNumber'] as String,
       airlineName: data['airlineName'] as String? ?? '',
@@ -48,6 +51,7 @@ class Claim {
 
   Claim copyWith({
     String? id,
+    String? claimId,
     String? userId,
     String? flightNumber,
     String? airlineName,
@@ -62,6 +66,7 @@ class Claim {
   }) {
     return Claim(
       id: id ?? this.id,
+      claimId: claimId ?? this.claimId,
       userId: userId ?? this.userId,
       flightNumber: flightNumber ?? this.flightNumber,
       airlineName: airlineName ?? this.airlineName,
@@ -78,6 +83,7 @@ class Claim {
 
   Map<String, dynamic> toFirestore() {
     return {
+      'claimId': claimId,
       'userId': userId,
       'flightNumber': flightNumber,
       'airlineName': airlineName,
