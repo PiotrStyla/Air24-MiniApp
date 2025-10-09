@@ -16,7 +16,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             children: [
               Text('AIR24 Terms of Service', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              Text('Last Updated: October 8, 2025', style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+              Text('Last Updated: October 9, 2025', style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
               const SizedBox(height: 16),
               
               Text('1. Service Provider', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
@@ -29,6 +29,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               Text('2. Service Description', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               const Text('AIR24 provides:'),
+              const Text('• Privacy-preserving authentication via World ID'),
               const Text('• Flight compensation eligibility checking tool'),
               const Text('• Claim preparation and submission assistance'),
               const Text('• Automatic email parsing using AI (GPT-4)'),

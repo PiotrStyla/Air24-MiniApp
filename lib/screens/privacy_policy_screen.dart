@@ -16,7 +16,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             children: [
               Text('AIR24 Privacy Policy', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              Text('Last Updated: October 8, 2025', style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+              Text('Last Updated: October 9, 2025', style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
               const SizedBox(height: 16),
               
               Text('1. Controller & Contact', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
@@ -28,7 +28,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
               
               Text('2. Data We Collect', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
-              const Text('• Account Information: Name, email address, profile photo (via Google Sign-In)'),
+              const Text('• Account Information: Name, email address, profile photo (via World ID or Google Sign-In)'),
+              const Text('• World ID Data: Nullifier hash for unique user identification (privacy-preserving, no personal data)'),
               const Text('• Flight Information: Flight numbers, dates, airlines, delays/cancellations'),
               const Text('• Claim Data: Compensation claims, status updates, supporting documents'),
               const Text('• Email Data: Emails forwarded to claims@unshaken-strategy.eu for automatic processing'),
@@ -67,6 +68,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               
               Text('6. Third-Party Services', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
+              const Text('• Worldcoin: World ID verification (privacy-preserving identity verification)'),
               const Text('• Google/Firebase: Authentication, database, cloud functions'),
               const Text('• SendGrid: Email receiving and forwarding'),
               const Text('• OpenAI: AI-powered email parsing (GPT-4)'),

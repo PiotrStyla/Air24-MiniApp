@@ -292,7 +292,55 @@ class _AuthScreenState extends State<AuthScreen> {
                         
                         const SizedBox(height: 16),
                         
-                        // Google sign in button
+                        // World ID sign in button (PRIMARY)
+                        if (!_isResetPassword)
+                          ElevatedButton.icon(
+                            icon: const Icon(Icons.verified_user, size: 24),
+                            label: Text(
+                              _isSignUp 
+                                ? 'Sign Up with World ID' 
+                                : 'Sign In with World ID'
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF000000),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: viewModel.isLoading 
+                              ? null 
+                              : () async {
+                                  print('🌍 AUTH_SCREEN: World ID Sign-In button pressed!');
+                                  print('🌍 AUTH_SCREEN: About to call viewModel.signInWithWorldID()');
+                                  final success = await viewModel.signInWithWorldID();
+                                  print('🌍 AUTH_SCREEN: viewModel.signInWithWorldID() returned: $success');
+                                  // AuthGate handles navigation automatically on auth state change.
+                                },
+                          ),
+                        
+                        const SizedBox(height: 12),
+                        
+                        // Divider with "or"
+                        if (!_isResetPassword)
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: Colors.grey.shade300)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'or',
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                              ),
+                              Expanded(child: Divider(color: Colors.grey.shade300)),
+                            ],
+                          ),
+                        
+                        const SizedBox(height: 12),
+                        
+                        // Google sign in button (SECONDARY)
                         if (!_isResetPassword)
                           OutlinedButton.icon(
                             icon: const GoogleLogo(size: 24),

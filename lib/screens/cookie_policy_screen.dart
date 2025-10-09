@@ -16,7 +16,7 @@ class CookiePolicyScreen extends StatelessWidget {
             children: [
               Text('AIR24 Cookie Policy', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              Text('Last Updated: October 8, 2025', style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
+              Text('Last Updated: October 9, 2025', style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic)),
               const SizedBox(height: 16),
               
               Text('What Are Cookies?', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),

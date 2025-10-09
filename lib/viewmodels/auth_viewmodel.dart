@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
 import '../services/auth_service_firebase.dart';
 import '../models/auth_exception.dart';
+import '../services/world_id_interop.dart' if (dart.library.html) '../services/world_id_interop_web.dart';
+import '../services/world_id_service.dart';
 
 /// ViewModel for authentication screens
 /// Follows MVVM pattern with ChangeNotifier for state management
@@ -184,6 +186,90 @@ class AuthViewModel extends ChangeNotifier {
       print('❌ AuthViewModel: Unhandled exception during sign-up: $e');
       print('📋 AuthViewModel: Stack trace: $stackTrace');
       _errorMessage = 'An unexpected error occurred. Please try again.';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> signInWithWorldID() async {
+    print('🌍 AuthViewModel: World ID Sign-In button pressed - starting process...');
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    
+    try {
+      print('🌍 AuthViewModel: Checking World ID availability...');
+      final available = await worldIdAvailable();
+      
+      if (!available) {
+        throw AuthException(
+          'world-id-unavailable',
+          'World ID is not available. Please try another sign-in method.',
+        );
+      }
+      
+      print('🌍 AuthViewModel: Opening World ID verification...');
+      final proof = await openWorldId(
+        appId: 'app_6f4b07c9d84438a94414813a89974ab0',
+        action: 'flight-compensation-mini-app-verify',
+      );
+      
+      if (proof == null) {
+        throw AuthException(
+          'world-id-cancelled',
+          'World ID verification was cancelled.',
+        );
+      }
+      
+      print('🌍 AuthViewModel: World ID proof received: ${proof.keys}');
+      
+      // Verify the proof on backend
+      final worldIdService = WorldIdService();
+      final verification = await worldIdService.verify(
+        nullifierHash: proof['nullifier_hash'] ?? '',
+        merkleRoot: proof['merkle_root'] ?? '',
+        proof: proof['proof'] ?? '',
+        verificationLevel: proof['verification_level'] ?? 'device',
+        action: 'flight-compensation-mini-app-verify',
+      );
+      
+      if (!verification.success) {
+        throw AuthException(
+          'world-id-verify-failed',
+          verification.message ?? 'World ID verification failed.',
+        );
+      }
+      
+      print('✅ AuthViewModel: World ID verified successfully!');
+      
+      // World ID verified - now create/sign in user
+      // For World App integration, we'll use email/password with the nullifier hash
+      final worldIdHash = proof['nullifier_hash'] ?? '';
+      final tempEmail = 'worldid_$worldIdHash@air24.app';
+      final tempPassword = worldIdHash.substring(0, 20); // Use part of hash as password
+      
+      try {
+        // Try to sign in first
+        await _authService.signInWithEmail(tempEmail, tempPassword);
+      } catch (e) {
+        // If sign in fails, create new account
+        await _authService.createUserWithEmail(tempEmail, tempPassword);
+      }
+      
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } on AuthException catch (e) {
+      print('❌ AuthViewModel: AuthException during World ID: ${e.code} - ${e.message}');
+      _errorMessage = e.message;
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    } catch (e, stackTrace) {
+      print('❌ AuthViewModel: Unexpected error during World ID: $e');
+      print('📋 AuthViewModel: Stack trace: $stackTrace');
+      _errorMessage = 'World ID sign-in failed. Please try again.';
       _isLoading = false;
       notifyListeners();
       return false;
