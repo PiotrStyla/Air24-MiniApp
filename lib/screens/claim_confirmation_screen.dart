@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/app_localizations_patch.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../models/claim.dart';
 import '../services/claim_submission_service.dart';
@@ -51,7 +52,7 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
       
       // Extract airline IATA code using proper validation
       String airlineIata = ''; // Will be set if an airline is identified
-      String airlineEmail = userEmail; // Default to user's email as a safer fallback
+      String airlineEmail = ''; // Will be set if airline is found in database
       
       // Get the flight number and normalize it
       final String flightNumber = _claim.flightNumber.trim().toUpperCase();
@@ -145,8 +146,8 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
               airlineIata = flightNumber.substring(0, 2);
               print('DEBUG: Using first two letters as IATA code: $airlineIata from: $flightNumber');
             } else {
-              print('DEBUG: Could not extract IATA code from: "$flightNumber". Using user email as fallback.');
-              airlineEmail = userEmail;
+              print('DEBUG: Could not extract IATA code from: "$flightNumber". Airline will be marked as unknown.');
+              // airlineEmail remains empty (unknown airline)
             }
           }
         }
@@ -185,15 +186,14 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
               airlineEmail = nameProcedure.claimEmail;
               print('DEBUG: Fallback match by NAME succeeded: ${nameProcedure.name} (${nameProcedure.iata}) -> $airlineEmail');
             } else {
-              print('DEBUG: No airline procedure found by NAME either. Using user email as fallback.');
-              airlineEmail = userEmail;
+              print('DEBUG: No airline procedure found by NAME either. Marking as unknown.');
+              airlineEmail = ''; // Empty string indicates unknown airline
             }
           }
         } catch (e) {
           print('DEBUG: Error getting airline procedure: $e');
-          // Use user's email as fallback
-          print('DEBUG: Using user email as fallback due to error.');
-          airlineEmail = userEmail;
+          print('DEBUG: Marking airline as unknown due to error.');
+          airlineEmail = ''; // Empty string indicates unknown airline
         }
       }
       
@@ -214,6 +214,63 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
 
   Future<void> _sendClaimEmail(String airlineEmail, String userEmail) async {
     try {
+      // Check if airline email is unknown (empty)
+      final bool isAirlineUnknown = airlineEmail.isEmpty;
+      
+      // If airline is unknown, copy claim to clipboard and only send to user
+      if (isAirlineUnknown) {
+        // Generate claim body for copying
+        final emailContent = await _buildEmailSubjectAndBody();
+        final subject = emailContent['subject'] ?? '';
+        final emailBodyWithAttachments = emailContent['body'] ?? '';
+        
+        // Copy to clipboard
+        await Clipboard.setData(ClipboardData(text: emailBodyWithAttachments));
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.white),
+                  const SizedBox(width: 12),
+                  const Expanded(child: Text('✅ Claim copied to clipboard!')),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+        
+        // Send copy to user email only
+        final emailService = GetIt.instance<SecureEmailService>();
+        await emailService.sendEmail(
+          toEmail: userEmail,
+          ccEmail: null,
+          subject: '📋 ${subject} - Ready to Submit',
+          body: emailBodyWithAttachments,
+        );
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('✉️ Email copy sent to you!\n\nNext: Visit your airline\'s website and paste your claim.'),
+              backgroundColor: Colors.orange,
+              duration: const Duration(seconds: 5),
+            ),
+          );
+          
+          // Navigate back after delay
+          await Future.delayed(const Duration(seconds: 2));
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        }
+        return;
+      }
+      
+      // Normal flow: airline email is known
       // Show loading + guidance
       if (mounted) {
         if (kIsWeb) {
@@ -610,15 +667,70 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
           final userEmail = snapshot.data?['userEmail'];
           final airlineEmail = snapshot.data?['airlineEmail'];
 
-          if (userEmail == null || airlineEmail == null) {
+          if (userEmail == null) {
             return Center(child: Text(context.l10n.noEmailInfo));
           }
+
+          // Check if airline email is unknown (null or empty)
+          final bool isAirlineUnknown = airlineEmail == null || airlineEmail.isEmpty;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Warning card if airline is unknown
+                if (isAirlineUnknown)
+                  Card(
+                    color: Colors.orange.shade50,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.warning_amber_rounded, color: Colors.orange.shade700, size: 28),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Airline Contact Info Not Available',
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange.shade900,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'We don\'t have email contact information for ${_claim.airlineName} in our database yet.',
+                            style: TextStyle(color: Colors.orange.shade900),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Your claim is ready! Here\'s how to submit it:',
+                            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.orange.shade900),
+                          ),
+                          const SizedBox(height: 8),
+                          Text('• Copy your claim text using the button below', style: TextStyle(color: Colors.orange.shade900)),
+                          Text('• Visit your airline\'s website', style: TextStyle(color: Colors.orange.shade900)),
+                          Text('• Find their complaint/compensation form', style: TextStyle(color: Colors.orange.shade900)),
+                          Text('• Paste your claim text and submit', style: TextStyle(color: Colors.orange.shade900)),
+                          const SizedBox(height: 12),
+                          Text(
+                            'We\'ll send you a copy to your email for your records.',
+                            style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: Colors.orange.shade800),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                
+                const SizedBox(height: 16),
+                
+                // Normal confirmation card
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -627,9 +739,11 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
                       children: [
                         Text(context.l10n.finalConfirmation, style: Theme.of(context).textTheme.titleLarge),
                         const SizedBox(height: 16),
-                        Text(context.l10n.claimWillBeSentTo, style: Theme.of(context).textTheme.titleMedium),
-                        Text(airlineEmail, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        const SizedBox(height: 16),
+                        if (!isAirlineUnknown) ...[
+                          Text(context.l10n.claimWillBeSentTo, style: Theme.of(context).textTheme.titleMedium),
+                          Text(airlineEmail, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          const SizedBox(height: 16),
+                        ],
                         Text(context.l10n.copyToYourEmail, style: Theme.of(context).textTheme.titleMedium),
                         Text(userEmail, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         // Attachments list removed from confirmation screen
@@ -665,13 +779,15 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    icon: const Icon(Icons.send),
-                    label: Text(context.l10n.confirmAndSendEmail),
+                    icon: Icon(isAirlineUnknown ? Icons.content_copy : Icons.send),
+                    label: Text(isAirlineUnknown 
+                      ? 'Copy Claim & Email Me' 
+                      : context.l10n.confirmAndSendEmail),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: isAirlineUnknown ? Colors.orange : Colors.green,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    onPressed: () => _sendClaimEmail(airlineEmail, userEmail),
+                    onPressed: () => _sendClaimEmail(airlineEmail ?? '', userEmail),
                   ),
                 ),
                 const SizedBox(height: 16),
