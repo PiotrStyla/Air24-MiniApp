@@ -1,13 +1,16 @@
 {
-    "name": "Air24",
+    "name": "Air24 - Flight Compensation Claim",
     "short_name": "Air24",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Claim €250-€600 compensation for delayed, cancelled, or overbooked EU flights. Free tool powered by EC Regulation 261/2004. Track your claim easily.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
+    "categories": ["travel", "finance", "utilities"],
+    "lang": "en",
+    "dir": "ltr",
     "icons": [
         {
             "src": "icons/Icon-192.png",
