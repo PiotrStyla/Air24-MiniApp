@@ -273,6 +273,400 @@
     "instructions": "Submit your claim via email or the online form. Include booking reference, flight number and details of your claim."
   },
   {
+    "iata": "VY",
+    "name": "Vueling",
+    "claim_email": "customerservices@vueling.com",
+    "claim_form_url": "https://www.vueling.com/en/customer-service/claims",
+    "instructions": "Submit your claim via the online form. Include booking reference and flight details.",
+    "phone": "+34 931 518 158"
+  },
+  {
+    "iata": "TO",
+    "name": "Transavia",
+    "claim_email": "service@transavia.com",
+    "claim_form_url": "https://www.transavia.com/en-EU/service/claims/",
+    "instructions": "Use the online claim form for compensation requests. Attach boarding pass and proof of delay.",
+    "phone": "+31 20 406 0406"
+  },
+  {
+    "iata": "EW",
+    "name": "Eurowings",
+    "claim_email": "service@eurowings.com",
+    "claim_form_url": "https://www.eurowings.com/en/information/at-the-airport/compensation.html",
+    "instructions": "Submit compensation claims via the online form. Include all flight details and documentation.",
+    "phone": "+49 221 599 882 22"
+  },
+  {
+    "iata": "DE",
+    "name": "Condor",
+    "claim_email": "customer.relations@condor.com",
+    "claim_form_url": "https://www.condor.com/eu/customer-service/feedback-and-compensation.jsp",
+    "instructions": "Use the online form or email. Attach ticket and proof of delay/cancellation.",
+    "phone": "+49 6171 6988 922"
+  },
+  {
+    "iata": "X3",
+    "name": "TUI Airways",
+    "claim_email": "customer.relations@tui.co.uk",
+    "claim_form_url": "https://www.tui.co.uk/destinations/info/customer-services",
+    "instructions": "Submit claims via email or contact form. Include booking reference and details."
+  },
+  {
+    "iata": "LS",
+    "name": "Jet2",
+    "claim_email": "customerservices@jet2.com",
+    "claim_form_url": "https://www.jet2.com/help-centre",
+    "instructions": "Use the online contact form for compensation claims. Provide flight details and booking reference.",
+    "phone": "+44 333 300 0042"
+  },
+  {
+    "iata": "V7",
+    "name": "Volotea",
+    "claim_email": "reclamaciones@volotea.com",
+    "claim_form_url": "https://www.volotea.com/en/contact/complaints/",
+    "instructions": "Submit complaints via email or online form. Include all relevant flight information."
+  },
+  {
+    "iata": "TP",
+    "name": "TAP Air Portugal",
+    "claim_email": "customer.service@tap.pt",
+    "claim_form_url": "https://www.flytap.com/en-us/customer-service/complaints",
+    "instructions": "Use the online complaint form. Attach ticket and supporting documents.",
+    "phone": "+351 21 841 5000"
+  },
+  {
+    "iata": "A3",
+    "name": "Aegean Airlines",
+    "claim_email": "customerrelations@aegeanair.com",
+    "claim_form_url": "https://en.aegeanair.com/travel-information/customer-service/",
+    "instructions": "Submit via online form or email. Include booking and flight details.",
+    "phone": "+30 210 626 1000"
+  },
+  {
+    "iata": "UX",
+    "name": "Air Europa",
+    "claim_email": "clientes@aireuropa.com",
+    "claim_form_url": "https://www.aireuropa.com/en/contact",
+    "instructions": "Use the contact form for claims. Provide all flight and booking information.",
+    "phone": "+34 911 401 501"
+  },
+  {
+    "iata": "OK",
+    "name": "Czech Airlines",
+    "claim_email": "info@csa.cz",
+    "claim_form_url": "https://www.czechairlines.com/en-us/customer-care/contact",
+    "instructions": "Submit claims via email or contact form. Include ticket and delay documentation.",
+    "phone": "+420 239 007 007"
+  },
+  {
+    "iata": "WN",
+    "name": "Southwest Airlines",
+    "claim_email": "southwest.com/contact-us",
+    "claim_form_url": "https://www.southwest.com/contact-us/",
+    "instructions": "Use the online contact form. Note: Southwest operates primarily in the US and may not be covered by EU261.",
+    "phone": "+1 800 435 9792"
+  },
+  {
+    "iata": "B6",
+    "name": "JetBlue Airways",
+    "claim_email": "customer.service@jetblue.com",
+    "claim_form_url": "https://www.jetblue.com/contact-us",
+    "instructions": "Submit via online form or email. Provide confirmation code and flight details.",
+    "phone": "+1 800 538 2583"
+  },
+  {
+    "iata": "NK",
+    "name": "Spirit Airlines",
+    "claim_email": "customer.relations@spirit.com",
+    "claim_form_url": "https://customersupport.spirit.com/hc/en-us",
+    "instructions": "Use the online support center for claims. Include reservation and flight details.",
+    "phone": "+1 855 728 3555"
+  },
+  {
+    "iata": "F9",
+    "name": "Frontier Airlines",
+    "claim_email": "customer.relations@flyfrontier.com",
+    "claim_form_url": "https://www.flyfrontier.com/travel/my-trips/contact-us/",
+    "instructions": "Submit claims via online form. Provide confirmation code and details.",
+    "phone": "+1 801 401 9000"
+  },
+  {
+    "iata": "AS",
+    "name": "Alaska Airlines",
+    "claim_email": "customer.care@alaskaair.com",
+    "claim_form_url": "https://www.alaskaair.com/content/contact-us/customer-service",
+    "instructions": "Use online form or email for compensation requests. Include confirmation number.",
+    "phone": "+1 800 252 7522"
+  },
+  {
+    "iata": "HA",
+    "name": "Hawaiian Airlines",
+    "claim_email": "customer.service@hawaiianair.com",
+    "claim_form_url": "https://www.hawaiianairlines.com/contact-us",
+    "instructions": "Submit claims via contact form or email. Provide booking reference and details.",
+    "phone": "+1 800 367 5320"
+  },
+  {
+    "iata": "G4",
+    "name": "Allegiant Air",
+    "claim_email": "customer.service@allegiantair.com",
+    "claim_form_url": "https://www.allegiantair.com/contact-us",
+    "instructions": "Contact customer service for claims. Include itinerary and flight information.",
+    "phone": "+1 702 505 8888"
+  },
+  {
+    "iata": "CX",
+    "name": "Cathay Pacific",
+    "claim_email": "customer_relations@cathaypacific.com",
+    "claim_form_url": "https://www.cathaypacific.com/cx/en_HK/contact-us.html",
+    "instructions": "Submit via online form or email. Attach ticket and supporting documents.",
+    "phone": "+852 2747 3333"
+  },
+  {
+    "iata": "AI",
+    "name": "Air India",
+    "claim_email": "feedback@airindia.in",
+    "claim_form_url": "https://www.airindia.in/customer-support.htm",
+    "instructions": "Use feedback form or email for claims. Provide PNR and flight details.",
+    "phone": "+91 124 2641 407"
+  },
+  {
+    "iata": "TG",
+    "name": "Thai Airways",
+    "claim_email": "star.contact.center@thaiairways.com",
+    "claim_form_url": "https://www.thaiairways.com/en_GB/contact_us/index.page",
+    "instructions": "Submit claims via email or contact center. Include ticket number and details.",
+    "phone": "+66 2 356 1111"
+  },
+  {
+    "iata": "MH",
+    "name": "Malaysia Airlines",
+    "claim_email": "customer.care@malaysiaairlines.com",
+    "claim_form_url": "https://www.malaysiaairlines.com/my/en/contact-us.html",
+    "instructions": "Use online form or email. Attach e-ticket and disruption details.",
+    "phone": "+60 3 7843 3000"
+  },
+  {
+    "iata": "QF",
+    "name": "Qantas",
+    "claim_email": "customer.care@qantas.com.au",
+    "claim_form_url": "https://www.qantas.com/au/en/support/contact-us.html",
+    "instructions": "Submit via contact form or email. Include booking reference and flight details.",
+    "phone": "+61 2 9691 3636"
+  },
+  {
+    "iata": "NZ",
+    "name": "Air New Zealand",
+    "claim_email": "customer.care@airnz.co.nz",
+    "claim_form_url": "https://www.airnewzealand.com/contact-us",
+    "instructions": "Use online contact form for claims. Provide booking and flight information.",
+    "phone": "+64 9 357 3000"
+  },
+  {
+    "iata": "ET",
+    "name": "Ethiopian Airlines",
+    "claim_email": "information@ethiopianairlines.com",
+    "claim_form_url": "https://www.ethiopianairlines.com/aa/information/customer-service",
+    "instructions": "Submit claims via email or contact form. Include ticket and disruption details.",
+    "phone": "+251 11 517 0000"
+  },
+  {
+    "iata": "SA",
+    "name": "South African Airways",
+    "claim_email": "customercare@flysaa.com",
+    "claim_form_url": "https://www.flysaa.com/manage-travel/customer-support",
+    "instructions": "Contact customer care for claims. Provide booking reference and details.",
+    "phone": "+27 11 978 1111"
+  },
+  {
+    "iata": "AV",
+    "name": "Avianca",
+    "claim_email": "servicioalcliente@avianca.com",
+    "claim_form_url": "https://www.avianca.com/us/en/experience/customer-service/",
+    "instructions": "Use online form or email for claims. Include reservation code and flight info.",
+    "phone": "+57 1 401 3434"
+  },
+  {
+    "iata": "LA",
+    "name": "LATAM Airlines",
+    "claim_email": "customer.service@latam.com",
+    "claim_form_url": "https://www.latamairlines.com/us/en/experience/customer-service",
+    "instructions": "Submit via contact form or email. Provide ticket number and details.",
+    "phone": "+1 866 435 9526"
+  },
+  {
+    "iata": "CM",
+    "name": "Copa Airlines",
+    "claim_email": "copaclub@copaair.com",
+    "claim_form_url": "https://www.copaair.com/en/web/us/customer-service",
+    "instructions": "Use customer service form for claims. Include booking and flight details.",
+    "phone": "+1 786 840 2672"
+  },
+  {
+    "iata": "AR",
+    "name": "Aerolineas Argentinas",
+    "claim_email": "atencionasocio@aerolineas.com.ar",
+    "claim_form_url": "https://www.aerolineas.com.ar/en-us/ayuda",
+    "instructions": "Contact customer service for claims. Provide ticket and disruption information.",
+    "phone": "+54 11 4340 7777"
+  },
+  {
+    "iata": "EI",
+    "name": "Aer Lingus",
+    "claim_email": "customer.service@aerlingus.com",
+    "claim_form_url": "https://www.aerlingus.com/support/contact-us/",
+    "instructions": "Submit via online form or email. Include booking reference and flight details.",
+    "phone": "+353 1 886 8844"
+  },
+  {
+    "iata": "BI",
+    "name": "Royal Brunei Airlines",
+    "claim_email": "contactus@rba.com.bn",
+    "claim_form_url": "https://www.flyroyalbrunei.com/english/contact-us.aspx",
+    "instructions": "Use contact form for claims. Provide reservation and flight information.",
+    "phone": "+673 2 212 222"
+  },
+  {
+    "iata": "PC",
+    "name": "Pegasus Airlines",
+    "claim_email": "caginmerkezi@flypgs.com",
+    "claim_form_url": "https://www.flypgs.com/en/contact",
+    "instructions": "Submit claims via email or contact center. Include PNR and flight details.",
+    "phone": "+90 888 228 12 12"
+  },
+  {
+    "iata": "PS",
+    "name": "Ukraine International Airlines",
+    "claim_email": "contact@flyuia.com",
+    "claim_form_url": "https://www.flyuia.com/ua/en/information/feedback",
+    "instructions": "Use feedback form or email. Attach ticket and delay documentation.",
+    "phone": "+380 44 581 5050"
+  },
+  {
+    "iata": "BT",
+    "name": "Air Baltic",
+    "claim_email": "reservation@airbaltic.com",
+    "claim_form_url": "https://www.airbaltic.com/en/passenger-rights",
+    "instructions": "Submit compensation claims via passenger rights page. Include booking details.",
+    "phone": "+371 67 006 006"
+  },
+  {
+    "iata": "JU",
+    "name": "Air Serbia",
+    "claim_email": "callcentre@airserbia.com",
+    "claim_form_url": "https://www.airserbia.com/en/service-center/contact",
+    "instructions": "Contact via form or email for claims. Provide ticket and flight information.",
+    "phone": "+381 11 311 2123"
+  },
+  {
+    "iata": "RO",
+    "name": "Tarom",
+    "claim_email": "office@tarom.ro",
+    "claim_form_url": "https://www.tarom.ro/en/contact",
+    "instructions": "Submit claims via email or contact page. Include booking reference and details.",
+    "phone": "+40 21 204 6464"
+  },
+  {
+    "iata": "FB",
+    "name": "Bulgaria Air",
+    "claim_email": "customerservice@air.bg",
+    "claim_form_url": "https://www.air.bg/en/for-passengers/contacts",
+    "instructions": "Contact customer service for claims. Provide ticket number and flight details.",
+    "phone": "+359 2 402 0400"
+  },
+  {
+    "iata": "OU",
+    "name": "Croatia Airlines",
+    "claim_email": "customer.relations@croatiaairlines.hr",
+    "claim_form_url": "https://www.croatiaairlines.com/contact-us",
+    "instructions": "Submit via contact form or email. Include booking and disruption details.",
+    "phone": "+385 1 6676 555"
+  },
+  {
+    "iata": "JP",
+    "name": "Adria Airways",
+    "claim_email": "info@adria.si",
+    "claim_form_url": "https://www.adria.si/en/contact/",
+    "instructions": "Note: Adria Airways ceased operations in 2019. Contact for historical claims only."
+  },
+  {
+    "iata": "AT",
+    "name": "Royal Air Maroc",
+    "claim_email": "contact@royalairmaroc.com",
+    "claim_form_url": "https://www.royalairmaroc.com/int-en/contact-us",
+    "instructions": "Use contact form or email for claims. Provide ticket and flight details.",
+    "phone": "+212 522 489 797"
+  },
+  {
+    "iata": "MS",
+    "name": "EgyptAir",
+    "claim_email": "info@egyptair.com",
+    "claim_form_url": "https://www.egyptair.com/en/fly/pages/contactus.aspx",
+    "instructions": "Submit claims via contact page or email. Include booking reference.",
+    "phone": "+202 2267 0000"
+  },
+  {
+    "iata": "HV",
+    "name": "Transavia France",
+    "claim_email": "serviceclient@transavia.com",
+    "claim_form_url": "https://www.transavia.com/fr-FR/service/reclamations/",
+    "instructions": "Use online claim form for compensation. Provide flight and booking details.",
+    "phone": "+33 892 058 888"
+  },
+  {
+    "iata": "XQ",
+    "name": "SunExpress",
+    "claim_email": "info@sunexpress.com",
+    "claim_form_url": "https://www.sunexpress.com/en/service/contact/",
+    "instructions": "Submit via contact form or email. Include PNR and flight information.",
+    "phone": "+90 232 444 0 797"
+  },
+  {
+    "iata": "ENT",
+    "name": "Enter Air",
+    "claim_email": "biuro@enterair.pl",
+    "claim_form_url": "https://www.enterair.pl/en/contact",
+    "instructions": "Contact via email for claims. Provide booking and flight details.",
+    "phone": "+48 22 300 01 01"
+  },
+  {
+    "iata": "SP",
+    "name": "SATA Air Açores",
+    "claim_email": "informacao@sata.pt",
+    "claim_form_url": "https://www.sata.pt/en/contact-us",
+    "instructions": "Submit claims via email or contact form. Include ticket and details.",
+    "phone": "+351 296 209 720"
+  },
+  {
+    "iata": "BE",
+    "name": "Flybe",
+    "claim_email": "customer.services@flybe.com",
+    "claim_form_url": "https://www.flybe.com/contact-us",
+    "instructions": "Note: Flybe ceased operations in 2020. Contact for historical claims only."
+  },
+  {
+    "iata": "W4",
+    "name": "Wizz Air Malta",
+    "claim_email": "claim@wizzair.com",
+    "claim_form_url": "https://wizzair.com/en-gb/information-and-services/compliments-and-complaints/claims",
+    "instructions": "Use same claim process as main Wizz Air. Submit via online form."
+  },
+  {
+    "iata": "FR",
+    "name": "Ryanair Sun",
+    "claim_email": "customerqueries@ryanair.com",
+    "claim_form_url": "https://eu261compensationclaims.ryanair.com/",
+    "instructions": "Use Ryanair's EU261 compensation form. Attach boarding pass and proof."
+  },
+  {
+    "iata": "BZ",
+    "name": "Blue Air",
+    "claim_email": "office@blueairweb.com",
+    "claim_form_url": "https://www.blueairweb.com/eng/contact/",
+    "instructions": "Submit claims via email or contact form. Include booking reference.",
+    "phone": "+40 21 204 8888"
+  },
+  {
     "iata": "TES",
     "name": "Test Airline",
     "claim_email": "piotr.hipcio@gmail.com",
