@@ -1,0 +1,17 @@
+# Vercel Deployment Trigger
+
+This file triggers automatic Vercel deployment for worldapp-miniapp branch.
+
+Timestamp: October 13, 2025 - 3:34 PM UTC+02:00
+Purpose: Deploy World App compliant version to Vercel
+Branch: worldapp-miniapp
+Target URL: miniapp.air24.app (to be configured)
+
+Changes in this branch:
+- Removed email/password authentication
+- Removed Google Sign-In
+- Only MiniKit authentication (World App compliance)
+- MiniKit SDK integrated via CDN
+- JavaScript bridge created for Flutter-MiniKit communication
+
+This deployment is compliant with World App requirements.
