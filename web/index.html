@@ -152,7 +152,46 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-  <!-- Worldcoin IDKit (Standalone) -->
+  <!-- MiniKit SDK for World App Mini Apps -->
+  <script type="module">
+    import { MiniKit } from 'https://cdn.jsdelivr.net/npm/@worldcoin/minikit-js@1.0.0/+esm';
+    
+    // Make MiniKit available globally for Flutter
+    window.MiniKit = MiniKit;
+    
+    // MiniKit interop for Flutter Web
+    window.MiniKitInterop = {
+      isInstalled: function() {
+        return MiniKit.isInstalled();
+      },
+      walletAuth: async function(nonce) {
+        if (!MiniKit.isInstalled()) {
+          return JSON.stringify({ status: 'error', error: 'MiniKit not installed' });
+        }
+        
+        try {
+          const { commandPayload, finalPayload } = await MiniKit.commandsAsync.walletAuth({
+            nonce: nonce,
+            requestId: '0',
+            expirationTime: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+            notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+            statement: 'Sign in to AIR24 to claim your flight compensation',
+          });
+          
+          return JSON.stringify(finalPayload);
+        } catch (error) {
+          return JSON.stringify({ status: 'error', error: error.message });
+        }
+      },
+      getWalletAddress: function() {
+        return MiniKit.walletAddress || null;
+      }
+    };
+    
+    console.log('✅ MiniKit SDK loaded and available');
+  </script>
+
+  <!-- Worldcoin IDKit (Standalone) - Fallback for regular web -->
   <script src="https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js"></script>
   <script>
     // Minimal wrapper to expose a stable Promise-based API to Flutter (via js_util)

@@ -162,137 +162,34 @@ class _AuthScreenState extends State<AuthScreen> {
                         if (viewModel.errorMessage != null)
                           const SizedBox(height: 24),
                         
-                        // Email field
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            labelText: context.l10n.email,
-                            hintText: context.l10n.emailHintExample,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(Icons.email_outlined),
+                        // MINIAPP VERSION: Email/Password fields removed
+                        // Only MiniKit authentication per World App requirements
+                        
+                        // Info text about World ID
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.blue.shade200),
                           ),
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          onChanged: viewModel.setEmail,
+                          child: Row(
+                            children: [
+                              Icon(Icons.info_outline, color: Colors.blue.shade700),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Sign in securely with World ID to access AIR24 and claim your flight compensation.',
+                                  style: TextStyle(color: Colors.blue.shade900),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        
-                        if (!_isResetPassword) ...[
-                          const SizedBox(height: 16),
-                          
-                          // Password field
-                          TextFormField(
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              labelText: context.l10n.password,
-                              hintText: context.l10n.passwordPlaceholder,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              prefixIcon: const Icon(Icons.lock_outlined),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  viewModel.obscurePassword 
-                                    ? Icons.visibility_outlined 
-                                    : Icons.visibility_off_outlined,
-                                ),
-                                onPressed: viewModel.togglePasswordVisibility,
-                              ),
-                            ),
-                            obscureText: viewModel.obscurePassword,
-                            textInputAction: _isSignUp 
-                              ? TextInputAction.next 
-                              : TextInputAction.done,
-                            onChanged: viewModel.setPassword,
-                          ),
-                        ],
-                        
-                        // Confirm password field (only for sign up)
-                        if (_isSignUp) ...[
-                          const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _confirmPasswordController,
-                            decoration: InputDecoration(
-                              labelText: context.l10n.confirmPassword,
-                              hintText: context.l10n.passwordPlaceholder,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              prefixIcon: const Icon(Icons.lock_outlined),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  viewModel.obscureConfirmPassword 
-                                    ? Icons.visibility_outlined 
-                                    : Icons.visibility_off_outlined,
-                                ),
-                                onPressed: viewModel.toggleConfirmPasswordVisibility,
-                              ),
-                            ),
-                            obscureText: viewModel.obscureConfirmPassword,
-                            textInputAction: TextInputAction.done,
-                            onChanged: viewModel.setConfirmPassword,
-                          ),
-                        ],
                         
                         const SizedBox(height: 24),
                         
-                        // Primary action button
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: viewModel.isLoading 
-                            ? null 
-                            : () async {
-                                bool success = false;
-                                
-                                if (_isResetPassword) {
-                                  success = await viewModel.resetPassword();
-                                  if (success) {
-                                    if (mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(context.l10n.passwordResetEmailSentMessage),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
-                                      setState(() {
-                                        _isResetPassword = false;
-                                      });
-                                    }
-                                  }
-                                } else if (_isSignUp) {
-                                  success = await viewModel.signUp();
-                                  // The Navigator.pop(context) was removed from here.
-                                  // AuthGate handles navigation automatically on auth state change.
-                                } else {
-                                  success = await viewModel.signIn();
-                                  // The Navigator.pop(context) was removed from here.
-                                  // AuthGate handles navigation automatically on auth state change.
-                                }
-                              },
-                          child: Text(
-                            _isResetPassword 
-                              ? context.l10n.resetPassword
-                              : _isSignUp 
-                                ? context.l10n.createAccount 
-                                : context.l10n.signIn,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        
-                        const SizedBox(height: 16),
-                        
-                        // World ID sign in button (PRIMARY)
+                        // World ID sign in button - MINIAPP VERSION (ONLY AUTH METHOD)
                         if (!_isResetPassword)
                           ElevatedButton.icon(
                             icon: const Icon(Icons.verified_user, size: 24),
@@ -312,109 +209,19 @@ class _AuthScreenState extends State<AuthScreen> {
                             onPressed: viewModel.isLoading 
                               ? null 
                               : () async {
-                                  print('🌍 AUTH_SCREEN: World ID Sign-In button pressed!');
-                                  print('🌍 AUTH_SCREEN: About to call viewModel.signInWithWorldID()');
+                                  print('🌍 MINIAPP: World ID/MiniKit Sign-In button pressed!');
+                                  print('🌍 MINIAPP: About to call viewModel.signInWithWorldID()');
                                   final success = await viewModel.signInWithWorldID();
-                                  print('🌍 AUTH_SCREEN: viewModel.signInWithWorldID() returned: $success');
+                                  print('🌍 MINIAPP: viewModel.signInWithWorldID() returned: $success');
                                   // AuthGate handles navigation automatically on auth state change.
                                 },
                           ),
                         
-                        const SizedBox(height: 12),
-                        
-                        // Divider with "or"
-                        if (!_isResetPassword)
-                          Row(
-                            children: [
-                              Expanded(child: Divider(color: Colors.grey.shade300)),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: Text(
-                                  'or',
-                                  style: TextStyle(color: Colors.grey.shade600),
-                                ),
-                              ),
-                              Expanded(child: Divider(color: Colors.grey.shade300)),
-                            ],
-                          ),
-                        
-                        const SizedBox(height: 12),
-                        
-                        // Google sign in button (SECONDARY)
-                        if (!_isResetPassword)
-                          OutlinedButton.icon(
-                            icon: const GoogleLogo(size: 24),
-                            label: Text(
-                              _isSignUp 
-                                ? context.l10n.signUpWithGoogle 
-                                : context.l10n.signInWithGoogle
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.grey.shade300),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: viewModel.isLoading 
-                              ? null 
-                              : () async {
-                                  print('🔴 AUTH_SCREEN: Google Sign-In button pressed!');
-                                  print('🔴 AUTH_SCREEN: About to call viewModel.signInWithGoogle()');
-                                  final success = await viewModel.signInWithGoogle();
-                                  print('🔴 AUTH_SCREEN: viewModel.signInWithGoogle() returned: $success');
-                                  // The Navigator.pop(context) was removed from here.
-                                  // AuthGate handles navigation automatically on auth state change.
-                                },
-                          ),
+                        // MINIAPP VERSION: Google/Email removed per World App requirements
+                        // Only MiniKit authentication is allowed in Mini Apps
+                        // Sign-up/sign-in toggle and password reset removed (not applicable for World ID)
                         
                         const SizedBox(height: 24),
-                        
-                        // Toggle between sign in and sign up
-                        if (!_isResetPassword)
-                          TextButton(
-                            onPressed: viewModel.isLoading 
-                              ? null 
-                              : () {
-                                  setState(() {
-                                    _isSignUp = !_isSignUp;
-                                    viewModel.clearError();
-                                  });
-                                },
-                            child: Text(
-                              _isSignUp 
-                                ? context.l10n.alreadyHaveAccountSignInCta 
-                                : context.l10n.dontHaveAccountSignUpCta
-                            ),
-                          ),
-                        
-                        // Forgot password
-                        if (!_isSignUp && !_isResetPassword)
-                          TextButton(
-                            onPressed: viewModel.isLoading 
-                              ? null 
-                              : () {
-                                  setState(() {
-                                    _isResetPassword = true;
-                                    viewModel.clearError();
-                                  });
-                                },
-                            child: Text(context.l10n.forgotPasswordQuestion),
-                          ),
-                        
-                        // Back to sign in
-                        if (_isResetPassword)
-                          TextButton(
-                            onPressed: viewModel.isLoading 
-                              ? null 
-                              : () {
-                                  setState(() {
-                                    _isResetPassword = false;
-                                    viewModel.clearError();
-                                  });
-                                },
-                            child: Text(context.l10n.backToSignIn),
-                          ),
                       ],
                     ),
                   ),
