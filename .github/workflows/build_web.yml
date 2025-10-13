@@ -48,10 +48,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Ensure we're up-to-date to avoid non-fast-forward push errors
+          git fetch origin main
+          git pull --rebase origin main
           git add vercel-backend/public
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
           git commit -m "chore: publish Flutter web build to vercel-backend/public [skip ci]"
-          git push origin HEAD:main
+          # Retry push once if main advanced during this run
+          git push origin HEAD:main || (git pull --rebase origin main && git push origin HEAD:main)
