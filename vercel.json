@@ -1,6 +1,6 @@
 {
-  "buildCommand": "flutter build web --release",
-  "outputDirectory": "build/web",
+  "buildCommand": "echo 'No build needed - using pre-built files'",
+  "outputDirectory": "vercel-backend/public",
   "framework": null,
-  "installCommand": "echo 'Flutter build managed by Vercel'"
+  "installCommand": "echo 'No install needed'"
 }
