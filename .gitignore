@@ -34,7 +34,6 @@ migrate_working_dir/
 /build/
 
 # Firebase auto-generated config (do NOT commit secrets)
-firebase_options.dart
 
 # Sensitive assets and secrets
 assets/rapidapi_key.txt
