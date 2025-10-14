@@ -10,7 +10,9 @@ import '../services/secure_email_service.dart';
 import '../services/auth_service_firebase.dart';
 import '../services/airline_procedure_service.dart';
 import '../services/push_notification_service.dart';
+import '../services/user_service.dart';
 import '../widgets/secure_email_preview_dialog.dart';
+import '../widgets/email_collection_dialog.dart';
 // Attachments manager removed; no import needed
 
 class ClaimConfirmationScreen extends StatefulWidget {
@@ -47,6 +49,28 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
         final authService = GetIt.instance<FirebaseAuthService>();
         if (authService.currentUser?.email != null) {
           userEmail = authService.currentUser!.email!;
+        }
+      }
+      
+      // Check if this is a World ID fake email and prompt for real email
+      if (userEmail.startsWith('worldid_') && userEmail.endsWith('@air24.app')) {
+        print('🌍 Detected World ID user with fake email: $userEmail');
+        
+        // Show email collection dialog
+        final realEmail = await _promptForRealEmail(context);
+        
+        if (realEmail != null && realEmail.isNotEmpty) {
+          print('✅ User provided real email: $realEmail');
+          
+          // Save real email to Firestore user profile
+          await _saveRealEmailToProfile(realEmail);
+          
+          // Use the real email for this claim
+          userEmail = realEmail;
+        } else {
+          print('⚠️ User cancelled email input - using fake email');
+          // User cancelled - they won't receive airline correspondence
+          // Continue with fake email but show warning later
         }
       }
       
@@ -587,6 +611,36 @@ class _ClaimConfirmationScreenState extends State<ClaimConfirmationScreen> {
     );
   }
  
+  /// Prompt World ID user for their real email address
+  Future<String?> _promptForRealEmail(BuildContext context) async {
+    return await showDialog<String>(
+      context: context,
+      barrierDismissible: false, // Force user to provide email or explicitly cancel
+      builder: (context) => const EmailCollectionDialog(),
+    );
+  }
+
+  /// Save real email to Firestore user profile
+  Future<void> _saveRealEmailToProfile(String realEmail) async {
+    try {
+      final authService = GetIt.instance<FirebaseAuthService>();
+      final userId = authService.currentUser?.uid;
+      
+      if (userId == null) {
+        print('⚠️ Cannot save email: no user ID');
+        return;
+      }
+      
+      final userService = GetIt.instance<UserService>();
+      await userService.updateUserProfile(email: realEmail);
+      
+      print('✅ Real email saved to user profile: $realEmail');
+    } catch (e) {
+      print('❌ Error saving real email to profile: $e');
+      // Don't throw - we can still use the email for this claim
+    }
+  }
+
   /// Builds the email subject and body preview using the same logic as sending
   Future<Map<String, String>> _buildEmailSubjectAndBody() async {
     // Create SecureEmailService instance for localized email generation
