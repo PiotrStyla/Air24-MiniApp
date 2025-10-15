@@ -5,6 +5,7 @@ import '../services/auth_service_firebase.dart';
 import '../models/auth_exception.dart';
 import '../services/world_id_interop.dart' if (dart.library.html) '../services/world_id_interop_web.dart';
 import '../services/world_id_service.dart';
+import '../services/minikit_interop.dart' as minikit;
 
 /// ViewModel for authentication screens
 /// Follows MVVM pattern with ChangeNotifier for state management
@@ -199,32 +200,64 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
     
     try {
-      print('🌍 AuthViewModel: Checking World ID availability...');
+      // Prefer MiniKit walletAuth inside World App Mini App
+      if (kIsWeb) {
+        final installed = await minikit.minikitInstalled();
+        print('🌍 AuthViewModel: MiniKit installed? $installed');
+        if (installed) {
+          final nonce = DateTime.now().millisecondsSinceEpoch.toString();
+          print('🌍 AuthViewModel: Calling MiniKit walletAuth with nonce=$nonce');
+          final mk = await minikit.walletAuth(nonce);
+          if (mk == null || (mk['status'] == 'error')) {
+            throw AuthException(
+              'minikit-auth-failed',
+              'MiniKit wallet authentication failed.',
+            );
+          }
+          final walletAddr = await minikit.getWalletAddress() ?? mk['address']?.toString();
+          if (walletAddr == null || walletAddr.isEmpty) {
+            throw AuthException(
+              'minikit-no-address',
+              'Could not retrieve wallet address from MiniKit.',
+            );
+          }
+          print('✅ AuthViewModel: MiniKit wallet address: $walletAddr');
+          // Create a Firebase user using wallet address as stable identifier
+          final worldIdHash = walletAddr.toLowerCase();
+          final tempEmail = 'worldid_${worldIdHash}@air24.app';
+          final sanitized = worldIdHash.replaceAll(RegExp('[^a-z0-9]'), '');
+          final tempPassword = (sanitized.isNotEmpty ? sanitized : 'minikitpass').padRight(20, '0').substring(0, 20);
+
+          try {
+            await _authService.signInWithEmail(tempEmail, tempPassword);
+          } catch (_) {
+            await _authService.createUserWithEmail(tempEmail, tempPassword);
+          }
+
+          _isLoading = false;
+          notifyListeners();
+          return true;
+        }
+      }
+
+      // Fallback for regular web: use IDKit
+      print('🌍 AuthViewModel: Checking World ID availability (IDKit fallback)...');
       final available = await worldIdAvailable();
-      
       if (!available) {
         throw AuthException(
           'world-id-unavailable',
-          'World ID is not available. Please try another sign-in method.',
+          'World ID is not available. Please try again later.',
         );
       }
-      
-      print('🌍 AuthViewModel: Opening World ID verification...');
+      print('🌍 AuthViewModel: Opening World ID (IDKit) verification...');
       final proof = await openWorldId(
         appId: 'app_6f4b07c9d84438a94414813a89974ab0',
         action: 'flight-compensation-mini-app-verify',
       );
-      
       if (proof == null) {
-        throw AuthException(
-          'world-id-cancelled',
-          'World ID verification was cancelled.',
-        );
+        throw AuthException('world-id-cancelled', 'World ID verification was cancelled.');
       }
-      
       print('🌍 AuthViewModel: World ID proof received: ${proof.keys}');
-      
-      // Verify the proof on backend
       final worldIdService = WorldIdService();
       final verification = await worldIdService.verify(
         nullifierHash: proof['nullifier_hash'] ?? '',
@@ -233,30 +266,20 @@ class AuthViewModel extends ChangeNotifier {
         verificationLevel: proof['verification_level'] ?? 'device',
         action: 'flight-compensation-mini-app-verify',
       );
-      
       if (!verification.success) {
-        throw AuthException(
-          'world-id-verify-failed',
-          verification.message ?? 'World ID verification failed.',
-        );
+        throw AuthException('world-id-verify-failed', verification.message ?? 'World ID verification failed.');
       }
-      
-      print('✅ AuthViewModel: World ID verified successfully!');
-      
-      // World ID verified - now create/sign in user
-      // For World App integration, we'll use email/password with the nullifier hash
+      print('✅ AuthViewModel: World ID verified successfully (IDKit path)');
+
       final worldIdHash = proof['nullifier_hash'] ?? '';
       final tempEmail = 'worldid_$worldIdHash@air24.app';
-      final tempPassword = worldIdHash.substring(0, 20); // Use part of hash as password
-      
+      final tempPassword = worldIdHash.substring(0, 20);
       try {
-        // Try to sign in first
         await _authService.signInWithEmail(tempEmail, tempPassword);
-      } catch (e) {
-        // If sign in fails, create new account
+      } catch (_) {
         await _authService.createUserWithEmail(tempEmail, tempPassword);
       }
-      
+
       _isLoading = false;
       notifyListeners();
       return true;

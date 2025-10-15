@@ -188,11 +188,22 @@
       }
     };
     
+    // Only load IDKit as a web fallback when MiniKit is not installed
+    try {
+      if (!MiniKit.isInstalled()) {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js';
+        s.async = true;
+        document.head.appendChild(s);
+        console.log('ℹ️ IDKit loaded as web fallback (MiniKit not installed)');
+      }
+    } catch (e) {
+      // no-op
+    }
+    
     console.log('✅ MiniKit SDK loaded and available');
   </script>
 
-  <!-- Worldcoin IDKit (Standalone) - Fallback for regular web -->
-  <script src="https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js"></script>
   <script>
     // Minimal wrapper to expose a stable Promise-based API to Flutter (via js_util)
     window.WorldIdInterop = {
