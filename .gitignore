@@ -38,6 +38,7 @@ migrate_working_dir/
 # Sensitive assets and secrets
 assets/rapidapi_key.txt
 *.env
+set-env-vars.bat
 
 # Symbolication related
 app.*.symbols
