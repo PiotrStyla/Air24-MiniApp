@@ -154,54 +154,70 @@
 
   <!-- MiniKit SDK for World App Mini Apps -->
   <script type="module">
-    import { MiniKit } from 'https://cdn.jsdelivr.net/npm/@worldcoin/minikit-js@1.0.0/+esm';
-    
-    // Make MiniKit available globally for Flutter
-    window.MiniKit = MiniKit;
-    
-    // MiniKit interop for Flutter Web
-    window.MiniKitInterop = {
-      isInstalled: function() {
-        return MiniKit.isInstalled();
-      },
-      walletAuth: async function(nonce) {
-        if (!MiniKit.isInstalled()) {
-          return JSON.stringify({ status: 'error', error: 'MiniKit not installed' });
+    async function initMiniKit() {
+      try {
+        // Use MiniKit provided by host (World App) when available
+        if (!window.MiniKit) {
+          // Load CDN fallback only for regular web
+          const mod = await import('https://cdn.jsdelivr.net/npm/@worldcoin/minikit-js@1.0.0/+esm');
+          window.MiniKit = mod.MiniKit;
+          console.log('MiniKit CDN loaded for web fallback');
+        } else {
+          console.log('MiniKit detected from host (World App)');
         }
-        
+
+        // Expose MiniKit interop for Flutter Web
+        window.MiniKitInterop = {
+          isInstalled: function() {
+            try {
+              if (window.MiniKit && typeof window.MiniKit.isInstalled === 'function') {
+                return window.MiniKit.isInstalled();
+              }
+            } catch (e) {}
+            return false;
+          },
+          walletAuth: async function(nonce) {
+            if (!window.MiniKit || !(window.MiniKit.commandsAsync && typeof window.MiniKit.commandsAsync.walletAuth === 'function')) {
+              return JSON.stringify({ status: 'error', error: 'MiniKit not available' });
+            }
+            try {
+              const { commandPayload, finalPayload } = await window.MiniKit.commandsAsync.walletAuth({
+                nonce: nonce,
+                requestId: '0',
+                expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                notBefore: new Date(Date.now() - 24 * 60 * 60 * 1000),
+                statement: 'Sign in to AIR24 to claim your flight compensation',
+              });
+              return JSON.stringify(finalPayload);
+            } catch (error) {
+              return JSON.stringify({ status: 'error', error: (error && error.message) ? error.message : String(error) });
+            }
+          },
+          getWalletAddress: function() {
+            return (window.MiniKit && window.MiniKit.walletAddress) ? window.MiniKit.walletAddress : null;
+          }
+        };
+
+        // Load IDKit only when MiniKit is NOT installed (regular web)
+        let installed = false;
         try {
-          const { commandPayload, finalPayload } = await MiniKit.commandsAsync.walletAuth({
-            nonce: nonce,
-            requestId: '0',
-            expirationTime: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-            notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
-            statement: 'Sign in to AIR24 to claim your flight compensation',
-          });
-          
-          return JSON.stringify(finalPayload);
-        } catch (error) {
-          return JSON.stringify({ status: 'error', error: error.message });
+          installed = !!(window.MiniKit && typeof window.MiniKit.isInstalled === 'function' && window.MiniKit.isInstalled());
+        } catch (e) { installed = false; }
+
+        if (!installed) {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js';
+          s.async = true;
+          document.head.appendChild(s);
+          console.log('IDKit loaded as web fallback (MiniKit not installed)');
+        } else {
+          console.log('IDKit not loaded (MiniKit present)');
         }
-      },
-      getWalletAddress: function() {
-        return MiniKit.walletAddress || null;
+      } catch (e) {
+        console.warn('MiniKit initialization error', e);
       }
-    };
-    
-    // Only load IDKit as a web fallback when MiniKit is not installed
-    try {
-      if (!MiniKit.isInstalled()) {
-        const s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js';
-        s.async = true;
-        document.head.appendChild(s);
-        console.log('ℹ️ IDKit loaded as web fallback (MiniKit not installed)');
-      }
-    } catch (e) {
-      // no-op
     }
-    
-    console.log('✅ MiniKit SDK loaded and available');
+    initMiniKit();
   </script>
 
   <script>
