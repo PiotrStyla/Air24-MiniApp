@@ -197,22 +197,8 @@
             return (window.MiniKit && window.MiniKit.walletAddress) ? window.MiniKit.walletAddress : null;
           }
         };
-
-        // Load IDKit only when MiniKit is NOT installed (regular web)
-        let installed = false;
-        try {
-          installed = !!(window.MiniKit && typeof window.MiniKit.isInstalled === 'function' && window.MiniKit.isInstalled());
-        } catch (e) { installed = false; }
-
-        if (!installed) {
-          const s = document.createElement('script');
-          s.src = 'https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js';
-          s.async = true;
-          document.head.appendChild(s);
-          console.log('IDKit loaded as web fallback (MiniKit not installed)');
-        } else {
-          console.log('IDKit not loaded (MiniKit present)');
-        }
+        // Do NOT load IDKit here. It will be injected on-demand when needed.
+        console.log('IDKit not preloaded; will load on-demand if MiniKit is not installed.');
       } catch (e) {
         console.warn('MiniKit initialization error', e);
       }
@@ -223,13 +209,26 @@
   <script>
     // Minimal wrapper to expose a stable Promise-based API to Flutter (via js_util)
     window.WorldIdInterop = {
-      available: function () {
-        return !!(window.IDKit && typeof window.IDKit.open === 'function');
-      },
+      // Always report available on web; we will load IDKit on-demand in open().
+      available: function () { return true; },
       open: function (config) {
         return new Promise(function (resolve, reject) {
           try {
-            if (!window.IDKit) { throw new Error('IDKit not loaded'); }
+            function ensureIdKitLoaded() {
+              return new Promise(function (res, rej) {
+                if (window.IDKit && typeof window.IDKit.open === 'function') { res(); return; }
+                const s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js';
+                s.async = true;
+                s.onload = function(){ res(); };
+                s.onerror = function(){ rej(new Error('Failed to load IDKit script')); };
+                document.head.appendChild(s);
+                console.log('IDKit injected on-demand');
+              });
+            }
+
+            ensureIdKitLoaded().then(function(){
+              if (!window.IDKit) { throw new Error('IDKit not available after load'); }
             var appId = (config && config.app_id) || null;
             var action = (config && config.action) || null;
             var signal = (config && config.signal) || undefined;
@@ -257,9 +256,8 @@
               },
             });
             window.IDKit.open().catch(reject);
-          } catch (err) {
-            reject(err);
-          }
+            }).catch(reject);
+          } catch (err) { reject(err); }
         });
       }
     };
