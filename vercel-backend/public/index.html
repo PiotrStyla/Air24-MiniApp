@@ -154,85 +154,110 @@
 
   <!-- MiniKit SDK for World App Mini Apps -->
   <script type="module">
-    import { MiniKit } from 'https://cdn.jsdelivr.net/npm/@worldcoin/minikit-js@1.0.0/+esm';
-    
-    // Make MiniKit available globally for Flutter
-    window.MiniKit = MiniKit;
-    
-    // MiniKit interop for Flutter Web
-    window.MiniKitInterop = {
-      isInstalled: function() {
-        return MiniKit.isInstalled();
-      },
-      walletAuth: async function(nonce) {
-        if (!MiniKit.isInstalled()) {
-          return JSON.stringify({ status: 'error', error: 'MiniKit not installed' });
+    async function initMiniKit() {
+      try {
+        // Prefer host-provided MiniKit in World App; import CDN only for web fallback
+        if (!window.MiniKit) {
+          const mod = await import('https://cdn.jsdelivr.net/npm/@worldcoin/minikit-js@1.0.0/+esm');
+          window.MiniKit = mod.MiniKit;
+          console.log('MiniKit CDN loaded for web fallback');
+        } else {
+          console.log('MiniKit detected from host (World App)');
         }
-        
-        try {
-          const { commandPayload, finalPayload } = await MiniKit.commandsAsync.walletAuth({
-            nonce: nonce,
-            requestId: '0',
-            expirationTime: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-            notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
-            statement: 'Sign in to AIR24 to claim your flight compensation',
-          });
-          
-          return JSON.stringify(finalPayload);
-        } catch (error) {
-          return JSON.stringify({ status: 'error', error: error.message });
-        }
-      },
-      getWalletAddress: function() {
-        return MiniKit.walletAddress || null;
+
+        // Expose MiniKit interop for Flutter Web
+        window.MiniKitInterop = {
+          isInstalled: function() {
+            try {
+              if (window.MiniKit && typeof window.MiniKit.isInstalled === 'function') {
+                return window.MiniKit.isInstalled();
+              }
+            } catch (e) {}
+            return false;
+          },
+          walletAuth: async function(nonce) {
+            if (!window.MiniKit || !(window.MiniKit.commandsAsync && typeof window.MiniKit.commandsAsync.walletAuth === 'function')) {
+              return JSON.stringify({ status: 'error', error: 'MiniKit not available' });
+            }
+            try {
+              const { commandPayload, finalPayload } = await window.MiniKit.commandsAsync.walletAuth({
+                nonce: nonce,
+                requestId: '0',
+                expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                notBefore: new Date(Date.now() - 24 * 60 * 60 * 1000),
+                statement: 'Sign in to AIR24 to claim your flight compensation',
+              });
+              return JSON.stringify(finalPayload);
+            } catch (error) {
+              return JSON.stringify({ status: 'error', error: (error && error.message) ? error.message : String(error) });
+            }
+          },
+          getWalletAddress: function() {
+            return (window.MiniKit && window.MiniKit.walletAddress) ? window.MiniKit.walletAddress : null;
+          }
+        };
+
+        // Do not preload IDKit; it will be injected on-demand in WorldIdInterop.open().
+        console.log('IDKit not preloaded; will load on-demand if MiniKit is not installed.');
+      } catch (e) {
+        console.warn('MiniKit initialization error', e);
       }
-    };
-    
-    console.log('✅ MiniKit SDK loaded and available');
+    }
+    initMiniKit();
   </script>
 
-  <!-- Worldcoin IDKit (Standalone) - Fallback for regular web -->
-  <script src="https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js"></script>
   <script>
     // Minimal wrapper to expose a stable Promise-based API to Flutter (via js_util)
     window.WorldIdInterop = {
-      available: function () {
-        return !!(window.IDKit && typeof window.IDKit.open === 'function');
-      },
+      // Always true on web; open() will inject IDKit on-demand
+      available: function () { return true; },
       open: function (config) {
         return new Promise(function (resolve, reject) {
           try {
-            if (!window.IDKit) { throw new Error('IDKit not loaded'); }
-            var appId = (config && config.app_id) || null;
-            var action = (config && config.action) || null;
-            var signal = (config && config.signal) || undefined;
-            // Fallback to meta tags if not provided explicitly
-            if (!appId) {
-              var metaApp = document.querySelector('meta[name="worldcoin-app-id"]');
-              if (metaApp) { appId = metaApp.getAttribute('content') || null; }
+            function ensureIdKitLoaded() {
+              return new Promise(function (res, rej) {
+                if (window.IDKit && typeof window.IDKit.open === 'function') { res(); return; }
+                const s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/@worldcoin/idkit-standalone@2.2.4/build/index.global.js';
+                s.async = true;
+                s.onload = function(){ res(); };
+                s.onerror = function(){ rej(new Error('Failed to load IDKit script')); };
+                document.head.appendChild(s);
+                console.log('IDKit injected on-demand');
+              });
             }
-            if (!action) {
-              var metaAction = document.querySelector('meta[name="worldcoin-action"]');
-              if (metaAction) { action = metaAction.getAttribute('content') || 'verify'; }
-            }
-            if (!appId) { throw new Error('Missing app_id'); }
-            if (!action) { action = 'verify'; }
-            window.IDKit.init({
-              app_id: appId,
-              action: action,
-              signal: signal,
-              onSuccess: function (result) {
-                try {
-                  resolve(JSON.stringify(result || {}));
-                } catch (e) {
-                  resolve('{}');
-                }
-              },
-            });
-            window.IDKit.open().catch(reject);
-          } catch (err) {
-            reject(err);
-          }
+
+            ensureIdKitLoaded().then(function(){
+              if (!window.IDKit) { throw new Error('IDKit not available after load'); }
+              var appId = (config && config.app_id) || null;
+              var action = (config && config.action) || null;
+              var signal = (config && config.signal) || undefined;
+              // Fallback to meta tags if not provided explicitly
+              if (!appId) {
+                var metaApp = document.querySelector('meta[name="worldcoin-app-id"]');
+                if (metaApp) { appId = metaApp.getAttribute('content') || null; }
+              }
+              if (!action) {
+                var metaAction = document.querySelector('meta[name="worldcoin-action"]');
+                if (metaAction) { action = metaAction.getAttribute('content') || 'verify'; }
+              }
+              if (!appId) { throw new Error('Missing app_id'); }
+              if (!action) { action = 'verify'; }
+              window.IDKit.init({
+                app_id: appId,
+                action: action,
+                signal: signal,
+                onSuccess: function (result) {
+                  try {
+                    resolve(JSON.stringify(result || {}));
+                  } catch (e) {
+                    resolve('{}');
+                  }
+                },
+              });
+              window.IDKit.open().catch(reject);
+            }).catch(reject);
+          } catch (err) { reject(err); }
         });
       }
     };
